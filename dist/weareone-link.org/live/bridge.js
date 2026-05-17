@@ -1739,10 +1739,38 @@ function wireAttestationVerify() {
 // MOUSE-REACTIVE COHERENCE FIELD - REMOVED.
 // An earlier iteration spawned faint cursor pings on every pointermove.
 // Pulled out to keep the site clean + confident, not literal-reactive.
-// The Helmholtz field background is enough; visual noise on top distracts
-// from reading. Click-pulse on the hero still exists (different code path,
-// already gated by the "click anywhere" affordance the visitor opts into).
 function startMouseReactiveField() { /* intentionally a no-op now */ }
+
+// ---------------------------------------------------------------------------
+// olFieldPulse - brief, purposeful field amplification on REAL crypto events.
+//
+// The field canvas sits at 18% opacity by default (CSS). Calling
+// olFieldPulse() adds the .is-pulsing class for `duration` ms which bumps
+// the canvas to 45% opacity, then fades back. Subsequent pulses extend.
+//
+// Hooked into:
+//   - manifest signature verified on load
+//   - WASM crate loaded + integrity check passed
+//   - /security/ demos completing (PQ-sign / threshold / ratchet / TOFU)
+//   - /download/ verifying-download SHA match
+//   - /share/ encrypt complete + recipient decrypt complete
+//   - attestation verification success
+//
+// Cleared by ANY user input so the field doesn't compete with reading.
+// Result: the field is the visual receipt of the cryptographic layer working.
+// ---------------------------------------------------------------------------
+let __OL_FIELD_PULSE_TIMER = null;
+function olFieldPulse(duration) {
+  const canvas = document.querySelector('.ol-field-canvas');
+  if (!canvas) return;
+  canvas.classList.add('is-pulsing');
+  if (__OL_FIELD_PULSE_TIMER) clearTimeout(__OL_FIELD_PULSE_TIMER);
+  __OL_FIELD_PULSE_TIMER = setTimeout(() => {
+    canvas.classList.remove('is-pulsing');
+    __OL_FIELD_PULSE_TIMER = null;
+  }, duration || 900);
+}
+window.olFieldPulse = olFieldPulse;
 
 // ---------------------------------------------------------------------------
 // 9a-oct. LIVE CRYPTO-OP LOG  (cockpit strip, default-visible, bottom-right)
@@ -1829,7 +1857,9 @@ function olOpLogRender() {
   }).join('');
 }
 
-// Public API: pushes an op event.
+// Public API: pushes an op event. Also pulses the coherence field
+// briefly so the visitor sees a real cryptographic operation reflected
+// in the backdrop. Errors pulse longer + more visibly.
 function olOpLog(label, ms, cls) {
   if (!label) return;
   __OL_OP_LOG.entries.push({
@@ -1842,6 +1872,12 @@ function olOpLog(label, ms, cls) {
     __OL_OP_LOG.entries.shift();
   }
   olOpLogRender();
+  // Pulse the field as a visible receipt of the crypto layer working.
+  // Suppress for the noisy boot ops; only pulse for substantive events.
+  const noisy = ['site loaded', 'coherence field init'];
+  if (!noisy.includes(label)) {
+    olFieldPulse(cls === 'err' ? 1400 : 800);
+  }
 }
 window.olOp = olOpLog;
 

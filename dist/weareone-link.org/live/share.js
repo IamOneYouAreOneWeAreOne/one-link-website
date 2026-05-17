@@ -149,6 +149,8 @@ async function initSender() {
       });
       const shareUrl = `${location.origin}/share/${id}#${frag.toString()}`;
 
+      if (window.olOp) window.olOp(`encrypted + uploaded (${fmtBytes(ct.length)})`, dtSeal + dtUp, 'ok');
+
       // Render the success state.
       status.innerHTML = `
         <div class="ol-share-success">
@@ -259,9 +261,11 @@ async function initReceiver() {
       URL.revokeObjectURL(url);
 
       recvStatus.innerHTML = `<span class="ol-share-success-text">${escapeHtml(frag.n || 'file')} decrypted and saved. server has been told to delete the ciphertext.</span>`;
+      if (window.olOp) window.olOp(`fetched + decrypted (${escapeHtml(frag.n || 'file').slice(0, 32)})`, undefined, 'ok');
     } catch (err) {
       recvBtn.disabled = false;
       recvStatus.innerHTML = `<span class="ol-share-err">decrypt failed: ${escapeHtml(err?.message || String(err))}</span>`;
+      if (window.olOp) window.olOp('share decrypt failed', undefined, 'err');
     }
   });
 }

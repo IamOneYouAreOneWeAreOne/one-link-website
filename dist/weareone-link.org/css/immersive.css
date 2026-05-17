@@ -14,7 +14,11 @@
      * "Click to send a pulse" field hint
    ========================================================================== */
 
-/* ----- field canvas must be the floor, not a background card ----- */
+/* ----- field canvas must be the floor, not a background card -----
+   tuned WAY down: the field is a felt presence, not a stare-at-it pattern.
+   Default opacity 0.18, soft-light blend so it tints the background rather
+   than dominates it. Bumps to 0.45 momentarily on real crypto events via
+   the .is-pulsing class (see bridge.js olFieldPulse). */
 body.ol-immersive .ol-field-canvas {
   position: fixed;
   inset: 0;
@@ -22,8 +26,14 @@ body.ol-immersive .ol-field-canvas {
   height: 100%;
   z-index: 0;
   pointer-events: auto;     /* receives clicks so the field can pulse */
-  opacity: 1;               /* full strength, not 0.5 like default */
-  mix-blend-mode: normal;
+  opacity: 0.18;            /* subtle ambient backdrop, was 1.0 */
+  mix-blend-mode: soft-light;
+  transition: opacity 0.6s ease-out;
+  filter: saturate(0.55) blur(0.4px);
+}
+body.ol-immersive .ol-field-canvas.is-pulsing {
+  opacity: 0.45;
+  transition: opacity 0.18s ease-out;
 }
 
 body.ol-immersive {
