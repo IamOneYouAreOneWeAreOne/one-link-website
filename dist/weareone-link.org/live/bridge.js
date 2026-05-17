@@ -1361,6 +1361,173 @@ function wireHwkeyDemo() {
 }
 
 // ---------------------------------------------------------------------------
+// 9a-sex. RELEASE-ATTESTATION VERIFIER  (/download/ page)
+//
+// Pinned release-signing pubkey - generated offline, lives in
+// .keys/release-ed25519.{sk,pk}, never on any server. Signing happens
+// outside this repo via scripts/build-attestation.py. This pin is the
+// trust root; an attacker who substitutes the attestation cannot forge
+// the signature against this key.
+// ---------------------------------------------------------------------------
+const RELEASE_PUBKEY_HEX =
+  '68c961f1ce26faa39acdf66d457e49126d1498aecbbce15ab49fe192d715cb2e';
+
+const ATTESTATION_TARGET_SHA =
+  'ea4efc8bf92f5ddd911e10f940a46899fda6fa786755ce797429b8fd62c05aed';
+
+function canonicalAttestationPayload(doc) {
+  // MUST byte-match scripts/build-attestation.py canonical_attestation_payload:
+  // exclude `signatures` and `signed_payload_sha256`, sort keys recursively
+  // (Python json.dumps sort_keys=True), no whitespace (separators=(',',':')).
+  const EXCLUDE = new Set(['signatures', 'signed_payload_sha256']);
+  function sortKeys(value) {
+    if (value === null || typeof value !== 'object') return value;
+    if (Array.isArray(value)) return value.map(sortKeys);
+    const out = {};
+    for (const k of Object.keys(value).sort()) out[k] = sortKeys(value[k]);
+    return out;
+  }
+  const filtered = {};
+  for (const k of Object.keys(doc).sort()) {
+    if (EXCLUDE.has(k)) continue;
+    filtered[k] = sortKeys(doc[k]);
+  }
+  return JSON.stringify(filtered);
+}
+
+async function sha256Hex(bytes) {
+  const digest = await crypto.subtle.digest('SHA-256', bytes);
+  return bytesToHex(new Uint8Array(digest));
+}
+
+async function verifyAttestation(sha) {
+  const target = sha || ATTESTATION_TARGET_SHA;
+  const t0 = performance.now();
+
+  // 1. Fetch the attestation document
+  const res = await fetch(`/api/attest/${target}`);
+  if (!res.ok) {
+    return { ok: false, error: `fetch failed: ${res.status}` };
+  }
+  const doc = await res.json();
+  const dtFetch = (performance.now() - t0).toFixed(1);
+
+  // 2. Pull the ed25519 signature off
+  const sigEntry = (doc.signatures || []).find(s => s.scheme === 'ed25519');
+  if (!sigEntry) {
+    return { ok: false, error: 'no ed25519 signature in document' };
+  }
+  if (sigEntry.public_key_hex !== RELEASE_PUBKEY_HEX) {
+    return {
+      ok: false,
+      error: `pubkey mismatch: document signed by ${sigEntry.public_key_hex.slice(0,16)}..., pinned is ${RELEASE_PUBKEY_HEX.slice(0,16)}...`,
+    };
+  }
+
+  // 3. Recompute canonical bytes locally
+  const payloadStr = canonicalAttestationPayload(doc);
+  const payloadBytes = new TextEncoder().encode(payloadStr);
+  const payloadHashHex = await sha256Hex(payloadBytes);
+
+  // 4. Cross-check the doc's self-reported payload sha (if present)
+  const expectedShaField = doc.signed_payload_sha256 || '';
+  const expectedSha = expectedShaField.replace(/^sha256-/, '');
+  const payloadShaMatches = expectedSha ? expectedSha === payloadHashHex : null;
+
+  // 5. ed25519 verify via WebCrypto
+  let sigVerified = null;
+  let verifyMethod = null;
+  try {
+    const pubBytes = hexDecode(RELEASE_PUBKEY_HEX);
+    const sigBytes = hexDecode(sigEntry.signature_hex);
+    const key = await crypto.subtle.importKey(
+      'raw', pubBytes, { name: 'Ed25519' }, false, ['verify']
+    );
+    sigVerified = await crypto.subtle.verify({ name: 'Ed25519' }, key, sigBytes, payloadBytes);
+    verifyMethod = 'WebCrypto Ed25519';
+  } catch (e) {
+    return {
+      ok: false,
+      error: `WebCrypto Ed25519 not available: ${e?.message || e}`,
+      doc,
+    };
+  }
+
+  // 6. Cross-check the artifact SHA the doc claims
+  const artifactShaMatches = (doc.artifact?.sha256 || '') === target;
+
+  const dtTotal = (performance.now() - t0).toFixed(1);
+  return {
+    ok: true,
+    targetSha: target,
+    doc,
+    sigVerified,
+    verifyMethod,
+    payloadShaMatches,
+    artifactShaMatches,
+    dtFetch,
+    dtTotal,
+  };
+}
+window.olVerifyAttestation = verifyAttestation;
+
+function wireAttestationVerify() {
+  const btn = $('#ol-attest-btn');
+  const out = $('#ol-attest-out');
+  const status = $('#ol-attest-status');
+  if (!btn || !out) return;
+
+  btn.addEventListener('click', async () => {
+    btn.disabled = true;
+    if (status) status.style.display = 'inline-flex';
+    out.style.display = 'block';
+    out.textContent = 'fetching attestation + verifying...';
+
+    const result = await verifyAttestation();
+
+    if (!result.ok) {
+      out.innerHTML = `<span style="color: var(--ol-rose);">verify failed: ${escapeHtml(result.error)}</span>`;
+    } else {
+      const d = result.doc;
+      const a = d.artifact || {};
+      const s = d.source || {};
+      const lines = [
+        `<span class="d">// fetched + verified in ${result.dtTotal} ms (fetch ${result.dtFetch} ms)</span>`,
+        `<span class="c">target sha256</span>     ${escapeHtml(result.targetSha)}`,
+        ``,
+        `<span class="c">artifact name</span>     ${escapeHtml(a.name || '?')} ${escapeHtml(a.version || '')} (${escapeHtml(a.os || '?')})`,
+        `<span class="c">artifact file</span>     ${escapeHtml(a.filename || '?')}`,
+        `<span class="c">artifact size</span>     ${a.size_bytes ? a.size_bytes.toLocaleString() : '?'} bytes`,
+        `<span class="c">artifact sha256</span>   ${escapeHtml(a.sha256 || '')}`,
+        `<span class="c">artifact blake3</span>   ${escapeHtml((a.blake3 || '').slice(0, 32))}...`,
+        `<span class="c">source commit</span>     ${escapeHtml(s.describe || s.commit || '?')}`,
+        ``,
+        `<span class="c">verifier</span>          ${escapeHtml(result.verifyMethod)}`,
+        `<span class="c">pinned pubkey</span>     ${RELEASE_PUBKEY_HEX.slice(0, 32)}...`,
+        ``,
+        `<span class="c">ed25519 signature</span>  ` + (result.sigVerified
+          ? `<span class="g">VERIFIED (signed payload matches pinned key)</span>`
+          : `<span class="ol-rose">FAILED (signature did not verify)</span>`),
+        `<span class="c">artifact-sha match</span> ` + (result.artifactShaMatches
+          ? `<span class="g">yes (doc covers the bytes we asked about)</span>`
+          : `<span class="ol-rose">no (doc covers a different artifact)</span>`),
+        `<span class="c">payload-sha match</span>  ` + (result.payloadShaMatches === null
+          ? `<span class="d">(no signed_payload_sha256 field; skipped)</span>`
+          : result.payloadShaMatches
+            ? `<span class="g">yes (canonical bytes byte-equal what was signed)</span>`
+            : `<span class="ol-rose">no (canonical-form mismatch)</span>`),
+        ``,
+        `<span class="d">// any HTTP intermediary that altered this doc would have broken</span>`,
+        `<span class="d">// the signature. Cloudflare cannot forge this without the offline key.</span>`,
+      ];
+      out.innerHTML = lines.join('\n');
+    }
+    if (status) status.style.display = 'none';
+    btn.disabled = false;
+  });
+}
+
+// ---------------------------------------------------------------------------
 // 9b. PRIVATE-ROUTE DEMO BUTTON  (/download/ page)
 //
 // Clicking the button runs a real ol_onion 3-hop wrap+peel in the browser
@@ -2480,6 +2647,7 @@ async function startCapAdvertSync() {
   wireThresholdDemo();         // /security/ Shamir K-of-N split+recover demo
   wireRatchetDemo();           // /security/ forward-secret ratchet demo
   wireHwkeyDemo();             // /security/ TOFU device-fingerprint demo
+  wireAttestationVerify();     // /download/ "verify this binary's attestation"
   startMeshSolverColoring();   // /mesh/ peer-dot coloring via real solver
   wireTelemetry();             // ?-key system-telemetry overlay
   startCapAdvertSync();        // /features/ live cap-advert banner
