@@ -89,8 +89,7 @@ pattern = "www.weareone-link.org"
 custom_domain = true
 
 [vars]
-SITE_DOMAIN              = "weareone-link.org"
-CANONICAL_ORIGIN         = "https://weareone-link.org"
-RELEASE_RELAY_PUBKEY_HEX = "REPLACE_WITH_RELAY_ED25519_PUBKEY"
-PROTOCOL_VERSION         = "1"
-NATIVE_TRANSFER_CAP      = "NATIVE_TRANSFER_V1"
+SITE_DOMAIN         = "weareone-link.org"
+CANONICAL_ORIGIN    = "https://weareone-link.org"
+PROTOCOL_VERSION    = "1"
+NATIVE_TRANSFER_CAP = "NATIVE_TRANSFER_V1"
