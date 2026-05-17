@@ -29,7 +29,7 @@
    License: AGPL-3.0-or-later
    ============================================================================ */
 
-const SW_VERSION = '0.21.0-alpha.0+r26';
+const SW_VERSION = '0.21.0-alpha.0+r27';
 const CACHE_NAME  = `ol-cache-${SW_VERSION}`;
 const META_DB     = 'ol-sw-meta';
 
@@ -78,6 +78,8 @@ const PRECACHE_URLS = [
   '/live/wasm/ol_threshold_recovery_bg.wasm',
   '/live/wasm/ol_ratchet.js',
   '/live/wasm/ol_ratchet_bg.wasm',
+  '/live/wasm/ol_hwkey.js',
+  '/live/wasm/ol_hwkey_bg.wasm',
   '/live/wasm/ol_onion.js',
   '/live/wasm/ol_onion_bg.wasm',
   '/live/wasm/ol_coherence_field.js',

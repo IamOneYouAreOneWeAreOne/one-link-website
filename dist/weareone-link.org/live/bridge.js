@@ -1244,6 +1244,123 @@ function wireRatchetDemo() {
 }
 
 // ---------------------------------------------------------------------------
+// 9a-quinque. HARDWARE-KEY TOFU DEMO  (/security/ page)
+//
+// Loads ol_hwkey WASM, mints a 32-byte "device root" on FIRST visit and
+// stashes it in localStorage (origin-scoped, never leaves the browser).
+// On EVERY visit, derives the canonical device pubkey from the root, and
+// confirms it matches a previously stored fingerprint (TOFU recognition).
+// Also runs an attacker scenario: presents a random pubkey under the same
+// label, proves the TofuStore rejects it.
+// ---------------------------------------------------------------------------
+const HWKEY_STORAGE_ROOT_KEY  = 'ol-hwkey-device-root-v1';
+const HWKEY_STORAGE_PRINT_KEY = 'ol-hwkey-device-fingerprint-v1';
+
+async function runHwkeyDemo() {
+  try {
+    const mod = await import('/live/wasm/ol_hwkey.js');
+    await mod.default({ module_or_path: '/live/wasm/ol_hwkey_bg.wasm' });
+
+    // Read or mint the 32-byte device root, persist in localStorage.
+    let rootHex = null;
+    let firstVisit = false;
+    try {
+      rootHex = localStorage.getItem(HWKEY_STORAGE_ROOT_KEY);
+    } catch {}
+    if (!rootHex) {
+      const fresh = crypto.getRandomValues(new Uint8Array(32));
+      rootHex = bytesToHex(fresh);
+      firstVisit = true;
+      try { localStorage.setItem(HWKEY_STORAGE_ROOT_KEY, rootHex); } catch {}
+    }
+    const root = hexDecode(rootHex);
+
+    const result = mod.liveDemoRoundTrip(root);
+
+    // Verify the stored fingerprint, if any, matches what we just derived.
+    let prevFingerprint = null;
+    try { prevFingerprint = localStorage.getItem(HWKEY_STORAGE_PRINT_KEY); } catch {}
+    const fingerprintMatches = prevFingerprint
+      ? prevFingerprint === result.pkHex
+      : null;  // first visit: no stored fingerprint to compare against
+    if (!prevFingerprint) {
+      try { localStorage.setItem(HWKEY_STORAGE_PRINT_KEY, result.pkHex); } catch {}
+    }
+
+    return {
+      ok: true,
+      version: mod.ol_hwkey_version(),
+      firstVisit,
+      pkHex: result.pkHex,
+      pkLen: result.pkLen,
+      rederiveMatch: result.rederiveMatch,
+      attackerKeyHex: result.attackerKeyHex,
+      tofuRejectAttack: result.tofuRejectAttack,
+      storedFingerprint: prevFingerprint,
+      fingerprintMatches,
+    };
+  } catch (e) {
+    return { ok: false, error: e?.message || String(e) };
+  }
+}
+window.olRunHwkeyDemo = runHwkeyDemo;
+
+function wireHwkeyDemo() {
+  const btn = $('#ol-hwkey-btn');
+  const out = $('#ol-hwkey-out');
+  const status = $('#ol-hwkey-status');
+  if (!btn || !out) return;
+
+  btn.addEventListener('click', async () => {
+    btn.disabled = true;
+    if (status) status.style.display = 'inline-flex';
+    out.style.display = 'block';
+    out.textContent = 'deriving device fingerprint...';
+
+    const t0 = performance.now();
+    const result = await runHwkeyDemo();
+    const dt = (performance.now() - t0).toFixed(1);
+
+    if (!result.ok) {
+      out.innerHTML = `<span style="color: var(--ol-rose);">ol_hwkey unavailable: ${escapeHtml(result.error || 'unknown')}</span>`;
+    } else {
+      const visitLine = result.firstVisit
+        ? `<span class="g">first visit -> minted a fresh device root</span>`
+        : `<span class="g">return visit -> device root recalled from localStorage</span>`;
+      const recogLine = result.fingerprintMatches === null
+        ? `<span class="d">no stored fingerprint yet; saved this one for next visit</span>`
+        : result.fingerprintMatches
+          ? `<span class="g">stored fingerprint matches -> we recognize you</span>`
+          : `<span class="ol-rose">stored fingerprint MISMATCH (device root was rotated?)</span>`;
+      const lines = [
+        `<span class="d">// ol_hwkey TOFU software fallback, ${dt} ms in your tab</span>`,
+        `<span class="c">crate</span>             ol_hwkey v${escapeHtml(result.version)}`,
+        `<span class="c">visit state</span>       ${visitLine}`,
+        `<span class="c">device fingerprint</span>  ${escapeHtml(result.pkHex.slice(0, 32))}... (${result.pkLen} bytes)`,
+        `<span class="c">recognition</span>       ${recogLine}`,
+        ``,
+        `<span class="c">re-derive match</span>   ` + (result.rederiveMatch
+          ? `<span class="g">yes (BLAKE3 is deterministic)</span>`
+          : `<span class="ol-rose">BUG: re-derive produced different bytes</span>`),
+        ``,
+        `<span class="c">attacker key</span>      ${escapeHtml(result.attackerKeyHex.slice(0, 32))}...`,
+        `<span class="c">tofu reject</span>       ` + (result.tofuRejectAttack
+          ? `<span class="g">yes (constant-time compare via subtle::ConstantTimeEq)</span>`
+          : `<span class="ol-rose">BUG: attacker key was accepted</span>`),
+        ``,
+        `<span class="d">// the daemon backs this with Secure Enclave / StrongBox / TPM</span>`,
+        `<span class="d">// on real hardware. The TOFU fallback is the always-available</span>`,
+        `<span class="d">// baseline. Nothing was sent to any server; your fingerprint</span>`,
+        `<span class="d">// lives in this origin's localStorage only.</span>`,
+      ];
+      out.innerHTML = lines.join('\n');
+    }
+    if (status) status.style.display = 'none';
+    btn.disabled = false;
+  });
+}
+
+// ---------------------------------------------------------------------------
 // 9b. PRIVATE-ROUTE DEMO BUTTON  (/download/ page)
 //
 // Clicking the button runs a real ol_onion 3-hop wrap+peel in the browser
@@ -2362,6 +2479,7 @@ async function startCapAdvertSync() {
   wirePqSigDemo();             // /security/ Ed25519+ML-DSA-65 sign+verify demo
   wireThresholdDemo();         // /security/ Shamir K-of-N split+recover demo
   wireRatchetDemo();           // /security/ forward-secret ratchet demo
+  wireHwkeyDemo();             // /security/ TOFU device-fingerprint demo
   startMeshSolverColoring();   // /mesh/ peer-dot coloring via real solver
   wireTelemetry();             // ?-key system-telemetry overlay
   startCapAdvertSync();        // /features/ live cap-advert banner

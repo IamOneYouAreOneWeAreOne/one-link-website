@@ -179,8 +179,9 @@ The "blow socks off" feature set, with shipped status as of 2026-05-17 + r7.
 | 25 | CSP + HSTS + SRI + signed-manifest defense-in-depth | **shipped** | worker.js `PRIVACY_HEADERS` + scripts/inject-sri.py | §7.5, §7.7 |
 | 26 | Per-IP token-bucket rate limit on /api/share | **shipped** | `ShareRate` Durable Object | §3.2.3 |
 | 27 | Per-chunk forward-secret ratchet demo | **shipped** | `ol_ratchet` WASM + /security/ "walk the ratchet" | §6.5 |
+| 15 | Hardware-key TOFU recognition (software fallback) | **shipped** | `ol_hwkey` WASM (TofuStore) + /security/ "mint or recognize" | §6.5 |
 
-**Summary as of r26**: 19 fully shipped, 2 partial, 6 deferred. Shipped items can be verified by visiting the site in a modern browser today. Partial items have the engine in place but the UI hook is incomplete. Deferred items remain honest "next push" candidates.
+**Summary as of r27**: 20 fully shipped, 2 partial, 5 deferred. Shipped items can be verified by visiting the site in a modern browser today. Partial items have the engine in place but the UI hook is incomplete. Deferred items remain honest "next push" candidates.
 
 ---
 
@@ -1267,7 +1268,7 @@ Items 1-7 from earlier revisions have all SHIPPED. New "next push" set, dependen
 
 1. **Real `/api/session` hybrid handshake (WASM-in-Worker)**: replace the stub. Compile `ol_pqkem` for the Cloudflare Workers runtime, expose server X25519 + ML-KEM-768 pubkeys at `/api/session`, browser already has the WASM for the other half. Flips the `signed: false` flag in the capability advert.
 2. ~~**Double Ratchet forward-secrecy demo** via new `ol_ratchet` WASM.~~ **SHIPPED r26** (`ol_ratchet_wasm` + /security/ "walk the ratchet six steps").
-3. **Hardware-key TOFU recognition** via new `ol_hwkey` WASM. Browser remembers "you've been here before" via a TOFU registration of the in-tab WebAuthn-derived key (no server identifier).
+3. ~~**Hardware-key TOFU recognition** via new `ol_hwkey` WASM.~~ **SHIPPED r27** (`ol_hwkey_wasm` TofuStore + /security/ "mint or recognize this device"). Software-fallback TOFU; hardware backends (Secure Enclave / StrongBox / TPM) remain daemon-only.
 4. **Live relay registry** in `RELAY_KV`: real (anonymized) node counts replace the topology stub. `/api/topology` returns actual aggregated data from the running One Link demo daemon.
 5. **Real attestation chain documents** for the current Windows release: replace the sample attestation with a real one minted from the offline build rig + `ol_pqsig` hybrid signature over the artifact hash.
 6. **Mesh-page WGSL coloring** beyond steady-state: animate the τ_c field with each new peer joining (uses the existing `solveSteadyHelmholtz` already wired).
@@ -1301,6 +1302,7 @@ Every alien-tech claim made on the public surface, mapped to the code that backs
 | "Ed25519 + ML-DSA-65 hybrid signatures" | [ol_pqsig]($HOME/Projects/Coherence/One_link/native/ol_pqsig) + [ol_pqsig_wasm](live/wasm/ol_pqsig_wasm/) | Visit `/security/` → click "Sign a message with Ed25519 + ML-DSA-65". DevTools → Network → see `ol_pqsig_bg.wasm` load (257 KB). Output shows fresh 1984-byte hybrid pubkey + 3373-byte hybrid signature + verify-clean + reject-tampered-msg + reject-tampered-PQ-half. |
 | "Threshold recovery splits your identity across friends" | [ol_threshold_recovery]($HOME/Projects/Coherence/One_link/native/ol_threshold_recovery) + [ol_threshold_recovery_wasm](live/wasm/ol_threshold_recovery_wasm/) | Visit `/security/` → click "Split and recover a secret with 3-of-5 Shamir". Generates fresh 32-byte secret, splits into 5 shares, recovers from any 3, refuses with only 2. Real Shamir over GF(2^8). |
 | "Every message gets a fresh key. Forward secrecy." | [ol_ratchet]($HOME/Projects/Coherence/One_link/native/ol_ratchet) + [ol_ratchet_wasm](live/wasm/ol_ratchet_wasm/) | Visit `/security/` → click "Walk the ratchet six steps". Generates fresh chain key, derives 6 sequential message keys (all 32 bytes, all distinct), proves rewind refusal + skip-cap (MAX_SKIP_STEPS = 65,536 DoS guard). |
+| "Your device is recognized without us knowing who you are." | [ol_hwkey]($HOME/Projects/Coherence/One_link/native/ol_hwkey) (TofuStore) + [ol_hwkey_wasm](live/wasm/ol_hwkey_wasm/) | Visit `/security/` → click "Mint or recognize this device". First visit mints a 32-byte device root in localStorage; subsequent visits recognize it via deterministic BLAKE3 derivation. Attempted impersonation with random key gets rejected via constant-time `subtle::ConstantTimeEq`. |
 | "Sphinx Coherence onion routing" | [ol_onion]($HOME/Projects/Coherence/One_link/native/ol_onion) | `ol_onion_wasm.liveDemoRoundTrip(payload)` runs real 3-hop wrap+peel. |
 | "Real Helmholtz physics on GPU" | [scripts/emit-wgsl.py](scripts/emit-wgsl.py) → coherence_lang wgsl_emitter | The shader at /live/shaders/coherence-field.wgsl has `coh_oscillator_force`, `coh_tau`, real PDE solver compute pass. |
 | "10,000 peers in 1.08 ms" | [ol_coherence_field]($HOME/Projects/Coherence/One_link/native/ol_coherence_field) benchmark output | Cited from daemon benches. Browser runs the same solver via `ol_coherence_field_wasm`. |

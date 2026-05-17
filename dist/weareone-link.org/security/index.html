@@ -205,6 +205,28 @@
   </section>
 
   <section class="section">
+    <div class="container">
+      <span class="kicker">Trust on first use</span>
+      <h2>Your device is recognized <span class="grad">without us knowing who you are.</span></h2>
+      <p class="lede" style="max-width: 64ch;">
+        One click runs <code style="font-family: var(--ol-mono); color: var(--ol-cyan);">ol_hwkey</code> (TOFU software fallback, same trait surface the daemon uses with Secure Enclave / StrongBox / TPM on real hardware). Your browser mints a 32-byte device root on first visit and stores it locally. The button derives a deterministic device fingerprint from that root, then simulates an impersonation attempt with a random key and shows the TOFU store reject it in constant time. No identifier is sent to any server.
+      </p>
+
+      <div class="ol-private-demo" style="margin-top: 1.5rem;">
+        <button type="button" id="ol-hwkey-btn" class="btn btn-primary">
+          Mint or recognize this device
+          <span class="arr" aria-hidden="true">&rarr;</span>
+        </button>
+        <span class="ol-status" id="ol-hwkey-status" style="margin-left: 0.7rem; display: none;">
+          <span class="dot"></span>
+          <span>computing</span>
+        </span>
+        <pre class="ol-code" id="ol-hwkey-out" style="margin-top: 1rem; display: none;"></pre>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
     <div class="container" style="text-align: center;">
       <a href="/download/" class="btn btn-primary btn-large">Get One Link <span class="arr">&rarr;</span></a>
       <a href="/builders/" class="btn btn-ghost btn-large">Read the source</a>
@@ -231,6 +253,6 @@
   </div>
 </footer>
 
-<script type="module" src="/live/bridge.js" integrity="sha384-tvBwibH2Z4xnCl4toWQjI+2fUZtD7qXV/xZEzBYYl0yrEpZOGw5VH4b7jdBg1jGr" crossorigin="anonymous"></script>
+<script type="module" src="/live/bridge.js" integrity="sha384-iypSlJ2uflkqMbPFRCkLzLdJFPo4Bmhw9Uch4tTRISe9cxUUTjlLxltQOqvPw/ld" crossorigin="anonymous"></script>
 </body>
 </html>
