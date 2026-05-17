@@ -1,5 +1,5 @@
 {
-  "version": "0.21.0-alpha.0+r14",
+  "version": "0.21.0-alpha.0+r15",
   "issued_at": "2026-05-17T00:00:00Z",
   "signed_by": "ed25519-pub-PLACEHOLDER",
   "signature": "ed25519-PLACEHOLDER",
@@ -7,7 +7,7 @@
   "assets": {
     "/css/one-link.css": "sha256-2728619ec26954332a07f3c87eb8c7fb4901e1fdc55c39b35f590c7883771f5f",
     "/css/immersive.css": "sha256-78ec97c20140ca61c5d9f32f8719fafcfd364f0a477d717fa06e427f1bca6d1f",
-    "/live/bridge.js": "sha256-508b64db6b6df9fde5cef5619c505c18de74c6ab253375339d80821837b8983b",
+    "/live/bridge.js": "sha256-838cc266eec62d713b6f50b96620604795d4afd803d2dd055052223b3f81dbd8",
     "/live/wasm/ol_pair_qr.js": "sha256-c28b5a72ad92d6485ac55f5fe655ec8015d257999fbd270319f71641abf45035",
     "/live/wasm/ol_pair_qr_bg.wasm": "sha256-68e0144d3034c2db874f7bb4fe5e1a286a9bd8eeda046b56b39d0e44c45e4902",
     "/live/wasm/ol_pqkem.js": "sha256-b09dedc85f9b82beba22cf8654a94eaeb75ab281bed860aa44ca3a2ea34aac13",
@@ -21,6 +21,6 @@
     "/images/logo-128.png": "sha256-661b99db462d13319db4734d0d8e8d817de109c63d98be6faa19a9165e89ac12",
     "/images/apple-touch-icon.png": "sha256-661b99db462d13319db4734d0d8e8d817de109c63d98be6faa19a9165e89ac12",
     "/sw.js": "sha256-19fd7cf70b3a38c1077b9ee30f005569852c8e51208f7ad5314a86c4360a85d5",
-    "/index.html": "sha256-c35f46a943e29fcf19e76ee73a174d431bf0a2c69434c83dd4df6771d3ed515c"
+    "/index.html": "sha256-62b4a08112395847605f8c259b88c54cf49401bd67b9d5539d25d60702991cd7"
   }
 }

@@ -434,27 +434,45 @@ export class MeshPresence {
       // it to the named recipient if they're still connected, drops it
       // otherwise. No persistence, no history server-side.
       // -------------------------------------------------------------------
+      // E2EE handshake transport (DO never reads the payload bytes):
+      //   chat-request  carries the Inviter's signed Invite bytes
+      //   chat-accept   carries the Scanner's PairResponse bytes
+      //   chat-confirm  carries the Inviter's PairConfirm bytes
+      // After confirm, both clients hold the same 32-byte chain key
+      // and seal every subsequent chat-msg with AES-GCM-256.
       case "chat-request":
       case "chat-accept":
+      case "chat-confirm":
       case "chat-decline":
       case "chat-leave": {
         const target = this.sessions.get(msg.to);
         if (target && msg.to !== sessionId) {
           try {
-            target.ws.send(JSON.stringify({ type: msg.type, from: sessionId }));
+            // Pass through invite_hex / response_hex / confirm_hex blindly.
+            // The DO does NOT parse them; it only forwards opaque bytes.
+            const out = { type: msg.type, from: sessionId };
+            if (typeof msg.invite_hex   === "string") out.invite_hex   = msg.invite_hex.slice(0, 4096);
+            if (typeof msg.response_hex === "string") out.response_hex = msg.response_hex.slice(0, 4096);
+            if (typeof msg.confirm_hex  === "string") out.confirm_hex  = msg.confirm_hex.slice(0, 4096);
+            target.ws.send(JSON.stringify(out));
           } catch {}
         }
         break;
       }
+
+      // Encrypted message frame: { iv_b64, ct_b64 }. The DO forwards
+      // verbatim. It cannot decrypt; the key never touches the server.
       case "chat-msg": {
         const target = this.sessions.get(msg.to);
-        if (target && msg.to !== sessionId && typeof msg.text === "string") {
-          const text = msg.text.slice(0, 280);
+        if (target && msg.to !== sessionId
+            && typeof msg.iv_b64 === "string"
+            && typeof msg.ct_b64 === "string") {
           try {
             target.ws.send(JSON.stringify({
               type: "chat-msg",
               from: sessionId,
-              text,
+              iv_b64: msg.iv_b64.slice(0, 64),
+              ct_b64: msg.ct_b64.slice(0, 2048),
               ts: Date.now(),
             }));
           } catch {}

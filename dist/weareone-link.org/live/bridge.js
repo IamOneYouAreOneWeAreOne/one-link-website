@@ -1135,11 +1135,12 @@ function startPresence() {
           flashIncomingPing(msg.from);
           break;
         }
-        case 'chat-request':  handleChatRequest(msg.from); break;
-        case 'chat-accept':   handleChatAccept(msg.from);  break;
+        case 'chat-request':  handleChatRequest(msg.from, msg); break;
+        case 'chat-accept':   handleChatAccept(msg.from, msg);  break;
+        case 'chat-confirm':  handleChatConfirm(msg.from, msg); break;
         case 'chat-decline':  handleChatDecline(msg.from); break;
         case 'chat-leave':    handleChatLeave(msg.from);   break;
-        case 'chat-msg':      handleChatMsg(msg.from, msg.text, msg.ts); break;
+        case 'chat-msg':      handleChatMsg(msg.from, msg);     break;
       }
     });
 
@@ -1330,9 +1331,68 @@ function flashIncomingPing(fromId) {
 // ---------------------------------------------------------------------------
 
 const chat = {
-  active: null,           // { peerId, state, hue, label }
-  pendingRequest: null,   // { peerId, hue, label } if someone asked us
+  active: null,           // { peerId, state, hue, label, role, key, sas, inviter, scanner, inviteHex }
+  pendingRequest: null,   // { peerId, hue, label, inviteHex }
+  pqModule: null,         // lazy-loaded ol_pair_qr WASM module
 };
+
+// ---------- E2EE helpers (WebCrypto AES-GCM-256 over the ol_pair_qr chain key) ----------
+
+async function ensurePqModule() {
+  if (chat.pqModule) return chat.pqModule;
+  const m = await import('/live/wasm/ol_pair_qr.js');
+  await m.default({ module_or_path: '/live/wasm/ol_pair_qr_bg.wasm' });
+  chat.pqModule = m;
+  return m;
+}
+
+async function importChatKey(chainKeyBytes) {
+  // Use the 32-byte ol_pair_qr chain key directly as the AES-GCM-256 key.
+  // ChaCha20-Poly1305 isn't in WebCrypto's standard surface; AES-GCM is.
+  // Same strength; same one-key-per-session model.
+  return await crypto.subtle.importKey(
+    'raw',
+    chainKeyBytes,
+    { name: 'AES-GCM' },
+    false,
+    ['encrypt', 'decrypt']
+  );
+}
+
+function b64encode(u8) {
+  let s = '';
+  for (let i = 0; i < u8.length; i++) s += String.fromCharCode(u8[i]);
+  return btoa(s);
+}
+function b64decode(s) {
+  const bin = atob(s);
+  const u8 = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) u8[i] = bin.charCodeAt(i);
+  return u8;
+}
+function hexEncode(u8) {
+  return Array.from(u8, b => b.toString(16).padStart(2, '0')).join('');
+}
+function hexDecode(s) {
+  const out = new Uint8Array(s.length / 2);
+  for (let i = 0; i < out.length; i++) {
+    out[i] = parseInt(s.substr(i * 2, 2), 16);
+  }
+  return out;
+}
+
+async function sealChatText(key, plaintext) {
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const pt = new TextEncoder().encode(plaintext);
+  const ct = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, pt);
+  return { iv_b64: b64encode(iv), ct_b64: b64encode(new Uint8Array(ct)) };
+}
+async function openChatText(key, iv_b64, ct_b64) {
+  const iv = b64decode(iv_b64);
+  const ct = b64decode(ct_b64);
+  const pt = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, ct);
+  return new TextDecoder().decode(pt);
+}
 
 function chatPanelEls() {
   return {
@@ -1397,24 +1457,43 @@ function sendChatFrame(type, peerId, extra) {
   } catch { return false; }
 }
 
-function startChatWith(peerId) {
+async function startChatWith(peerId) {
   if (peerId === presence.selfId) return;
-  // If already in chat with someone else, drop it first.
   if (chat.active && chat.active.peerId !== peerId) {
     sendChatFrame('chat-leave', chat.active.peerId);
   }
-  chat.active = { peerId, state: 'requesting', hue: peerHue(peerId), label: peerLabel(peerId) };
+  // Inviter side. Build a real ol_pair_qr Invite + send invite bytes
+  // alongside the chat-request so the recipient can scan immediately
+  // and complete a real handshake instead of agreeing in plaintext.
+  let inviter;
+  try {
+    const m = await ensurePqModule();
+    inviter = new m.OlInviter(1_900_000_000, `chat:${presence.selfId?.slice(0, 8) || 'anon'}`);
+  } catch (e) {
+    console.debug('[chat] inviter init failed', e?.message);
+    return;
+  }
+  chat.active = {
+    peerId, state: 'requesting', hue: peerHue(peerId), label: peerLabel(peerId),
+    role: 'inviter', inviter, key: null, sas: null,
+  };
   openChatPanel(peerId);
-  sendChatFrame('chat-request', peerId);
+  sendChatFrame('chat-request', peerId, { invite_hex: hexEncode(inviter.inviteBytes) });
 }
 
-function handleChatRequest(fromId) {
-  // Someone is asking us to chat. If we're already in a chat, auto-decline.
+async function handleChatRequest(fromId, msg) {
   if (chat.active) {
     sendChatFrame('chat-decline', fromId);
     return;
   }
-  chat.pendingRequest = { peerId: fromId, hue: peerHue(fromId), label: peerLabel(fromId) };
+  if (!msg || typeof msg.invite_hex !== 'string') {
+    sendChatFrame('chat-decline', fromId);
+    return;
+  }
+  chat.pendingRequest = {
+    peerId: fromId, hue: peerHue(fromId), label: peerLabel(fromId),
+    inviteHex: msg.invite_hex,
+  };
   const els = chatPanelEls();
   if (!els.toast) return;
   els.toast.hidden = false;
@@ -1424,7 +1503,6 @@ function handleChatRequest(fromId) {
     els.toastDot.style.background = `radial-gradient(circle at 35% 30%, #fff 0%, hsla(${hue}, 95%, 75%, 0.9) 40%, hsla(${hue}, 60%, 35%, 0.25) 80%, transparent 100%)`;
     els.toastDot.style.boxShadow = `0 0 14px hsla(${hue}, 95%, 70%, 0.8)`;
   }
-  // Auto-decline after 25 seconds.
   clearTimeout(chat._toastTimer);
   chat._toastTimer = setTimeout(() => {
     if (chat.pendingRequest?.peerId === fromId) {
@@ -1433,38 +1511,87 @@ function handleChatRequest(fromId) {
   }, 25000);
 }
 
-function acceptOrDeclineRequest(accept) {
+async function acceptOrDeclineRequest(accept) {
   const els = chatPanelEls();
   const req = chat.pendingRequest;
   if (!req) return;
   clearTimeout(chat._toastTimer);
   chat.pendingRequest = null;
   if (els.toast) els.toast.hidden = true;
-  if (accept) {
-    chat.active = { peerId: req.peerId, state: 'open', hue: req.hue, label: req.label };
-    openChatPanel(req.peerId);
-    sendChatFrame('chat-accept', req.peerId);
-    enableChatInput(true);
-    setChatState('open', 'is-live');
-    appendChatMsg('they sent a request; you accepted', 'system');
-  } else {
+  if (!accept) {
     sendChatFrame('chat-decline', req.peerId);
+    return;
+  }
+  // Scanner side. Verify the invite, build a PairResponse, hand the
+  // response bytes back to the inviter via chat-accept. Hold the scanner
+  // instance so we can complete after chat-confirm arrives.
+  let scanner;
+  try {
+    const m = await ensurePqModule();
+    scanner = m.OlScanner.scan(hexDecode(req.inviteHex), Math.floor(Date.now() / 1000));
+  } catch (e) {
+    console.debug('[chat] scanner init failed', e?.message);
+    sendChatFrame('chat-decline', req.peerId);
+    return;
+  }
+  chat.active = {
+    peerId: req.peerId, state: 'handshake', hue: req.hue, label: req.label,
+    role: 'scanner', scanner, key: null, sas: scanner.sas,
+  };
+  openChatPanel(req.peerId);
+  setChatState('handshake', 'is-pending');
+  appendChatMsg('verifying handshake...', 'system');
+  sendChatFrame('chat-accept', req.peerId, { response_hex: hexEncode(scanner.responseBytes) });
+}
+
+async function handleChatAccept(fromId, msg) {
+  if (!chat.active || chat.active.peerId !== fromId || chat.active.role !== 'inviter') return;
+  if (!msg || typeof msg.response_hex !== 'string' || !chat.active.inviter) return;
+  try {
+    const sas = chat.active.inviter.receiveResponse(hexDecode(msg.response_hex));
+    chat.active.sas = sas;
+    const [confirmBytes, chainKey] = chat.active.inviter.confirm();
+    chat.active.key = await importChatKey(chainKey);
+    chat.active.state = 'open';
+    setChatState(sasShort(sas), 'is-live');
+    appendChatMsg('end-to-end encrypted. SAS: ' + sas, 'system');
+    enableChatInput(true);
+    sendChatFrame('chat-confirm', fromId, { confirm_hex: hexEncode(confirmBytes) });
+  } catch (e) {
+    appendChatMsg('handshake failed: ' + (e?.message || String(e)), 'system');
+    setChatState('failed', 'is-closed');
   }
 }
 
-function handleChatAccept(fromId) {
-  if (!chat.active || chat.active.peerId !== fromId) return;
-  chat.active.state = 'open';
-  enableChatInput(true);
-  setChatState('open', 'is-live');
-  appendChatMsg('they accepted', 'system');
+async function handleChatConfirm(fromId, msg) {
+  if (!chat.active || chat.active.peerId !== fromId || chat.active.role !== 'scanner') return;
+  if (!msg || typeof msg.confirm_hex !== 'string' || !chat.active.scanner) return;
+  try {
+    const chainKey = chat.active.scanner.receiveConfirm(hexDecode(msg.confirm_hex));
+    chat.active.key = await importChatKey(chainKey);
+    chat.active.state = 'open';
+    const sas = chat.active.sas; // already known scanner-side
+    setChatState(sasShort(sas), 'is-live');
+    appendChatMsg('end-to-end encrypted. SAS: ' + sas, 'system');
+    enableChatInput(true);
+  } catch (e) {
+    appendChatMsg('handshake failed: ' + (e?.message || String(e)), 'system');
+    setChatState('failed', 'is-closed');
+  }
 }
+
+function sasShort(sas) {
+  // Truncate to first 3 of 5 words for the header pill (full SAS in system msg).
+  if (typeof sas !== 'string') return 'open';
+  const words = sas.split(' ').slice(0, 3).join(' ');
+  return words || 'open';
+}
+
 function handleChatDecline(fromId) {
   if (!chat.active || chat.active.peerId !== fromId) return;
   setChatState('declined', 'is-closed');
   appendChatMsg('they ignored the request', 'system');
   enableChatInput(false);
-  // Auto-close after 4s.
   setTimeout(() => {
     if (chat.active?.peerId === fromId && chat.active?.state !== 'open') closeChatPanelLocal();
   }, 4000);
@@ -1475,11 +1602,17 @@ function handleChatLeave(fromId) {
   appendChatMsg('they left the chat', 'system');
   enableChatInput(false);
   chat.active.state = 'closed';
+  chat.active.key = null;
 }
-function handleChatMsg(fromId, text, ts) {
+async function handleChatMsg(fromId, msg) {
   if (!chat.active || chat.active.peerId !== fromId) return;
-  if (typeof text !== 'string' || !text) return;
-  appendChatMsg(text.slice(0, 280), 'other');
+  if (!chat.active.key || !msg?.iv_b64 || !msg?.ct_b64) return;
+  try {
+    const text = await openChatText(chat.active.key, msg.iv_b64, msg.ct_b64);
+    appendChatMsg(text.slice(0, 280), 'other');
+  } catch (e) {
+    appendChatMsg('(could not decrypt: ' + (e?.message || 'unknown') + ')', 'system');
+  }
 }
 
 function appendChatMsg(text, kind) {
@@ -1504,14 +1637,19 @@ function enableChatInput(on) {
 function wireChat() {
   const els = chatPanelEls();
   if (els.form) {
-    els.form.addEventListener('submit', (e) => {
+    els.form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      if (!chat.active || chat.active.state !== 'open') return;
+      if (!chat.active || chat.active.state !== 'open' || !chat.active.key) return;
       const text = (els.input.value || '').trim().slice(0, 280);
       if (!text) return;
-      if (sendChatFrame('chat-msg', chat.active.peerId, { text })) {
-        appendChatMsg(text, 'self');
-        els.input.value = '';
+      try {
+        const sealed = await sealChatText(chat.active.key, text);
+        if (sendChatFrame('chat-msg', chat.active.peerId, sealed)) {
+          appendChatMsg(text, 'self');
+          els.input.value = '';
+        }
+      } catch (err) {
+        appendChatMsg('(send failed: ' + (err?.message || 'unknown') + ')', 'system');
       }
     });
   }
