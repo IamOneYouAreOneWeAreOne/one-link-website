@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="x-emitted-by" content="coherence-lang/1.0.3 one_link.ssg.build">
+  <!-- Route: /share/ / source: pipeline/ssg/src/one_link_build.cl -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Share a file &mdash; One Link</title>
+  <meta name="description" content="Drop a file. Get a one-shot URL. Only the person you send it to can read it. No accounts, no upload to anyone's cloud, the key never touches our server.">
+  <link rel="canonical" href="https://weareone-link.org/share/">
+  <meta name="theme-color" content="#04060b">
+  <meta name="color-scheme" content="dark">
+  <meta name="robots" content="noindex">
+
+  <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="128x128" href="/images/logo-128.png">
+  <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+  <link rel="stylesheet" href="/css/one-link.css">
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to content</a>
+
+<header class="site-header" role="banner">
+  <div class="container">
+    <a href="/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
+    <input type="checkbox" id="nav-toggle" class="nav-toggle-input">
+    <label for="nav-toggle" class="nav-toggle" aria-label="Open navigation" role="button" tabindex="0">&#9776;</label>
+    <nav class="site-nav" aria-label="Main">
+      <a href="/how-it-works/">How it works</a>
+      <a href="/features/">Features</a>
+      <a href="/security/">Security</a>
+      <a href="/mesh/">Live mesh</a>
+      <a href="/share/">Share</a>
+      <a href="/about/">About</a>
+      <a href="/download/" class="cta-get">Get One Link</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- ============================================================ SENDER -->
+  <section class="hero" id="ol-share-sender" style="padding-bottom: 1rem;">
+    <div class="container">
+      <span class="we-are-one">Share a file</span>
+      <h1>Drop a file. Send the link. <span class="grad">Only they can read it.</span></h1>
+      <p class="lede">
+        Drop any file up to 25 MB. We encrypt it in your browser, store the ciphertext for 24 hours, and give you a link. The key lives in the link itself. We never see it. The first person to open the link gets the file, then it is gone.
+      </p>
+
+      <!-- Drop zone -->
+      <div class="ol-drop-zone" id="ol-drop-zone" tabindex="0" role="button" aria-label="Drop a file or click to choose">
+        <input type="file" id="ol-share-file" hidden>
+        <div class="ol-drop-icon" aria-hidden="true">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="17 8 12 3 7 8"/>
+            <line x1="12" y1="3" x2="12" y2="15"/>
+          </svg>
+        </div>
+        <div class="ol-drop-text">
+          <strong>Drop a file here</strong>
+          <span>or tap to choose. Up to 25 MB.</span>
+        </div>
+      </div>
+
+      <!-- Progress / result -->
+      <div class="ol-share-status" id="ol-share-status" hidden></div>
+
+      <!-- "What just happened" honesty block -->
+      <details class="ol-proof" id="ol-share-proof" hidden>
+        <summary>What just happened, under the hood</summary>
+        <div class="ol-proof-body">
+          <dl id="ol-share-proof-dl"></dl>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ============================================================ RECEIVER -->
+  <section class="hero" id="ol-share-receiver" hidden style="padding-bottom: 1rem;">
+    <div class="container">
+      <span class="we-are-one">Incoming file</span>
+      <h1 id="ol-recv-headline">Someone sent you something.</h1>
+      <p class="lede" id="ol-recv-lede">
+        The file was encrypted in their browser. The key is in your URL, never on our server. Click to decrypt and download. The file deletes itself after this.
+      </p>
+      <div class="cta-row">
+        <button class="btn btn-primary btn-large" id="ol-recv-download" type="button">
+          Download and decrypt <span class="arr">&rarr;</span>
+        </button>
+      </div>
+      <div class="ol-share-status" id="ol-recv-status" hidden></div>
+    </div>
+  </section>
+
+  <!-- ============================================================ EXPLAINER -->
+  <section class="section">
+    <div class="container">
+      <div class="ol-grid ol-grid-3">
+        <article class="ol-tile">
+          <h3>Encrypted before it leaves.</h3>
+          <p>Your browser generates a fresh 256-bit AES-GCM key. The file is sealed in your tab. The ciphertext goes to our server. The key never does.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>The key is in the link.</h3>
+          <p>The URL we give you has the key in the fragment (the bit after #). Browsers never send fragments to servers. Only the person you send the link to can derive it.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Self-destructs.</h3>
+          <p>The first person to open the link gets the file, then it deletes from our server. If nobody opens it, it deletes in 24 hours anyway. Nothing persists.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight">
+    <div class="container" style="text-align: center;">
+      <p style="color: var(--ol-text-dim); font-family: var(--ol-mono); font-size: 0.85rem;">
+        This is what One Link does, made obvious in a browser. Get One Link
+        for the same on every device, without the size limit, without us in
+        the middle at all.
+      </p>
+      <a href="/download/" class="btn btn-primary btn-large" style="margin-top: 1rem;">
+        Get One Link <span class="arr">&rarr;</span>
+      </a>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer" role="contentinfo">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a href="/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
+        <p class="footer-tag">A free, private network for messages, files, and devices. Owned by no one. Belongs to everyone.</p>
+      </div>
+      <div><h4>Network</h4><ul><li><a href="/how-it-works/">How it works</a></li><li><a href="/features/">Features</a></li><li><a href="/mesh/">Live mesh</a></li></ul></div>
+      <div><h4>For you</h4><ul><li><a href="/download/">Get One Link</a></li><li><a href="/security/">Security</a></li><li><a href="/about/">About</a></li></ul></div>
+      <div><h4>For builders</h4><ul><li><a href="/builders/">Protocol &amp; source</a></li><li><a href="/download/source">Source archive</a></li><li><a href="/builders/#donate">Donate</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <span class="built-by">Built in the open. AGPL-3.0. <a href="/security/">No tracking, no analytics, no cookies.</a></span>
+      <span class="built-by">we are one</span>
+    </div>
+  </div>
+</footer>
+
+<script type="module" src="/live/bridge.js"></script>
+<script type="module" src="/live/share.js"></script>
+</body>
+</html>

@@ -461,6 +461,30 @@ export default {
     if (downloadMatch && request.method === "GET")
       return download(env, downloadMatch[1], request);
 
+    // ---------------------------------------------------------------
+    // SHARE-A-FILE (encrypted in-browser, one-shot, R2-backed)
+    // ---------------------------------------------------------------
+    // POST /api/share            -> store ciphertext, return { id, expires_at }
+    // GET  /api/share/:id        -> serve ciphertext, then delete
+    // GET  /share/:id            -> serve the /share/index.html page (the JS
+    //                                reads the id from the URL + key from the
+    //                                fragment, fetches, decrypts, downloads)
+    if (path === "/api/share" && request.method === "POST")
+      return shareUpload(env, request);
+    const shareApiMatch = path.match(/^\/api\/share\/([A-Za-z0-9_-]{8,32})$/);
+    if (shareApiMatch && request.method === "GET")
+      return shareDownload(env, shareApiMatch[1]);
+    const sharePathMatch = path.match(/^\/share\/([A-Za-z0-9_-]{8,32})\/?$/);
+    if (sharePathMatch) {
+      // Rewrite to the static /share/index.html so the JS module loads;
+      // the JS reads location.pathname to extract the id.
+      const rewriteUrl = new URL(request.url);
+      rewriteUrl.pathname = "/share/index.html";
+      const rewritten = new Request(rewriteUrl.toString(), request);
+      const res = await env.ASSETS.fetch(rewritten);
+      return applyHeaders(res);
+    }
+
     // Live presence WebSocket: all sessions share a single Durable Object
     // instance ("global") for the demo. Trivially shardable later by region.
     if (path === "/api/presence") {
@@ -480,6 +504,95 @@ export default {
     return applyHeaders(assetResponse);
   },
 };
+
+// -----------------------------------------------------------------------------
+// SHARE-A-FILE  (encrypted in-browser, one-shot, R2-backed)
+//
+// The server only ever sees ciphertext + a random object id. It never sees
+// the key (which lives in the URL fragment client-side) and never sees the
+// plaintext. R2 holds the ciphertext for 24h max; first successful GET
+// deletes the object.
+// -----------------------------------------------------------------------------
+const SHARE_MAX_BYTES   = 26 * 1024 * 1024;        // 26 MiB = 25 MiB plaintext + tag overhead
+const SHARE_TTL_MS      = 24 * 60 * 60 * 1000;     // 24h
+
+function shareRandomId() {
+  // 16 url-safe chars from crypto rng.
+  const buf = new Uint8Array(12);
+  crypto.getRandomValues(buf);
+  return btoa(String.fromCharCode(...buf))
+    .replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+
+async function shareUpload(env, request) {
+  if (!env.RELEASES) {
+    return json({ error: "R2 not bound" }, { status: 503 });
+  }
+  const ct = request.headers.get("Content-Type") || "";
+  if (!ct.includes("application/octet-stream")) {
+    return json({ error: "expected application/octet-stream" }, { status: 400 });
+  }
+  const lenHeader = parseInt(request.headers.get("Content-Length") || "0", 10);
+  if (lenHeader && lenHeader > SHARE_MAX_BYTES) {
+    return json({ error: "too large", max_bytes: SHARE_MAX_BYTES }, { status: 413 });
+  }
+
+  const body = await request.arrayBuffer();
+  if (body.byteLength === 0) {
+    return json({ error: "empty body" }, { status: 400 });
+  }
+  if (body.byteLength > SHARE_MAX_BYTES) {
+    return json({ error: "too large", max_bytes: SHARE_MAX_BYTES }, { status: 413 });
+  }
+
+  const id = shareRandomId();
+  const expiresAt = Date.now() + SHARE_TTL_MS;
+
+  try {
+    await env.RELEASES.put(`shares/${id}`, body, {
+      httpMetadata: { contentType: "application/octet-stream" },
+      customMetadata: {
+        expires_at: String(expiresAt),
+        created_at: String(Date.now()),
+      },
+    });
+  } catch (e) {
+    return json({ error: "store failed", detail: e?.message || String(e) }, { status: 500 });
+  }
+
+  return json({
+    id,
+    expires_at: new Date(expiresAt).toISOString(),
+    bytes: body.byteLength,
+    note: "one-shot: deletes on first download, or in 24 hours.",
+  });
+}
+
+async function shareDownload(env, id) {
+  if (!env.RELEASES) return json({ error: "R2 not bound" }, { status: 503 });
+  const key = `shares/${id}`;
+  const obj = await env.RELEASES.get(key);
+  if (!obj) return json({ error: "not found or already collected" }, { status: 404 });
+
+  // TTL enforcement (R2 has no native TTL; we check on read).
+  const expires = parseInt(obj.customMetadata?.expires_at || "0", 10);
+  if (expires && Date.now() > expires) {
+    await env.RELEASES.delete(key).catch(() => {});
+    return json({ error: "expired" }, { status: 410 });
+  }
+
+  const body = await obj.arrayBuffer();
+  // Delete BEFORE returning so a network mid-flight failure still means
+  // the object is gone (one-shot semantics).
+  await env.RELEASES.delete(key).catch(() => {});
+
+  const headers = new Headers();
+  headers.set("Content-Type", "application/octet-stream");
+  headers.set("Cache-Control", "no-store");
+  headers.set("X-Share-Bytes", String(body.byteLength));
+  for (const [k, v] of Object.entries(PRIVACY_HEADERS)) headers.set(k, v);
+  return new Response(body, { headers });
+}
 
 // -----------------------------------------------------------------------------
 // MeshPresence Durable Object

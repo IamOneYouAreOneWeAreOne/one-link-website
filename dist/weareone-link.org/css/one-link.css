@@ -639,6 +639,84 @@ main { position: relative; z-index: 1; }
   border-color: rgba(126, 234, 160, 0.28);
 }
 
+/* =============================================================================
+   SHARE-A-FILE  (/share/ page)
+   ========================================================================== */
+.ol-drop-zone {
+  margin-top: 1.5rem;
+  padding: 2.2rem 1.5rem;
+  border: 2px dashed var(--ol-line-bright);
+  border-radius: var(--ol-radius-xl);
+  background: rgba(8, 12, 20, 0.5);
+  text-align: center;
+  cursor: pointer;
+  transition: background 0.18s var(--ol-ease), border-color 0.18s var(--ol-ease), transform 0.18s var(--ol-ease);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.9rem;
+  max-width: 640px;
+}
+.ol-drop-zone:hover,
+.ol-drop-zone:focus-visible,
+.ol-drop-zone.is-hover {
+  background: rgba(110, 240, 244, 0.06);
+  border-color: var(--ol-cyan);
+  outline: none;
+  transform: translateY(-1px);
+}
+.ol-drop-icon {
+  color: var(--ol-cyan);
+  opacity: 0.85;
+}
+.ol-drop-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  color: var(--ol-text);
+}
+.ol-drop-text strong { font-size: 1.05rem; font-weight: 600; }
+.ol-drop-text span { color: var(--ol-text-soft); font-size: 0.92rem; }
+
+.ol-share-status {
+  margin-top: 1.4rem;
+  padding: 1rem 1.2rem;
+  background: rgba(8, 12, 20, 0.6);
+  border: 1px solid var(--ol-line);
+  border-radius: var(--ol-radius);
+  max-width: 640px;
+  font-family: var(--ol-mono);
+  font-size: 0.92rem;
+}
+.ol-share-pending { color: var(--ol-amber); }
+.ol-share-err { color: var(--ol-rose); }
+.ol-share-success-text { color: var(--ol-green); }
+
+.ol-share-success p { color: var(--ol-text); }
+.ol-share-url-row {
+  display: flex;
+  gap: 0.55rem;
+  align-items: stretch;
+}
+.ol-share-url {
+  flex: 1;
+  font-family: var(--ol-mono);
+  font-size: 0.82rem;
+  background: rgba(2, 4, 10, 0.7);
+  border: 1px solid var(--ol-line-bright);
+  border-radius: var(--ol-radius-sm);
+  padding: 0.55rem 0.8rem;
+  color: var(--ol-cyan);
+  word-break: break-all;
+  min-width: 0;
+}
+.ol-share-url:focus { outline: none; border-color: var(--ol-cyan); }
+.ol-share-meta {
+  margin-top: 0.7rem;
+  font-size: 0.78rem;
+  color: var(--ol-text-dim);
+}
+
 .ol-attest {
   font-family: var(--ol-mono);
   font-size: 0.78rem;
