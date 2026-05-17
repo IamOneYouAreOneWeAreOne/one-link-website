@@ -1736,67 +1736,13 @@ function wireAttestationVerify() {
   });
 }
 
-// ---------------------------------------------------------------------------
-// 9a-nov. MOUSE-REACTIVE COHERENCE FIELD  (cursor adds energy)
-//
-// The visitor moves their cursor; a faint, expanding ring blooms at the
-// cursor position and fades in 1.2s. Throttled to 1 ping per 60ms so even
-// fast mouse movement produces a coherent trail without flooding the DOM.
-// Pure CSS animation. No effect on the underlying WebGPU compute pipeline,
-// but it lets the visitor feel as if their presence is part of the field.
-// ---------------------------------------------------------------------------
-function startMouseReactiveField() {
-  // Respect reduced-motion + skip on touch-only devices.
-  const prefersReduced = window.matchMedia &&
-    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const isPrimaryTouch = window.matchMedia &&
-    window.matchMedia('(pointer: coarse)').matches;
-  if (prefersReduced || isPrimaryTouch) return;
-
-  let lastPing = 0;
-  const PING_THROTTLE_MS = 60;
-
-  window.addEventListener('pointermove', (ev) => {
-    if (ev.pointerType !== 'mouse') return;
-    const now = performance.now();
-    if (now - lastPing < PING_THROTTLE_MS) return;
-    lastPing = now;
-    spawnFieldPing(ev.clientX, ev.clientY);
-  }, { passive: true });
-
-  window.addEventListener('pointerdown', (ev) => {
-    if (ev.pointerType !== 'mouse') return;
-    spawnFieldPing(ev.clientX, ev.clientY, true);
-  }, { passive: true });
-}
-
-function spawnFieldPing(x, y, big) {
-  const d = document.createElement('div');
-  const size = big ? 120 : 64;
-  d.style.cssText = `
-    position: fixed;
-    left: ${x - size / 2}px; top: ${y - size / 2}px;
-    width: ${size}px; height: ${size}px;
-    border-radius: 50%;
-    pointer-events: none;
-    background: radial-gradient(circle,
-      hsla(178, 95%, 75%, ${big ? 0.45 : 0.22}) 0%,
-      hsla(178, 90%, 60%, ${big ? 0.18 : 0.06}) 35%,
-      transparent 70%);
-    transform: scale(0.4);
-    opacity: 1;
-    z-index: 1;
-    will-change: transform, opacity;
-    transition: transform ${big ? 1100 : 600}ms cubic-bezier(0.16, 1, 0.3, 1),
-                opacity ${big ? 1100 : 600}ms ease-out;
-  `;
-  document.body.appendChild(d);
-  requestAnimationFrame(() => {
-    d.style.transform = `scale(${big ? 2.4 : 1.6})`;
-    d.style.opacity = '0';
-  });
-  setTimeout(() => d.remove(), big ? 1200 : 700);
-}
+// MOUSE-REACTIVE COHERENCE FIELD - REMOVED.
+// An earlier iteration spawned faint cursor pings on every pointermove.
+// Pulled out to keep the site clean + confident, not literal-reactive.
+// The Helmholtz field background is enough; visual noise on top distracts
+// from reading. Click-pulse on the hero still exists (different code path,
+// already gated by the "click anywhere" affordance the visitor opts into).
+function startMouseReactiveField() { /* intentionally a no-op now */ }
 
 // ---------------------------------------------------------------------------
 // 9a-oct. LIVE CRYPTO-OP LOG  (cockpit strip, default-visible, bottom-right)
@@ -1810,6 +1756,9 @@ function spawnFieldPing(x, y, big) {
 // Toggle: click the strip to expand to last 8 ops; click again to collapse.
 // Press 'l' (without modifier, not inside an input) to hide entirely.
 // ---------------------------------------------------------------------------
+// Cockpit OFF by default. Press 'l' to reveal. Keeps the page clean +
+// "modern, confident, electric, never busy" while still making every
+// crypto operation observable for anyone curious enough to look.
 const __OL_OP_LOG = {
   entries: [],
   max: 50,
@@ -1817,7 +1766,7 @@ const __OL_OP_LOG = {
   el: null,
   inner: null,
   expanded: false,
-  hidden: false,
+  hidden: true,          // default hidden; 'l' key toggles
 };
 
 function olOpLogEnsureDom() {
