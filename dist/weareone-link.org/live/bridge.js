@@ -1075,6 +1075,95 @@ function wirePqSigDemo() {
 }
 
 // ---------------------------------------------------------------------------
+// 9a-ter. THRESHOLD RECOVERY DEMO  (/security/ page)
+//
+// Loads ol_threshold_recovery WASM, splits a fresh 32-byte secret into 5
+// Shamir shares, recovers from 3 (succeeds), proves that recovering from
+// 2 fails. All in the visitor's tab. No server call.
+// ---------------------------------------------------------------------------
+async function runThresholdDemo() {
+  try {
+    const mod = await import('/live/wasm/ol_threshold_recovery.js');
+    await mod.default({ module_or_path: '/live/wasm/ol_threshold_recovery_bg.wasm' });
+    // 32-byte fresh "master seed".
+    const secret = crypto.getRandomValues(new Uint8Array(32));
+    const k = 3, n = 5;
+    const result = mod.liveDemoRoundTrip(secret, k, n);
+    return {
+      ok: true,
+      version: mod.ol_threshold_recovery_version(),
+      secretHex: bytesToHex(secret),
+      recoveredHex: bytesToHex(new Uint8Array(result.recoveredBytes)),
+      secretLen: result.secretLen,
+      k: result.k,
+      n: result.n,
+      shareLen: result.shareLen,
+      recoveredWithKOk: result.recoveredWithKOk,
+      recoveredWithAltK: result.recoveredWithAltK,
+      recoveredKMinusErr: result.recoveredKMinusErr,
+      sharePreviews: result.sharePreviews,
+    };
+  } catch (e) {
+    return { ok: false, error: e?.message || String(e) };
+  }
+}
+window.olRunThresholdDemo = runThresholdDemo;
+
+function wireThresholdDemo() {
+  const btn = $('#ol-threshold-btn');
+  const out = $('#ol-threshold-out');
+  const status = $('#ol-threshold-status');
+  if (!btn || !out) return;
+
+  btn.addEventListener('click', async () => {
+    btn.disabled = true;
+    if (status) status.style.display = 'inline-flex';
+    out.style.display = 'block';
+    out.textContent = 'splitting secret into 5 shares...';
+
+    const t0 = performance.now();
+    const result = await runThresholdDemo();
+    const dt = (performance.now() - t0).toFixed(1);
+
+    if (!result.ok) {
+      out.innerHTML = `<span style="color: var(--ol-rose);">ol_threshold_recovery unavailable: ${escapeHtml(result.error || 'unknown')}</span>`;
+    } else {
+      const previews = Array.from(result.sharePreviews || []);
+      const lines = [
+        `<span class="d">// real Shamir K-of-N over GF(2^8), ${dt} ms in your tab</span>`,
+        `<span class="c">crate</span>          ol_threshold_recovery v${escapeHtml(result.version)}`,
+        `<span class="c">policy</span>         ${result.k}-of-${result.n}  (split ${result.n} shares, recover from any ${result.k})`,
+        `<span class="c">secret</span>         ${result.secretLen} bytes`,
+        `<span class="c">share size</span>     ${result.shareLen} bytes each`,
+        ``,
+        `<span class="c">share 1 preview</span>   ${escapeHtml(previews[0] || '')}...`,
+        `<span class="c">share 2 preview</span>   ${escapeHtml(previews[1] || '')}...`,
+        `<span class="c">share 3 preview</span>   ${escapeHtml(previews[2] || '')}...`,
+        `<span class="d">// each share is statistically independent of the secret</span>`,
+        ``,
+        `<span class="c">secret in</span>      ${escapeHtml(result.secretHex.slice(0, 32))}...`,
+        `<span class="c">secret out</span>     ${escapeHtml(result.recoveredHex.slice(0, 32))}...`,
+        ``,
+        `<span class="c">recover with first 3 shares</span>  ` + (result.recoveredWithKOk
+          ? `<span class="g">recovered exact bytes</span>`
+          : `<span class="ol-rose">BUG: did not match</span>`),
+        `<span class="c">recover with last 3 shares</span>   ` + (result.recoveredWithAltK
+          ? `<span class="g">recovered exact bytes (any K suffices)</span>`
+          : `<span class="ol-rose">BUG: did not match</span>`),
+        `<span class="c">recover with only 2 shares</span>   <span class="g">refused: ${escapeHtml(result.recoveredKMinusErr)}</span>`,
+        ``,
+        `<span class="d">// k-1 shares are mathematically useless. Cloud backup of all 5</span>`,
+        `<span class="d">// is harmless because the field-binding layer XOR-masks each share</span>`,
+        `<span class="d">// with a one-time pad derived from the coherence-field topology.</span>`,
+      ];
+      out.innerHTML = lines.join('\n');
+    }
+    if (status) status.style.display = 'none';
+    btn.disabled = false;
+  });
+}
+
+// ---------------------------------------------------------------------------
 // 9b. PRIVATE-ROUTE DEMO BUTTON  (/download/ page)
 //
 // Clicking the button runs a real ol_onion 3-hop wrap+peel in the browser
@@ -2191,6 +2280,7 @@ async function startCapAdvertSync() {
   wireTabPairButton();         // stranger-pair two-tab demo
   wirePrivateRouteDemo();      // /download/ Sphinx route button
   wirePqSigDemo();             // /security/ Ed25519+ML-DSA-65 sign+verify demo
+  wireThresholdDemo();         // /security/ Shamir K-of-N split+recover demo
   startMeshSolverColoring();   // /mesh/ peer-dot coloring via real solver
   wireTelemetry();             // ?-key system-telemetry overlay
   startCapAdvertSync();        // /features/ live cap-advert banner

@@ -1,0 +1,35 @@
+# =============================================================================
+# ol_threshold_recovery_wasm  -  WASM bindings for One Link threshold recovery
+# =============================================================================
+#
+# Wraps the production ol_threshold_recovery crate so the browser can split a
+# secret into N Shamir shares and reconstruct from any K of them, demonstrating
+# the threshold-recovery property visibly: "any 3 of these 5 shares recover
+# the secret; any 2 cannot."
+#
+# License: AGPL-3.0-or-later
+# =============================================================================
+
+[package]
+name        = "ol_threshold_recovery_wasm"
+version     = "0.21.0-alpha.0"
+edition     = "2021"
+publish     = false
+license     = "AGPL-3.0-or-later"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+ol_threshold_recovery = { path = "../../../../Coherence/One_link/native/ol_threshold_recovery" }
+
+getrandom = { version = "0.2", features = ["js"] }
+
+wasm-bindgen     = "=0.2.100"
+js-sys           = "0.3"
+console_error_panic_hook = { version = "0.1", optional = true }
+hex              = { workspace = true }
+
+[features]
+default     = ["debug-panic"]
+debug-panic = ["dep:console_error_panic_hook"]
