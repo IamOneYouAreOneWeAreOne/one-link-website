@@ -32,6 +32,7 @@ mkdir -p "${WASM_OUT}"
 crates=(
   "ol_pair_qr_wasm:ol_pair_qr"
   "ol_pqkem_wasm:ol_pqkem"
+  "ol_pqsig_wasm:ol_pqsig"
   "ol_onion_wasm:ol_onion"
   "ol_coherence_field_wasm:ol_coherence_field"
 )

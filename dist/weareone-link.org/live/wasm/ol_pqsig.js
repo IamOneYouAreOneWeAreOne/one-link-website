@@ -166,46 +166,10 @@ function debugString(val) {
     // TODO we could test for more things here, like `Set`s and `Map`s.
     return className;
 }
-/**
- * Initialize the WASM module. Optional; bridge.js calls it once at boot
- * so we get readable panic messages in the browser console during dev.
- */
-export function _init() {
-    wasm._init();
-}
 
-/**
- * Protocol domain separator (constant, exposed for visibility tools).
- * @returns {string}
- */
-export function ol_pair_qr_domain() {
-    let deferred1_0;
-    let deferred1_1;
-    try {
-        const ret = wasm.ol_pair_qr_domain();
-        deferred1_0 = ret[0];
-        deferred1_1 = ret[1];
-        return getStringFromWasm0(ret[0], ret[1]);
-    } finally {
-        wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
-    }
-}
-
-/**
- * Crate version of the underlying ol_pair_qr binding.
- * @returns {string}
- */
-export function ol_pair_qr_version() {
-    let deferred1_0;
-    let deferred1_1;
-    try {
-        const ret = wasm.ol_pair_qr_version();
-        deferred1_0 = ret[0];
-        deferred1_1 = ret[1];
-        return getStringFromWasm0(ret[0], ret[1]);
-    } finally {
-        wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
-    }
+function getArrayU8FromWasm0(ptr, len) {
+    ptr = ptr >>> 0;
+    return getUint8ArrayMemory0().subarray(ptr / 1, ptr / 1 + len);
 }
 
 function passArray8ToWasm0(arg, malloc) {
@@ -221,221 +185,120 @@ function takeFromExternrefTable0(idx) {
     return value;
 }
 /**
- * Encode arbitrary bytes into a QR code, returned as an inline-able SVG
- * string. Used to render the home-page invite QR so the displayed QR is
- * produced by the same toolchain that produces One Link wire frames.
- *
- * Error-correction level Q ("quartile", 25 percent damage tolerance) is
- * chosen to survive screen photography + viewing angle distortion.
- * @param {Uint8Array} payload
+ * @returns {PqSigSizes}
+ */
+export function pqSigSizes() {
+    const ret = wasm.pqSigSizes();
+    return PqSigSizes.__wrap(ret);
+}
+
+export function _init() {
+    wasm._init();
+}
+
+/**
+ * Verify a hybrid signature against a verifying key. Returns `true` only if
+ * BOTH the Ed25519 and ML-DSA-65 halves pass. Constant-time wrt which half
+ * fails (the underlying crate intentionally runs both verify paths).
+ * @param {Uint8Array} vk_bytes
+ * @param {Uint8Array} message
+ * @param {Uint8Array} sig
+ * @returns {boolean}
+ */
+export function verify(vk_bytes, message, sig) {
+    const ptr0 = passArray8ToWasm0(vk_bytes, wasm.__wbindgen_malloc);
+    const len0 = WASM_VECTOR_LEN;
+    const ptr1 = passArray8ToWasm0(message, wasm.__wbindgen_malloc);
+    const len1 = WASM_VECTOR_LEN;
+    const ptr2 = passArray8ToWasm0(sig, wasm.__wbindgen_malloc);
+    const len2 = WASM_VECTOR_LEN;
+    const ret = wasm.verify(ptr0, len0, ptr1, len1, ptr2, len2);
+    if (ret[2]) {
+        throw takeFromExternrefTable0(ret[1]);
+    }
+    return ret[0] !== 0;
+}
+
+/**
  * @returns {string}
  */
-export function encodeQrSvg(payload) {
-    let deferred3_0;
-    let deferred3_1;
+export function ol_pqsig_version() {
+    let deferred1_0;
+    let deferred1_1;
     try {
-        const ptr0 = passArray8ToWasm0(payload, wasm.__wbindgen_malloc);
-        const len0 = WASM_VECTOR_LEN;
-        const ret = wasm.encodeQrSvg(ptr0, len0);
-        var ptr2 = ret[0];
-        var len2 = ret[1];
-        if (ret[3]) {
-            ptr2 = 0; len2 = 0;
-            throw takeFromExternrefTable0(ret[2]);
-        }
-        deferred3_0 = ptr2;
-        deferred3_1 = len2;
-        return getStringFromWasm0(ptr2, len2);
+        const ret = wasm.ol_pqsig_version();
+        deferred1_0 = ret[0];
+        deferred1_1 = ret[1];
+        return getStringFromWasm0(ret[0], ret[1]);
     } finally {
-        wasm.__wbindgen_free(deferred3_0, deferred3_1, 1);
+        wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
     }
 }
 
 /**
- * Convenience: run a complete in-browser Inviter <-> Scanner round-trip for
- * the live demo card on the home page. Returns:
- *   {
- *     inviteBytes:   Uint8Array,
- *     inviteHex:     String,
- *     responseBytes: Uint8Array,
- *     sasInviter:    String,  (5 words)
- *     sasScanner:    String,  (5 words; must equal sasInviter)
- *     confirmBytes:  Uint8Array,
- *     chainKey:      Uint8Array, (32 bytes; both sides agree on this)
- *     matched:       Boolean (sas equality)
- *   }
+ * Generate -> sign -> verify -> tampered-verify, all locally in the visitor's
+ * tab. Returns a structured result for the /security/ page to render.
+ * @param {Uint8Array} message
  * @returns {any}
  */
-export function liveDemoRoundTrip() {
-    const ret = wasm.liveDemoRoundTrip();
+export function liveDemoRoundTrip(message) {
+    const ptr0 = passArray8ToWasm0(message, wasm.__wbindgen_malloc);
+    const len0 = WASM_VECTOR_LEN;
+    const ret = wasm.liveDemoRoundTrip(ptr0, len0);
     if (ret[2]) {
         throw takeFromExternrefTable0(ret[1]);
     }
     return takeFromExternrefTable0(ret[0]);
 }
 
-function getArrayU8FromWasm0(ptr, len) {
-    ptr = ptr >>> 0;
-    return getUint8ArrayMemory0().subarray(ptr / 1, ptr / 1 + len);
-}
-
-const OlInviterFinalization = (typeof FinalizationRegistry === 'undefined')
+const OlPqSigKeypairFinalization = (typeof FinalizationRegistry === 'undefined')
     ? { register: () => {}, unregister: () => {} }
-    : new FinalizationRegistry(ptr => wasm.__wbg_olinviter_free(ptr >>> 0, 1));
-/**
- * Owned Inviter handle. JS receives this from `OlInviter.new()` and uses it
- * across the rest of the handshake. Drop it from JS when done to zeroize.
- */
-export class OlInviter {
+    : new FinalizationRegistry(ptr => wasm.__wbg_olpqsigkeypair_free(ptr >>> 0, 1));
+
+export class OlPqSigKeypair {
 
     __destroy_into_raw() {
         const ptr = this.__wbg_ptr;
         this.__wbg_ptr = 0;
-        OlInviterFinalization.unregister(this);
+        OlPqSigKeypairFinalization.unregister(this);
         return ptr;
     }
 
     free() {
         const ptr = this.__destroy_into_raw();
-        wasm.__wbg_olinviter_free(ptr, 0);
+        wasm.__wbg_olpqsigkeypair_free(ptr, 0);
     }
     /**
-     * Hex-encoded invite bytes for display in dev tools / debugging.
-     * @returns {string}
-     */
-    get inviteHex() {
-        let deferred1_0;
-        let deferred1_1;
-        try {
-            const ret = wasm.olinviter_inviteHex(this.__wbg_ptr);
-            deferred1_0 = ret[0];
-            deferred1_1 = ret[1];
-            return getStringFromWasm0(ret[0], ret[1]);
-        } finally {
-            wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
-        }
-    }
-    /**
-     * QR-encodable bytes of the signed Invite. These ARE what the daemon
-     * would emit. Render them with the QR encoder of your choice; the
-     * scanner side parses them with `OlScanner.scan(bytes)`.
+     * Serialize the verifying key to wire bytes (1984 bytes:
+     * 32-byte Ed25519 pubkey + 1952-byte ML-DSA-65 pubkey).
      * @returns {Uint8Array}
      */
-    get inviteBytes() {
-        const ret = wasm.olinviter_inviteBytes(this.__wbg_ptr);
+    get verifyingKeyBytes() {
+        const ret = wasm.olpqsigkeypair_verifyingKeyBytes(this.__wbg_ptr);
         var v1 = getArrayU8FromWasm0(ret[0], ret[1]).slice();
         wasm.__wbindgen_free(ret[0], ret[1] * 1, 1);
         return v1;
     }
     /**
-     * Accept the scanner's PairResponse, verify it, derive the SAS the user
-     * should compare. Returns the 5-word SAS as a space-joined string.
-     * @param {Uint8Array} response_bytes
-     * @returns {string}
+     * Generate a fresh Ed25519 + ML-DSA-65 hybrid identity using the
+     * browser-side CSPRNG (getrandom -> Web Crypto).
      */
-    receiveResponse(response_bytes) {
-        let deferred3_0;
-        let deferred3_1;
-        try {
-            const ptr0 = passArray8ToWasm0(response_bytes, wasm.__wbindgen_malloc);
-            const len0 = WASM_VECTOR_LEN;
-            const ret = wasm.olinviter_receiveResponse(this.__wbg_ptr, ptr0, len0);
-            var ptr2 = ret[0];
-            var len2 = ret[1];
-            if (ret[3]) {
-                ptr2 = 0; len2 = 0;
-                throw takeFromExternrefTable0(ret[2]);
-            }
-            deferred3_0 = ptr2;
-            deferred3_1 = len2;
-            return getStringFromWasm0(ptr2, len2);
-        } finally {
-            wasm.__wbindgen_free(deferred3_0, deferred3_1, 1);
-        }
-    }
-    /**
-     * Construct a fresh Inviter. Generates an Ed25519 identity key in-browser,
-     * builds + signs the Invite, returns an OlInviter holding the bytes you
-     * will render into a QR.
-     *
-     * `expiry_unix`: when the invite stops being valid (seconds since epoch).
-     * `capability_label`: arbitrary UTF-8, up to 64 bytes after canonical
-     * encoding; describes what the pairing grants ("contact:alice", etc).
-     * @param {bigint} expiry_unix
-     * @param {string} capability_label
-     */
-    constructor(expiry_unix, capability_label) {
-        const ptr0 = passStringToWasm0(capability_label, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-        const len0 = WASM_VECTOR_LEN;
-        const ret = wasm.olinviter_new(expiry_unix, ptr0, len0);
-        if (ret[2]) {
-            throw takeFromExternrefTable0(ret[1]);
-        }
-        this.__wbg_ptr = ret[0] >>> 0;
-        OlInviterFinalization.register(this, this.__wbg_ptr, this);
+    constructor() {
+        const ret = wasm.olpqsigkeypair_new();
+        this.__wbg_ptr = ret >>> 0;
+        OlPqSigKeypairFinalization.register(this, this.__wbg_ptr, this);
         return this;
     }
     /**
-     * After the user confirms the SAS matches, complete the handshake.
-     * Returns `[confirm_bytes, chain_key_32bytes]` as a JS array.
-     * @returns {Array<any>}
-     */
-    confirm() {
-        const ret = wasm.olinviter_confirm(this.__wbg_ptr);
-        if (ret[2]) {
-            throw takeFromExternrefTable0(ret[1]);
-        }
-        return takeFromExternrefTable0(ret[0]);
-    }
-}
-
-const OlScannerFinalization = (typeof FinalizationRegistry === 'undefined')
-    ? { register: () => {}, unregister: () => {} }
-    : new FinalizationRegistry(ptr => wasm.__wbg_olscanner_free(ptr >>> 0, 1));
-/**
- * Owned Scanner handle.
- */
-export class OlScanner {
-
-    static __wrap(ptr) {
-        ptr = ptr >>> 0;
-        const obj = Object.create(OlScanner.prototype);
-        obj.__wbg_ptr = ptr;
-        OlScannerFinalization.register(obj, obj.__wbg_ptr, obj);
-        return obj;
-    }
-
-    __destroy_into_raw() {
-        const ptr = this.__wbg_ptr;
-        this.__wbg_ptr = 0;
-        OlScannerFinalization.unregister(this);
-        return ptr;
-    }
-
-    free() {
-        const ptr = this.__destroy_into_raw();
-        wasm.__wbg_olscanner_free(ptr, 0);
-    }
-    /**
-     * Wire bytes to send back to the inviter (the PairResponse).
+     * Sign a message with both halves. Returns the 3373-byte hybrid
+     * signature: `ed25519_sig (64) || ml_dsa_sig (3309)`.
+     * @param {Uint8Array} message
      * @returns {Uint8Array}
      */
-    get responseBytes() {
-        const ret = wasm.olscanner_responseBytes(this.__wbg_ptr);
-        var v1 = getArrayU8FromWasm0(ret[0], ret[1]).slice();
-        wasm.__wbindgen_free(ret[0], ret[1] * 1, 1);
-        return v1;
-    }
-    /**
-     * Receive the inviter's PairConfirm; complete the handshake. Returns
-     * the 32-byte chain key.
-     * @param {Uint8Array} confirm_bytes
-     * @returns {Uint8Array}
-     */
-    receiveConfirm(confirm_bytes) {
-        const ptr0 = passArray8ToWasm0(confirm_bytes, wasm.__wbindgen_malloc);
+    sign(message) {
+        const ptr0 = passArray8ToWasm0(message, wasm.__wbindgen_malloc);
         const len0 = WASM_VECTOR_LEN;
-        const ret = wasm.olscanner_receiveConfirm(this.__wbg_ptr, ptr0, len0);
+        const ret = wasm.olpqsigkeypair_sign(this.__wbg_ptr, ptr0, len0);
         if (ret[3]) {
             throw takeFromExternrefTable0(ret[2]);
         }
@@ -443,41 +306,125 @@ export class OlScanner {
         wasm.__wbindgen_free(ret[0], ret[1] * 1, 1);
         return v2;
     }
-    /**
-     * Scanner-side SAS. Should match the inviter's SAS exactly if no MITM.
-     * @returns {string}
-     */
-    get sas() {
-        let deferred1_0;
-        let deferred1_1;
-        try {
-            const ret = wasm.olscanner_sas(this.__wbg_ptr);
-            deferred1_0 = ret[0];
-            deferred1_1 = ret[1];
-            return getStringFromWasm0(ret[0], ret[1]);
-        } finally {
-            wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
-        }
+}
+
+const PqSigSizesFinalization = (typeof FinalizationRegistry === 'undefined')
+    ? { register: () => {}, unregister: () => {} }
+    : new FinalizationRegistry(ptr => wasm.__wbg_pqsigsizes_free(ptr >>> 0, 1));
+/**
+ * Wire lengths exposed to JS so the bridge can sanity-check buffer sizes.
+ */
+export class PqSigSizes {
+
+    static __wrap(ptr) {
+        ptr = ptr >>> 0;
+        const obj = Object.create(PqSigSizes.prototype);
+        obj.__wbg_ptr = ptr;
+        PqSigSizesFinalization.register(obj, obj.__wbg_ptr, obj);
+        return obj;
+    }
+
+    __destroy_into_raw() {
+        const ptr = this.__wbg_ptr;
+        this.__wbg_ptr = 0;
+        PqSigSizesFinalization.unregister(this);
+        return ptr;
+    }
+
+    free() {
+        const ptr = this.__destroy_into_raw();
+        wasm.__wbg_pqsigsizes_free(ptr, 0);
     }
     /**
-     * Scan an invite (the bytes encoded in the QR), verify the signature,
-     * build a PairResponse. JS receives an OlScanner holding both the
-     * scanner state and the bytes to send back to the inviter.
-     *
-     * `now_unix`: scanner's wall-clock seconds-since-epoch. The invite is
-     * rejected if `expiry_unix <= now_unix`.
-     * @param {Uint8Array} invite_bytes
-     * @param {bigint} now_unix
-     * @returns {OlScanner}
+     * @returns {number}
      */
-    static scan(invite_bytes, now_unix) {
-        const ptr0 = passArray8ToWasm0(invite_bytes, wasm.__wbindgen_malloc);
-        const len0 = WASM_VECTOR_LEN;
-        const ret = wasm.olscanner_scan(ptr0, len0, now_unix);
-        if (ret[2]) {
-            throw takeFromExternrefTable0(ret[1]);
-        }
-        return OlScanner.__wrap(ret[0]);
+    get verifying_key_bytes() {
+        const ret = wasm.__wbg_get_pqsigsizes_verifying_key_bytes(this.__wbg_ptr);
+        return ret >>> 0;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set verifying_key_bytes(arg0) {
+        wasm.__wbg_set_pqsigsizes_verifying_key_bytes(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get signing_key_bytes() {
+        const ret = wasm.__wbg_get_pqsigsizes_signing_key_bytes(this.__wbg_ptr);
+        return ret >>> 0;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set signing_key_bytes(arg0) {
+        wasm.__wbg_set_pqsigsizes_signing_key_bytes(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get signature_bytes() {
+        const ret = wasm.__wbg_get_pqsigsizes_signature_bytes(this.__wbg_ptr);
+        return ret >>> 0;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set signature_bytes(arg0) {
+        wasm.__wbg_set_pqsigsizes_signature_bytes(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get ed25519_vk_bytes() {
+        const ret = wasm.__wbg_get_pqsigsizes_ed25519_vk_bytes(this.__wbg_ptr);
+        return ret >>> 0;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set ed25519_vk_bytes(arg0) {
+        wasm.__wbg_set_pqsigsizes_ed25519_vk_bytes(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get ed25519_sig_bytes() {
+        const ret = wasm.__wbg_get_pqsigsizes_ed25519_sig_bytes(this.__wbg_ptr);
+        return ret >>> 0;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set ed25519_sig_bytes(arg0) {
+        wasm.__wbg_set_pqsigsizes_ed25519_sig_bytes(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get ml_dsa_vk_bytes() {
+        const ret = wasm.__wbg_get_pqsigsizes_ml_dsa_vk_bytes(this.__wbg_ptr);
+        return ret >>> 0;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set ml_dsa_vk_bytes(arg0) {
+        wasm.__wbg_set_pqsigsizes_ml_dsa_vk_bytes(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get ml_dsa_sig_bytes() {
+        const ret = wasm.__wbg_get_pqsigsizes_ml_dsa_sig_bytes(this.__wbg_ptr);
+        return ret >>> 0;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set ml_dsa_sig_bytes(arg0) {
+        wasm.__wbg_set_pqsigsizes_ml_dsa_sig_bytes(this.__wbg_ptr, arg0);
     }
 }
 
@@ -553,10 +500,6 @@ function __wbg_get_imports() {
         const ret = new Object();
         return ret;
     };
-    imports.wbg.__wbg_new_78feb108b6472713 = function() {
-        const ret = new Array();
-        return ret;
-    };
     imports.wbg.__wbg_new_8a6f238a6ece86ea = function() {
         const ret = new Error();
         return ret;
@@ -583,10 +526,6 @@ function __wbg_get_imports() {
     };
     imports.wbg.__wbg_process_3975fd6c72f520aa = function(arg0) {
         const ret = arg0.process;
-        return ret;
-    };
-    imports.wbg.__wbg_push_737cfc8c1432c2c6 = function(arg0, arg1) {
-        const ret = arg0.push(arg1);
         return ret;
     };
     imports.wbg.__wbg_randomFillSync_f8c153b79f285817 = function() { return handleError(function (arg0, arg1) {
@@ -676,6 +615,10 @@ function __wbg_get_imports() {
         const ret = wasm.memory;
         return ret;
     };
+    imports.wbg.__wbindgen_number_new = function(arg0) {
+        const ret = arg0;
+        return ret;
+    };
     imports.wbg.__wbindgen_string_new = function(arg0, arg1) {
         const ret = getStringFromWasm0(arg0, arg1);
         return ret;
@@ -740,7 +683,7 @@ async function __wbg_init(module_or_path) {
     }
 
     if (typeof module_or_path === 'undefined') {
-        module_or_path = new URL('ol_pair_qr_bg.wasm', import.meta.url);
+        module_or_path = new URL('ol_pqsig_bg.wasm', import.meta.url);
     }
     const imports = __wbg_get_imports();
 

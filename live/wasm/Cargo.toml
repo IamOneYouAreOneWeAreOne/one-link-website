@@ -18,6 +18,7 @@ resolver = "2"
 members = [
     "ol_pair_qr_wasm",
     "ol_pqkem_wasm",
+    "ol_pqsig_wasm",
     "ol_onion_wasm",
     "ol_coherence_field_wasm",
 ]

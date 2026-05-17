@@ -139,6 +139,28 @@
   </section>
 
   <section class="section">
+    <div class="container">
+      <span class="kicker">Prove it</span>
+      <h2>Mint a hybrid identity, <span class="grad">right here in your tab.</span></h2>
+      <p class="lede" style="max-width: 64ch;">
+        One click runs the real <code style="font-family: var(--ol-mono); color: var(--ol-cyan);">ol_pqsig</code> crate (compiled to WASM) inside your browser. It generates a fresh Ed25519 + ML-DSA-65 hybrid keypair, signs a short message, verifies the signature, then flips one bit and shows you both halves refusing to verify. No network call. No server-side trust. The same code path the daemon uses for capability commits.
+      </p>
+
+      <div class="ol-private-demo" style="margin-top: 1.5rem;">
+        <button type="button" id="ol-pqsig-btn" class="btn btn-primary">
+          Sign a message with Ed25519 + ML-DSA-65
+          <span class="arr" aria-hidden="true">&rarr;</span>
+        </button>
+        <span class="ol-status" id="ol-pqsig-status" style="margin-left: 0.7rem; display: none;">
+          <span class="dot"></span>
+          <span>computing</span>
+        </span>
+        <pre class="ol-code" id="ol-pqsig-out" style="margin-top: 1rem; display: none;"></pre>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
     <div class="container" style="text-align: center;">
       <a href="/download/" class="btn btn-primary btn-large">Get One Link <span class="arr">&rarr;</span></a>
       <a href="/builders/" class="btn btn-ghost btn-large">Read the source</a>
@@ -165,6 +187,6 @@
   </div>
 </footer>
 
-<script type="module" src="/live/bridge.js" integrity="sha384-zspNBUfyjnjZo5khJ2NUR5ZmPz1OhG9N+zvVLZqDeoWZEzKaENfufC7ODpHPjIYW" crossorigin="anonymous"></script>
+<script type="module" src="/live/bridge.js" integrity="sha384-56699UWb9zYkHC7ubRqwoTsv4Bu9kNFqfkYL13dQ5d1sT+5zz53L5kgv54NSHtm0" crossorigin="anonymous"></script>
 </body>
 </html>

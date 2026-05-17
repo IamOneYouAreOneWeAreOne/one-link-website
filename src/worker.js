@@ -26,7 +26,71 @@
 // Copyright (C) 2024-2026 One Link contributors. AGPL-3.0.
 // =============================================================================
 
+// -----------------------------------------------------------------------------
+// CONTENT-SECURITY-POLICY
+//
+// Defense-in-depth for the same threat SRI catches (an attacker injecting or
+// substituting code), but enforced at the document level by the browser
+// independently of any per-tag attribute. A successful XSS injection can't
+// execute because inline scripts and 'unsafe-eval' are both denied, and
+// off-origin script/font/connect destinations are all blocked.
+//
+// Directive-by-directive justification:
+//
+//   default-src 'self'
+//     fallback for any fetch type not listed below: same-origin only.
+//   script-src 'self' 'wasm-unsafe-eval'
+//     external <script src=> must be same-origin (SRI re-enforces the byte
+//     hash). 'wasm-unsafe-eval' is needed by the WASM crates: ol_pair_qr,
+//     ol_pqkem, ol_onion, ol_coherence_field all call WebAssembly.instantiate.
+//   style-src 'self' 'unsafe-inline'
+//     stylesheets from same-origin only. 'unsafe-inline' covers the inline
+//     style="..." attributes used for one-off layout tweaks across pages.
+//     CSS injection has a much smaller blast radius than script injection.
+//   img-src 'self' data: blob:
+//     images same-origin only; data: for inline SVGs / favicons; blob: for
+//     the /share/ recipient flow that downloads via URL.createObjectURL.
+//   font-src 'self'
+//     no third-party fonts, ever.
+//   connect-src 'self'
+//     fetch + WebSocket destinations must be same-origin (this covers the
+//     /api/presence WebSocket because wss://weareone-link.org IS same-origin).
+//   worker-src 'self'
+//     service worker registered at /sw.js, same-origin.
+//   manifest-src 'self'
+//     PWA manifest (manifest.json), same-origin.
+//   media-src 'self' blob:
+//     ambient audio; blob: for any future client-side-decoded media.
+//   object-src 'none'
+//     no Flash, no Java, no <object>/<embed>.
+//   frame-ancestors 'none'
+//     same as X-Frame-Options: DENY; nobody embeds us.
+//   base-uri 'self'
+//     prevents <base> injection from rewriting all relative URLs.
+//   form-action 'self'
+//     forms submit to same-origin only.
+//   upgrade-insecure-requests
+//     auto-rewrites any accidental http:// reference to https://.
+// -----------------------------------------------------------------------------
+const CSP = [
+  "default-src 'self'",
+  "script-src 'self' 'wasm-unsafe-eval'",
+  "style-src 'self' 'unsafe-inline'",
+  "img-src 'self' data: blob:",
+  "font-src 'self'",
+  "connect-src 'self'",
+  "worker-src 'self'",
+  "manifest-src 'self'",
+  "media-src 'self' blob:",
+  "object-src 'none'",
+  "frame-ancestors 'none'",
+  "base-uri 'self'",
+  "form-action 'self'",
+  "upgrade-insecure-requests",
+].join("; ");
+
 const PRIVACY_HEADERS = {
+  "Content-Security-Policy": CSP,
   "Permissions-Policy":
     "camera=(), microphone=(), geolocation=(), interest-cohort=(), browsing-topics=(), join-ad-interest-group=(), run-ad-auction=()",
   "Cross-Origin-Embedder-Policy": "require-corp",
@@ -34,6 +98,14 @@ const PRIVACY_HEADERS = {
   "Referrer-Policy": "no-referrer",
   "X-Content-Type-Options": "nosniff",
   "X-Frame-Options": "DENY",
+  // Strict-Transport-Security: tell browsers to refuse any future http:// load
+  // for this hostname for the next two years, and to preload the same for
+  // subdomains. Once preloaded into Chromium's HSTS list the protection
+  // applies even on a fresh browser install that never visited the site.
+  "Strict-Transport-Security": "max-age=63072000; includeSubDomains; preload",
+  // CORS: needed so <script integrity=... crossorigin=anonymous> succeeds.
+  // Static site, no cookies, no auth, no per-user state - * is correct.
+  "Access-Control-Allow-Origin": "*",
 };
 
 function applyHeaders(response) {

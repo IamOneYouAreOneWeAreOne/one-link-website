@@ -986,6 +986,95 @@ async function runOnionPreview() {
 window.olRunOnionPreview = runOnionPreview;  // hook for /download/ page
 
 // ---------------------------------------------------------------------------
+// 9a-bis. PQ-HYBRID SIGNATURE DEMO  (/security/ page)
+//
+// Loads the ol_pqsig WASM crate, generates a fresh Ed25519 + ML-DSA-65
+// hybrid keypair, signs a message, verifies, then tampers and shows the
+// verifier reject both halves. All in the visitor's tab. No server call.
+// ---------------------------------------------------------------------------
+async function runPqSigDemo(message) {
+  try {
+    const mod = await import('/live/wasm/ol_pqsig.js');
+    await mod.default({ module_or_path: '/live/wasm/ol_pqsig_bg.wasm' });
+    const msg = new TextEncoder().encode(message || 'we are one');
+    const result = mod.liveDemoRoundTrip(msg);
+    return {
+      ok: true,
+      version: mod.ol_pqsig_version(),
+      message,
+      verifyingKey: result.verifyingKey,
+      signature: result.signature,
+      verified: result.verified,
+      verifiedTampered: result.verifiedTampered,
+      verifiedTamperedSig: result.verifiedTamperedSig,
+      ed25519VkLen: result.ed25519VkLen,
+      ed25519SigLen: result.ed25519SigLen,
+      mlDsaVkLen: result.mlDsaVkLen,
+      mlDsaSigLen: result.mlDsaSigLen,
+      hybridVkLen: result.hybridVkLen,
+      hybridSigLen: result.hybridSigLen,
+    };
+  } catch (e) {
+    return { ok: false, error: e?.message || String(e) };
+  }
+}
+window.olRunPqSigDemo = runPqSigDemo;  // hook for /security/ page
+
+function wirePqSigDemo() {
+  const btn = $('#ol-pqsig-btn');
+  const out = $('#ol-pqsig-out');
+  const status = $('#ol-pqsig-status');
+  if (!btn || !out) return;
+
+  btn.addEventListener('click', async () => {
+    btn.disabled = true;
+    if (status) status.style.display = 'inline-flex';
+    out.style.display = 'block';
+    out.textContent = 'generating keypair, signing, verifying...';
+
+    const message = 'we are one';
+    const t0 = performance.now();
+    const result = await runPqSigDemo(message);
+    const dt = (performance.now() - t0).toFixed(1);
+
+    if (!result.ok) {
+      out.innerHTML = `<span style="color: var(--ol-rose);">ol_pqsig unavailable: ${escapeHtml(result.error || 'unknown')}</span>`;
+    } else {
+      const vkHex = bytesToHex(new Uint8Array(result.verifyingKey)).slice(0, 32);
+      const sigHex = bytesToHex(new Uint8Array(result.signature)).slice(0, 32);
+      const lines = [
+        `<span class="d">// real Ed25519 + ML-DSA-65 hybrid signature, ${dt} ms in your tab</span>`,
+        `<span class="c">crate</span>            ol_pqsig v${escapeHtml(result.version)}`,
+        `<span class="c">message</span>          "${escapeHtml(result.message)}" (${message.length} bytes)`,
+        ``,
+        `<span class="c">ed25519 pub</span>      ${result.ed25519VkLen} bytes`,
+        `<span class="c">ml-dsa-65 pub</span>    ${result.mlDsaVkLen} bytes`,
+        `<span class="c">hybrid pub</span>       ${result.hybridVkLen} bytes  ->  ${vkHex}...`,
+        ``,
+        `<span class="c">ed25519 sig</span>      ${result.ed25519SigLen} bytes`,
+        `<span class="c">ml-dsa-65 sig</span>    ${result.mlDsaSigLen} bytes`,
+        `<span class="c">hybrid sig</span>       ${result.hybridSigLen} bytes  ->  ${sigHex}...`,
+        ``,
+        `<span class="c">verify clean</span>     ` + (result.verified
+          ? `<span class="g">yes (both halves passed)</span>`
+          : `<span class="ol-rose">no</span>`),
+        `<span class="c">verify w/ flipped msg byte</span>     ` + (!result.verifiedTampered
+          ? `<span class="g">correctly rejected</span>`
+          : `<span class="ol-rose">FAILED to reject - BUG</span>`),
+        `<span class="c">verify w/ flipped sig byte (PQ half)</span>  ` + (!result.verifiedTamperedSig
+          ? `<span class="g">correctly rejected</span>`
+          : `<span class="ol-rose">FAILED to reject - BUG</span>`),
+        ``,
+        `<span class="d">// an attacker must break BOTH classical AND PQ to forge.</span>`,
+      ];
+      out.innerHTML = lines.join('\n');
+    }
+    if (status) status.style.display = 'none';
+    btn.disabled = false;
+  });
+}
+
+// ---------------------------------------------------------------------------
 // 9b. PRIVATE-ROUTE DEMO BUTTON  (/download/ page)
 //
 // Clicking the button runs a real ol_onion 3-hop wrap+peel in the browser
@@ -2101,6 +2190,7 @@ async function startCapAdvertSync() {
   reportPqStatus();
   wireTabPairButton();         // stranger-pair two-tab demo
   wirePrivateRouteDemo();      // /download/ Sphinx route button
+  wirePqSigDemo();             // /security/ Ed25519+ML-DSA-65 sign+verify demo
   startMeshSolverColoring();   // /mesh/ peer-dot coloring via real solver
   wireTelemetry();             // ?-key system-telemetry overlay
   startCapAdvertSync();        // /features/ live cap-advert banner

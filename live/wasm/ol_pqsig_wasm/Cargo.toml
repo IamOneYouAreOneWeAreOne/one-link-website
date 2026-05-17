@@ -1,16 +1,17 @@
 # =============================================================================
-# ol_pqkem_wasm  -  WASM bindings for One Link PQ-hybrid KEM
+# ol_pqsig_wasm  -  WASM bindings for One Link PQ-hybrid signatures
 # =============================================================================
 #
-# Wraps the production ol_pqkem crate so the browser-side session handshake
-# can do a real X25519 + ML-KEM-768 hybrid KEM with the relay, byte-identical
-# to what the daemon would negotiate.
+# Wraps the production ol_pqsig crate so the browser can mint a real
+# Ed25519 + ML-DSA-65 hybrid keypair, sign messages, and verify signatures
+# byte-identical to what the daemon would produce. This is what backs the
+# "Ed25519 + ML-DSA-65 hybrid signatures" claim on /security/.
 #
 # License: AGPL-3.0-or-later
 # =============================================================================
 
 [package]
-name        = "ol_pqkem_wasm"
+name        = "ol_pqsig_wasm"
 version     = "0.21.0-alpha.0"
 edition     = "2021"
 publish     = false
@@ -20,11 +21,13 @@ license     = "AGPL-3.0-or-later"
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-ol_pqkem  = { path = "../../../../Coherence/One_link/native/ol_pqkem" }
+ol_pqsig  = { path = "../../../../Coherence/One_link/native/ol_pqsig" }
 
 rand_core = { version = "0.6", default-features = false, features = ["getrandom"] }
 getrandom = { version = "0.2", features = ["js"] }
-zeroize   = { workspace = true }
+# ml-dsa transitively pulls getrandom 0.4 via rand_core 0.10; activate its
+# wasm shim explicitly so wasm32-unknown-unknown builds get an RNG backend.
+getrandom_04 = { package = "getrandom", version = "0.4", features = ["wasm_js"] }
 
 wasm-bindgen     = "=0.2.100"
 js-sys           = "0.3"
