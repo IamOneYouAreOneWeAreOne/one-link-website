@@ -420,6 +420,47 @@ export class MeshPresence {
         }
         break;
       }
+
+      // -------------------------------------------------------------------
+      // STRANGER CHAT relay  (server-side server-relayed, NOT yet E2EE).
+      // -------------------------------------------------------------------
+      // chat-request : "Alice asks Bob to open a chat"
+      // chat-accept  : "Bob agrees, chat is open"
+      // chat-decline : "Bob declines"
+      // chat-msg     : single short message (server enforces 280 char cap)
+      // chat-leave   : tell the other side we closed the panel
+      //
+      // The DO never stores chat content. It receives a frame, forwards
+      // it to the named recipient if they're still connected, drops it
+      // otherwise. No persistence, no history server-side.
+      // -------------------------------------------------------------------
+      case "chat-request":
+      case "chat-accept":
+      case "chat-decline":
+      case "chat-leave": {
+        const target = this.sessions.get(msg.to);
+        if (target && msg.to !== sessionId) {
+          try {
+            target.ws.send(JSON.stringify({ type: msg.type, from: sessionId }));
+          } catch {}
+        }
+        break;
+      }
+      case "chat-msg": {
+        const target = this.sessions.get(msg.to);
+        if (target && msg.to !== sessionId && typeof msg.text === "string") {
+          const text = msg.text.slice(0, 280);
+          try {
+            target.ws.send(JSON.stringify({
+              type: "chat-msg",
+              from: sessionId,
+              text,
+              ts: Date.now(),
+            }));
+          } catch {}
+        }
+        break;
+      }
     }
   }
 

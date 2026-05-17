@@ -1135,6 +1135,11 @@ function startPresence() {
           flashIncomingPing(msg.from);
           break;
         }
+        case 'chat-request':  handleChatRequest(msg.from); break;
+        case 'chat-accept':   handleChatAccept(msg.from);  break;
+        case 'chat-decline':  handleChatDecline(msg.from); break;
+        case 'chat-leave':    handleChatLeave(msg.from);   break;
+        case 'chat-msg':      handleChatMsg(msg.from, msg.text, msg.ts); break;
       }
     });
 
@@ -1241,15 +1246,14 @@ function simpleHash(s) {
 }
 
 function sendPing(peerId, dotEl) {
-  if (!presence.ws || presence.ws.readyState !== WebSocket.OPEN) return;
-  try {
-    presence.ws.send(JSON.stringify({ type: 'ping', to: peerId }));
-  } catch {}
+  // Click on a peer dot now opens a chat REQUEST instead of a bare ping.
+  // The dot still flashes immediately to acknowledge the click.
   if (dotEl) {
     dotEl.classList.remove('is-pinged');
-    void dotEl.offsetWidth; // restart animation
+    void dotEl.offsetWidth;
     dotEl.classList.add('is-pinged');
   }
+  startChatWith(peerId);
 }
 
 function flashIncomingPing(fromId) {
@@ -1271,6 +1275,218 @@ function flashIncomingPing(fromId) {
       setTimeout(() => { toast.hidden = true; }, 350);
     }, 2400);
   }
+}
+
+// ---------------------------------------------------------------------------
+// STRANGER CHAT  (anonymous, ephemeral, server-relayed)
+// ---------------------------------------------------------------------------
+//
+// State machine per peer:
+//   idle -> requesting -> open -> closed
+//                  \--> declined
+//
+// We hold at most one active chat at a time (the panel is singleton).
+// Closing the panel sends chat-leave to the other side and resets to idle.
+//
+// All messages flow through the MeshPresence Durable Object. The DO
+// forwards but never stores. Messages are NOT end-to-end encrypted in
+// this version; the chat panel surfaces that fact in the footer.
+// ---------------------------------------------------------------------------
+
+const chat = {
+  active: null,           // { peerId, state, hue, label }
+  pendingRequest: null,   // { peerId, hue, label } if someone asked us
+};
+
+function chatPanelEls() {
+  return {
+    panel: $('#ol-chat-panel'),
+    head:  $('#ol-chat-head'),
+    dot:   $('#ol-chat-dot'),
+    title: $('#ol-chat-title'),
+    state: $('#ol-chat-state'),
+    close: $('#ol-chat-close'),
+    log:   $('#ol-chat-log'),
+    form:  $('#ol-chat-form'),
+    input: $('#ol-chat-input'),
+    toast: $('#ol-chat-request-toast'),
+    toastDot: $('#ol-chat-request-dot'),
+    toastWhere: $('#ol-chat-request-where'),
+    toastAccept: $('#ol-chat-accept'),
+    toastDecline: $('#ol-chat-decline'),
+  };
+}
+
+function peerLabel(peerId) {
+  const p = presence.peers.get(peerId);
+  return p ? regionForLng(p.lng) : 'somewhere';
+}
+function peerHue(peerId) {
+  return simpleHash(peerId) % 360;
+}
+
+function setChatState(text, cls) {
+  const { state } = chatPanelEls();
+  if (!state) return;
+  state.textContent = text;
+  state.classList.remove('is-live', 'is-pending', 'is-closed');
+  if (cls) state.classList.add(cls);
+}
+
+function openChatPanel(peerId) {
+  const els = chatPanelEls();
+  if (!els.panel) return;
+  els.panel.hidden = false;
+  els.title.textContent = `stranger from ${peerLabel(peerId)}`;
+  const hue = peerHue(peerId);
+  els.dot.style.background = `hsla(${hue}, 90%, 65%, 0.85)`;
+  els.dot.style.boxShadow = `0 0 10px hsla(${hue}, 90%, 65%, 0.7)`;
+  els.log.innerHTML = '';
+  els.input.value = '';
+  els.input.disabled = true;
+  setChatState('asking', 'is-pending');
+}
+
+function closeChatPanelLocal() {
+  const els = chatPanelEls();
+  if (els.panel) els.panel.hidden = true;
+  chat.active = null;
+}
+
+function sendChatFrame(type, peerId, extra) {
+  if (!presence.ws || presence.ws.readyState !== WebSocket.OPEN) return false;
+  try {
+    presence.ws.send(JSON.stringify({ type, to: peerId, ...(extra || {}) }));
+    return true;
+  } catch { return false; }
+}
+
+function startChatWith(peerId) {
+  if (peerId === presence.selfId) return;
+  // If already in chat with someone else, drop it first.
+  if (chat.active && chat.active.peerId !== peerId) {
+    sendChatFrame('chat-leave', chat.active.peerId);
+  }
+  chat.active = { peerId, state: 'requesting', hue: peerHue(peerId), label: peerLabel(peerId) };
+  openChatPanel(peerId);
+  sendChatFrame('chat-request', peerId);
+}
+
+function handleChatRequest(fromId) {
+  // Someone is asking us to chat. If we're already in a chat, auto-decline.
+  if (chat.active) {
+    sendChatFrame('chat-decline', fromId);
+    return;
+  }
+  chat.pendingRequest = { peerId: fromId, hue: peerHue(fromId), label: peerLabel(fromId) };
+  const els = chatPanelEls();
+  if (!els.toast) return;
+  els.toast.hidden = false;
+  els.toastWhere.textContent = peerLabel(fromId);
+  const hue = peerHue(fromId);
+  if (els.toastDot) {
+    els.toastDot.style.background = `radial-gradient(circle at 35% 30%, #fff 0%, hsla(${hue}, 95%, 75%, 0.9) 40%, hsla(${hue}, 60%, 35%, 0.25) 80%, transparent 100%)`;
+    els.toastDot.style.boxShadow = `0 0 14px hsla(${hue}, 95%, 70%, 0.8)`;
+  }
+  // Auto-decline after 25 seconds.
+  clearTimeout(chat._toastTimer);
+  chat._toastTimer = setTimeout(() => {
+    if (chat.pendingRequest?.peerId === fromId) {
+      acceptOrDeclineRequest(false);
+    }
+  }, 25000);
+}
+
+function acceptOrDeclineRequest(accept) {
+  const els = chatPanelEls();
+  const req = chat.pendingRequest;
+  if (!req) return;
+  clearTimeout(chat._toastTimer);
+  chat.pendingRequest = null;
+  if (els.toast) els.toast.hidden = true;
+  if (accept) {
+    chat.active = { peerId: req.peerId, state: 'open', hue: req.hue, label: req.label };
+    openChatPanel(req.peerId);
+    sendChatFrame('chat-accept', req.peerId);
+    enableChatInput(true);
+    setChatState('open', 'is-live');
+    appendChatMsg('they sent a request; you accepted', 'system');
+  } else {
+    sendChatFrame('chat-decline', req.peerId);
+  }
+}
+
+function handleChatAccept(fromId) {
+  if (!chat.active || chat.active.peerId !== fromId) return;
+  chat.active.state = 'open';
+  enableChatInput(true);
+  setChatState('open', 'is-live');
+  appendChatMsg('they accepted', 'system');
+}
+function handleChatDecline(fromId) {
+  if (!chat.active || chat.active.peerId !== fromId) return;
+  setChatState('declined', 'is-closed');
+  appendChatMsg('they ignored the request', 'system');
+  enableChatInput(false);
+  // Auto-close after 4s.
+  setTimeout(() => {
+    if (chat.active?.peerId === fromId && chat.active?.state !== 'open') closeChatPanelLocal();
+  }, 4000);
+}
+function handleChatLeave(fromId) {
+  if (!chat.active || chat.active.peerId !== fromId) return;
+  setChatState('left', 'is-closed');
+  appendChatMsg('they left the chat', 'system');
+  enableChatInput(false);
+  chat.active.state = 'closed';
+}
+function handleChatMsg(fromId, text, ts) {
+  if (!chat.active || chat.active.peerId !== fromId) return;
+  if (typeof text !== 'string' || !text) return;
+  appendChatMsg(text.slice(0, 280), 'other');
+}
+
+function appendChatMsg(text, kind) {
+  const { log } = chatPanelEls();
+  if (!log) return;
+  const div = document.createElement('div');
+  div.className = `ol-chat-msg is-${kind}`;
+  div.textContent = text;
+  log.appendChild(div);
+  log.scrollTop = log.scrollHeight;
+}
+
+function enableChatInput(on) {
+  const { input } = chatPanelEls();
+  if (!input) return;
+  input.disabled = !on;
+  if (on) {
+    setTimeout(() => input.focus(), 50);
+  }
+}
+
+function wireChat() {
+  const els = chatPanelEls();
+  if (els.form) {
+    els.form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!chat.active || chat.active.state !== 'open') return;
+      const text = (els.input.value || '').trim().slice(0, 280);
+      if (!text) return;
+      if (sendChatFrame('chat-msg', chat.active.peerId, { text })) {
+        appendChatMsg(text, 'self');
+        els.input.value = '';
+      }
+    });
+  }
+  if (els.close) {
+    els.close.addEventListener('click', () => {
+      if (chat.active) sendChatFrame('chat-leave', chat.active.peerId);
+      closeChatPanelLocal();
+    });
+  }
+  if (els.toastAccept) els.toastAccept.addEventListener('click', () => acceptOrDeclineRequest(true));
+  if (els.toastDecline) els.toastDecline.addEventListener('click', () => acceptOrDeclineRequest(false));
 }
 
 // Expose a small public hook so the field renderer can also pulse on ping.
@@ -1714,4 +1930,5 @@ async function startCapAdvertSync() {
   startMeshSolverColoring();   // /mesh/ peer-dot coloring via real solver
   wireTelemetry();             // ?-key system-telemetry overlay
   startCapAdvertSync();        // /features/ live cap-advert banner
+  wireChat();                  // anonymous stranger chat overlay
 })();

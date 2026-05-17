@@ -1,13 +1,13 @@
 {
-  "version": "0.21.0-alpha.0+r11",
+  "version": "0.21.0-alpha.0+r12",
   "issued_at": "2026-05-17T00:00:00Z",
   "signed_by": "ed25519-pub-PLACEHOLDER",
   "signature": "ed25519-PLACEHOLDER",
   "note": "Real SHA-256 of every live asset. Real ed25519 signature wires in once the offline signer is provisioned. The Service Worker verifies these hashes byte-by-byte before serving any cached asset.",
   "assets": {
     "/css/one-link.css": "sha256-2728619ec26954332a07f3c87eb8c7fb4901e1fdc55c39b35f590c7883771f5f",
-    "/css/immersive.css": "sha256-281599b768506300a406455de74df4bb3a18ccda654d7266acacbd623f4df45b",
-    "/live/bridge.js": "sha256-ce04bae4195f79c52fd1a7391a9d16f44627649983cd7b2325b2de2b5c6de74e",
+    "/css/immersive.css": "sha256-f5396ebc95c9152ad656daf1fb3f34bd371c8f4c0c67e43bdb32eded086f1374",
+    "/live/bridge.js": "sha256-9d54521e728299a7b4a4b3a610e7044e772f3c68c4c96634b7af8b971b536c60",
     "/live/wasm/ol_pair_qr.js": "sha256-c28b5a72ad92d6485ac55f5fe655ec8015d257999fbd270319f71641abf45035",
     "/live/wasm/ol_pair_qr_bg.wasm": "sha256-68e0144d3034c2db874f7bb4fe5e1a286a9bd8eeda046b56b39d0e44c45e4902",
     "/live/wasm/ol_pqkem.js": "sha256-b09dedc85f9b82beba22cf8654a94eaeb75ab281bed860aa44ca3a2ea34aac13",
@@ -21,6 +21,6 @@
     "/images/logo-128.png": "sha256-661b99db462d13319db4734d0d8e8d817de109c63d98be6faa19a9165e89ac12",
     "/images/apple-touch-icon.png": "sha256-661b99db462d13319db4734d0d8e8d817de109c63d98be6faa19a9165e89ac12",
     "/sw.js": "sha256-19fd7cf70b3a38c1077b9ee30f005569852c8e51208f7ad5314a86c4360a85d5",
-    "/index.html": "sha256-da21838895cd587b26e5812bca410d47b84f9ffd193d611ba00485732687ae87"
+    "/index.html": "sha256-18fd1cbd9234b8768fd22ddbe51bfae2ec15b133858767a8e09b4c6b057ab04d"
   }
 }

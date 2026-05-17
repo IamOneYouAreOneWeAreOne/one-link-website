@@ -569,6 +569,244 @@ body.ol-immersive::before {
   .ol-telemetry-hint { display: none; }
 }
 
+/* =============================================================================
+   STRANGER CHAT  (anonymous, ephemeral, server-relayed)
+   ========================================================================== */
+.ol-chat-panel {
+  position: fixed;
+  bottom: 1.3rem;
+  right: 1.3rem;
+  z-index: 70;
+  width: min(360px, calc(100vw - 2rem));
+  background: rgba(4, 6, 11, 0.95);
+  border: 1px solid var(--ol-line-bright);
+  border-radius: var(--ol-radius-lg);
+  box-shadow: 0 18px 60px hsla(178, 90%, 50%, 0.18), 0 0 0 1px rgba(110, 240, 244, 0.18);
+  backdrop-filter: blur(16px);
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+  font-family: var(--ol-font);
+}
+.ol-chat-panel:not([hidden]) { display: flex; }
+
+.ol-chat-head {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.7rem 0.95rem;
+  background: rgba(8, 12, 20, 0.7);
+  border-bottom: 1px solid var(--ol-line);
+}
+.ol-chat-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: hsla(178, 90%, 65%, 0.85);
+  box-shadow: 0 0 10px hsla(178, 90%, 65%, 0.7);
+  flex: 0 0 auto;
+}
+.ol-chat-title {
+  color: var(--ol-text);
+  font-size: 0.92rem;
+  font-weight: 600;
+  font-family: var(--ol-mono);
+}
+.ol-chat-state {
+  color: var(--ol-text-dim);
+  font-size: 0.72rem;
+  font-family: var(--ol-mono);
+  margin-left: auto;
+  letter-spacing: 0.04em;
+}
+.ol-chat-state.is-live { color: var(--ol-green); }
+.ol-chat-state.is-pending { color: var(--ol-amber); }
+.ol-chat-state.is-closed { color: var(--ol-text-dim); }
+.ol-chat-close {
+  background: transparent;
+  border: 0;
+  color: var(--ol-text-dim);
+  cursor: pointer;
+  font-size: 1.3rem;
+  line-height: 1;
+  padding: 0 0.2rem;
+  margin-left: 0.4rem;
+}
+.ol-chat-close:hover { color: var(--ol-rose); }
+
+.ol-chat-log {
+  max-height: 320px;
+  min-height: 100px;
+  overflow-y: auto;
+  padding: 0.9rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-size: 0.92rem;
+  color: var(--ol-text);
+}
+.ol-chat-log:empty::before {
+  content: "Say hi.";
+  color: var(--ol-text-dim);
+  font-style: italic;
+  font-size: 0.85rem;
+}
+.ol-chat-msg {
+  display: flex;
+  flex-direction: column;
+  max-width: 86%;
+  padding: 0.5rem 0.8rem;
+  border-radius: var(--ol-radius);
+  font-size: 0.92rem;
+  line-height: 1.4;
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
+}
+.ol-chat-msg.is-self {
+  align-self: flex-end;
+  background: rgba(110, 240, 244, 0.12);
+  border: 1px solid rgba(110, 240, 244, 0.3);
+  color: var(--ol-text);
+}
+.ol-chat-msg.is-other {
+  align-self: flex-start;
+  background: rgba(255, 212, 121, 0.08);
+  border: 1px solid rgba(255, 212, 121, 0.22);
+  color: var(--ol-text);
+}
+.ol-chat-msg.is-system {
+  align-self: center;
+  background: transparent;
+  color: var(--ol-text-dim);
+  font-family: var(--ol-mono);
+  font-size: 0.78rem;
+  font-style: italic;
+  border: 0;
+  padding: 0.2rem 0;
+}
+
+.ol-chat-form {
+  display: flex;
+  gap: 0.4rem;
+  padding: 0.6rem 0.7rem;
+  border-top: 1px solid var(--ol-line);
+  background: rgba(8, 12, 20, 0.5);
+}
+.ol-chat-form input {
+  flex: 1;
+  background: rgba(2, 4, 10, 0.7);
+  border: 1px solid var(--ol-line);
+  border-radius: var(--ol-radius-sm);
+  padding: 0.5rem 0.7rem;
+  color: var(--ol-text);
+  font-family: inherit;
+  font-size: 0.95rem;
+}
+.ol-chat-form input:focus {
+  outline: none;
+  border-color: var(--ol-cyan);
+  box-shadow: 0 0 0 1px var(--ol-cyan);
+}
+.ol-chat-send {
+  background: var(--ol-grad-cta);
+  color: var(--ol-bg);
+  border: 0;
+  border-radius: var(--ol-radius-sm);
+  padding: 0 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 1.1rem;
+}
+.ol-chat-send:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.ol-chat-foot {
+  padding: 0.45rem 0.95rem;
+  font-family: var(--ol-mono);
+  font-size: 0.7rem;
+  color: var(--ol-text-dim);
+  text-align: center;
+  letter-spacing: 0.04em;
+  background: rgba(2, 4, 10, 0.5);
+  border-top: 1px solid var(--ol-line);
+}
+
+/* incoming chat-request toast */
+.ol-chat-request-toast {
+  position: fixed;
+  bottom: 1.3rem;
+  right: 1.3rem;
+  z-index: 71;
+  display: none;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.85rem 1rem;
+  background: rgba(4, 6, 11, 0.95);
+  border: 1px solid hsla(42, 90%, 70%, 0.45);
+  border-radius: var(--ol-radius-lg);
+  box-shadow: 0 18px 60px hsla(42, 90%, 65%, 0.28);
+  backdrop-filter: blur(16px);
+  font-family: var(--ol-font);
+  max-width: 360px;
+}
+.ol-chat-request-toast:not([hidden]) { display: flex; }
+.ol-chat-request-dot {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #fff 0%, hsla(42, 95%, 75%, 0.9) 40%, hsla(42, 60%, 35%, 0.25) 80%, transparent 100%);
+  box-shadow: 0 0 14px hsla(42, 95%, 70%, 0.8);
+  flex: 0 0 auto;
+  animation: ol-pulse 2.2s ease-in-out infinite;
+}
+.ol-chat-request-body {
+  flex: 1;
+  color: var(--ol-text);
+}
+.ol-chat-request-body strong {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+}
+.ol-chat-request-detail {
+  color: var(--ol-text-soft);
+  font-size: 0.8rem;
+  font-family: var(--ol-mono);
+  margin-top: 0.15rem;
+}
+.ol-chat-request-actions {
+  display: flex;
+  gap: 0.45rem;
+  flex-direction: column;
+}
+.ol-chat-accept,
+.ol-chat-decline {
+  border: 1px solid var(--ol-line);
+  border-radius: 999px;
+  padding: 0.35rem 0.85rem;
+  font-family: inherit;
+  font-size: 0.82rem;
+  cursor: pointer;
+  background: transparent;
+}
+.ol-chat-accept {
+  background: var(--ol-grad-cta);
+  border-color: transparent;
+  color: var(--ol-bg);
+  font-weight: 600;
+}
+.ol-chat-decline {
+  color: var(--ol-text-soft);
+}
+.ol-chat-decline:hover { color: var(--ol-rose); border-color: var(--ol-rose); }
+
+@media (max-width: 540px) {
+  .ol-chat-panel { left: 1rem; right: 1rem; width: auto; bottom: 1rem; }
+  .ol-chat-request-toast { left: 1rem; right: 1rem; max-width: none; }
+}
+
 /* legacy class kept for any non-immersive page */
 .ol-remote-tooltip {
   position: fixed;

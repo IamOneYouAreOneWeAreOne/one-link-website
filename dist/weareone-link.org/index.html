@@ -65,6 +65,37 @@
   <span class="ol-ping-text">someone said hello</span>
 </div>
 
+<!-- Stranger chat panel (anonymous, ephemeral, server-relayed). -->
+<div class="ol-chat-panel" id="ol-chat-panel" hidden role="dialog" aria-label="Anonymous stranger chat">
+  <div class="ol-chat-head">
+    <span class="ol-chat-dot" id="ol-chat-dot"></span>
+    <span class="ol-chat-title" id="ol-chat-title">stranger</span>
+    <span class="ol-chat-state" id="ol-chat-state">connecting</span>
+    <button type="button" class="ol-chat-close" id="ol-chat-close" aria-label="Close chat">&times;</button>
+  </div>
+  <div class="ol-chat-log" id="ol-chat-log" aria-live="polite"></div>
+  <form class="ol-chat-form" id="ol-chat-form">
+    <input type="text" id="ol-chat-input" maxlength="280" placeholder="say something kind..." autocomplete="off" aria-label="Message">
+    <button type="submit" class="ol-chat-send" aria-label="Send">&rarr;</button>
+  </form>
+  <div class="ol-chat-foot">
+    ephemeral &middot; anonymous &middot; not stored anywhere
+  </div>
+</div>
+
+<!-- Chat-request toast (someone is asking to chat with you). -->
+<div class="ol-chat-request-toast" id="ol-chat-request-toast" hidden role="alert">
+  <div class="ol-chat-request-dot" id="ol-chat-request-dot"></div>
+  <div class="ol-chat-request-body">
+    <strong>someone wants to talk</strong>
+    <div class="ol-chat-request-detail">stranger from <span id="ol-chat-request-where">somewhere</span></div>
+  </div>
+  <div class="ol-chat-request-actions">
+    <button type="button" class="ol-chat-decline" id="ol-chat-decline">ignore</button>
+    <button type="button" class="ol-chat-accept" id="ol-chat-accept">say hi</button>
+  </div>
+</div>
+
 <!-- Live presence ribbon: real other visitors right now, anonymous, ephemeral. -->
 <div class="ol-presence-bar" id="ol-presence-bar" aria-live="polite">
   <span class="ol-presence-bar-dot"></span>
