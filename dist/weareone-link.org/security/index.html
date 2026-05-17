@@ -183,6 +183,28 @@
   </section>
 
   <section class="section">
+    <div class="container">
+      <span class="kicker">Forward secrecy</span>
+      <h2>Every message gets a fresh key. <span class="grad">Compromising one tells you nothing about the next.</span></h2>
+      <p class="lede" style="max-width: 64ch;">
+        One click runs <code style="font-family: var(--ol-mono); color: var(--ol-cyan);">ol_ratchet</code> (per-chunk forward-secret KDF chain, BLAKE3-derived). Your browser generates a fresh chain key, derives six sequential message keys, and shows that they are mutually distinct and that the ratchet refuses to rewind. An attacker who captures the key for chunk 3 cannot reconstruct the key for chunk 4 because the chain step is a one-way hash.
+      </p>
+
+      <div class="ol-private-demo" style="margin-top: 1.5rem;">
+        <button type="button" id="ol-ratchet-btn" class="btn btn-primary">
+          Walk the ratchet six steps
+          <span class="arr" aria-hidden="true">&rarr;</span>
+        </button>
+        <span class="ol-status" id="ol-ratchet-status" style="margin-left: 0.7rem; display: none;">
+          <span class="dot"></span>
+          <span>computing</span>
+        </span>
+        <pre class="ol-code" id="ol-ratchet-out" style="margin-top: 1rem; display: none;"></pre>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
     <div class="container" style="text-align: center;">
       <a href="/download/" class="btn btn-primary btn-large">Get One Link <span class="arr">&rarr;</span></a>
       <a href="/builders/" class="btn btn-ghost btn-large">Read the source</a>
@@ -209,6 +231,6 @@
   </div>
 </footer>
 
-<script type="module" src="/live/bridge.js" integrity="sha384-HGU8YIadlruFRKEbdDp5PcoAmJ70ozYEv4LhO5JvUR0pVsS8sJXdvlMZKcvdwYq8" crossorigin="anonymous"></script>
+<script type="module" src="/live/bridge.js" integrity="sha384-tvBwibH2Z4xnCl4toWQjI+2fUZtD7qXV/xZEzBYYl0yrEpZOGw5VH4b7jdBg1jGr" crossorigin="anonymous"></script>
 </body>
 </html>

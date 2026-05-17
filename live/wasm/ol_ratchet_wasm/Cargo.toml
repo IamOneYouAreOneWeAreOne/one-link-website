@@ -1,0 +1,35 @@
+# =============================================================================
+# ol_ratchet_wasm  -  WASM bindings for One Link per-chunk forward-secret ratchet
+# =============================================================================
+#
+# Wraps the production ol_ratchet crate so the browser can derive a chain of
+# message keys, demonstrating forward secrecy: each key is unrelated to the
+# next except through a one-way KDF. Compromise of one key does NOT compromise
+# subsequent ones.
+#
+# License: AGPL-3.0-or-later
+# =============================================================================
+
+[package]
+name        = "ol_ratchet_wasm"
+version     = "0.21.0-alpha.0"
+edition     = "2021"
+publish     = false
+license     = "AGPL-3.0-or-later"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+ol_ratchet = { path = "../../../../Coherence/One_link/native/ol_ratchet" }
+
+getrandom = { version = "0.2", features = ["js"] }
+
+wasm-bindgen     = "=0.2.100"
+js-sys           = "0.3"
+console_error_panic_hook = { version = "0.1", optional = true }
+hex              = { workspace = true }
+
+[features]
+default     = ["debug-panic"]
+debug-panic = ["dep:console_error_panic_hook"]

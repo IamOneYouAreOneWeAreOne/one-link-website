@@ -34,6 +34,7 @@ crates=(
   "ol_pqkem_wasm:ol_pqkem"
   "ol_pqsig_wasm:ol_pqsig"
   "ol_threshold_recovery_wasm:ol_threshold_recovery"
+  "ol_ratchet_wasm:ol_ratchet"
   "ol_onion_wasm:ol_onion"
   "ol_coherence_field_wasm:ol_coherence_field"
 )

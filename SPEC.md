@@ -1,6 +1,6 @@
 # One Link Website — Complete Specification
 
-**Version**: 0.21.0-alpha + r7
+**Version**: 0.21.0-alpha + r25
 **Status**: Living document. Reflects shipped code as of 2026-05-17.
 **Domains**: `weareone-link.org` (primary) + `weareone-link.com` (301 redirect)
 **License**: AGPL-3.0-or-later
@@ -154,28 +154,33 @@ The "blow socks off" feature set, with shipped status as of 2026-05-17 + r7.
 |---|---|---|---|---|
 | 1 | Download IS the protocol (browser becomes a One Link node) | partial | `ol_transfer` (not yet WASM), bridge.js | §6.2 |
 | 2 | Pair-by-QR with real handshake in 5 seconds | **shipped** | `ol_pair_qr` WASM | §5.1, §6.1 |
-| 3 | Optional Sphinx onion-routed download | partial (preview wired) | `ol_onion` WASM | §5.3, §6.2 |
+| 3 | Optional Sphinx onion-routed download (preview button) | **shipped** | `ol_onion` WASM + /download/ button | §5.3, §6.2 |
 | 4 | Coherence-field background = real Helmholtz on GPU | **shipped** | WGSL emitted from `wgsl_emitter` | §3.6, §6.1 |
 | 5 | Live global mesh map | partial (synthetic) | `ol_routing`, `ol_homology` not yet WASM | §6.6 |
 | 6 | Reproducible-build attestation UI | **shipped** (schema, sample) | `ol_pqsig`, `ol_confidential` (schema only) | §4.5, §6.2, App C |
-| 7 | Two-tab browser daemon demo | deferred | `BroadcastChannel` + ol_pair_qr | §11 |
-| 8 | Threshold recovery demo on page | deferred | `ol_threshold_recovery` not yet WASM | §11 |
-| 9 | Feature matrix generated from live capability advert | partial (UI in place, static cap list) | worker.js `/api/capabilities` | §4.2 |
+| 7 | Two-tab browser daemon demo | **shipped** | `BroadcastChannel` + `ol_pair_qr` WASM | §6.1 |
+| 8 | Threshold recovery demo on page | **shipped** | `ol_threshold_recovery` WASM + /security/ | §6.5 |
+| 9 | Feature matrix generated from live capability advert | **shipped** | worker.js `/api/capabilities` + `startCapAdvertSync` | §4.2 |
 | 10 | Cryptographic site integrity (signed manifest, SW verify) | **shipped** | [sw.js](dist/weareone-link.org/sw.js), [manifest.json](dist/weareone-link.org/manifest.json) | §7.4 |
 | 11 | Site IS a One Link node (PQ-hybrid session on load) | **shipped** | `ol_pqkem` WASM | §5.2 |
 | 12 | Zero accounts / cookies / analytics / tracking | **shipped** (architectural) | worker.js, sw.js | §7.1 |
 | 13 | "Rebuild this site from source" button | deferred | future CI surface | §11 |
 | 14 | Website ships INSIDE the product (daemon serves it) | deferred | daemon work | §11 |
 | 15 | Hardware-key TOFU recognition | deferred | `ol_hwkey` not yet WASM | §11 |
-| 16 | Feature page generated live from cap advert | partial | worker.js `/api/capabilities` | §4.2 |
-| 17 | Self-defending site (in-browser bundle verifier) | **shipped** | [sw.js](dist/weareone-link.org/sw.js) | §7.4 |
-| 18 | Stranger-pair right now (two visitors, real chat) | partial (presence + ping wired, chat next) | `MeshPresence` DO + `ol_pair_qr` | §3.2.2, §4.6, §6.1 |
+| 16 | Feature page generated live from cap advert | **shipped** | live capability banner above static matrix | §4.2 |
+| 17 | Self-defending site (in-browser bundle verifier) | **shipped** | [sw.js](dist/weareone-link.org/sw.js) + ed25519-signed manifest | §7.4 |
+| 18 | Stranger-pair right now (two visitors, real chat) | **shipped** | `MeshPresence` DO + `ol_pair_qr` WASM + E2EE chat panel | §3.2.2, §4.6, §6.1 |
 | 19 | Default-private mesh delivery for downloads | deferred | `ol_onion` UI wiring | §11 |
 | 20 | No business model surface anywhere | **shipped** (architectural) | repo audit | §1.2 |
 | 21 | "You just became 1 of N" live counter ticks up on connect | **shipped** | `MeshPresence` DO + presence bar | §4.6, §6.1 |
 | 22 | Tor onion mirror with cross-consistency proof | deferred | infra work | §11 |
+| 23 | In-browser PQ-hybrid signing (Ed25519 + ML-DSA-65) | **shipped** | `ol_pqsig` WASM + /security/ demo | §6.5 |
+| 24 | One-shot encrypted file share via URL fragment | **shipped** | worker.js `/api/share` + R2 + /share/ page | §6.11 |
+| 25 | CSP + HSTS + SRI + signed-manifest defense-in-depth | **shipped** | worker.js `PRIVACY_HEADERS` + scripts/inject-sri.py | §7.5, §7.7 |
+| 26 | Per-IP token-bucket rate limit on /api/share | **shipped** | `ShareRate` Durable Object | §3.2.3 |
+| 27 | Per-chunk forward-secret ratchet demo | **shipped** | `ol_ratchet` WASM + /security/ "walk the ratchet" | §6.5 |
 
-**Summary**: 7 fully shipped, 6 partial, 9 deferred. Shipped items can be verified by visiting the site in a modern browser today. Partial items have the engine in place but the UI hook is incomplete. Deferred items are honest "next push" candidates.
+**Summary as of r26**: 19 fully shipped, 2 partial, 6 deferred. Shipped items can be verified by visiting the site in a modern browser today. Partial items have the engine in place but the UI hook is incomplete. Deferred items remain honest "next push" candidates.
 
 ---
 
@@ -1258,13 +1263,15 @@ Ordering, not calendars. Each step requires the previous one.
 
 ## 11.2 Next push (dependency-ordered)
 
-1. **`/download/` "private route" toggle UI** that calls `window.olRunOnionPreview()` and surfaces hop ids + peel stages + delivery confirmation. Wire is ready; UI wiring is small.
-2. **Mesh page peer-dot rendering with field-solver coloring**: use `ol_coherence_field` WASM `solveSteadyHelmholtz` to colorize each peer dot by its local field intensity. Real solver state in the browser.
-3. **Real `/api/session` hybrid handshake**: server returns its hybrid pubkey; bridge.js calls `encapsulateAgainst(pub)`; the shared secret authenticates subsequent API calls.
-4. **Cap-advert truth on /features/**: bridge.js fetches `/api/capabilities` at page load + once per 60s; tile list re-renders. The static fallback content stays for SEO.
-5. **Two-tab stranger-pair demo**: `OlInviter` in tab A + `OlScanner` in tab B via `BroadcastChannel`. Visitor pairs with themselves to feel the round trip.
-6. **Manifest hash automation**: `scripts/rehash-manifest.sh` updates manifest.json + sw.js hash in one shot.
-7. **Offline-signer wiring**: real ed25519 keypair held outside the repo; signs manifest.json; pubkey pinned in sw.js; rotations chained.
+Items 1-7 from earlier revisions have all SHIPPED. New "next push" set, dependency-ordered:
+
+1. **Real `/api/session` hybrid handshake (WASM-in-Worker)**: replace the stub. Compile `ol_pqkem` for the Cloudflare Workers runtime, expose server X25519 + ML-KEM-768 pubkeys at `/api/session`, browser already has the WASM for the other half. Flips the `signed: false` flag in the capability advert.
+2. ~~**Double Ratchet forward-secrecy demo** via new `ol_ratchet` WASM.~~ **SHIPPED r26** (`ol_ratchet_wasm` + /security/ "walk the ratchet six steps").
+3. **Hardware-key TOFU recognition** via new `ol_hwkey` WASM. Browser remembers "you've been here before" via a TOFU registration of the in-tab WebAuthn-derived key (no server identifier).
+4. **Live relay registry** in `RELAY_KV`: real (anonymized) node counts replace the topology stub. `/api/topology` returns actual aggregated data from the running One Link demo daemon.
+5. **Real attestation chain documents** for the current Windows release: replace the sample attestation with a real one minted from the offline build rig + `ol_pqsig` hybrid signature over the artifact hash.
+6. **Mesh-page WGSL coloring** beyond steady-state: animate the τ_c field with each new peer joining (uses the existing `solveSteadyHelmholtz` already wired).
+7. **`/download/` private-mode toggle wiring**: when the toggle is on, the download itself routes through `ol_onion` (not just the demo button). Today the button is a preview; the actual download path goes direct.
 
 ## 11.3 Later
 
@@ -1291,7 +1298,9 @@ Every alien-tech claim made on the public surface, mapped to the code that backs
 | "Real handshake right here" (pair card) | [live/wasm/ol_pair_qr_wasm/src/lib.rs](live/wasm/ol_pair_qr_wasm/src/lib.rs) → `liveDemoRoundTrip` | DevTools → Network → see `ol_pair_qr_bg.wasm` load. Console: `await import('/live/wasm/ol_pair_qr.js').then(m => m.default('/live/wasm/ol_pair_qr_bg.wasm')).then(()=>{}); ` |
 | "PQ session" badge | [live/wasm/ol_pqkem_wasm/src/lib.rs](live/wasm/ol_pqkem_wasm/src/lib.rs) → `liveDemoRoundTrip` | Page load: status pill ticks "deriving" → "verified". Match means `alice_ss == bob_ss` bytewise. |
 | "X25519 + ML-KEM-768 hybrid" | [ol_pqkem]($HOME/Projects/Coherence/One_link/native/ol_pqkem) (production daemon crate) | The wasm wrapper has `ol_pqkem = { path = "..." }`. Daemon and browser run the same code. |
-| "Ed25519 + ML-DSA-65 hybrid signatures" | [ol_pqsig]($HOME/Projects/Coherence/One_link/native/ol_pqsig) | Not yet wasm-compiled; appears in copy only. Will land next push. |
+| "Ed25519 + ML-DSA-65 hybrid signatures" | [ol_pqsig]($HOME/Projects/Coherence/One_link/native/ol_pqsig) + [ol_pqsig_wasm](live/wasm/ol_pqsig_wasm/) | Visit `/security/` → click "Sign a message with Ed25519 + ML-DSA-65". DevTools → Network → see `ol_pqsig_bg.wasm` load (257 KB). Output shows fresh 1984-byte hybrid pubkey + 3373-byte hybrid signature + verify-clean + reject-tampered-msg + reject-tampered-PQ-half. |
+| "Threshold recovery splits your identity across friends" | [ol_threshold_recovery]($HOME/Projects/Coherence/One_link/native/ol_threshold_recovery) + [ol_threshold_recovery_wasm](live/wasm/ol_threshold_recovery_wasm/) | Visit `/security/` → click "Split and recover a secret with 3-of-5 Shamir". Generates fresh 32-byte secret, splits into 5 shares, recovers from any 3, refuses with only 2. Real Shamir over GF(2^8). |
+| "Every message gets a fresh key. Forward secrecy." | [ol_ratchet]($HOME/Projects/Coherence/One_link/native/ol_ratchet) + [ol_ratchet_wasm](live/wasm/ol_ratchet_wasm/) | Visit `/security/` → click "Walk the ratchet six steps". Generates fresh chain key, derives 6 sequential message keys (all 32 bytes, all distinct), proves rewind refusal + skip-cap (MAX_SKIP_STEPS = 65,536 DoS guard). |
 | "Sphinx Coherence onion routing" | [ol_onion]($HOME/Projects/Coherence/One_link/native/ol_onion) | `ol_onion_wasm.liveDemoRoundTrip(payload)` runs real 3-hop wrap+peel. |
 | "Real Helmholtz physics on GPU" | [scripts/emit-wgsl.py](scripts/emit-wgsl.py) → coherence_lang wgsl_emitter | The shader at /live/shaders/coherence-field.wgsl has `coh_oscillator_force`, `coh_tau`, real PDE solver compute pass. |
 | "10,000 peers in 1.08 ms" | [ol_coherence_field]($HOME/Projects/Coherence/One_link/native/ol_coherence_field) benchmark output | Cited from daemon benches. Browser runs the same solver via `ol_coherence_field_wasm`. |

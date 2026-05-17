@@ -1164,6 +1164,86 @@ function wireThresholdDemo() {
 }
 
 // ---------------------------------------------------------------------------
+// 9a-quater. RATCHET FORWARD-SECRECY DEMO  (/security/ page)
+//
+// Loads ol_ratchet WASM, derives 6 sequential message keys from a fresh
+// chain key, proves they are all distinct, and shows the rewind refusal.
+// ---------------------------------------------------------------------------
+async function runRatchetDemo() {
+  try {
+    const mod = await import('/live/wasm/ol_ratchet.js');
+    await mod.default({ module_or_path: '/live/wasm/ol_ratchet_bg.wasm' });
+    const result = mod.liveDemoRoundTrip(6);
+    return {
+      ok: true,
+      version: mod.ol_ratchet_version(),
+      nKeys: result.nKeys,
+      chainKeyLen: result.chainKeyLen,
+      messageKeyLen: result.messageKeyLen,
+      rootPreview: result.rootPreview,
+      finalStep: result.finalStep,
+      keyPreviews: Array.from(result.keyPreviews || []),
+      allDistinct: result.allDistinct,
+      rewindErr: result.rewindErr,
+      skipErr: result.skipErr,
+      maxSkipSteps: result.maxSkipSteps,
+    };
+  } catch (e) {
+    return { ok: false, error: e?.message || String(e) };
+  }
+}
+window.olRunRatchetDemo = runRatchetDemo;
+
+function wireRatchetDemo() {
+  const btn = $('#ol-ratchet-btn');
+  const out = $('#ol-ratchet-out');
+  const status = $('#ol-ratchet-status');
+  if (!btn || !out) return;
+
+  btn.addEventListener('click', async () => {
+    btn.disabled = true;
+    if (status) status.style.display = 'inline-flex';
+    out.style.display = 'block';
+    out.textContent = 'walking the ratchet...';
+
+    const t0 = performance.now();
+    const result = await runRatchetDemo();
+    const dt = (performance.now() - t0).toFixed(1);
+
+    if (!result.ok) {
+      out.innerHTML = `<span style="color: var(--ol-rose);">ol_ratchet unavailable: ${escapeHtml(result.error || 'unknown')}</span>`;
+    } else {
+      const keyLines = result.keyPreviews.map((p, i) =>
+        `<span class="c">  step ${i}</span>          ${escapeHtml(p)}...`
+      ).join('\n');
+      const lines = [
+        `<span class="d">// real BLAKE3 KDF chain, ${dt} ms in your tab</span>`,
+        `<span class="c">crate</span>           ol_ratchet v${escapeHtml(result.version)}`,
+        `<span class="c">root chain key</span>  ${escapeHtml(result.rootPreview)}... (${result.chainKeyLen} bytes)`,
+        `<span class="c">message keys</span>    ${result.nKeys} derived, each ${result.messageKeyLen} bytes`,
+        ``,
+        keyLines,
+        ``,
+        `<span class="c">all distinct</span>    ` + (result.allDistinct
+          ? `<span class="g">yes (one-way KDF guarantees no collisions)</span>`
+          : `<span class="ol-rose">BUG: keys collided</span>`),
+        `<span class="c">chain step now</span>  ${result.finalStep}`,
+        ``,
+        `<span class="c">rewind attempt</span>  <span class="g">refused: ${escapeHtml(result.rewindErr)}</span>`,
+        `<span class="c">skip too large</span>  <span class="g">refused: ${escapeHtml(result.skipErr)}</span>`,
+        `<span class="c">max skip steps</span>  ${result.maxSkipSteps}  (DoS guard against unbounded derive)`,
+        ``,
+        `<span class="d">// compromise of step[3] gives the attacker step[3] only.</span>`,
+        `<span class="d">// deriving step[4] from step[3] requires inverting BLAKE3.</span>`,
+      ];
+      out.innerHTML = lines.join('\n');
+    }
+    if (status) status.style.display = 'none';
+    btn.disabled = false;
+  });
+}
+
+// ---------------------------------------------------------------------------
 // 9b. PRIVATE-ROUTE DEMO BUTTON  (/download/ page)
 //
 // Clicking the button runs a real ol_onion 3-hop wrap+peel in the browser
@@ -2281,6 +2361,7 @@ async function startCapAdvertSync() {
   wirePrivateRouteDemo();      // /download/ Sphinx route button
   wirePqSigDemo();             // /security/ Ed25519+ML-DSA-65 sign+verify demo
   wireThresholdDemo();         // /security/ Shamir K-of-N split+recover demo
+  wireRatchetDemo();           // /security/ forward-secret ratchet demo
   startMeshSolverColoring();   // /mesh/ peer-dot coloring via real solver
   wireTelemetry();             // ?-key system-telemetry overlay
   startCapAdvertSync();        // /features/ live cap-advert banner
