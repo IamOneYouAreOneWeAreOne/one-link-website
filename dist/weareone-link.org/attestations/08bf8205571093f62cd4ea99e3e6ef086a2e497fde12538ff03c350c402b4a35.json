@@ -1,0 +1,55 @@
+{
+  "$schema": "https://weareone-link.org/schemas/attestation-v2.json",
+  "artifact": {
+    "name": "one-link-source",
+    "version": "0.21.0-alpha.0",
+    "os": "source",
+    "filename": "one-link-source.tar.gz",
+    "sha256": "08bf8205571093f62cd4ea99e3e6ef086a2e497fde12538ff03c350c402b4a35",
+    "blake3": "1fc75882d4afd1a98db5ed5dce45f543e6a1b571217e22e9e8a333d995efb682",
+    "size_bytes": 19063387
+  },
+  "source": {
+    "repo": "https://github.com/IamOneYouAreOneWeAreOne/one-link",
+    "commit": "3a79ef5411ef8ff03e5a4d36ced64f7cc6b67a27",
+    "describe": "v0.21.0-alpha.0-78-g3a79ef5",
+    "license": "AGPL-3.0-or-later"
+  },
+  "build": {
+    "reproducible": "intent",
+    "compiler": "rustc 1.95+",
+    "started_at": "2026-05-17T00:00:00Z",
+    "finished_at": "2026-05-17T00:00:00Z",
+    "notes": [
+      "Built locally with PyInstaller --collect-all one_link_native.",
+      "Reproducibility property is an INTENT until the offline confidential-compute build rig is provisioned."
+    ]
+  },
+  "verifier_url": "https://weareone-link.org/api/attest/08bf8205571093f62cd4ea99e3e6ef086a2e497fde12538ff03c350c402b4a35",
+  "chain": {
+    "previous_release_sha256": "ea4efc8bf92f5ddd911e10f940a46899fda6fa786755ce797429b8fd62c05aed",
+    "previous_signed_by": "release-signer-ed25519"
+  },
+  "deferred_signatures": [
+    {
+      "scheme": "ml-dsa-65",
+      "status": "deferred",
+      "note": "Real ML-DSA-65 signing requires the Rust offline release rig that has not yet been provisioned. The schema slot is intentionally absent rather than placeholder-filled."
+    }
+  ],
+  "notes": [
+    "Schema v2: every artifact field is REAL. Signature is real Ed25519 over the canonical JSON (sort_keys, no whitespace, excluding the signatures array).",
+    "Hybrid post-quantum signature path is deferred to the next offline-rig build cycle; the signed_payload_spec records exactly what bytes were signed so anyone can independently re-verify with the public key.",
+    "To verify: hex-decode the signature, hex-decode the pubkey, ed25519.verify(sig, canonical_attestation_payload(doc), pk)."
+  ],
+  "signed_payload_spec": "json(doc with 'signatures' key removed) sort_keys=True separators=(',',':') -> ed25519 sign(raw 32-byte release key) -> 64-byte sig",
+  "signed_payload_sha256": "sha256-a6be3e73827d3cfc7b22db1ecfb357074750f38eb16201f04cd42ca104e5824e",
+  "signatures": [
+    {
+      "scheme": "ed25519",
+      "signer": "release-signer-ed25519@weareone-link.org",
+      "public_key_hex": "68c961f1ce26faa39acdf66d457e49126d1498aecbbce15ab49fe192d715cb2e",
+      "signature_hex": "ab25b02abd74679a666734194aeff107eefd3fdf5537bd9ac76820884901d095c67f05a803d7844653dd98a6d5aed8077d5f7a31439c4c84ee5d809a27a15802"
+    }
+  ]
+}

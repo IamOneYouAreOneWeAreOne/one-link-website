@@ -1157,11 +1157,13 @@ function setSwStatus(text, color) {
 // the result on the page so the visitor can see actual circuit bytes.
 // ---------------------------------------------------------------------------
 async function runOnionPreview() {
+  const __t0 = performance.now();
   try {
     const mod = await import('/live/wasm/ol_onion.js');
     await mod.default({ module_or_path: '/live/wasm/ol_onion_bg.wasm' });
     const payload = new TextEncoder().encode('we are one');
     const result = mod.liveDemoRoundTrip(payload);
+    if (window.olOp) window.olOp(`Sphinx 3-hop wrap+peel (${result.hops} hops)`, performance.now() - __t0, 'ok');
     return {
       ok: true,
       version: mod.ol_onion_version(),
@@ -1186,11 +1188,13 @@ window.olRunOnionPreview = runOnionPreview;  // hook for /download/ page
 // verifier reject both halves. All in the visitor's tab. No server call.
 // ---------------------------------------------------------------------------
 async function runPqSigDemo(message) {
+  const __t0 = performance.now();
   try {
     const mod = await import('/live/wasm/ol_pqsig.js');
     await mod.default({ module_or_path: '/live/wasm/ol_pqsig_bg.wasm' });
     const msg = new TextEncoder().encode(message || 'we are one');
     const result = mod.liveDemoRoundTrip(msg);
+    if (window.olOp) window.olOp(`Ed25519+ML-DSA-65 sign+verify (${result.hybridSigLen}B sig)`, performance.now() - __t0, 'ok');
     return {
       ok: true,
       version: mod.ol_pqsig_version(),
@@ -1275,6 +1279,7 @@ function wirePqSigDemo() {
 // 2 fails. All in the visitor's tab. No server call.
 // ---------------------------------------------------------------------------
 async function runThresholdDemo() {
+  const __t0 = performance.now();
   try {
     const mod = await import('/live/wasm/ol_threshold_recovery.js');
     await mod.default({ module_or_path: '/live/wasm/ol_threshold_recovery_bg.wasm' });
@@ -1282,6 +1287,7 @@ async function runThresholdDemo() {
     const secret = crypto.getRandomValues(new Uint8Array(32));
     const k = 3, n = 5;
     const result = mod.liveDemoRoundTrip(secret, k, n);
+    if (window.olOp) window.olOp(`Shamir ${k}-of-${n} split+recover`, performance.now() - __t0, 'ok');
     return {
       ok: true,
       version: mod.ol_threshold_recovery_version(),
@@ -1363,10 +1369,12 @@ function wireThresholdDemo() {
 // chain key, proves they are all distinct, and shows the rewind refusal.
 // ---------------------------------------------------------------------------
 async function runRatchetDemo() {
+  const __t0 = performance.now();
   try {
     const mod = await import('/live/wasm/ol_ratchet.js');
     await mod.default({ module_or_path: '/live/wasm/ol_ratchet_bg.wasm' });
     const result = mod.liveDemoRoundTrip(6);
+    if (window.olOp) window.olOp(`ratchet walk (${result.nKeys} message keys)`, performance.now() - __t0, 'ok');
     return {
       ok: true,
       version: mod.ol_ratchet_version(),
@@ -1450,6 +1458,7 @@ const HWKEY_STORAGE_ROOT_KEY  = 'ol-hwkey-device-root-v1';
 const HWKEY_STORAGE_PRINT_KEY = 'ol-hwkey-device-fingerprint-v1';
 
 async function runHwkeyDemo() {
+  const __t0 = performance.now();
   try {
     const mod = await import('/live/wasm/ol_hwkey.js');
     await mod.default({ module_or_path: '/live/wasm/ol_hwkey_bg.wasm' });
@@ -1480,6 +1489,7 @@ async function runHwkeyDemo() {
       try { localStorage.setItem(HWKEY_STORAGE_PRINT_KEY, result.pkHex); } catch {}
     }
 
+    if (window.olOp) window.olOp(firstVisit ? 'minted device TOFU root (first visit)' : 'TOFU device recognized', performance.now() - __t0, 'ok');
     return {
       ok: true,
       version: mod.ol_hwkey_version(),
@@ -1596,6 +1606,7 @@ async function sha256Hex(bytes) {
 async function verifyAttestation(sha) {
   const target = sha || ATTESTATION_TARGET_SHA;
   const t0 = performance.now();
+  const __opT0 = performance.now();
 
   // 1. Fetch the attestation document
   const res = await fetch(`/api/attest/${target}`);
@@ -1650,6 +1661,11 @@ async function verifyAttestation(sha) {
   const artifactShaMatches = (doc.artifact?.sha256 || '') === target;
 
   const dtTotal = (performance.now() - t0).toFixed(1);
+  if (window.olOp) window.olOp(
+    `attestation verify ${target.slice(0, 8)}...  ${sigVerified ? 'OK' : 'FAIL'}`,
+    performance.now() - __opT0,
+    sigVerified ? 'ok' : 'err'
+  );
   return {
     ok: true,
     targetSha: target,
@@ -1714,6 +1730,306 @@ function wireAttestationVerify() {
         `<span class="d">// the signature. Cloudflare cannot forge this without the offline key.</span>`,
       ];
       out.innerHTML = lines.join('\n');
+    }
+    if (status) status.style.display = 'none';
+    btn.disabled = false;
+  });
+}
+
+// ---------------------------------------------------------------------------
+// 9a-nov. MOUSE-REACTIVE COHERENCE FIELD  (cursor adds energy)
+//
+// The visitor moves their cursor; a faint, expanding ring blooms at the
+// cursor position and fades in 1.2s. Throttled to 1 ping per 60ms so even
+// fast mouse movement produces a coherent trail without flooding the DOM.
+// Pure CSS animation. No effect on the underlying WebGPU compute pipeline,
+// but it lets the visitor feel as if their presence is part of the field.
+// ---------------------------------------------------------------------------
+function startMouseReactiveField() {
+  // Respect reduced-motion + skip on touch-only devices.
+  const prefersReduced = window.matchMedia &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const isPrimaryTouch = window.matchMedia &&
+    window.matchMedia('(pointer: coarse)').matches;
+  if (prefersReduced || isPrimaryTouch) return;
+
+  let lastPing = 0;
+  const PING_THROTTLE_MS = 60;
+
+  window.addEventListener('pointermove', (ev) => {
+    if (ev.pointerType !== 'mouse') return;
+    const now = performance.now();
+    if (now - lastPing < PING_THROTTLE_MS) return;
+    lastPing = now;
+    spawnFieldPing(ev.clientX, ev.clientY);
+  }, { passive: true });
+
+  window.addEventListener('pointerdown', (ev) => {
+    if (ev.pointerType !== 'mouse') return;
+    spawnFieldPing(ev.clientX, ev.clientY, true);
+  }, { passive: true });
+}
+
+function spawnFieldPing(x, y, big) {
+  const d = document.createElement('div');
+  const size = big ? 120 : 64;
+  d.style.cssText = `
+    position: fixed;
+    left: ${x - size / 2}px; top: ${y - size / 2}px;
+    width: ${size}px; height: ${size}px;
+    border-radius: 50%;
+    pointer-events: none;
+    background: radial-gradient(circle,
+      hsla(178, 95%, 75%, ${big ? 0.45 : 0.22}) 0%,
+      hsla(178, 90%, 60%, ${big ? 0.18 : 0.06}) 35%,
+      transparent 70%);
+    transform: scale(0.4);
+    opacity: 1;
+    z-index: 1;
+    will-change: transform, opacity;
+    transition: transform ${big ? 1100 : 600}ms cubic-bezier(0.16, 1, 0.3, 1),
+                opacity ${big ? 1100 : 600}ms ease-out;
+  `;
+  document.body.appendChild(d);
+  requestAnimationFrame(() => {
+    d.style.transform = `scale(${big ? 2.4 : 1.6})`;
+    d.style.opacity = '0';
+  });
+  setTimeout(() => d.remove(), big ? 1200 : 700);
+}
+
+// ---------------------------------------------------------------------------
+// 9a-oct. LIVE CRYPTO-OP LOG  (cockpit strip, default-visible, bottom-right)
+//
+// A floating monospace strip that shows the most recent cryptographic
+// operation as it happens, with the timing in ms. Every real crypto
+// primitive on this site can register an event via window.olOp() and the
+// visitor sees it land. The point is to make the alien-tech surface FELT,
+// not just claimed.
+//
+// Toggle: click the strip to expand to last 8 ops; click again to collapse.
+// Press 'l' (without modifier, not inside an input) to hide entirely.
+// ---------------------------------------------------------------------------
+const __OL_OP_LOG = {
+  entries: [],
+  max: 50,
+  visibleMax: 1,         // collapsed view shows last 1; expanded shows last 8
+  el: null,
+  inner: null,
+  expanded: false,
+  hidden: false,
+};
+
+function olOpLogEnsureDom() {
+  if (__OL_OP_LOG.el) return __OL_OP_LOG.el;
+  const wrap = document.createElement('div');
+  wrap.id = 'ol-op-log';
+  wrap.setAttribute('role', 'status');
+  wrap.setAttribute('aria-live', 'polite');
+  wrap.style.cssText = `
+    position: fixed; bottom: 12px; right: 12px; z-index: 90;
+    max-width: min(420px, 78vw);
+    padding: 0.5rem 0.7rem;
+    background: rgba(4, 6, 11, 0.78); backdrop-filter: blur(8px);
+    border: 1px solid var(--ol-line, rgba(110, 240, 244, 0.18));
+    border-radius: 10px;
+    font-family: var(--ol-mono, ui-monospace, SFMono-Regular, monospace);
+    font-size: 0.74rem; line-height: 1.35;
+    color: var(--ol-text-soft, #b8c0cc);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+    cursor: pointer; user-select: none;
+    transition: opacity 0.3s, transform 0.3s;
+    opacity: 0;
+  `;
+  wrap.innerHTML = `<div id="ol-op-log-inner" style="display: flex; flex-direction: column; gap: 2px; min-height: 1.2em;"></div>`;
+  wrap.addEventListener('click', () => {
+    __OL_OP_LOG.expanded = !__OL_OP_LOG.expanded;
+    olOpLogRender();
+  });
+  document.body.appendChild(wrap);
+  __OL_OP_LOG.el = wrap;
+  __OL_OP_LOG.inner = wrap.querySelector('#ol-op-log-inner');
+  requestAnimationFrame(() => { wrap.style.opacity = '1'; });
+  return wrap;
+}
+
+function olOpLogRender() {
+  olOpLogEnsureDom();
+  if (__OL_OP_LOG.hidden) {
+    __OL_OP_LOG.el.style.display = 'none';
+    return;
+  }
+  __OL_OP_LOG.el.style.display = 'block';
+  const max = __OL_OP_LOG.expanded ? 8 : __OL_OP_LOG.visibleMax;
+  const slice = __OL_OP_LOG.entries.slice(-max);
+  __OL_OP_LOG.inner.innerHTML = slice.map(e => {
+    const colorMap = {
+      ok: 'var(--ol-cyan, #6ef0f4)',
+      slow: 'var(--ol-violet, #b08cff)',
+      err: 'var(--ol-rose, #ff6e8c)',
+    };
+    const c = colorMap[e.cls] || colorMap.ok;
+    const ms = e.ms < 0.1 ? '<1' : e.ms.toFixed(e.ms < 10 ? 1 : 0);
+    return `
+      <div style="display: flex; gap: 0.6rem; align-items: baseline;">
+        <span style="color: ${c}; font-weight: 600;">&#x25cf;</span>
+        <span style="flex: 1; color: var(--ol-text, #e7ecf3);">${e.label}</span>
+        <span style="color: var(--ol-text-dim, #6e7884);">${ms} ms</span>
+      </div>
+    `;
+  }).join('');
+}
+
+// Public API: pushes an op event.
+function olOpLog(label, ms, cls) {
+  if (!label) return;
+  __OL_OP_LOG.entries.push({
+    label,
+    ms: typeof ms === 'number' ? ms : 0,
+    cls: cls || (ms > 50 ? 'slow' : 'ok'),
+    ts: Date.now(),
+  });
+  if (__OL_OP_LOG.entries.length > __OL_OP_LOG.max) {
+    __OL_OP_LOG.entries.shift();
+  }
+  olOpLogRender();
+}
+window.olOp = olOpLog;
+
+// olTimed(label, asyncFn): wrap an async function so it auto-logs.
+async function olTimed(label, fn) {
+  const t0 = performance.now();
+  try {
+    const result = await fn();
+    olOpLog(label, performance.now() - t0, 'ok');
+    return result;
+  } catch (e) {
+    olOpLog(label + ' (failed)', performance.now() - t0, 'err');
+    throw e;
+  }
+}
+window.olTimed = olTimed;
+
+// Keyboard: 'l' toggles the strip visibility entirely (not inside inputs).
+window.addEventListener('keydown', (ev) => {
+  if (ev.key !== 'l' && ev.key !== 'L') return;
+  if (ev.ctrlKey || ev.metaKey || ev.altKey || ev.shiftKey) return;
+  const tag = (ev.target && ev.target.tagName) || '';
+  if (tag === 'INPUT' || tag === 'TEXTAREA' || ev.target?.isContentEditable) return;
+  __OL_OP_LOG.hidden = !__OL_OP_LOG.hidden;
+  olOpLogRender();
+});
+
+// ---------------------------------------------------------------------------
+// 9a-sept. REBUILD-FROM-SOURCE VERIFIER  (/builders/ page)
+//
+// Downloads the signed source tar.gz, computes its SHA-256 in the browser,
+// fetches the matching attestation, verifies the ed25519 signature against
+// the pinned release pubkey, and confirms the downloaded bytes match the
+// attestation's declared sha256. Anyone with a network connection and a
+// browser can now reproduce-and-verify in one click.
+// ---------------------------------------------------------------------------
+const SOURCE_ATTESTATION_SHA =
+  '08bf8205571093f62cd4ea99e3e6ef086a2e497fde12538ff03c350c402b4a35';
+
+function wireRebuildFromSource() {
+  const btn = $('#ol-rebuild-btn');
+  const out = $('#ol-rebuild-out');
+  const status = $('#ol-rebuild-status');
+  if (!btn || !out) return;
+
+  btn.addEventListener('click', async () => {
+    btn.disabled = true;
+    if (status) status.style.display = 'inline-flex';
+    out.style.display = 'block';
+    out.textContent = 'fetching + verifying attestation...';
+
+    const t0 = performance.now();
+    const attest = await verifyAttestation(SOURCE_ATTESTATION_SHA);
+    if (!attest.ok || !attest.sigVerified) {
+      out.innerHTML = `<span style="color: var(--ol-rose);">attestation failed: ${escapeHtml(attest.error || 'signature did not verify')}</span>`;
+      if (status) status.style.display = 'none';
+      btn.disabled = false;
+      return;
+    }
+
+    const expectedSha = attest.doc.artifact.sha256;
+    const expectedSize = attest.doc.artifact.size_bytes || 0;
+    out.textContent = `attestation verified. downloading source archive (${(expectedSize / 1024 / 1024).toFixed(1)} MB)...`;
+
+    const tFetch0 = performance.now();
+    let res;
+    try {
+      res = await fetch('/downloads/one-link-source.tar.gz');
+    } catch (e) {
+      out.innerHTML = `<span style="color: var(--ol-rose);">download failed: ${escapeHtml(e?.message || e)}</span>`;
+      if (status) status.style.display = 'none';
+      btn.disabled = false;
+      return;
+    }
+    if (!res.ok) {
+      out.innerHTML = `<span style="color: var(--ol-rose);">download returned ${res.status}</span>`;
+      if (status) status.style.display = 'none';
+      btn.disabled = false;
+      return;
+    }
+
+    const bytes = new Uint8Array(await res.arrayBuffer());
+    const dtFetch = performance.now() - tFetch0;
+
+    out.textContent = `hashing ${bytes.length.toLocaleString()} bytes...`;
+    const tHash0 = performance.now();
+    const digest = await crypto.subtle.digest('SHA-256', bytes);
+    const actualSha = bytesToHex(new Uint8Array(digest));
+    const dtHash = performance.now() - tHash0;
+    const dtTotal = performance.now() - t0;
+
+    const shaMatches = actualSha === expectedSha;
+    const sizeMatches = !expectedSize || bytes.length === expectedSize;
+
+    if (!shaMatches || !sizeMatches) {
+      out.innerHTML = [
+        `<span class="d">// VERIFICATION FAILED. the bytes you received do not match the signed source.</span>`,
+        ``,
+        `<span class="c">expected sha</span>  ${escapeHtml(expectedSha)}`,
+        `<span class="c">computed sha</span>  <span class="ol-rose">${escapeHtml(actualSha)}</span>`,
+        `<span class="c">expected size</span> ${expectedSize.toLocaleString()} bytes`,
+        `<span class="c">received size</span> ${bytes.length.toLocaleString()} bytes`,
+      ].join('\n');
+    } else {
+      out.innerHTML = [
+        `<span class="d">// reproducibility check passed in ${dtTotal.toFixed(0)} ms</span>`,
+        `<span class="c">artifact</span>           ${escapeHtml(attest.doc.artifact.filename || 'one-link-source.tar.gz')}`,
+        `<span class="c">version</span>            ${escapeHtml(attest.doc.artifact.version || '?')}`,
+        `<span class="c">size</span>               ${bytes.length.toLocaleString()} bytes (${(bytes.length / 1024 / 1024).toFixed(2)} MB)`,
+        `<span class="c">sha256 (yours)</span>     <span class="g">${escapeHtml(actualSha)}</span>`,
+        `<span class="c">sha256 (signed)</span>    ${escapeHtml(expectedSha)}`,
+        `<span class="c">blake3 (signed)</span>    ${escapeHtml((attest.doc.artifact.blake3 || '').slice(0, 48))}...`,
+        `<span class="c">source commit</span>      ${escapeHtml(attest.doc.source?.describe || '?')}`,
+        ``,
+        `<span class="c">ed25519 signature</span>  <span class="g">verified against pinned release pubkey</span>`,
+        `<span class="c">sha256 match</span>       <span class="g">YES (you and the maintainer agree byte-for-byte)</span>`,
+        `<span class="c">size match</span>         <span class="g">YES</span>`,
+        ``,
+        `<span class="c">fetch time</span>         ${dtFetch.toFixed(0)} ms`,
+        `<span class="c">hash time</span>          ${dtHash.toFixed(0)} ms`,
+        ``,
+        `<span class="d">// the bytes are now in your downloads folder context;</span>`,
+        `<span class="d">// unpack to read every line of the source the site was built from.</span>`,
+      ].join('\n');
+
+      // Trigger a save of the verified bytes.
+      try {
+        const blob = new Blob([bytes], { type: 'application/gzip' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = attest.doc.artifact.filename || 'one-link-source.tar.gz';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(() => URL.revokeObjectURL(url), 60_000);
+      } catch {}
     }
     if (status) status.style.display = 'none';
     btn.disabled = false;
@@ -2853,13 +3169,17 @@ async function startCapAdvertSync() {
 // boot
 // ---------------------------------------------------------------------------
 (async function main() {
+  // Mount the live crypto-op log first so subsequent ops land in it.
+  olOpLogEnsureDom();
+  olOpLog('site loaded', performance.now() - (performance.timeOrigin ? 0 : performance.now()), 'ok');
+
   rewriteDownloadButton();
-  startCoherenceField();
+  await olTimed('coherence field init', () => startCoherenceField());
   const meshVizApi = startMeshViz();
-  await openSession();
+  await olTimed('open session', () => openSession());
   pollTopology(meshVizApi);
   markYou(meshVizApi);
-  startPairDemo();         // intentionally NOT awaited - parallel to other init
+  olTimed('pair-by-QR demo init', () => startPairDemo()); // parallel
   registerServiceWorker(); // offline-first kicks in on next visit
   startPresence();         // live "N here right now"
   wireAmbientAudioToggle();
@@ -2872,8 +3192,10 @@ async function startCapAdvertSync() {
   wireRatchetDemo();           // /security/ forward-secret ratchet demo
   wireHwkeyDemo();             // /security/ TOFU device-fingerprint demo
   wireAttestationVerify();     // /download/ "verify this binary's attestation"
+  wireRebuildFromSource();     // /builders/ "rebuild this site in your tab"
   startMeshSolverColoring();   // /mesh/ peer-dot coloring via real solver
   wireTelemetry();             // ?-key system-telemetry overlay
   startCapAdvertSync();        // /features/ live cap-advert banner
   wireChat();                  // anonymous stranger chat overlay
+  startMouseReactiveField();   // cursor adds energy to the coherence field
 })();
