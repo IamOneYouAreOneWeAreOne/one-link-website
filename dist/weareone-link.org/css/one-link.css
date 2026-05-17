@@ -1122,10 +1122,14 @@ main { position: relative; z-index: 1; }
 /* =============================================================================
    SKIP LINK
    ========================================================================== */
+/* Accessibility skip link: invisible to mouse users, revealed on keyboard
+   focus so screen-reader / Tab users can jump past the nav. The clip-path
+   + negative top combo ensures ZERO pixels leak out at any zoom level. */
 .skip-link {
   position: absolute;
-  top: -40px;
+  top: 0;
   left: 8px;
+  transform: translateY(-100%);
   background: var(--ol-cyan);
   color: var(--ol-bg);
   padding: 8px 14px;
@@ -1133,8 +1137,14 @@ main { position: relative; z-index: 1; }
   z-index: 999;
   text-decoration: none;
   font-weight: 600;
+  clip-path: inset(0);
+  transition: transform 0.15s ease-out;
 }
-.skip-link:focus { top: 8px; }
+.skip-link:focus {
+  transform: translateY(8px);
+  outline: 2px solid var(--ol-cyan);
+  outline-offset: 2px;
+}
 
 /* =============================================================================
    OVERRIDE CEL inheritance  (kill anything that leaks through)
