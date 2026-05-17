@@ -46,3 +46,4 @@ Thumbs.db
 # Optional local-only dist staging (real dist/ DOES get committed so the
 # Worker can deploy the prebuilt assets without a CI build step).
 /dist-local/
+staging/

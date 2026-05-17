@@ -43,10 +43,11 @@ new_classes = ["MeshPresence"]
 #   R2 -> Create bucket -> "one-link-attestations"
 # Then uncomment:
 
-# [[r2_buckets]]
-# binding = "RELEASES"
-# bucket_name = "one-link-releases"
+[[r2_buckets]]
+binding = "RELEASES"
+bucket_name = "one-link-releases"
 
+# attestations bucket: create when first signed release is published.
 # [[r2_buckets]]
 # binding = "ATTESTATIONS"
 # bucket_name = "one-link-attestations"
