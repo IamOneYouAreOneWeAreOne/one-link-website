@@ -524,6 +524,23 @@ function shareRandomId() {
     .replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
 }
 
+// Reduce an IP to a /24 (IPv4) or /48 (IPv6) so co-tenants behind a single
+// NAT or carrier-grade gateway share a rate budget, but distinct end-users
+// don't collide. Falls back to the full string if the format is unfamiliar.
+function shareRateBucketKey(ip) {
+  if (!ip || typeof ip !== "string") return "unknown";
+  // IPv4: a.b.c.d -> "v4:a.b.c"
+  const v4 = ip.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.\d{1,3}$/);
+  if (v4) return `v4:${v4[1]}.${v4[2]}.${v4[3]}`;
+  // IPv6: full or compressed; take first 3 hextets (/48).
+  if (ip.includes(":")) {
+    const parts = ip.toLowerCase().split(":");
+    const head = parts.slice(0, 3).join(":");
+    return `v6:${head}`;
+  }
+  return `raw:${ip}`;
+}
+
 async function shareUpload(env, request) {
   if (!env.RELEASES) {
     return json({ error: "R2 not bound" }, { status: 503 });
@@ -535,6 +552,36 @@ async function shareUpload(env, request) {
   const lenHeader = parseInt(request.headers.get("Content-Length") || "0", 10);
   if (lenHeader && lenHeader > SHARE_MAX_BYTES) {
     return json({ error: "too large", max_bytes: SHARE_MAX_BYTES }, { status: 413 });
+  }
+
+  // -------------------------------------------------------------------
+  // Rate limit: per-IP token bucket in a Durable Object. Keyed by
+  // CF-Connecting-IP (Cloudflare's authoritative client-IP header,
+  // unfakeable from outside the edge). One bucket per /24 subnet so
+  // dial-up NAT pools share a budget but normal users see their own.
+  // -------------------------------------------------------------------
+  if (env.SHARE_RATE) {
+    const ip = request.headers.get("CF-Connecting-IP") || "0.0.0.0";
+    const bucketKey = shareRateBucketKey(ip);
+    const rateId = env.SHARE_RATE.idFromName(bucketKey);
+    const rateStub = env.SHARE_RATE.get(rateId);
+    const rateUrl = new URL("https://share-rate/check");
+    rateUrl.searchParams.set("cost", "1");
+    const rateRes = await rateStub.fetch(rateUrl.toString(), { method: "POST" });
+    if (rateRes.status === 429) {
+      const retry = rateRes.headers.get("Retry-After") || "60";
+      return json(
+        {
+          error: "rate limited",
+          retry_after_seconds: parseInt(retry, 10) || 60,
+          note: "Too many uploads from your network. Try again in a minute.",
+        },
+        {
+          status: 429,
+          headers: { "Retry-After": String(retry) },
+        }
+      );
+    }
   }
 
   const body = await request.arrayBuffer();
@@ -796,6 +843,119 @@ export class MeshPresence {
     server.addEventListener("error", cleanup);
 
     return new Response(null, { status: 101, webSocket: client });
+  }
+}
+
+// -----------------------------------------------------------------------------
+// ShareRate Durable Object  -  per-IP token bucket for /api/share abuse control
+//
+// Each DO instance is one bucket, keyed by the /24 (or /48 for v6) of the
+// uploader's CF-Connecting-IP. The Worker dials this DO before accepting an
+// upload; if the bucket has tokens, it consumes one and the upload proceeds.
+// If empty, the DO returns 429 with a Retry-After header.
+//
+// Tunables (intentionally generous for normal users, ruinous for scripted
+// floods):
+//
+//   CAPACITY    = 12        max burst   (12 uploads back-to-back)
+//   REFILL_RATE = 2/min     steady state (one upload per 30s)
+//
+// At 2/min, a real human pasting links to friends never notices. A botnet
+// trying to fill R2 from one /24 is throttled to 2880/day per subnet, with
+// the 25 MiB-per-upload cap making it a 70 GiB/day ceiling per source - and
+// R2 will gladly bill the operator for those tokens, not us, until the
+// bucket fires.
+//
+// State is held in instance memory + DO storage. DO migrations preserve
+// storage across deploys; an idle bucket gets evicted by the DO runtime
+// after ~30 days, which is fine (it just resets to full).
+// -----------------------------------------------------------------------------
+const SHARE_RATE_CAPACITY    = 12;
+const SHARE_RATE_REFILL_PER_S = 2 / 60; // 2 per minute
+
+export class ShareRate {
+  constructor(state, env) {
+    this.state = state;
+    this.env = env;
+    this.tokens = null;        // lazy-loaded from storage on first hit
+    this.lastRefillMs = null;
+  }
+
+  async loadState() {
+    if (this.tokens !== null) return;
+    const stored = await this.state.storage.get(["tokens", "last_refill_ms"]);
+    this.tokens = typeof stored.get("tokens") === "number"
+      ? stored.get("tokens") : SHARE_RATE_CAPACITY;
+    this.lastRefillMs = typeof stored.get("last_refill_ms") === "number"
+      ? stored.get("last_refill_ms") : Date.now();
+  }
+
+  refill(nowMs) {
+    const elapsedSec = Math.max(0, (nowMs - this.lastRefillMs) / 1000);
+    const earned = elapsedSec * SHARE_RATE_REFILL_PER_S;
+    this.tokens = Math.min(SHARE_RATE_CAPACITY, this.tokens + earned);
+    this.lastRefillMs = nowMs;
+  }
+
+  secondsUntilOneToken() {
+    if (this.tokens >= 1) return 0;
+    const needed = 1 - this.tokens;
+    return Math.ceil(needed / SHARE_RATE_REFILL_PER_S);
+  }
+
+  async persist() {
+    await this.state.storage.put({
+      tokens: this.tokens,
+      last_refill_ms: this.lastRefillMs,
+    });
+  }
+
+  async fetch(request) {
+    const url = new URL(request.url);
+    await this.loadState();
+    const now = Date.now();
+    this.refill(now);
+
+    if (url.pathname === "/check" && request.method === "POST") {
+      const cost = parseFloat(url.searchParams.get("cost") || "1") || 1;
+      if (this.tokens >= cost) {
+        this.tokens -= cost;
+        await this.persist();
+        return new Response(
+          JSON.stringify({ ok: true, remaining: this.tokens }),
+          { headers: { "Content-Type": "application/json" } }
+        );
+      }
+      const retryAfter = this.secondsUntilOneToken();
+      await this.persist();
+      return new Response(
+        JSON.stringify({
+          ok: false,
+          remaining: this.tokens,
+          retry_after_seconds: retryAfter,
+        }),
+        {
+          status: 429,
+          headers: {
+            "Content-Type": "application/json",
+            "Retry-After": String(retryAfter),
+          },
+        }
+      );
+    }
+
+    if (url.pathname === "/peek") {
+      return new Response(
+        JSON.stringify({
+          tokens: this.tokens,
+          capacity: SHARE_RATE_CAPACITY,
+          refill_per_second: SHARE_RATE_REFILL_PER_S,
+        }),
+        { headers: { "Content-Type": "application/json" } }
+      );
+    }
+
+    return new Response("not found", { status: 404 });
   }
 }
 

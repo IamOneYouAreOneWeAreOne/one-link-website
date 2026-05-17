@@ -43,6 +43,11 @@ Thumbs.db
 *.pem
 *-private*
 
+# Offline ed25519 signing key for /manifest.json. ONLY the public half
+# is committed (pinned as a constant in dist/weareone-link.org/sw.js).
+# The private key lives ONLY in .keys/manifest-ed25519.sk on this box.
+.keys/
+
 # Optional local-only dist staging (real dist/ DOES get committed so the
 # Worker can deploy the prebuilt assets without a CI build step).
 /dist-local/

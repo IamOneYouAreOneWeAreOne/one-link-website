@@ -27,6 +27,10 @@ class_name = "NativeSession"
 name = "PRESENCE"
 class_name = "MeshPresence"
 
+[[durable_objects.bindings]]
+name = "SHARE_RATE"
+class_name = "ShareRate"
+
 [[migrations]]
 tag = "v1"
 new_classes = ["NativeSession"]
@@ -34,6 +38,10 @@ new_classes = ["NativeSession"]
 [[migrations]]
 tag = "v2"
 new_classes = ["MeshPresence"]
+
+[[migrations]]
+tag = "v3"
+new_classes = ["ShareRate"]
 
 # =============================================================================
 # R2 BUCKETS  (uncomment after you create them in the Cloudflare dashboard)
