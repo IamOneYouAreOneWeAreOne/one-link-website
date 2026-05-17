@@ -247,24 +247,74 @@ async function attestation(env, sha, request) {
 }
 
 // -----------------------------------------------------------------------------
-// POST /api/session - server-side X25519 + ML-KEM-768 hybrid handshake init
+// POST /api/session - server-side X25519 (real) + ML-KEM-768 (deferred) handshake
 //
-// Body: { client_x25519: hex, client_mlkem768_ct: hex }
-// Returns: { server_x25519: hex, server_mlkem768_pk: hex, session_id: hex }
+// Returns: {
+//   server_x25519:       hex (32 bytes, REAL Worker-side WebCrypto-generated)
+//   server_mlkem768_pk:  null  (deferred until WASM-in-Worker tooling ships)
+//   session_id:          hex (16 bytes)
+//   handshake_version:   "x25519-v1+mlkem768-pending"
+// }
 //
-// In-browser WASM combines (x25519_shared || mlkem768_shared) -> HKDF -> root key.
-// Site session is then E2EE between browser and Worker. No cookies needed;
-// session_id is held in JS memory, vanishes on tab close.
+// Currently the X25519 half is genuine: the Worker mints a fresh X25519
+// keypair via WebCrypto every restart, holds it in instance memory (no
+// disk, no KV), and serves the public half. Browser side runs ECDH
+// against it and gets a real classical shared secret.
+//
+// The PQ-hybrid half (ML-KEM-768) lands once we bundle ol_pqkem WASM
+// for the Workers runtime - the bundler dance is more involved than
+// fits in this push; doing it half-right would be worse than a clean
+// deferral.
+//
+// What the browser-side ol_pqkem WASM still proves (in-tab):
+//   - both halves of the hybrid KEM compose correctly (Alice <-> Bob
+//     locally; see /security/ when PQ-KEM demo ships)
+//   - byte-identical to what the daemon would compute
+//   So the protocol primitive is verifiable. The SERVER's PQ half is
+//   what's pending here, not the math.
 // -----------------------------------------------------------------------------
+let __SERVER_X25519_KEY = null;
+async function getOrMintServerX25519() {
+  if (__SERVER_X25519_KEY) return __SERVER_X25519_KEY;
+  const pair = await crypto.subtle.generateKey(
+    { name: "X25519" },
+    true,
+    ["deriveBits", "deriveKey"]
+  );
+  const raw = await crypto.subtle.exportKey("raw", pair.publicKey);
+  __SERVER_X25519_KEY = {
+    publicKey: pair.publicKey,
+    privateKey: pair.privateKey,
+    publicKeyHex: [...new Uint8Array(raw)]
+      .map(b => b.toString(16).padStart(2, "0"))
+      .join(""),
+  };
+  return __SERVER_X25519_KEY;
+}
+
 async function openSession(env, request) {
-  // Stub until ol_pqkem WASM bindings are wired. Returns shape the bridge
-  // expects so the page can render the "session established" indicator.
+  let serverKey;
+  try {
+    serverKey = await getOrMintServerX25519();
+  } catch (e) {
+    return json(
+      {
+        error: "x25519 unavailable on this runtime",
+        detail: e?.message || String(e),
+      },
+      { status: 503 }
+    );
+  }
   return json({
-    server_x25519: "00".repeat(32),
-    server_mlkem768_pk: "00".repeat(1184),
-    session_id: crypto.randomUUID().replace(/-/g, ""),
-    handshake_version: "x25519+mlkem768-v1",
-    note: "hybrid handshake stub: real keys wired once ol_pqkem WASM is bound",
+    server_x25519: serverKey.publicKeyHex,
+    server_mlkem768_pk: null,
+    session_id: crypto.randomUUID().replace(/-/g, "").slice(0, 32),
+    handshake_version: "x25519-v1+mlkem768-pending",
+    note:
+      "X25519 half is real (Worker WebCrypto-generated, in-memory). " +
+      "ML-KEM-768 half lands when the WASM-in-Worker bundler dance is " +
+      "complete. Browser-side ol_pqkem WASM exercises BOTH halves " +
+      "locally so the hybrid math is verifiable today.",
   });
 }
 
@@ -328,6 +378,21 @@ async function download(env, os, request) {
       const headers = new Headers();
       headers.set("Content-Type", "application/octet-stream");
       headers.set("Content-Disposition", 'attachment; filename="one-link.exe"');
+      headers.set("Cache-Control", "public, max-age=86400");
+      for (const [k, v] of Object.entries(PRIVACY_HEADERS)) headers.set(k, v);
+      return new Response(obj.body, { headers });
+    }
+  }
+
+  // Linux x86_64 .tar.gz: PyInstaller onedir bundle, gzipped (~72 MB).
+  // To install: `tar xzf one-link-linux-x86_64.tar.gz && cd one-link &&
+  // ./one-link`. Single-executable AppImage build comes next push.
+  if (os === "linux" && env.RELEASES) {
+    const obj = await env.RELEASES.get("latest/one-link-linux-x86_64.tar.gz");
+    if (obj) {
+      const headers = new Headers();
+      headers.set("Content-Type", "application/gzip");
+      headers.set("Content-Disposition", 'attachment; filename="one-link-linux-x86_64.tar.gz"');
       headers.set("Cache-Control", "public, max-age=86400");
       for (const [k, v] of Object.entries(PRIVACY_HEADERS)) headers.set(k, v);
       return new Response(obj.body, { headers });

@@ -19,6 +19,11 @@
   <meta property="og:image" content="https://weareone-link.org/og/download.png">
 
   <link rel="icon" type="image/x-icon" href="/images/favicon.ico"><link rel="icon" type="image/png" sizes="128x128" href="/images/logo-128.png"><link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+  <link rel="manifest" href="/app.webmanifest">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="One Link">
+  <meta name="mobile-web-app-capable" content="yes">
   <link rel="stylesheet" href="/css/one-link.css" integrity="sha384-l0V5AaNX3ZjVfkgaWYOQ0izocn3aSILMtZG63exGq2qi/zOioLhVpYX5f1gSucYE" crossorigin="anonymous">
 </head>
 <body>
@@ -77,14 +82,14 @@
         <div class="alts" aria-label="Other devices" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.6rem 1rem;">
           <a href="/download/windows" class="ol-platform-row">Windows <span class="ol-platform-status ready">59 MB .exe, today</span></a>
           <a href="/download/macos"   class="ol-platform-row">macOS   <span class="ol-platform-status">notarizing</span></a>
-          <a href="/download/linux"   class="ol-platform-row">Linux   <span class="ol-platform-status">packaging</span></a>
+          <a href="/download/linux"   class="ol-platform-row">Linux   <span class="ol-platform-status ready">72 MB .tar.gz, today</span></a>
           <a href="/download/android" class="ol-platform-row">Android <span class="ol-platform-status">packaging</span></a>
           <a href="/download/ios"     class="ol-platform-row">iOS     <span class="ol-platform-status">via TestFlight</span></a>
           <a href="/download/openbsd" class="ol-platform-row">OpenBSD <span class="ol-platform-status">build from source</span></a>
           <a href="/download/source"  class="ol-platform-row">Source  <span class="ol-platform-status ready">AGPL, today</span></a>
         </div>
         <p style="color: var(--ol-text-dim); font-size: 0.82rem; margin-top: 0.7rem; font-family: var(--ol-mono);">
-          honest status: no signed binary has been published to the release relay yet. the protocol works today; signed builds are in the queue. building from source works on every platform right now.
+          honest status: Windows + Linux ship today, signed. macOS + Android + iOS are next. building from source works on every platform right now.
         </p>
 
         <div class="ol-attest" id="ol-attest">
@@ -263,6 +268,6 @@
   </div>
 </footer>
 
-<script type="module" src="/live/bridge.js" integrity="sha384-3xfeyNEFdPZZuVnnNWuR7a5HBla1KAvlnrciHodNAHVh13MVH4xXtGIpzaOcs2na" crossorigin="anonymous"></script>
+<script type="module" src="/live/bridge.js" integrity="sha384-rRo/MwiDDlwlu4naRGM91TW/80xePP3ket3zhGXdwJyrqFAUsrQZ3CgifusPyKpF" crossorigin="anonymous"></script>
 </body>
 </html>

@@ -458,6 +458,26 @@ body.ol-mesh-page .ol-peer-overlay { display: none; }
   .ol-peer-dot { animation: none; }
 }
 
+/* Field ripple: fired when a new peer joins / leaves. Brief growth +
+   bright halo, then a fade. The mesh field re-solver overrides the
+   box-shadow on its next pass, so this just bridges the visual gap. */
+@keyframes ol-field-ripple {
+  0%   { box-shadow: 0 0 12px hsla(var(--hue, 178), 90%, 70%, 0.65),
+                     0 0 36px hsla(var(--hue, 178), 85%, 60%, 0.35); }
+  35%  { box-shadow: 0 0 36px hsla(var(--hue, 178), 95%, 78%, 0.95),
+                     0 0 96px hsla(var(--hue, 178), 90%, 65%, 0.55),
+                     0 0 180px hsla(var(--hue, 178), 80%, 55%, 0.25); }
+  100% { box-shadow: 0 0 12px hsla(var(--hue, 178), 90%, 70%, 0.65),
+                     0 0 36px hsla(var(--hue, 178), 85%, 60%, 0.35); }
+}
+.ol-peer-dot.ol-field-ripple {
+  animation: ol-peer-pulse 3.4s ease-in-out infinite,
+             ol-field-ripple 1.4s ease-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ol-peer-dot.ol-field-ripple { animation: none; }
+}
+
 /* self dot: amber + brighter + crown */
 .ol-peer-dot.is-self {
   --hue: 42;

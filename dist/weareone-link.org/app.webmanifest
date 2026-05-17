@@ -1,0 +1,71 @@
+{
+  "name": "One Link",
+  "short_name": "One Link",
+  "description": "Free, private, peer-to-peer. Messages, files, devices. Owned by no one. Belongs to everyone.",
+  "id": "/",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui", "browser"],
+  "orientation": "any",
+  "background_color": "#04060b",
+  "theme_color": "#04060b",
+  "lang": "en",
+  "dir": "ltr",
+  "categories": ["communication", "productivity", "social"],
+  "icons": [
+    {
+      "src": "/images/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/logo-128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/logo-256.png",
+      "sizes": "256x256",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/logo-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/images/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Share a file",
+      "short_name": "Share",
+      "description": "Drop a file, get an encrypted one-shot link",
+      "url": "/share/",
+      "icons": [{ "src": "/images/logo-128.png", "sizes": "128x128" }]
+    },
+    {
+      "name": "Get One Link",
+      "short_name": "Get it",
+      "description": "Download One Link for your device",
+      "url": "/download/",
+      "icons": [{ "src": "/images/logo-128.png", "sizes": "128x128" }]
+    },
+    {
+      "name": "Live mesh",
+      "short_name": "Mesh",
+      "description": "See who else is here right now",
+      "url": "/mesh/",
+      "icons": [{ "src": "/images/logo-128.png", "sizes": "128x128" }]
+    }
+  ]
+}

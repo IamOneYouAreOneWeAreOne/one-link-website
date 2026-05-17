@@ -84,7 +84,11 @@ function rewriteDownloadButton() {
 // next to the button). If JS is off or fetch fails, the browser still
 // gets the file via the original anchor href (default navigation).
 // ---------------------------------------------------------------------------
-const VERIFYING_DOWNLOAD_OS = new Set(['windows']);
+const VERIFYING_DOWNLOAD_OS = new Set(['windows', 'linux']);
+const VERIFYING_DOWNLOAD_SHA = {
+  windows: 'ea4efc8bf92f5ddd911e10f940a46899fda6fa786755ce797429b8fd62c05aed',
+  linux:   '81265f07413bea8934c2eeaf219c83c50cb778acaae7a29b7a63cdbc55533869',
+};
 
 function wireVerifyingDownloadOn(btn, os) {
   if (!btn || !VERIFYING_DOWNLOAD_OS.has(os)) return;
@@ -156,7 +160,7 @@ async function runVerifyingDownload(btn, os) {
   setVdBar(0);
 
   // 1. Fetch the attestation to learn the expected SHA + size.
-  const target = ATTESTATION_TARGET_SHA;
+  const target = VERIFYING_DOWNLOAD_SHA[os] || ATTESTATION_TARGET_SHA;
   const attest = await verifyAttestation(target);
   if (!attest.ok || !attest.sigVerified) {
     setVdStatus('attestation verification failed - aborting', 'var(--ol-rose)');
@@ -2534,10 +2538,41 @@ async function startMeshSolverColoring() {
     return;
   }
 
-  // Build a tiny graph every few seconds: visitor + peers + a central anchor.
-  // Edges are nearest-K (K=3) with weight = 1/distance.
+  // Build a tiny graph every second: visitor + peers + a central anchor.
+  // Edges are nearest-K (K=3) with weight = 1/distance. Edge events from
+  // presence (peer join / leave) trigger an immediate recolor + ripple pulse
+  // so the field is visibly responsive to new connections.
   const D = 0.05;     // diffusion
   const GAMMA = 0.18; // damping; matches the WGSL solver's gamma
+
+  let lastPeerCount = -1;
+  let recolorTimer = null;
+
+  // Listen for peer changes so a new join triggers an immediate recolor
+  // + a visible ripple pulse instead of waiting for the next periodic tick.
+  function checkPeerChange() {
+    const dotCount = $$('#ol-peer-overlay .ol-peer-dot').length;
+    if (lastPeerCount !== -1 && dotCount !== lastPeerCount) {
+      pulseRipple();
+      if (recolorTimer) { clearTimeout(recolorTimer); }
+      setTimeout(recolor, 60);
+    }
+    lastPeerCount = dotCount;
+  }
+  setInterval(checkPeerChange, 500);
+
+  // Brief visual ripple across all dots when a peer joins / leaves: a single
+  // CSS animation that grows + fades the box-shadow, then the next recolor
+  // overrides it with the field-derived steady state. Pure CSS keyframes.
+  function pulseRipple() {
+    const dots = $$('#ol-peer-overlay .ol-peer-dot');
+    for (const d of dots) {
+      d.classList.remove('ol-field-ripple');
+      // force reflow so the animation restarts
+      void d.offsetWidth;
+      d.classList.add('ol-field-ripple');
+    }
+  }
 
   function recolor() {
     const overlay = $('#ol-mesh-canvas-overlay') || $('.ol-mesh-overlay');
@@ -2618,7 +2653,7 @@ async function startMeshSolverColoring() {
     const readout = $('#ol-mesh-field-readout');
     if (readout) readout.textContent = `mean tau ${mean.toFixed(3)}`;
 
-    setTimeout(recolor, 2000);
+    recolorTimer = setTimeout(recolor, 1000);
   }
   recolor();
 }

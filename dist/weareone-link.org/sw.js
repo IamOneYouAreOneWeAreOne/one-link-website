@@ -29,7 +29,7 @@
    License: AGPL-3.0-or-later
    ============================================================================ */
 
-const SW_VERSION = '0.21.0-alpha.0+r32';
+const SW_VERSION = '0.21.0-alpha.0+r34';
 const CACHE_NAME  = `ol-cache-${SW_VERSION}`;
 const META_DB     = 'ol-sw-meta';
 
@@ -85,9 +85,13 @@ const PRECACHE_URLS = [
   '/live/wasm/ol_coherence_field.js',
   '/live/wasm/ol_coherence_field_bg.wasm',
   '/images/favicon.ico',
+  '/images/favicon.svg',
   '/images/logo-128.png',
+  '/images/logo-256.png',
+  '/images/logo-512.png',
   '/images/apple-touch-icon.png',
   '/manifest.json',
+  '/app.webmanifest',
 ];
 
 // Never cache these. They MUST hit the network so live values stay live.
