@@ -1,0 +1,16 @@
+name = "weareone-link-com-redirect"
+compatibility_date = "2024-12-01"
+main = "src/redirect.js"
+
+# weareone-link.com -> 301 redirect to weareone-link.org canonical equivalent.
+# Preserves path + query string so deep links survive the migration.
+#
+# This worker has no static assets - it 301's every request. Simple and stateless.
+
+# After first deploy succeeds and the route is added, uncomment:
+# [[routes]]
+# pattern = "weareone-link.com/*"
+# zone_name = "weareone-link.com"
+
+[vars]
+CANONICAL_ORIGIN = "https://weareone-link.org"

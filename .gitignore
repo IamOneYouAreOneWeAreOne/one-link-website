@@ -1,0 +1,48 @@
+# =============================================================================
+# One Link Website  -  .gitignore
+# =============================================================================
+
+# Rust / Cargo build artifacts.
+/live/wasm/target/
+**/*.rs.bk
+Cargo.lock
+
+# Coherence Lang transpile cache (regenerable from .cl source).
+.cl_build/
+
+# Wrangler local state.
+.wrangler/
+.dev.vars
+.dev.vars.*
+
+# Node / npm if anything ever sneaks in (it shouldn't).
+node_modules/
+package-lock.json
+npm-debug.log*
+
+# Python bytecode caches.
+__pycache__/
+*.pyc
+*.pyo
+
+# Editor / OS.
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# Logs.
+*.log
+
+# Secrets - never commit.
+.env
+.env.*
+*.key
+*.pem
+*-private*
+
+# Optional local-only dist staging (real dist/ DOES get committed so the
+# Worker can deploy the prebuilt assets without a CI build step).
+/dist-local/

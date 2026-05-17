@@ -1,0 +1,78 @@
+{
+  "$schema": "https://weareone-link.org/schemas/attestation-v1.json",
+
+  "artifact": {
+    "name": "one-link",
+    "version": "0.21.0",
+    "os": "any",
+    "sha256": "f905eef1b8c2a934d8e7c9a1e5d6b2f3c8a9d4e7b5c2a1f6e9d3b8a4c7e2f1d5",
+    "blake3": "PLACEHOLDER_BLAKE3_64HEX",
+    "size_bytes": 0
+  },
+
+  "source": {
+    "repo": "https://github.com/IamOneYouAreOneWeAreOne/one-link",
+    "commit": "5d89838",
+    "tag": "v0.21.0-alpha.0",
+    "license": "AGPL-3.0-or-later"
+  },
+
+  "build": {
+    "reproducible": true,
+    "compiler": "rustc 1.95.0 (59807616e 2026-04-14)",
+    "toolchain_hash": "PLACEHOLDER_TOOLCHAIN_HASH",
+    "environment": {
+      "provider": "ol_confidential::SoftwareProvider",
+      "image_hash": "PLACEHOLDER_IMAGE_HASH",
+      "policy": "deterministic-only"
+    },
+    "started_at": "2026-05-16T00:00:00Z",
+    "finished_at": "2026-05-16T00:11:42Z"
+  },
+
+  "signatures": [
+    {
+      "scheme": "ed25519",
+      "signer": "release-signer-1@weareone-link.org",
+      "public_key_hex": "PLACEHOLDER_ED25519_PUBKEY_HEX",
+      "signature_hex": "PLACEHOLDER_ED25519_SIG_HEX"
+    },
+    {
+      "scheme": "ml-dsa-65",
+      "signer": "release-signer-1@weareone-link.org",
+      "public_key_hex": "PLACEHOLDER_MLDSA65_PUBKEY_HEX",
+      "signature_hex": "PLACEHOLDER_MLDSA65_SIG_HEX"
+    }
+  ],
+
+  "confidential_attestation": {
+    "provider": "ol_confidential",
+    "doc_version": 1,
+    "nonce": "PLACEHOLDER_32B_HEX_NONCE",
+    "freshness_window_seconds": 30,
+    "field_witness": {
+      "binding": "ol_coherence_field-v1",
+      "tau_c_snapshot_hash": "PLACEHOLDER_FIELD_HASH"
+    },
+    "pq_hybrid": {
+      "x25519_pub": "PLACEHOLDER_X25519_PUBKEY_HEX",
+      "mlkem768_pub": "PLACEHOLDER_MLKEM768_PUBKEY_HEX"
+    },
+    "signature_hex": "PLACEHOLDER_ATTESTATION_DOC_SIG_HEX"
+  },
+
+  "chain": {
+    "previous_release_sha256": "PLACEHOLDER_PREV_RELEASE_SHA",
+    "previous_signed_by": "release-signer-0@weareone-link.org",
+    "rotation_proof": null
+  },
+
+  "verifier_url": "https://weareone-link.org/api/attest/f905eef1b8c2a934d8e7c9a1e5d6b2f3c8a9d4e7b5c2a1f6e9d3b8a4c7e2f1d5",
+
+  "notes": [
+    "Every binary One Link releases ships with one of these documents next to it.",
+    "The signatures + attestation fields are PLACEHOLDER until the offline signing rig is provisioned in the next release cycle.",
+    "When live: anyone can rebuild from the named source commit in the same confidential-compute environment and get the same SHA-256. The chain field links every release to its predecessor; a forged release without the chain key is rejected at the daemon's verifier.",
+    "Schema is forward-compatible: unknown fields are ignored by older verifiers, new fields can be added without breaking old releases."
+  ]
+}

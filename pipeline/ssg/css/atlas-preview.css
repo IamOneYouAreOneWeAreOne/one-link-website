@@ -1,0 +1,328 @@
+/* ═══════════════════════════════════════════════════════════════
+   Atlas Preview — 2D Constellation SVG Mini-Map
+   Interactive knowledge graph preview with CSS animations.
+   Click node → navigates to canonical page.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ─── Container ─── */
+.atlas-container {
+  position: relative;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  aspect-ratio: 16 / 10;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  contain: layout paint;
+}
+
+.atlas-container:hover {
+  border-color: var(--border-glow);
+}
+
+/* ─── SVG Canvas ─── */
+.atlas-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* ─── Background Grid ─── */
+.atlas-grid line {
+  stroke: rgba(110, 142, 255, 0.04);
+  stroke-width: 0.5;
+}
+
+.atlas-grid-major line {
+  stroke: rgba(110, 142, 255, 0.08);
+  stroke-width: 0.5;
+}
+
+/* ─── Edges (connections between nodes) ─── */
+.atlas-edge {
+  stroke: rgba(110, 142, 255, 0.1);
+  stroke-width: 0.5;
+  fill: none;
+  transition: stroke 0.2s ease, stroke-width 0.2s ease;
+}
+
+.atlas-edge.highlighted {
+  stroke: rgba(110, 142, 255, 0.4);
+  stroke-width: 1;
+}
+
+/* ─── Nodes ─── */
+.atlas-node {
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.atlas-node:hover {
+  transform: scale(1.3);
+}
+
+.atlas-node:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+  border-radius: 50%;
+}
+
+/* Node types — color by category */
+.atlas-node-dot {
+  transition: r 0.2s ease, fill-opacity 0.2s ease;
+}
+
+.atlas-node-dot.product { fill: var(--accent); }
+.atlas-node-dot.research { fill: var(--accent-cyan); }
+.atlas-node-dot.demo { fill: var(--accent-violet); }
+.atlas-node-dot.hub { fill: var(--accent-warm); }
+.atlas-node-dot.proof { fill: #4ade80; }
+
+/* Glow ring on hover */
+.atlas-node-glow {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 0.5;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.atlas-node:hover .atlas-node-glow {
+  opacity: 0.6;
+  animation: atlas-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes atlas-pulse {
+  0%, 100% { r: 8; opacity: 0.6; }
+  50% { r: 12; opacity: 0.2; }
+}
+
+/* ─── Node Labels ─── */
+.atlas-node-label {
+  font-size: 3.5px;
+  font-family: var(--font);
+  fill: var(--text-dim);
+  text-anchor: middle;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.atlas-node:hover .atlas-node-label {
+  opacity: 1;
+}
+
+/* ─── Tooltip on hover ─── */
+.atlas-tooltip {
+  position: absolute;
+  pointer-events: none;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-glow);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: var(--text-xs);
+  color: var(--text);
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  z-index: 10;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.atlas-tooltip.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.atlas-tooltip-type {
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  margin-bottom: 2px;
+}
+
+/* ─── Legend ─── */
+.atlas-legend {
+  position: absolute;
+  bottom: var(--space-sm);
+  left: var(--space-sm);
+  display: flex;
+  gap: var(--space-md);
+  padding: 6px 12px;
+  background: rgba(5, 5, 10, 0.7);
+  border-radius: 6px;
+  backdrop-filter: blur(8px);
+  font-size: 0.6rem;
+}
+
+.atlas-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--text-muted);
+}
+
+.atlas-legend-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.atlas-legend-dot.product { background: var(--accent); }
+.atlas-legend-dot.research { background: var(--accent-cyan); }
+.atlas-legend-dot.demo { background: var(--accent-violet); }
+.atlas-legend-dot.hub { background: var(--accent-warm); }
+.atlas-legend-dot.proof { background: #4ade80; }
+
+/* ─── CTA overlay ─── */
+.atlas-cta {
+  position: absolute;
+  bottom: var(--space-sm);
+  right: var(--space-sm);
+  padding: 6px 14px;
+  background: rgba(110, 142, 255, 0.15);
+  border: 1px solid rgba(110, 142, 255, 0.25);
+  border-radius: 6px;
+  font-size: var(--text-xs);
+  font-weight: 500;
+  color: var(--accent);
+  text-decoration: none;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(8px);
+}
+
+.atlas-cta:hover {
+  background: rgba(110, 142, 255, 0.25);
+  border-color: var(--accent);
+  box-shadow: 0 0 16px rgba(110, 142, 255, 0.2);
+}
+
+/* ─── Ambient Particles (CSS only) ─── */
+.atlas-particle {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  border-radius: 50%;
+  background: rgba(110, 142, 255, 0.3);
+  pointer-events: none;
+  animation: atlas-float linear infinite;
+}
+
+@keyframes atlas-float {
+  0% { transform: translateY(0) translateX(0); opacity: 0; }
+  10% { opacity: 0.6; }
+  90% { opacity: 0.6; }
+  100% { transform: translateY(-40px) translateX(15px); opacity: 0; }
+}
+
+.atlas-particle:nth-child(1) { left: 15%; top: 80%; animation-duration: 8s; animation-delay: 0s; }
+.atlas-particle:nth-child(2) { left: 35%; top: 70%; animation-duration: 11s; animation-delay: 2s; }
+.atlas-particle:nth-child(3) { left: 55%; top: 85%; animation-duration: 9s; animation-delay: 4s; }
+.atlas-particle:nth-child(4) { left: 75%; top: 75%; animation-duration: 10s; animation-delay: 1s; }
+.atlas-particle:nth-child(5) { left: 90%; top: 80%; animation-duration: 7s; animation-delay: 3s; }
+.atlas-particle:nth-child(6) { left: 25%; top: 90%; animation-duration: 12s; animation-delay: 5s; }
+
+/* ─── Floating Mini Atlas (corner widget) ─── */
+.atlas-mini {
+  position: fixed;
+  bottom: var(--space-lg);
+  right: var(--space-lg);
+  width: 180px;
+  height: 120px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  z-index: 50;
+  opacity: 0.6;
+  transition: opacity 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+.atlas-mini:hover {
+  opacity: 1;
+  transform: scale(1.05);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  border-color: var(--border-glow);
+}
+
+.atlas-mini svg { width: 100%; height: 100%; }
+
+.atlas-mini-label {
+  position: absolute;
+  bottom: 4px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 0.55rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* ─── Enter Future Mode overlay ─── */
+.atlas-future-cta {
+  display: block;
+  text-align: center;
+  margin-top: var(--space-md);
+  padding: var(--space-sm) var(--space-lg);
+  background: linear-gradient(135deg, rgba(110, 142, 255, 0.1), rgba(168, 85, 247, 0.1));
+  border: 1px solid rgba(110, 142, 255, 0.2);
+  border-radius: 8px;
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--accent);
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.atlas-future-cta:hover {
+  background: linear-gradient(135deg, rgba(110, 142, 255, 0.2), rgba(168, 85, 247, 0.2));
+  border-color: var(--accent);
+  box-shadow: 0 0 24px rgba(110, 142, 255, 0.15);
+}
+
+/* ─── OneUnity theme ─── */
+.theme-spiritual .atlas-container {
+  background: var(--oue-surface);
+  border-color: var(--oue-border);
+}
+
+.theme-spiritual .atlas-grid line { stroke: rgba(74, 103, 65, 0.06); }
+.theme-spiritual .atlas-edge { stroke: rgba(74, 103, 65, 0.15); }
+.theme-spiritual .atlas-node-dot.product { fill: var(--oue-accent); }
+.theme-spiritual .atlas-node-dot.research { fill: #5c8a52; }
+.theme-spiritual .atlas-node-label { fill: var(--oue-text-dim); }
+.theme-spiritual .atlas-legend { background: rgba(248, 247, 244, 0.8); }
+.theme-spiritual .atlas-legend-item { color: var(--oue-text-dim); }
+
+/* ─── Scroll-driven entrance ─── */
+@supports (animation-timeline: scroll()) {
+  .atlas-container {
+    animation: atlas-reveal linear both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 40%;
+  }
+
+  @keyframes atlas-reveal {
+    from { opacity: 0; transform: scale(0.95) translateY(20px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+  }
+}
+
+/* ─── Mobile ─── */
+@media (max-width: 640px) {
+  .atlas-container { aspect-ratio: 4 / 3; border-radius: 12px; }
+  .atlas-legend { display: none; }
+  .atlas-mini { display: none; }
+  .atlas-node-label { font-size: 4px; }
+}
+
+@media (max-width: 480px) {
+  .atlas-container { aspect-ratio: 1 / 1; }
+}

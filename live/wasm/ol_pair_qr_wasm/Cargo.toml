@@ -1,0 +1,67 @@
+# =============================================================================
+# ol_pair_qr_wasm  -  WASM bindings for the One Link pair-by-QR handshake.
+# =============================================================================
+#
+# Thin wasm-bindgen wrapper around the production ol_pair_qr crate. Exposes
+# the Inviter + Scanner halves of the Phase F2 Coherence Mesh handshake to
+# JavaScript so the One Link website can perform a REAL pair handshake in
+# the visitor's browser, end-to-end, with no daemon required.
+#
+# What this proves on the page:
+#   * The QR rendered in the home-page pair card is real ol_pair_qr Invite
+#     bytes signed by an Ed25519 key generated in the browser.
+#   * The 5-word SAS displayed below it is the actual SAS the daemon would
+#     derive from the same transcript.
+#   * If the visitor opens two tabs, the second tab can scan the first
+#     tab's invite and complete the full Inviter <-> Scanner round-trip in
+#     under 50 ms with byte-identical chain keys on both ends.
+#
+# Build: see ../../../scripts/build-wasm.sh
+# License: AGPL-3.0-or-later (inherits from ol_pair_qr).
+# =============================================================================
+
+[package]
+name        = "ol_pair_qr_wasm"
+version     = "0.21.0-alpha.0"
+edition     = "2021"
+publish     = false
+description = "WASM bindings for ol_pair_qr (One Link pair-by-QR handshake)."
+license     = "AGPL-3.0-or-later"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+# Production crate, vendored from the daemon workspace by path.
+ol_pair_qr = { path = "../../../../Coherence/One_link/native/ol_pair_qr" }
+
+# Required transitively but we re-import so we can construct types ourselves.
+ed25519-dalek = { version = "2.1", default-features = false, features = ["std", "fast"] }
+rand_core     = { version = "0.6", default-features = false, features = ["getrandom"] }
+getrandom     = { version = "0.2", features = ["js"] }   # WASM-side RNG
+zeroize       = { version = "1.7" }
+
+# WASM glue. Pinned EXACTLY to match the wasm-bindgen-cli version installed in
+# this repo's toolchain. Mismatched cli/lib versions break the bindgen output.
+wasm-bindgen     = "=0.2.95"
+js-sys           = "0.3"
+console_error_panic_hook = { version = "0.1", optional = true }
+
+# Hex for ergonomic JS-facing key formatting.
+hex = "0.4"
+
+# Real QR code encoder, MIT/Apache-2.0 licensed. We compile it into our own
+# WASM so the QR rendered on the page is encoded by the same toolchain that
+# encodes One Link wire frames. No third-party JS encoder needed.
+qrcode = { version = "0.14", default-features = false, features = ["svg"] }
+
+[features]
+default     = ["debug-panic"]
+debug-panic = ["dep:console_error_panic_hook"]
+
+[profile.release]
+opt-level     = "z"      # size-optimize aggressively (target ~80kb gzipped)
+lto           = true
+codegen-units = 1
+strip         = "debuginfo"
+panic         = "abort"

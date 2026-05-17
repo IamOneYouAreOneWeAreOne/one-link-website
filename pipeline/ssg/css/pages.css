@@ -1,0 +1,647 @@
+/* ═══════════════════════════════════════════════════════════════
+   Coherence Energy Labs — Page-Specific Layouts
+   Styles for individual page types beyond generic components.
+   Depends on main.css design tokens.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ─── Hero Variants ─── */
+
+.hero-home,
+.hero-research,
+.hero-demos,
+.hero-products,
+.hero-about,
+.hero-atlas,
+.hero-spiritual {
+  position: relative;
+  text-align: center;
+  padding: var(--s-5xl) 0 var(--s-4xl);
+  overflow: hidden;
+  z-index: 1;
+}
+
+.hero-home {
+  padding: var(--s-5xl) 0;
+}
+
+.hero-research::before {
+  content: "";
+  position: absolute;
+  top: -20%;
+  left: -10%;
+  width: 60%;
+  height: 80%;
+  background: radial-gradient(ellipse, rgba(110, 142, 255, 0.07) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+.hero-demos::before {
+  content: "";
+  position: absolute;
+  top: -10%;
+  right: -5%;
+  width: 50%;
+  height: 70%;
+  background: radial-gradient(ellipse, rgba(168, 85, 247, 0.06) 0%, transparent 65%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+.hero-products::before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent) 30%, var(--accent-violet) 70%, transparent);
+  opacity: 0.4;
+  z-index: -1;
+}
+
+.hero-about::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 600px;
+  height: 600px;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(110, 142, 255, 0.04) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+.hero-atlas::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 50% 60% at 30% 40%, rgba(0, 212, 255, 0.04) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 50% at 70% 60%, rgba(168, 85, 247, 0.04) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+.hero-spiritual {
+  --accent: var(--oue-accent);
+  background: linear-gradient(180deg, rgba(240, 235, 220, 0.3) 0%, transparent 80%);
+}
+
+.hero-spiritual::before {
+  content: "";
+  position: absolute;
+  top: -15%;
+  left: 20%;
+  width: 60%;
+  height: 70%;
+  background: radial-gradient(ellipse, rgba(180, 160, 110, 0.08) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+
+/* ─── Breadcrumb ─── */
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: var(--s-sm);
+  list-style: none;
+  padding: var(--s-lg) 0 var(--s-md);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+
+.breadcrumb li + li::before {
+  content: "/";
+  margin-right: var(--s-sm);
+  color: var(--text-muted);
+  opacity: 0.5;
+}
+
+.breadcrumb a {
+  color: var(--accent);
+  text-decoration: none;
+  transition: color var(--dur) var(--ease);
+}
+
+.breadcrumb a:hover {
+  color: var(--accent-cyan);
+}
+
+.breadcrumb .current {
+  color: var(--text-dim);
+}
+
+
+/* ─── Section Variants ─── */
+
+.section-dark {
+  background: var(--bg);
+  color: var(--text);
+  padding: var(--s-4xl) 0;
+  position: relative;
+}
+
+body.theme-spiritual .section-dark {
+  background: #0a0a12;
+  color: #e4e4f0;
+}
+
+.section-highlight {
+  position: relative;
+  padding: var(--s-4xl) 0;
+}
+
+.section-highlight::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent) 50%, transparent);
+  opacity: 0.3;
+}
+
+.section-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--s-3xl);
+  align-items: center;
+  padding: var(--s-4xl) 0;
+}
+
+.section-split-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-md);
+}
+
+.section-split-visual {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.section-split-visual img,
+.section-split-visual svg {
+  max-width: 100%;
+  height: auto;
+  border-radius: 12px;
+}
+
+
+/* ─── Atlas Page ─── */
+
+.page-atlas {
+  background: var(--bg);
+}
+
+.atlas-container {
+  position: relative;
+  width: 100%;
+  min-height: 60vh;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.atlas-container svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.atlas-legend {
+  position: absolute;
+  bottom: var(--s-lg);
+  left: var(--s-lg);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: var(--s-md) var(--s-lg);
+  backdrop-filter: blur(12px);
+  z-index: 10;
+  font-size: var(--text-xs);
+}
+
+.atlas-legend-title {
+  font-weight: 600;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: var(--s-sm);
+}
+
+.atlas-legend-item {
+  display: flex;
+  align-items: center;
+  gap: var(--s-sm);
+  padding: 2px 0;
+  color: var(--text-dim);
+}
+
+.atlas-legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.atlas-filters {
+  display: flex;
+  gap: var(--s-sm);
+  flex-wrap: wrap;
+  padding: var(--s-lg) 0;
+}
+
+.atlas-filter-pill {
+  appearance: none;
+  background: var(--bg-glass);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: var(--s-sm) var(--s-lg);
+  font-size: var(--text-xs);
+  font-family: var(--font);
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: all var(--dur) var(--ease);
+}
+
+.atlas-filter-pill:hover {
+  border-color: var(--border-glow);
+  color: var(--text);
+}
+
+.atlas-filter-pill:checked,
+.atlas-filter-pill[aria-pressed="true"],
+.atlas-filter-pill.active {
+  background: linear-gradient(135deg, var(--accent), var(--accent-violet));
+  border-color: transparent;
+  color: #fff;
+  font-weight: 600;
+}
+
+
+/* ─── Research Page ─── */
+
+.page-research .domain-group {
+  margin-bottom: var(--s-3xl);
+  padding-left: var(--s-lg);
+  border-left: 3px solid var(--border);
+  transition: border-color var(--dur) var(--ease);
+}
+
+.page-research .domain-label {
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  margin-bottom: var(--s-lg);
+  padding-bottom: var(--s-sm);
+  border-bottom: 1px solid var(--border);
+}
+
+/* Research domain color coding */
+.domain-physics  { border-left-color: #6e8eff !important; }
+.domain-physics  .domain-label { color: #6e8eff; }
+
+.domain-biology  { border-left-color: #4ade80 !important; }
+.domain-biology  .domain-label { color: #4ade80; }
+
+.domain-applied  { border-left-color: #fb923c !important; }
+.domain-applied  .domain-label { color: #fb923c; }
+
+.domain-foundational { border-left-color: #a855f7 !important; }
+.domain-foundational .domain-label { color: #a855f7; }
+
+.domain-philosophical { border-left-color: #fbbf24 !important; }
+.domain-philosophical .domain-label { color: #fbbf24; }
+
+.domain-computational { border-left-color: #00d4ff !important; }
+.domain-computational .domain-label { color: #00d4ff; }
+
+.domain-therapeutic { border-left-color: #f472b6 !important; }
+.domain-therapeutic .domain-label { color: #f472b6; }
+
+
+/* ─── Demos Page ─── */
+
+.page-demos .category-tabs {
+  font-size: var(--text-sm);
+  gap: var(--s-md);
+}
+
+.demos-banner {
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+  padding: var(--s-3xl) 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 50%, rgba(168, 85, 247, 0.06) 0%, transparent 60%),
+    var(--bg);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  text-align: center;
+}
+
+
+/* ─── Products Page ─── */
+
+.page-products .comparison-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-sm);
+  margin: var(--s-2xl) 0;
+}
+
+.page-products .comparison-table th,
+.page-products .comparison-table td {
+  padding: var(--s-md) var(--s-lg);
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+
+.page-products .comparison-table th {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+  background: var(--bg-surface);
+}
+
+.page-products .comparison-table td {
+  color: var(--text-dim);
+}
+
+.page-products .comparison-table tr:hover td {
+  background: var(--bg-glass);
+}
+
+.feature-highlights {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--gap);
+}
+
+.feature-highlight {
+  text-align: center;
+  padding: var(--s-xl);
+}
+
+.feature-highlight-icon {
+  font-size: var(--text-3xl);
+  margin-bottom: var(--s-md);
+}
+
+.feature-highlight h3 {
+  font-size: var(--text-lg);
+  margin-bottom: var(--s-sm);
+}
+
+.feature-highlight p {
+  color: var(--text-dim);
+  font-size: var(--text-sm);
+  margin: 0 auto;
+}
+
+
+/* ─── Developer Page ─── */
+
+.page-developers pre,
+.page-developers .code-block {
+  background: rgba(8, 8, 16, 0.9);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: 10px;
+  padding: var(--s-lg);
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  line-height: 1.7;
+  color: var(--text);
+  margin: var(--s-lg) 0;
+}
+
+.page-developers code {
+  font-family: var(--font-mono);
+}
+
+.page-developers :not(pre) > code {
+  background: rgba(110, 142, 255, 0.1);
+  border: 1px solid rgba(110, 142, 255, 0.15);
+  border-radius: 5px;
+  padding: 2px 7px;
+  font-size: 0.85em;
+  color: var(--accent-cyan);
+}
+
+
+/* ─── Library Page (OneUnity) ─── */
+
+.page-library .book-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--gap);
+}
+
+.book-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-glass);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all var(--dur) var(--ease-spring);
+  text-decoration: none;
+  color: var(--text);
+}
+
+.book-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+  border-color: var(--border-glow);
+}
+
+.book-card-cover {
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  position: relative;
+}
+
+.book-card-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Gradient art placeholders per book */
+.book-card-cover.cover-1 { background: linear-gradient(135deg, #2d4a3e, #4a6741, #6b8f62); }
+.book-card-cover.cover-2 { background: linear-gradient(135deg, #3a3a5c, #5a5a8a, #7a7ab0); }
+.book-card-cover.cover-3 { background: linear-gradient(135deg, #5c3a2a, #8a5a3a, #b07a4a); }
+.book-card-cover.cover-4 { background: linear-gradient(135deg, #2a3a5c, #3a5a8a, #4a7ab0); }
+.book-card-cover.cover-5 { background: linear-gradient(135deg, #4a3a5c, #6a5a8a, #8a7ab0); }
+.book-card-cover.cover-6 { background: linear-gradient(135deg, #5c4a3a, #8a6a5a, #b08a7a); }
+
+.book-card-info {
+  padding: var(--s-md);
+}
+
+.book-card-info h3 {
+  font-size: var(--text-sm);
+  margin-bottom: var(--s-xs);
+  line-height: 1.4;
+}
+
+.book-card-info p {
+  font-size: var(--text-xs);
+  color: var(--text-dim);
+}
+
+
+/* ─── 404 Page ─── */
+
+.page-404 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  text-align: center;
+  padding: var(--s-4xl) var(--s-lg);
+}
+
+.page-404-code {
+  font-size: clamp(5rem, 10vw, 10rem);
+  font-weight: 800;
+  letter-spacing: -0.06em;
+  background: linear-gradient(135deg, var(--text-muted) 0%, var(--accent) 50%, var(--accent-violet) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 1;
+  margin-bottom: var(--s-md);
+}
+
+.page-404-orbit {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin: 0 auto var(--s-xl);
+}
+
+.page-404-orbit::before,
+.page-404-orbit::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+}
+
+.page-404-orbit::before {
+  animation: orbit-pulse 6s ease-in-out infinite;
+}
+
+.page-404-orbit::after {
+  transform: rotate(60deg);
+  animation: orbit-pulse 9s ease-in-out infinite reverse;
+}
+
+.page-404 h2 {
+  font-size: var(--text-xl);
+  margin-bottom: var(--s-sm);
+}
+
+.page-404 p {
+  color: var(--text-dim);
+  margin-bottom: var(--s-xl);
+  max-width: 40ch;
+}
+
+
+/* ─── Responsive ─── */
+
+@media (max-width: 900px) {
+  .section-split {
+    grid-template-columns: 1fr;
+    gap: var(--s-2xl);
+  }
+
+  .section-split-visual {
+    order: -1;
+  }
+
+  .feature-highlights {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .atlas-legend {
+    position: relative;
+    bottom: auto;
+    left: auto;
+    margin-top: var(--s-md);
+    border-radius: 8px;
+  }
+}
+
+@media (max-width: 600px) {
+  .hero-home,
+  .hero-research,
+  .hero-demos,
+  .hero-products,
+  .hero-about,
+  .hero-atlas,
+  .hero-spiritual {
+    padding: var(--s-4xl) 0 var(--s-3xl);
+  }
+
+  .feature-highlights {
+    grid-template-columns: 1fr;
+  }
+
+  .atlas-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 8px;
+  }
+
+  .atlas-container svg {
+    min-width: 600px;
+  }
+
+  .atlas-filters {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: var(--s-sm);
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .page-products .comparison-table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .page-library .book-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .demos-banner {
+    padding: var(--s-2xl) var(--s-lg);
+  }
+}
+
+@media (max-width: 400px) {
+  .page-library .book-grid {
+    grid-template-columns: 1fr;
+    max-width: 260px;
+    margin: 0 auto;
+  }
+}

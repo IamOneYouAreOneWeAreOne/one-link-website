@@ -1,0 +1,24 @@
+{
+  "version": "0.21.0-alpha.0+r7",
+  "issued_at": "2026-05-16T00:00:00Z",
+  "signed_by": "ed25519-pub-PLACEHOLDER",
+  "signature": "ed25519-PLACEHOLDER",
+  "note": "Real SHA-256 of every live asset. Real ed25519 signature wires in once the offline signer is provisioned. The Service Worker verifies these hashes byte-by-byte before serving any cached asset.",
+  "assets": {
+    "/css/one-link.css": "sha256-8b780f430623878fa4c200c2f2e9408e56e991a76984a91890243455dfc5330c",
+    "/css/immersive.css": "sha256-60c33649ad0bc7e26b4633bbde673c92d54e9e84630cb50962c5a3845c52fbe1",
+    "/live/bridge.js": "sha256-122560e44b2c5c70a58f4357154508ac8bcf6e22c1547b94bcca9ff2ae8cda8f",
+    "/live/wasm/ol_pair_qr.js": "sha256-c28b5a72ad92d6485ac55f5fe655ec8015d257999fbd270319f71641abf45035",
+    "/live/wasm/ol_pair_qr_bg.wasm": "sha256-68e0144d3034c2db874f7bb4fe5e1a286a9bd8eeda046b56b39d0e44c45e4902",
+    "/live/wasm/ol_pqkem.js": "sha256-b09dedc85f9b82beba22cf8654a94eaeb75ab281bed860aa44ca3a2ea34aac13",
+    "/live/wasm/ol_pqkem_bg.wasm": "sha256-0f9aad2b827abcde4e8be6b2fa9aa4c09fd7ff278b316d8ed55c2ee0dc03c1fe",
+    "/live/wasm/ol_onion.js": "sha256-a7f8edf3859fb30182896fc94a8dbd03edb37c409a85778e7e236cc0ec4fa698",
+    "/live/wasm/ol_onion_bg.wasm": "sha256-b389f789d3edff2c1bd32391321fb1ec067b3ed99d3d22120af92f7f8591c427",
+    "/live/wasm/ol_coherence_field.js": "sha256-330504154d89a58f8c42829dee8dae89f377688c0bb73b03be700fbcda712f89",
+    "/live/wasm/ol_coherence_field_bg.wasm": "sha256-bae7dbda181d78ccfebcc5031a457146d2075f5b61752fd9b7140608ab5a365e",
+    "/live/shaders/coherence-field.wgsl": "sha256-99435bbec6b975241392ef50b33035d528a60e44d496605ac861109f2d6eb693",
+    "/images/favicon.svg": "sha256-92ac907910e0311c5cf47315611623f16c59fc0daa0976c7f47627912ab9f3bb",
+    "/sw.js": "sha256-4cfe8587b4eddad368be85c93fbd5cbae3f668d6789deeec0d638a008044c990",
+    "/index.html": "sha256-6a73d636a998522cabe395bd6674bbe62b578f184e1ef8be189d90242c4046e7"
+  }
+}

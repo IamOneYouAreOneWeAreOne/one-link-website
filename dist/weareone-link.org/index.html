@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="x-emitted-by" content="coherence-lang/1.0.3 one_link.ssg.build">
+  <!-- Route: / / build: 2026-05-16T00:00:00Z / source: pipeline/ssg/src/one_link_build.cl -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>One Link &mdash; we are one</title>
+  <meta name="description" content="Send anything. To anyone. From any device. No accounts. No servers. No middlemen. Only you and they can read it. Free forever.">
+  <link rel="canonical" href="https://weareone-link.org/">
+  <meta name="theme-color" content="#04060b">
+  <meta name="color-scheme" content="dark">
+  <meta name="robots" content="index, follow">
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="One Link">
+  <meta property="og:title" content="One Link">
+  <meta property="og:description" content="Send anything. To anyone. Only you and they can read it.">
+  <meta property="og:url" content="https://weareone-link.org/">
+  <meta property="og:image" content="https://weareone-link.org/og/one-link.png">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="icon" href="/images/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+
+  <link rel="stylesheet" href="/css/one-link.css">
+  <link rel="stylesheet" href="/css/immersive.css">
+
+  <script type="application/ld+json">{
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "One Link",
+    "operatingSystem": "Windows, macOS, Linux, Android, iOS",
+    "applicationCategory": "CommunicationApplication",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "url": "https://weareone-link.org/",
+    "license": "https://www.gnu.org/licenses/agpl-3.0.html"
+  }</script>
+
+  <script type="speculationrules">{
+    "prerender": [{ "source": "list", "urls": ["/download/", "/how-it-works/", "/features/", "/security/"], "eagerness": "moderate" }]
+  }</script>
+</head>
+<body class="ol-immersive">
+<a href="#main" class="skip-link">Skip to content</a>
+
+<!-- Full-bleed coherence field. Real damped Helmholtz on GPU, compiler-emitted shader. -->
+<canvas class="ol-field-canvas" aria-hidden="true" hidden></canvas>
+
+<!--
+  Live peer-dots overlay. bridge.js populates this with one .ol-peer-dot per
+  real other visitor connected to the MeshPresence Durable Object right now.
+  Each dot is clickable: tap to send an anonymous ephemeral ping (the recipient
+  sees a pulse flash at YOUR position on their screen).
+-->
+<div class="ol-peer-overlay" id="ol-peer-overlay" aria-label="Other people viewing right now"></div>
+
+<!-- Ping toast appears when someone pings you. -->
+<div class="ol-ping-toast" id="ol-ping-toast" aria-live="polite" hidden>
+  <span class="ol-ping-glyph" aria-hidden="true">&#9883;</span>
+  <span class="ol-ping-text">someone said hello</span>
+</div>
+
+<!-- Live presence ribbon: real other visitors right now, anonymous, ephemeral. -->
+<div class="ol-presence-bar" id="ol-presence-bar" aria-live="polite">
+  <span class="ol-presence-bar-dot"></span>
+  <span class="ol-presence-bar-text">
+    <span id="ol-presence-count">connecting</span>
+    <span class="ol-presence-bar-suffix">here right now</span>
+  </span>
+</div>
+
+<header class="site-header ol-header-immersive" role="banner">
+  <div class="container">
+    <a href="/" class="site-logo" aria-label="One Link home">
+      <span class="logo-mark" aria-hidden="true"></span>
+      <span>One Link</span>
+    </a>
+    <input type="checkbox" id="nav-toggle" class="nav-toggle-input" aria-hidden="true">
+    <label for="nav-toggle" class="nav-toggle" aria-label="Open navigation" role="button" tabindex="0">&#9776;</label>
+    <nav class="site-nav" aria-label="Main">
+      <a href="/how-it-works/">How it works</a>
+      <a href="/features/">Features</a>
+      <a href="/security/">Security</a>
+      <a href="/mesh/">Live mesh</a>
+      <a href="/builders/">Builders</a>
+      <a href="/about/">About</a>
+      <a href="/download/" class="cta-get">Get One Link</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- ============================================================ IMMERSIVE HERO -->
+  <!--
+    Full-bleed cosmic scene. The coherence-field WebGPU shader is the BACKDROP.
+    Text rises out of the substrate (letter-by-letter blur-in via CSS).
+    Mouse moves ripple the field. Click sends a pulse.
+    Other visible visitors twinkle in the periphery.
+  -->
+  <section class="ol-immersive-hero" id="ol-hero">
+    <div class="ol-immersive-hero-inner">
+      <p class="ol-immersive-eyebrow">
+        <span class="ol-eyebrow-dot"></span>
+        <span>we are one</span>
+      </p>
+
+      <h1 class="ol-immersive-title" aria-label="Send anything. To anyone. Only you and they can read it.">
+        <span class="ol-line"><span class="ol-w" style="--d:.04s">Send</span> <span class="ol-w" style="--d:.16s">anything.</span></span>
+        <span class="ol-line"><span class="ol-w" style="--d:.36s">To</span> <span class="ol-w" style="--d:.46s">anyone.</span></span>
+        <span class="ol-line ol-line-grad">
+          <span class="ol-w" style="--d:.74s">Only</span>
+          <span class="ol-w" style="--d:.82s">you</span>
+          <span class="ol-w" style="--d:.90s">can</span>
+          <span class="ol-w" style="--d:.98s">read</span>
+          <span class="ol-w" style="--d:1.06s">it.</span>
+        </span>
+      </h1>
+
+      <p class="ol-immersive-lede">
+        A free, private network for your messages, files, and devices.
+        No accounts. No servers in the middle. No limits. It just works.
+      </p>
+
+      <div class="ol-immersive-cta">
+        <a href="/download/" class="btn btn-primary btn-large ol-cta-primary">
+          Get One Link
+          <span class="arr" aria-hidden="true">&rarr;</span>
+        </a>
+        <a href="/how-it-works/" class="btn btn-ghost btn-large">See how it works</a>
+      </div>
+
+      <div class="ol-immersive-status">
+        <span class="ol-status">
+          <span class="dot"></span>
+          <span class="number" id="ol-node-count">1,247</span>
+          <span>nodes online</span>
+        </span>
+        <span class="ol-status" id="ol-site-integrity" title="Service Worker verifies every asset against the signed manifest before serving it.">
+          <span class="dot" style="background: var(--ol-cyan); box-shadow: 0 0 10px var(--ol-cyan);"></span>
+          <span>site verified</span>
+          <span class="number" id="ol-sw-status">checking</span>
+        </span>
+        <span class="ol-status" id="ol-pq-status" title="X25519 + ML-KEM-768 hybrid key exchange, post-quantum ready, computed in your tab.">
+          <span class="dot" style="background: var(--ol-amber); box-shadow: 0 0 10px var(--ol-amber);"></span>
+          <span>pq session</span>
+          <span class="number" id="ol-pq-status-text">deriving</span>
+        </span>
+      </div>
+
+      <button class="ol-scroll-hint" id="ol-scroll-hint" type="button" aria-label="Scroll to learn more">
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+
+    <!--
+      Click instructions overlay. Hidden until field has settled.
+      Tells the visitor they can touch the field.
+    -->
+    <div class="ol-field-hint" aria-hidden="true">
+      <span>click anywhere to send a pulse</span>
+    </div>
+  </section>
+
+  <!-- ============================================ THREE PROMISES -->
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Three promises</span>
+      <h2>The things every other app forgot.</h2>
+      <p class="lede">
+        Built so you never have to read a privacy policy. The architecture is the promise.
+      </p>
+      <div class="ol-grid ol-grid-3">
+        <article class="ol-tile">
+          <span class="ol-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v6"/><path d="M12 22v-6"/><path d="M2 12h6"/><path d="M22 12h-6"/><circle cx="12" cy="12" r="3"/></svg>
+          </span>
+          <h3>No accounts. Ever.</h3>
+          <p>No email. No phone number. No signup. Open the app and it works. Your device is your identity. Nothing about you leaves your hands.</p>
+        </article>
+        <article class="ol-tile">
+          <span class="ol-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </span>
+          <h3>No servers in the middle.</h3>
+          <p>Messages and files go straight from one device to the other. Nothing stored anywhere. If we vanished tomorrow, your One Link still works.</p>
+        </article>
+        <article class="ol-tile">
+          <span class="ol-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2H3v18h18V2z"/><path d="M3 7h18"/><path d="M9 2v5"/></svg>
+          </span>
+          <h3>Free. Forever.</h3>
+          <p>No tier. No subscription. No enterprise plan. No premium. The source is open. You can read every line. You can run your own.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================ PAIR-BY-QR LIVE DEMO -->
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Try it right now</span>
+      <h2>Pair your phone in <span class="grad">five seconds.</span></h2>
+      <p class="lede">
+        Scan this code with One Link on your phone. Read the five words back. You are paired. No download yet, no signup, no permissions. Just a real handshake, right here.
+      </p>
+
+      <div class="ol-pair-card">
+        <div class="ol-qr" id="ol-pair-qr" aria-label="Pairing QR code">
+          <span class="corner tl" aria-hidden="true"></span>
+          <span class="corner tr" aria-hidden="true"></span>
+          <span class="corner bl" aria-hidden="true"></span>
+        </div>
+        <div>
+          <h3>Verify these five words match what your phone shows.</h3>
+          <div class="ol-sas" id="ol-pair-sas" aria-label="Five-word verification">
+            <span class="word">orbit</span>
+            <span class="word">amber</span>
+            <span class="word">river</span>
+            <span class="word">candle</span>
+            <span class="word">harbor</span>
+          </div>
+          <p>That is the entire pairing flow. No password. No backup phrase. The five words mean the math agreed on both ends. If anyone tried to sit in the middle, the words would not match.</p>
+          <details class="ol-proof">
+            <summary>What just happened, under the hood</summary>
+            <div class="ol-proof-body">
+              <dl>
+                <dt>handshake</dt><dd>X25519 + ML-KEM-768 hybrid</dd>
+                <dt>verification</dt><dd>5-word SAS derived from the shared secret</dd>
+                <dt>identity</dt><dd>Ed25519 + ML-DSA-65 hybrid signature</dd>
+                <dt>field witness</dt><dd>environment witness mixed in to bind to physical context</dd>
+                <dt>crate</dt><dd>ol_pair_qr (compiled to WASM for in-browser handshake)</dd>
+              </dl>
+            </div>
+          </details>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================ JOIN -->
+  <section class="section">
+    <div class="container" style="text-align: center;">
+      <span class="kicker">Why this exists</span>
+      <h2 style="max-width: 22ch; margin-left: auto; margin-right: auto;">
+        The internet was supposed to be <span class="grad">ours.</span>
+      </h2>
+      <p class="lede" style="margin-left: auto; margin-right: auto;">
+        Somewhere along the way it became a place where five companies hold every message, every photo, every file you ever made. One Link is the quiet way back.
+      </p>
+      <div class="cta-row" style="justify-content: center;">
+        <a href="/download/" class="btn btn-primary btn-large">
+          Join the network
+          <span class="arr" aria-hidden="true">&rarr;</span>
+        </a>
+        <a href="/about/" class="btn btn-ghost">Read the covenant</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer" role="contentinfo">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a href="/" class="site-logo" aria-label="One Link home">
+          <span class="logo-mark" aria-hidden="true"></span>
+          <span>One Link</span>
+        </a>
+        <p class="footer-tag">
+          A free, private network for messages, files, and devices. Owned by no one. Belongs to everyone.
+        </p>
+      </div>
+      <div>
+        <h4>Network</h4>
+        <ul>
+          <li><a href="/how-it-works/">How it works</a></li>
+          <li><a href="/features/">Features</a></li>
+          <li><a href="/mesh/">Live mesh</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>For you</h4>
+        <ul>
+          <li><a href="/download/">Get One Link</a></li>
+          <li><a href="/security/">Security</a></li>
+          <li><a href="/about/">About</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>For builders</h4>
+        <ul>
+          <li><a href="/builders/">Protocol &amp; source</a></li>
+          <li><a href="https://github.com/IamOneYouAreOneWeAreOne/one-link" rel="noopener">GitHub</a></li>
+          <li><a href="/builders/#donate">Donate</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="built-by">
+        Built in the open. AGPL-3.0. <a href="/security/">No tracking, no analytics, no cookies.</a>
+      </span>
+      <span class="built-by">we are one</span>
+    </div>
+  </div>
+</footer>
+
+<!-- Optional generative ambient audio toggle. Off by default. -->
+<button class="ol-audio-toggle" id="ol-audio-toggle" type="button" aria-label="Toggle ambient sound" aria-pressed="false">
+  <span class="ol-audio-icon">&#x1F507;</span>
+  <span class="ol-audio-label">sound</span>
+</button>
+
+<script type="module" src="/live/bridge.js"></script>
+</body>
+</html>

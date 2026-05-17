@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="x-emitted-by" content="coherence-lang/1.0.3 one_link.ssg.build">
+  <!-- Route: /mesh/ / build: 2026-05-16T00:00:00Z / source: pipeline/ssg/src/one_link_build.cl -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>The mesh &mdash; every One Link node, live</title>
+  <meta name="description" content="The live global mesh map. Every active node, every relay, the routing field that decides how packets find each other. No identifying data, ever.">
+  <link rel="canonical" href="https://weareone-link.org/mesh/">
+  <meta name="theme-color" content="#04060b">
+  <meta name="color-scheme" content="dark">
+  <link rel="icon" href="/images/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/one-link.css">
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to content</a>
+<canvas class="ol-field-canvas" aria-hidden="true" hidden></canvas>
+
+<header class="site-header" role="banner">
+  <div class="container">
+    <a href="/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
+    <input type="checkbox" id="nav-toggle" class="nav-toggle-input">
+    <label for="nav-toggle" class="nav-toggle" aria-label="Open navigation" role="button" tabindex="0">&#9776;</label>
+    <nav class="site-nav" aria-label="Main">
+      <a href="/how-it-works/">How it works</a>
+      <a href="/features/">Features</a>
+      <a href="/security/">Security</a>
+      <a href="/mesh/">Live mesh</a>
+      <a href="/builders/">Builders</a>
+      <a href="/about/">About</a>
+      <a href="/download/" class="cta-get">Get One Link</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="hero" style="padding-bottom: 1rem;">
+    <div class="container">
+      <span class="we-are-one">Live mesh</span>
+      <h1>You are one of <span class="grad" id="ol-hero-count">1,247</span>.</h1>
+      <p class="lede">Every dot is a real One Link node online right now. The colors are the coherence field that decides how packets find each other. No IPs. No usernames. No locations beyond approximate region. The moment your session opens, a new dot lights up.</p>
+    </div>
+  </section>
+
+  <section class="section-tight">
+    <div class="container">
+      <div class="ol-mesh-wrap" style="aspect-ratio: 21 / 9;">
+        <canvas class="ol-mesh-canvas" id="ol-mesh-canvas" aria-label="Live global mesh visualization"></canvas>
+        <div class="ol-mesh-overlay">
+          <div class="row"><span class="key">nodes</span><span class="val" id="ol-mesh-nodes">1,247</span></div>
+          <div class="row"><span class="key">relays</span><span class="val" id="ol-mesh-relays">38</span></div>
+          <div class="row"><span class="key">field</span><span class="val">&tau;_c routing</span></div>
+          <div class="row"><span class="key">sweep</span><span class="val">60 Hz</span></div>
+          <div class="row"><span class="key">you</span><span class="val" id="ol-mesh-you">connecting...</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">What you are seeing</span>
+      <h2>The <span class="grad">tau_c</span> coherence field.</h2>
+      <div class="ol-grid ol-grid-2" style="gap: 3rem; align-items: flex-start;">
+        <div>
+          <p>One Link does not use a routing table. It uses a continuous field. Each peer's local view of the field is a small ripple in a damped Helmholtz oscillator. Packets follow the field gradient toward their destination, the same way water finds the low point of a hill.</p>
+          <p>When a relay disappears, the field re-settles in a single round. When new peers join, their ripples integrate into the field. The math is the same equations that describe quantum coherence and biological membranes. We borrowed the idea from physics.</p>
+          <p>The colormap on the canvas above is the field's energy state, sampled at 60 Hz, smoothed for the eye. The dots are peers. The brighter the local field, the more traffic is flowing through that region.</p>
+        </div>
+        <div>
+          <pre class="ol-code"><span class="d">// solver, one timestep</span>
+<span class="c">field</span> = <span class="a">helmholtz_step</span>(
+  prev = field,
+  peers = active_nodes,
+  dt = 1 / 60,
+  gamma = damping,
+  k = coherence_freq
+)
+
+<span class="c">routes</span> = <span class="a">gradient_descent</span>(
+  field,
+  sources = peers,
+  destinations = peers
+)
+
+<span class="d">// 10,000 peers in 1.08 ms</span></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">What we do not show</span>
+      <h2>Things that <span class="grad">are not here.</span></h2>
+      <div class="ol-grid ol-grid-3">
+        <article class="ol-tile">
+          <h3>No IPs.</h3>
+          <p>We do not have them. The relays never log them. The Worker that serves this page does not store them either.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>No usernames.</h3>
+          <p>There are no usernames in One Link. The dots are anonymous opaque peer IDs, rotated frequently.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>No precise locations.</h3>
+          <p>Approximate continental region only, derived from relay topology, never from IP geolocation. Most dots land on a soft cluster around their nearest healthy relay.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer" role="contentinfo">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a href="/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
+        <p class="footer-tag">A free, private network for messages, files, and devices. Owned by no one. Belongs to everyone.</p>
+      </div>
+      <div><h4>Network</h4><ul><li><a href="/how-it-works/">How it works</a></li><li><a href="/features/">Features</a></li><li><a href="/mesh/">Live mesh</a></li></ul></div>
+      <div><h4>For you</h4><ul><li><a href="/download/">Get One Link</a></li><li><a href="/security/">Security</a></li><li><a href="/about/">About</a></li></ul></div>
+      <div><h4>For builders</h4><ul><li><a href="/builders/">Protocol &amp; source</a></li><li><a href="https://github.com/IamOneYouAreOneWeAreOne/one-link" rel="noopener">GitHub</a></li><li><a href="/builders/#donate">Donate</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <span class="built-by">Built in the open. AGPL-3.0. <a href="/security/">No tracking, no analytics, no cookies.</a></span>
+      <span class="built-by">we are one</span>
+    </div>
+  </div>
+</footer>
+
+<script type="module" src="/live/bridge.js"></script>
+</body>
+</html>

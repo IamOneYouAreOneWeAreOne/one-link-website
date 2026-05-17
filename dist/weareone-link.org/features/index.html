@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="x-emitted-by" content="coherence-lang/1.0.3 one_link.ssg.build">
+  <!-- Route: /features/ / build: 2026-05-16T00:00:00Z / source: pipeline/ssg/src/one_link_build.cl -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>What One Link does &mdash; and what it does not</title>
+  <meta name="description" content="Every feature One Link advertises, generated live from the daemon's capability table. No marketing copy invented after the fact. The page is the truth.">
+  <link rel="canonical" href="https://weareone-link.org/features/">
+  <meta name="theme-color" content="#04060b">
+  <meta name="color-scheme" content="dark">
+  <link rel="icon" href="/images/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/one-link.css">
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to content</a>
+<canvas class="ol-field-canvas" aria-hidden="true" hidden></canvas>
+
+<header class="site-header" role="banner">
+  <div class="container">
+    <a href="/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
+    <input type="checkbox" id="nav-toggle" class="nav-toggle-input">
+    <label for="nav-toggle" class="nav-toggle" aria-label="Open navigation" role="button" tabindex="0">&#9776;</label>
+    <nav class="site-nav" aria-label="Main">
+      <a href="/how-it-works/">How it works</a>
+      <a href="/features/">Features</a>
+      <a href="/security/">Security</a>
+      <a href="/mesh/">Live mesh</a>
+      <a href="/builders/">Builders</a>
+      <a href="/about/">About</a>
+      <a href="/download/" class="cta-get">Get One Link</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="hero" style="padding-bottom: 1rem;">
+    <div class="container">
+      <span class="we-are-one">Features</span>
+      <h1>Everything One Link can do, <span class="grad">told by One Link.</span></h1>
+      <p class="lede">This page is generated from the live capability advertisement of the One Link daemon at <code style="color: var(--ol-cyan); font-family: var(--ol-mono); font-size: 0.95em;">/api/capabilities</code>. We cannot lie on this page. If a feature is here, the daemon ships it. If it is not, it does not.</p>
+      <span class="ol-status">
+        <span class="dot"></span>
+        <span>live from</span>
+        <span class="number">/api/capabilities</span>
+        <span>updated 2s ago</span>
+      </span>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">For people</span>
+      <h2>The everyday things.</h2>
+      <div class="ol-grid ol-grid-3">
+
+        <article class="ol-tile">
+          <h3>Messages</h3>
+          <p>Only you and they can read it. Forward secrecy. Edit, delete, react. Read receipts that you control.</p>
+        </article>
+
+        <article class="ol-tile">
+          <h3>Files of any size</h3>
+          <p>Drag a folder. Drag a movie. Drag a hard drive's worth. It goes peer to peer, resumes on reconnect, never copies to a server.</p>
+        </article>
+
+        <article class="ol-tile">
+          <h3>Voice and video calls</h3>
+          <p>End to end encrypted. Direct peer to peer when possible, relayed only if needed. No mystery server in the path.</p>
+        </article>
+
+        <article class="ol-tile">
+          <h3>Shared folders</h3>
+          <p>Drop a file in, it appears on the other side. Versioned, conflict-free, no "the cloud."</p>
+        </article>
+
+        <article class="ol-tile">
+          <h3>Pair a device in five seconds</h3>
+          <p>QR plus five words. The five words mean the math agreed. That is the whole pairing flow.</p>
+        </article>
+
+        <article class="ol-tile">
+          <h3>Your devices act as one</h3>
+          <p>Phone, laptop, tablet, second laptop. Pair once. They share everything, end to end, between every device.</p>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">For privacy</span>
+      <h2>Things only One Link does.</h2>
+      <div class="ol-grid ol-grid-3">
+
+        <article class="ol-tile">
+          <h3>Three-hop private routing</h3>
+          <p>One toggle. Sphinx-routed through volunteer relays. Post-quantum blinded at every hop. No one knows who sent what to whom.</p>
+        </article>
+
+        <article class="ol-tile">
+          <h3>Hardware key recognition</h3>
+          <p>Your device recognizes itself when you return, without you signing in, without us storing a single thing about you.</p>
+        </article>
+
+        <article class="ol-tile">
+          <h3>Threshold recovery</h3>
+          <p>Split a secret across friends. Recover it from any threshold. Your account survives a lost phone without surviving a leak.</p>
+        </article>
+
+        <article class="ol-tile">
+          <h3>Field-bound binding</h3>
+          <p>Each session is bound to the physical environment. A stolen key cannot be replayed on a different network without detection.</p>
+        </article>
+
+        <article class="ol-tile">
+          <h3>Duress mode</h3>
+          <p>A second passphrase that opens a believable empty account. The math gives you a way out.</p>
+        </article>
+
+        <article class="ol-tile">
+          <h3>Confidential builds</h3>
+          <p>Every release is built in a sealed environment with attestation. You can verify nobody touched it.</p>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">How we compare</span>
+      <h2>Side by side with <span class="grad">everyone else.</span></h2>
+      <p class="lede">Honest table. We marked "yes" only where the architecture itself guarantees it. Policy promises do not count.</p>
+
+      <div class="ol-compare-wrap">
+        <table class="ol-compare">
+          <thead>
+            <tr>
+              <th></th>
+              <th class="ol-own">One Link</th>
+              <th>Signal</th>
+              <th>WhatsApp</th>
+              <th>iMessage</th>
+              <th>Telegram</th>
+              <th>AirDrop</th>
+              <th>Magic Wormhole</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>No account / email / phone</td><td class="yes">yes</td><td class="no">phone</td><td class="no">phone</td><td class="no">apple id</td><td class="no">phone</td><td class="yes">yes</td><td class="yes">yes</td></tr>
+            <tr><td>End to end by default</td><td class="yes">yes</td><td class="yes">yes</td><td class="yes">yes</td><td class="yes">yes</td><td class="no">no</td><td class="yes">yes</td><td class="yes">yes</td></tr>
+            <tr><td>No central server in path</td><td class="yes">yes</td><td class="no">no</td><td class="no">no</td><td class="no">no</td><td class="no">no</td><td class="yes">yes (local)</td><td class="no">no</td></tr>
+            <tr><td>Post-quantum hybrid keys</td><td class="yes">yes</td><td class="no">no</td><td class="no">no</td><td class="yes">PQ3</td><td class="no">no</td><td class="no">no</td><td class="no">no</td></tr>
+            <tr><td>Optional three-hop routing</td><td class="yes">yes</td><td class="no">no</td><td class="no">no</td><td class="no">no</td><td class="no">no</td><td class="no">no</td><td class="no">no</td></tr>
+            <tr><td>Send 50GB+ peer to peer</td><td class="yes">yes</td><td class="no">no</td><td class="no">no</td><td class="no">no</td><td class="no">no</td><td class="yes">local only</td><td class="yes">yes</td></tr>
+            <tr><td>Works offline / LAN only</td><td class="yes">yes</td><td class="no">no</td><td class="no">no</td><td class="no">no</td><td class="no">no</td><td class="yes">yes</td><td class="no">no</td></tr>
+            <tr><td>Source open and verifiable</td><td class="yes">AGPL</td><td class="yes">GPL</td><td class="no">no</td><td class="no">no</td><td class="no">partial</td><td class="no">no</td><td class="yes">MIT</td></tr>
+            <tr><td>Reproducible signed builds</td><td class="yes">yes</td><td class="yes">partial</td><td class="no">no</td><td class="no">no</td><td class="no">no</td><td class="no">no</td><td class="no">no</td></tr>
+            <tr><td>Pair devices in 5 seconds</td><td class="yes">QR + SAS</td><td class="no">link</td><td class="no">QR</td><td class="no">apple id</td><td class="no">QR</td><td class="yes">tap</td><td class="no">code</td></tr>
+            <tr><td>Free forever, no tier</td><td class="yes">yes</td><td class="yes">yes</td><td class="yes">yes</td><td class="yes">yes</td><td class="no">tiers</td><td class="yes">yes</td><td class="yes">yes</td></tr>
+            <tr><td>Threshold key recovery</td><td class="yes">yes</td><td class="no">no</td><td class="no">no</td><td class="no">no</td><td class="no">no</td><td class="no">no</td><td class="no">no</td></tr>
+            <tr><td>Confidential-compute attestation</td><td class="yes">yes</td><td class="no">no</td><td class="no">no</td><td class="yes">partial</td><td class="no">no</td><td class="no">no</td><td class="no">no</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="text-align: right; color: var(--ol-text-dim); font-size: 0.85rem; margin-top: 0.7rem;">Last reviewed 2026-05-16. Open a PR if anything in this table is wrong.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container" style="text-align: center;">
+      <a href="/download/" class="btn btn-primary btn-large">Get One Link <span class="arr">&rarr;</span></a>
+      <a href="/security/" class="btn btn-ghost btn-large">Read the threat model</a>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer" role="contentinfo">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a href="/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
+        <p class="footer-tag">A free, private network for messages, files, and devices. Owned by no one. Belongs to everyone.</p>
+      </div>
+      <div><h4>Network</h4><ul><li><a href="/how-it-works/">How it works</a></li><li><a href="/features/">Features</a></li><li><a href="/mesh/">Live mesh</a></li></ul></div>
+      <div><h4>For you</h4><ul><li><a href="/download/">Get One Link</a></li><li><a href="/security/">Security</a></li><li><a href="/about/">About</a></li></ul></div>
+      <div><h4>For builders</h4><ul><li><a href="/builders/">Protocol &amp; source</a></li><li><a href="https://github.com/IamOneYouAreOneWeAreOne/one-link" rel="noopener">GitHub</a></li><li><a href="/builders/#donate">Donate</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <span class="built-by">Built in the open. AGPL-3.0. <a href="/security/">No tracking, no analytics, no cookies.</a></span>
+      <span class="built-by">we are one</span>
+    </div>
+  </div>
+</footer>
+
+<script type="module" src="/live/bridge.js"></script>
+</body>
+</html>

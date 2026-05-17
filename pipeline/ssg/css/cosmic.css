@@ -1,0 +1,494 @@
+/* ═══════════════════════════════════════════════════════════════
+   Coherence Energy Labs — Cosmic Visual System
+   CSS-only scenes: star fields, nebulae, black holes, horizons.
+   No images. No JavaScript. Pure gradient alchemy.
+   ═══════════════════════════════════════════════════════════════ */
+
+
+/* ─── Base Banner ──────────────────────────────────────────── */
+
+.cosmic-banner {
+  position: relative;
+  width: 100%;
+  height: 300px;
+  overflow: hidden;
+  background-color: var(--bg, #05050a);
+  contain: layout style paint;
+}
+
+.cosmic-banner::before,
+.cosmic-banner::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* Hero variant — taller for landing sections */
+.cosmic-banner--hero {
+  height: clamp(400px, 50vh, 600px);
+}
+
+
+/* ─── Star Field Layer ─────────────────────────────────────── */
+/* 80+ stars via box-shadow on ::before. Three layers for depth:
+   small/dim far stars, medium mid-field, bright foreground.    */
+
+.cosmic-banner--stars::before {
+  /* Far stars — tiny, dim, blue-white tints */
+  box-shadow:
+    42px 18px 0 0.4px rgba(180, 200, 255, 0.35),
+    97px 54px 0 0.3px rgba(200, 210, 255, 0.30),
+    156px 12px 0 0.5px rgba(170, 195, 255, 0.40),
+    231px 82px 0 0.3px rgba(220, 225, 255, 0.25),
+    310px 44px 0 0.4px rgba(190, 205, 255, 0.35),
+    388px 99px 0 0.3px rgba(200, 215, 255, 0.28),
+    445px 28px 0 0.5px rgba(175, 200, 255, 0.38),
+    520px 67px 0 0.3px rgba(210, 218, 255, 0.30),
+    603px 15px 0 0.4px rgba(185, 200, 255, 0.33),
+    678px 88px 0 0.3px rgba(195, 210, 255, 0.27),
+    755px 41px 0 0.5px rgba(180, 200, 255, 0.40),
+    829px 73px 0 0.3px rgba(215, 222, 255, 0.25),
+    912px 9px 0 0.4px rgba(190, 208, 255, 0.35),
+    988px 58px 0 0.3px rgba(200, 212, 255, 0.30),
+    1060px 94px 0 0.5px rgba(170, 195, 255, 0.38),
+    1138px 22px 0 0.3px rgba(210, 220, 255, 0.28),
+    1215px 76px 0 0.4px rgba(185, 205, 255, 0.33),
+    1290px 38px 0 0.3px rgba(195, 210, 255, 0.26),
+    1366px 85px 0 0.5px rgba(180, 200, 255, 0.40),
+    1440px 50px 0 0.3px rgba(220, 228, 255, 0.30),
+    55px 135px 0 0.4px rgba(200, 212, 255, 0.32),
+    128px 172px 0 0.3px rgba(185, 200, 255, 0.28),
+    214px 148px 0 0.5px rgba(175, 198, 255, 0.38),
+    305px 190px 0 0.3px rgba(210, 220, 255, 0.25),
+    398px 155px 0 0.4px rgba(190, 205, 255, 0.35),
+    480px 200px 0 0.3px rgba(200, 215, 255, 0.30),
+    572px 140px 0 0.5px rgba(180, 200, 255, 0.40),
+    655px 185px 0 0.3px rgba(215, 225, 255, 0.27),
+    738px 160px 0 0.4px rgba(188, 202, 255, 0.33),
+    825px 198px 0 0.3px rgba(195, 210, 255, 0.28);
+
+  /* Mid-field stars — slightly larger, warmer tints mixed in */
+  filter: none;
+  z-index: 1;
+}
+
+.cosmic-banner--stars::after {
+  box-shadow:
+    /* Mid-brightness stars */
+    78px 32px 0 0.7px rgba(200, 210, 255, 0.50),
+    195px 68px 0 0.6px rgba(255, 240, 220, 0.45),
+    342px 21px 0 0.8px rgba(180, 200, 255, 0.55),
+    467px 85px 0 0.6px rgba(255, 235, 210, 0.42),
+    590px 46px 0 0.7px rgba(190, 208, 255, 0.50),
+    715px 78px 0 0.6px rgba(255, 242, 225, 0.45),
+    852px 30px 0 0.8px rgba(185, 205, 255, 0.55),
+    968px 70px 0 0.6px rgba(255, 238, 218, 0.42),
+    1105px 52px 0 0.7px rgba(195, 210, 255, 0.50),
+    1230px 88px 0 0.8px rgba(180, 200, 255, 0.55),
+    1350px 25px 0 0.6px rgba(255, 240, 220, 0.45),
+    140px 162px 0 0.7px rgba(200, 215, 255, 0.48),
+    285px 195px 0 0.6px rgba(255, 235, 215, 0.42),
+    430px 145px 0 0.8px rgba(185, 205, 255, 0.52),
+    565px 180px 0 0.7px rgba(255, 242, 228, 0.45),
+    700px 155px 0 0.6px rgba(190, 208, 255, 0.48),
+
+    /* Bright foreground stars — largest, most visible */
+    120px 45px 0 1.1px rgba(220, 230, 255, 0.75),
+    380px 62px 0 1.0px rgba(255, 248, 240, 0.70),
+    640px 28px 0 1.2px rgba(200, 218, 255, 0.80),
+    890px 55px 0 1.0px rgba(255, 245, 235, 0.72),
+    1170px 40px 0 1.1px rgba(210, 225, 255, 0.78),
+    250px 175px 0 1.2px rgba(220, 232, 255, 0.75),
+    510px 130px 0 1.0px rgba(255, 248, 242, 0.70),
+    780px 190px 0 1.1px rgba(195, 215, 255, 0.78),
+    1020px 165px 0 1.2px rgba(230, 238, 255, 0.80),
+    1300px 142px 0 1.0px rgba(255, 245, 238, 0.72),
+
+    /* Accent-colored feature stars */
+    300px 90px 0 1.3px rgba(110, 142, 255, 0.65),
+    750px 110px 0 1.4px rgba(168, 85, 247, 0.55),
+    1100px 75px 0 1.3px rgba(0, 212, 255, 0.60),
+    480px 170px 0 1.2px rgba(110, 142, 255, 0.58),
+    920px 185px 0 1.3px rgba(168, 85, 247, 0.50);
+
+  z-index: 2;
+}
+
+
+/* ─── Nebula Scene ─────────────────────────────────────────── */
+/* Overlapping radial gradients in purple, blue, cyan.          */
+
+.cosmic-banner--nebula {
+  background:
+    radial-gradient(ellipse 80% 60% at 25% 40%,
+      rgba(168, 85, 247, 0.18) 0%,
+      rgba(168, 85, 247, 0.06) 40%,
+      transparent 70%),
+    radial-gradient(ellipse 70% 80% at 70% 55%,
+      rgba(110, 142, 255, 0.15) 0%,
+      rgba(110, 142, 255, 0.05) 45%,
+      transparent 70%),
+    radial-gradient(ellipse 50% 50% at 50% 30%,
+      rgba(0, 212, 255, 0.10) 0%,
+      rgba(0, 212, 255, 0.03) 50%,
+      transparent 70%),
+    radial-gradient(ellipse 90% 70% at 15% 70%,
+      rgba(110, 142, 255, 0.08) 0%,
+      transparent 60%),
+    radial-gradient(ellipse 60% 90% at 85% 25%,
+      rgba(168, 85, 247, 0.10) 0%,
+      transparent 55%),
+    linear-gradient(175deg, #08081a 0%, #05050a 40%, #0a0a18 100%);
+}
+
+/* Animated nebula drift — slow rotation of cloud layers */
+.cosmic-banner--nebula::before {
+  background:
+    radial-gradient(ellipse 60% 45% at 35% 50%,
+      rgba(168, 85, 247, 0.12) 0%,
+      transparent 65%),
+    radial-gradient(ellipse 50% 55% at 65% 45%,
+      rgba(0, 212, 255, 0.08) 0%,
+      transparent 60%);
+  animation: nebula-drift 45s ease-in-out infinite alternate;
+}
+
+@keyframes nebula-drift {
+  0%   { transform: translate(0, 0) scale(1); opacity: 1; }
+  50%  { transform: translate(20px, -10px) scale(1.05); opacity: 0.85; }
+  100% { transform: translate(-15px, 8px) scale(0.97); opacity: 0.95; }
+}
+
+
+/* ─── Black Hole Scene ─────────────────────────────────────── */
+/* Dark vortex center with glowing accretion disk ring.         */
+
+.cosmic-banner--blackhole {
+  background:
+    /* Event horizon — absolute dark center */
+    radial-gradient(circle at 50% 50%,
+      #000000 0%,
+      #000000 6%,
+      rgba(0, 0, 0, 0.95) 8%,
+      transparent 18%),
+    /* Inner accretion glow — hot blue-white */
+    radial-gradient(circle at 50% 50%,
+      transparent 7%,
+      rgba(200, 220, 255, 0.25) 9%,
+      rgba(110, 142, 255, 0.35) 11%,
+      rgba(110, 142, 255, 0.15) 14%,
+      transparent 18%),
+    /* Outer accretion ring — violet to cyan */
+    radial-gradient(ellipse 55% 25% at 50% 50%,
+      transparent 30%,
+      rgba(168, 85, 247, 0.20) 45%,
+      rgba(110, 142, 255, 0.30) 55%,
+      rgba(0, 212, 255, 0.18) 65%,
+      rgba(0, 212, 255, 0.05) 78%,
+      transparent 90%),
+    /* Gravitational lensing halo */
+    radial-gradient(circle at 50% 50%,
+      transparent 16%,
+      rgba(110, 142, 255, 0.06) 20%,
+      rgba(168, 85, 247, 0.04) 30%,
+      transparent 45%),
+    /* Space background */
+    radial-gradient(ellipse 120% 100% at 50% 50%,
+      #07071a 0%,
+      #05050a 100%);
+}
+
+/* Accretion disk rotation */
+.cosmic-banner--blackhole::before {
+  background:
+    conic-gradient(from 0deg at 50% 50%,
+      rgba(110, 142, 255, 0.00) 0deg,
+      rgba(110, 142, 255, 0.12) 45deg,
+      rgba(168, 85, 247, 0.08) 90deg,
+      rgba(0, 212, 255, 0.10) 135deg,
+      rgba(110, 142, 255, 0.00) 180deg,
+      rgba(168, 85, 247, 0.10) 225deg,
+      rgba(0, 212, 255, 0.06) 270deg,
+      rgba(110, 142, 255, 0.12) 315deg,
+      rgba(110, 142, 255, 0.00) 360deg);
+  mask-image: radial-gradient(ellipse 50% 22% at 50% 50%,
+    transparent 40%,
+    black 55%,
+    black 80%,
+    transparent 95%);
+  -webkit-mask-image: radial-gradient(ellipse 50% 22% at 50% 50%,
+    transparent 40%,
+    black 55%,
+    black 80%,
+    transparent 95%);
+  animation: accretion-spin 60s linear infinite;
+}
+
+@keyframes accretion-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+
+/* ─── Deep Field Scene ─────────────────────────────────────── */
+/* Dense star field with faint galaxy smudges — Hubble-style.   */
+
+.cosmic-banner--deepfield {
+  background:
+    /* Faint distant galaxy smudges */
+    radial-gradient(ellipse 3% 1.5% at 20% 35%,
+      rgba(168, 85, 247, 0.12), transparent),
+    radial-gradient(ellipse 2% 3.5% at 72% 60%,
+      rgba(110, 142, 255, 0.10), transparent),
+    radial-gradient(ellipse 4% 1% at 45% 75%,
+      rgba(255, 240, 200, 0.08), transparent),
+    radial-gradient(ellipse 1.5% 2.5% at 88% 25%,
+      rgba(0, 212, 255, 0.09), transparent),
+    radial-gradient(ellipse 2.5% 1.2% at 55% 15%,
+      rgba(168, 85, 247, 0.07), transparent),
+    radial-gradient(ellipse 3% 2% at 35% 85%,
+      rgba(110, 142, 255, 0.08), transparent),
+    /* Cosmic background radiation wash */
+    linear-gradient(170deg,
+      #06061a 0%,
+      #050510 30%,
+      #07070e 60%,
+      #05050a 100%);
+}
+
+
+/* ─── Horizon Scene ────────────────────────────────────────── */
+/* Atmospheric gradient — planet's limb against space.          */
+
+.cosmic-banner--horizon {
+  background:
+    /* Atmospheric glow at bottom edge */
+    linear-gradient(to top,
+      rgba(110, 142, 255, 0.20) 0%,
+      rgba(110, 142, 255, 0.10) 5%,
+      rgba(0, 212, 255, 0.06) 12%,
+      rgba(168, 85, 247, 0.03) 22%,
+      transparent 40%),
+    /* Thin bright limb line */
+    linear-gradient(to top,
+      rgba(200, 220, 255, 0.35) 0%,
+      rgba(200, 220, 255, 0.08) 1.5%,
+      transparent 4%),
+    /* Deep space above */
+    linear-gradient(to bottom,
+      #03030a 0%,
+      #05050e 60%,
+      #08082a 100%);
+}
+
+
+/* ─── Ocean Scene (OneUnity) ───────────────────────────────── */
+/* Horizontal gradient bands: sky meets water, warm earth tones. */
+
+.cosmic-banner--ocean {
+  background:
+    /* Sun reflection on water — warm shimmer */
+    radial-gradient(ellipse 40% 15% at 50% 72%,
+      rgba(255, 210, 140, 0.15) 0%,
+      rgba(255, 190, 120, 0.06) 60%,
+      transparent 100%),
+    /* Sky-to-water transition */
+    linear-gradient(to bottom,
+      #c8d8e8 0%,
+      #a8c4d8 15%,
+      #88afc8 28%,
+      #7daabb 38%,
+      /* Horizon line */
+      #90b8c8 42%,
+      #6a9eb5 44%,
+      /* Water body */
+      #4a8aa8 50%,
+      #3a7a98 60%,
+      #2a6a88 72%,
+      #1e5a78 85%,
+      #184e6a 100%);
+}
+
+/* Gentle water shimmer */
+.cosmic-banner--ocean::before {
+  background:
+    linear-gradient(92deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.04) 20%,
+      rgba(255, 255, 255, 0.08) 40%,
+      rgba(255, 255, 255, 0.03) 60%,
+      rgba(255, 255, 255, 0.07) 80%,
+      transparent 100%);
+  top: 44%;
+  height: 56%;
+  animation: water-shimmer 20s ease-in-out infinite alternate;
+}
+
+@keyframes water-shimmer {
+  0%   { transform: translateX(0); opacity: 0.6; }
+  50%  { transform: translateX(30px); opacity: 1; }
+  100% { transform: translateX(-20px); opacity: 0.7; }
+}
+
+
+/* ─── Dawn Scene (OneUnity) ────────────────────────────────── */
+/* Pre-sunrise glow — warm golden horizon bleeding into sky.     */
+
+.cosmic-banner--dawn {
+  background:
+    /* Sun glow at horizon center */
+    radial-gradient(ellipse 50% 40% at 50% 85%,
+      rgba(255, 180, 100, 0.30) 0%,
+      rgba(255, 150, 70, 0.15) 30%,
+      rgba(255, 120, 50, 0.05) 60%,
+      transparent 80%),
+    /* Warm horizon band */
+    linear-gradient(to top,
+      #8a5a2a 0%,
+      #b87a3a 8%,
+      #d4944a 15%,
+      #e8a860 22%,
+      #e8b878 30%,
+      /* Sky transition */
+      #d4b088 38%,
+      #b8a898 48%,
+      #98a0a8 58%,
+      #7890a0 70%,
+      #608498 82%,
+      #4a7088 100%);
+}
+
+/* Soft light rays from horizon */
+.cosmic-banner--dawn::before {
+  background:
+    conic-gradient(from 250deg at 50% 95%,
+      transparent 0deg,
+      rgba(255, 200, 130, 0.06) 10deg,
+      transparent 20deg,
+      rgba(255, 180, 100, 0.04) 35deg,
+      transparent 45deg,
+      rgba(255, 200, 130, 0.05) 55deg,
+      transparent 65deg,
+      rgba(255, 180, 100, 0.03) 75deg,
+      transparent 85deg,
+      transparent 360deg);
+  animation: dawn-rays 30s ease-in-out infinite alternate;
+}
+
+@keyframes dawn-rays {
+  0%   { opacity: 0.5; transform: scale(1); }
+  100% { opacity: 1; transform: scale(1.08); }
+}
+
+
+/* ─── Star Twinkle Animation ───────────────────────────────── */
+/* Applied to stars layer — subtle opacity pulse.               */
+
+.cosmic-banner--twinkle::after {
+  animation: star-twinkle 6s ease-in-out infinite alternate;
+}
+
+@keyframes star-twinkle {
+  0%   { opacity: 1; }
+  25%  { opacity: 0.82; }
+  50%  { opacity: 0.95; }
+  75%  { opacity: 0.78; }
+  100% { opacity: 0.92; }
+}
+
+/* Secondary twinkle phase offset for the far-star layer */
+.cosmic-banner--twinkle::before {
+  animation: star-twinkle-alt 8s ease-in-out infinite alternate;
+}
+
+@keyframes star-twinkle-alt {
+  0%   { opacity: 0.85; }
+  33%  { opacity: 1; }
+  66%  { opacity: 0.80; }
+  100% { opacity: 0.93; }
+}
+
+
+/* ─── Vignette Overlay ─────────────────────────────────────── */
+/* Darkens edges for depth and focus.                           */
+
+.cosmic-banner--vignette::after {
+  background:
+    radial-gradient(ellipse 70% 60% at 50% 50%,
+      transparent 40%,
+      rgba(5, 5, 10, 0.4) 100%);
+  z-index: 3;
+}
+
+
+/* ─── Content Positioning ──────────────────────────────────── */
+/* Text and elements inside banners sit above all layers.       */
+
+.cosmic-banner > * {
+  position: relative;
+  z-index: 10;
+}
+
+
+/* ─── Composable Glow Accents ──────────────────────────────── */
+
+.cosmic-banner--glow-accent::after {
+  background:
+    radial-gradient(ellipse 30% 40% at 80% 20%,
+      rgba(110, 142, 255, 0.10), transparent),
+    radial-gradient(ellipse 25% 35% at 15% 75%,
+      rgba(168, 85, 247, 0.08), transparent);
+  z-index: 2;
+}
+
+.cosmic-banner--glow-warm::after {
+  background:
+    radial-gradient(ellipse 35% 40% at 70% 80%,
+      rgba(255, 107, 61, 0.10), transparent),
+    radial-gradient(ellipse 25% 30% at 30% 30%,
+      rgba(255, 200, 130, 0.06), transparent);
+  z-index: 2;
+}
+
+
+/* ─── Responsive Sizing ────────────────────────────────────── */
+
+@media (max-width: 1024px) {
+  .cosmic-banner       { height: 200px; }
+  .cosmic-banner--hero { height: clamp(320px, 40vh, 480px); }
+}
+
+@media (max-width: 640px) {
+  .cosmic-banner       { height: 150px; }
+  .cosmic-banner--hero { height: clamp(260px, 35vh, 400px); }
+}
+
+
+/* ─── Reduced Motion ───────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .cosmic-banner--nebula::before,
+  .cosmic-banner--blackhole::before,
+  .cosmic-banner--ocean::before,
+  .cosmic-banner--dawn::before,
+  .cosmic-banner--twinkle::before,
+  .cosmic-banner--twinkle::after {
+    animation: none;
+  }
+}
+
+
+/* ─── Print ────────────────────────────────────────────────── */
+
+@media print {
+  .cosmic-banner {
+    height: auto;
+    min-height: 80px;
+    background: #f5f5f5;
+  }
+  .cosmic-banner::before,
+  .cosmic-banner::after {
+    display: none;
+  }
+}

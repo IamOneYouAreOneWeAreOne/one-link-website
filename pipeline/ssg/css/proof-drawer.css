@@ -1,0 +1,302 @@
+/* ═══════════════════════════════════════════════════════════════
+   Proof Drawer — Evidence sidebar for every major claim
+   Pure CSS with <details>/<summary> for zero-JS operation.
+   Fixed right-side drawer on desktop, bottom sheet on mobile.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ─── Evidence Badge (inline trigger) ─── */
+.evidence-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 10px;
+  background: rgba(74, 222, 128, 0.08);
+  border: 1px solid rgba(74, 222, 128, 0.15);
+  border-radius: 100px;
+  font-size: var(--text-xs);
+  font-weight: 500;
+  color: #4ade80;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  vertical-align: middle;
+}
+
+.evidence-trigger:hover {
+  background: rgba(74, 222, 128, 0.15);
+  border-color: rgba(74, 222, 128, 0.3);
+  box-shadow: 0 0 12px rgba(74, 222, 128, 0.1);
+}
+
+.evidence-trigger::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #4ade80;
+  flex-shrink: 0;
+}
+
+.evidence-trigger.hypothesis {
+  background: rgba(255, 138, 92, 0.08);
+  border-color: rgba(255, 138, 92, 0.15);
+  color: var(--accent-warm);
+}
+.evidence-trigger.hypothesis::before { background: var(--accent-warm); }
+
+.evidence-trigger.validated {
+  background: rgba(110, 142, 255, 0.08);
+  border-color: rgba(110, 142, 255, 0.15);
+  color: var(--accent);
+}
+.evidence-trigger.validated::before { background: var(--accent); }
+
+/* ─── Proof Drawer (CSS-only via <details>) ─── */
+details.proof-panel {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg-elevated);
+  margin: var(--space-lg) 0;
+  overflow: hidden;
+  transition: border-color 0.2s ease;
+}
+
+details.proof-panel:hover {
+  border-color: var(--border-glow);
+}
+
+details.proof-panel > summary {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-md) var(--space-lg);
+  cursor: pointer;
+  font-weight: 500;
+  font-size: var(--text-sm);
+  color: var(--text);
+  list-style: none;
+  user-select: none;
+}
+
+details.proof-panel > summary::-webkit-details-marker { display: none; }
+
+details.proof-panel > summary::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #4ade80;
+  flex-shrink: 0;
+  transition: box-shadow 0.2s ease;
+}
+
+details.proof-panel[open] > summary::before {
+  box-shadow: 0 0 8px rgba(74, 222, 128, 0.5);
+}
+
+details.proof-panel > summary::after {
+  content: "+";
+  margin-left: auto;
+  font-size: var(--text-lg);
+  color: var(--text-muted);
+  transition: transform 0.2s ease;
+}
+
+details.proof-panel[open] > summary::after {
+  content: "\2212";
+}
+
+/* ─── Proof Content ─── */
+.proof-panel-body {
+  padding: 0 var(--space-lg) var(--space-lg);
+  display: grid;
+  gap: var(--space-md);
+}
+
+.proof-item {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-sm) var(--space-md);
+  align-items: start;
+  font-size: var(--text-sm);
+  padding: var(--space-sm) 0;
+  border-bottom: 1px solid rgba(110, 142, 255, 0.06);
+}
+
+.proof-item:last-child { border-bottom: none; }
+
+.proof-item-icon {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.proof-item-icon.citation {
+  background: rgba(110, 142, 255, 0.12);
+  color: var(--accent);
+}
+
+.proof-item-icon.data {
+  background: rgba(0, 212, 255, 0.12);
+  color: var(--accent-cyan);
+}
+
+.proof-item-icon.code {
+  background: rgba(168, 85, 247, 0.12);
+  color: var(--accent-violet);
+}
+
+.proof-item-icon.metric {
+  background: rgba(74, 222, 128, 0.12);
+  color: #4ade80;
+}
+
+.proof-item-label {
+  font-weight: 500;
+  color: var(--text);
+}
+
+.proof-item-detail {
+  grid-column: 2;
+  color: var(--text-dim);
+  font-size: var(--text-xs);
+}
+
+.proof-item-detail a {
+  color: var(--accent);
+  text-decoration: none;
+}
+.proof-item-detail a:hover { text-decoration: underline; }
+
+/* ─── Falsifier Section ─── */
+.proof-falsifiers {
+  border-top: 1px solid var(--border);
+  padding-top: var(--space-md);
+  margin-top: var(--space-sm);
+}
+
+.proof-falsifiers-label {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--accent-warm);
+  margin-bottom: var(--space-sm);
+}
+
+.proof-falsifier {
+  font-size: var(--text-xs);
+  color: var(--text-dim);
+  padding: var(--space-xs) 0;
+  padding-left: var(--space-md);
+  border-left: 2px solid rgba(255, 138, 92, 0.3);
+  margin-bottom: var(--space-xs);
+}
+
+/* ─── Inline Evidence (for lab status strip) ─── */
+.proof-drawer {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+
+.proof-drawer > summary {
+  cursor: pointer;
+  color: var(--accent);
+  list-style: none;
+  font-weight: 500;
+}
+
+.proof-drawer > summary::-webkit-details-marker { display: none; }
+
+.proof-drawer > summary:hover {
+  text-decoration: underline;
+}
+
+.proof-content {
+  padding: var(--space-sm) 0;
+  font-size: var(--text-xs);
+  color: var(--text-dim);
+  line-height: 1.6;
+}
+
+.proof-content p { margin-bottom: var(--space-xs); }
+
+/* ─── Evidence Grid (About page) ─── */
+.evidence-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: var(--space-lg);
+  margin: var(--space-xl) 0;
+}
+
+.evidence-item {
+  text-align: center;
+  padding: var(--space-lg);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.evidence-item:hover {
+  border-color: var(--border-glow);
+  box-shadow: 0 0 20px var(--glow-primary);
+}
+
+.evidence-num {
+  display: block;
+  font-size: var(--text-2xl);
+  font-weight: 700;
+  color: var(--accent);
+  font-family: var(--font-mono);
+  line-height: 1.2;
+}
+
+.evidence-label {
+  display: block;
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  margin-top: var(--space-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ─── OneUnity theme ─── */
+.theme-spiritual .evidence-trigger {
+  background: rgba(74, 103, 65, 0.08);
+  border-color: rgba(74, 103, 65, 0.15);
+  color: var(--oue-accent);
+}
+.theme-spiritual .evidence-trigger::before { background: var(--oue-accent); }
+
+.theme-spiritual details.proof-panel {
+  background: var(--oue-surface);
+  border-color: var(--oue-border);
+}
+
+.theme-spiritual .evidence-item {
+  background: var(--oue-surface);
+  border-color: var(--oue-border);
+}
+
+.theme-spiritual .evidence-num { color: var(--oue-accent); }
+
+/* ─── Mobile ─── */
+@media (max-width: 640px) {
+  .evidence-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .proof-item {
+    grid-template-columns: 1fr;
+  }
+
+  .proof-item-detail { grid-column: 1; }
+}

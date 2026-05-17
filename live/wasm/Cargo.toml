@@ -1,0 +1,48 @@
+# =============================================================================
+# One Link Website  -  WASM workspace root
+# =============================================================================
+#
+# Lives next to the website (NOT inside the One Link Rust workspace) so this
+# repo can build small wasm-bindgen wrappers around production One Link crates
+# without modifying the daemon workspace at all.
+#
+# Workspace dependency versions are pinned to MATCH the One Link daemon
+# workspace pins so that `ol_pair_qr` and friends inherit the same crates
+# they were tested with in production.
+#
+# Build the WASM bundle:  ../../scripts/build-wasm.sh
+# =============================================================================
+
+[workspace]
+resolver = "2"
+members = [
+    "ol_pair_qr_wasm",
+    "ol_pqkem_wasm",
+    "ol_onion_wasm",
+    "ol_coherence_field_wasm",
+]
+
+[workspace.dependencies]
+# --- versions mirror One Link daemon workspace pins (May 2026) ---
+blake3            = { version = "1.5", features = ["traits-preview"] }   # rayon dropped for wasm
+ed25519-dalek     = { version = "2.1", features = ["rand_core", "pkcs8", "pem"] }
+rand_core         = { version = "0.6", features = ["std", "getrandom"] }
+thiserror         = "1.0"
+subtle            = "2.6"
+zeroize           = { version = "1.8", features = ["derive"] }
+hex               = "0.4"
+aead              = "0.5"
+chacha20poly1305  = { version = "0.10", features = ["stream"] }
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
+
+[workspace.lints.clippy]
+all = { level = "warn", priority = -1 }
+
+[profile.release]
+opt-level     = "z"
+lto           = true
+codegen-units = 1
+strip         = "debuginfo"
+panic         = "abort"

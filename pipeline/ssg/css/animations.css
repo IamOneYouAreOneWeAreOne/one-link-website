@@ -1,0 +1,140 @@
+/* ═══ Scroll-Driven Animations ═══
+   Pure CSS. Zero JavaScript. Progressive enhancement.
+   These only fire on browsers that support scroll-timeline. */
+
+/* Fade-in on scroll for sections */
+@supports (animation-timeline: scroll()) {
+  .section {
+    animation: fade-up linear both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 30%;
+  }
+
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(2rem);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Cards stagger on scroll */
+  .card {
+    animation: card-reveal linear both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 25%;
+  }
+
+  @keyframes card-reveal {
+    from {
+      opacity: 0;
+      transform: translateY(1.5rem) scale(0.98);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  /* Stats counter reveal */
+  .stat {
+    animation: stat-pop linear both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 35%;
+  }
+
+  @keyframes stat-pop {
+    from {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  /* Hero parallax depth */
+  .hero h1 {
+    animation: hero-depth linear both;
+    animation-timeline: scroll();
+    animation-range: 0% 40vh;
+  }
+
+  @keyframes hero-depth {
+    from {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    to {
+      opacity: 0.3;
+      transform: translateY(-3rem);
+    }
+  }
+
+  /* Header shrink on scroll */
+  .site-header {
+    animation: header-shrink linear both;
+    animation-timeline: scroll();
+    animation-range: 0 100px;
+  }
+
+  @keyframes header-shrink {
+    from { padding-block: 1rem; }
+    to { padding-block: 0.5rem; }
+  }
+
+  /* Progress bar at top — uses .site-header::after to avoid
+     conflicting with body::before (ambient bg) and body::after (grid pattern) */
+  .site-header::after {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--accent);
+    transform-origin: left;
+    animation: progress-bar linear both;
+    animation-timeline: scroll();
+    z-index: 1000;
+  }
+
+  @keyframes progress-bar {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+  }
+
+  /* Domain group labels slide in */
+  .domain-label {
+    animation: label-slide linear both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 20%;
+  }
+
+  @keyframes label-slide {
+    from {
+      opacity: 0;
+      transform: translateX(-1rem);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+}
+
+/* Smooth link hover underline */
+.site-nav a::after {
+  content: "";
+  display: block;
+  height: 1px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transition: transform var(--duration) var(--ease);
+  transform-origin: left;
+}
+.site-nav a:hover::after { transform: scaleX(1); }

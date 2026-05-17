@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://weareone-link.org/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://weareone-link.org/download/</loc><changefreq>weekly</changefreq><priority>0.95</priority></url>
+  <url><loc>https://weareone-link.org/how-it-works/</loc><changefreq>monthly</changefreq><priority>0.85</priority></url>
+  <url><loc>https://weareone-link.org/features/</loc><changefreq>weekly</changefreq><priority>0.85</priority></url>
+  <url><loc>https://weareone-link.org/security/</loc><changefreq>monthly</changefreq><priority>0.80</priority></url>
+  <url><loc>https://weareone-link.org/mesh/</loc><changefreq>daily</changefreq><priority>0.70</priority></url>
+  <url><loc>https://weareone-link.org/builders/</loc><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://weareone-link.org/about/</loc><changefreq>monthly</changefreq><priority>0.70</priority></url>
+  <url><loc>https://weareone-link.org/privacy/</loc><changefreq>yearly</changefreq><priority>0.30</priority></url>
+  <url><loc>https://weareone-link.org/terms/</loc><changefreq>yearly</changefreq><priority>0.30</priority></url>
+</urlset>

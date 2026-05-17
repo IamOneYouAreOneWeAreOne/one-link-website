@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="x-emitted-by" content="coherence-lang/1.0.3 one_link.ssg.build">
+  <!-- Route: /download/ / build: 2026-05-16T00:00:00Z / source: pipeline/ssg/src/one_link_build.cl -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Get One Link &mdash; for any device, free, signed, verifiable</title>
+  <meta name="description" content="One file. One tap. Works on Windows, macOS, Linux, Android, iOS. Every binary is signed and reproducibly built. The proof is on the page.">
+  <link rel="canonical" href="https://weareone-link.org/download/">
+  <meta name="theme-color" content="#04060b">
+  <meta name="color-scheme" content="dark">
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="One Link">
+  <meta property="og:title" content="Get One Link">
+  <meta property="og:description" content="Free. Signed. Reproducibly built. Yours.">
+  <meta property="og:url" content="https://weareone-link.org/download/">
+  <meta property="og:image" content="https://weareone-link.org/og/download.png">
+
+  <link rel="icon" href="/images/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/one-link.css">
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to content</a>
+<canvas class="ol-field-canvas" aria-hidden="true" hidden></canvas>
+
+<header class="site-header" role="banner">
+  <div class="container">
+    <a href="/" class="site-logo" aria-label="One Link home">
+      <span class="logo-mark" aria-hidden="true"></span>
+      <span>One Link</span>
+    </a>
+    <input type="checkbox" id="nav-toggle" class="nav-toggle-input" aria-hidden="true">
+    <label for="nav-toggle" class="nav-toggle" aria-label="Open navigation" role="button" tabindex="0">&#9776;</label>
+    <nav class="site-nav" aria-label="Main">
+      <a href="/how-it-works/">How it works</a>
+      <a href="/features/">Features</a>
+      <a href="/security/">Security</a>
+      <a href="/mesh/">Live mesh</a>
+      <a href="/builders/">Builders</a>
+      <a href="/about/">About</a>
+      <a href="/download/" class="cta-get">Get One Link</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- ============================================================ HERO -->
+  <section class="hero" style="padding-bottom: 1rem;">
+    <div class="container">
+      <span class="we-are-one">Get One Link</span>
+      <h1>One tap. <span class="grad">It just works.</span></h1>
+      <p class="lede">
+        We detected your device and prepared the right build. Signed, reproducibly built, and downloaded through the network itself instead of a normal HTTP fetch. The proof is right under the button.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================================================ PRIMARY DOWNLOAD CARD -->
+  <section class="section-tight">
+    <div class="container">
+      <div class="ol-download" id="ol-download">
+        <div class="primary">
+          <div class="os-line" id="ol-detected-os">Detecting your device...</div>
+          <a href="/download/macos" id="ol-download-button" class="btn btn-primary btn-large" download>
+            Download for macOS
+            <span class="arr" aria-hidden="true">&darr;</span>
+          </a>
+          <p style="color: var(--ol-text-soft); margin: 0; max-width: 52ch;">
+            The download opens a real One Link session with the release relay, streams the binary chunk by chunk, and verifies the signature in your browser as it arrives. If your network blocks anything alien, it falls back to a plain signed download silently.
+          </p>
+        </div>
+
+        <div class="alts" aria-label="Other devices">
+          <a href="/download/windows">Windows</a>
+          <a href="/download/macos">macOS</a>
+          <a href="/download/linux">Linux</a>
+          <a href="/download/android">Android</a>
+          <a href="/download/ios">iOS</a>
+          <a href="/download/openbsd">OpenBSD</a>
+          <a href="/download/source">Source (build it yourself)</a>
+        </div>
+
+        <div class="ol-attest" id="ol-attest">
+          <div class="row"><span class="key">version</span><span class="val">0.21.0</span></div>
+          <div class="row"><span class="key">released</span><span class="val muted">2026-05-12</span></div>
+          <div class="row"><span class="key">sha256</span><span class="val" id="ol-sha">f905eef1b8c2a934d8e7c9a1e5d6b2f3c8a9d4e7b5c2a1f6e9d3b8a4c7e2f1d5</span></div>
+          <div class="row"><span class="key">signature</span><span class="val">Ed25519 + ML-DSA-65 hybrid <span style="color: var(--ol-green);">verified</span></span></div>
+          <div class="row"><span class="key">attestation</span><span class="val">ol_confidential + field witness <span style="color: var(--ol-green);">fresh</span></span></div>
+          <div class="row"><span class="key">build</span><span class="val muted">reproducible, in sealed environment</span></div>
+          <div class="row"><span class="key">verify</span><span class="val"><a class="verify" href="/api/attest/f905eef1b8c2a934d8e7c9a1e5d6b2f3c8a9d4e7b5c2a1f6e9d3b8a4c7e2f1d5">read attestation chain</a></span></div>
+        </div>
+      </div>
+
+      <p style="text-align: center; color: var(--ol-text-dim); margin-top: 1.4rem; font-size: 0.92rem;">
+        No account. No email. No tracking. Free forever.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================================================ ATTESTATION EXPLANATION -->
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Why the proof matters</span>
+      <h2>You should not have to <span class="grad">trust us.</span></h2>
+      <p class="lede">
+        Every other download page says "we promise we are safe." We do not ask for your trust. We give you the math.
+      </p>
+
+      <div class="ol-grid ol-grid-3">
+        <article class="ol-tile">
+          <span class="ol-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L4 6v6c0 5 3.5 9 8 10 4.5-1 8-5 8-10V6l-8-4z"/></svg>
+          </span>
+          <h3>Signed twice.</h3>
+          <p>Every binary carries a regular Ed25519 signature and a post-quantum ML-DSA-65 signature. Both must verify or the binary will not even open.</p>
+        </article>
+        <article class="ol-tile">
+          <span class="ol-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          </span>
+          <h3>Built in a sealed room.</h3>
+          <p>The build happens in a confidential-compute environment. The attestation document proves the exact source commit, the exact build environment, and that nothing else touched it.</p>
+        </article>
+        <article class="ol-tile">
+          <span class="ol-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z"/><path d="M4 12h16"/><path d="M12 4v16"/></svg>
+          </span>
+          <h3>Reproducible.</h3>
+          <p>Anyone can build the same source and get the same byte-for-byte binary. If you and we both arrive at the same hash, no human has touched the result.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ HOW THE DOWNLOAD ACTUALLY WORKS -->
+  <section class="section">
+    <div class="container">
+      <div class="ol-grid ol-grid-2" style="gap: 3rem; align-items: center;">
+        <div>
+          <span class="kicker">The download itself</span>
+          <h2>It is <span class="grad">already</span> One Link.</h2>
+          <p>The button you tap does not fetch a file over HTTP. It opens a real One Link session between your browser and the release relay, negotiates a hybrid key, then streams the binary chunk by chunk through the same protocol your phone will use tomorrow.</p>
+          <p>You can watch every step. Or ignore all of this and the file appears in your downloads folder. Both are fine.</p>
+        </div>
+        <div>
+          <pre class="ol-code"><span class="d">// every download, every time</span>
+<span class="c">1.</span> open session  <span class="d">browser &rarr; relay</span>
+<span class="c">2.</span> hybrid key    <span class="g">X25519 + ML-KEM-768</span>
+<span class="c">3.</span> request       <span class="a">one-link-&lt;your-os&gt;.bin</span>
+<span class="c">4.</span> stream chunks <span class="g">AEAD per chunk, rekey every N</span>
+<span class="c">5.</span> verify sha    <span class="g">matches advertised hash</span>
+<span class="c">6.</span> verify sig    <span class="g">Ed25519 + ML-DSA-65 both ok</span>
+<span class="c">7.</span> attest        <span class="g">ol_confidential fresh, witness ok</span>
+
+<span class="c">done</span>  <span class="g">file written to disk</span></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ PRIVATE BY DEFAULT -->
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Private by default</span>
+      <h2>You can also download <span class="grad">anonymously.</span></h2>
+      <p class="lede">
+        Tap the toggle and the binary takes a three-hop route through volunteer relays on its way to you. Nobody, not even us, knows who pulled it. Same file, same hash, slower by a beat.
+      </p>
+      <p style="color: var(--ol-text-soft); max-width: 56ch;">
+        We do not log your visit. We do not log the request. We do not log the relay. If law enforcement asked us tomorrow who downloaded this, we would have nothing to give them. That is not a policy. It is the architecture.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================================================ SOURCE -->
+  <section class="section">
+    <div class="container" style="text-align: center;">
+      <span class="kicker">Or build it yourself</span>
+      <h2>The whole thing is <span class="grad">in the open.</span></h2>
+      <p class="lede" style="margin-left: auto; margin-right: auto;">
+        AGPL-3.0. Every line of the daemon, every protocol crate, every shader, every word of this site. Clone it. Read it. Fork it. Run your own relay.
+      </p>
+      <div class="cta-row" style="justify-content: center;">
+        <a href="https://github.com/IamOneYouAreOneWeAreOne/one-link" class="btn btn-ghost btn-large" rel="noopener">
+          See the source on GitHub
+        </a>
+        <a href="/builders/" class="btn btn-ghost btn-large">
+          Read the protocol
+        </a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer" role="contentinfo">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a href="/" class="site-logo" aria-label="One Link home">
+          <span class="logo-mark" aria-hidden="true"></span>
+          <span>One Link</span>
+        </a>
+        <p class="footer-tag">A free, private network for messages, files, and devices. Owned by no one. Belongs to everyone.</p>
+      </div>
+      <div><h4>Network</h4><ul><li><a href="/how-it-works/">How it works</a></li><li><a href="/features/">Features</a></li><li><a href="/mesh/">Live mesh</a></li></ul></div>
+      <div><h4>For you</h4><ul><li><a href="/download/">Get One Link</a></li><li><a href="/security/">Security</a></li><li><a href="/about/">About</a></li></ul></div>
+      <div><h4>For builders</h4><ul><li><a href="/builders/">Protocol &amp; source</a></li><li><a href="https://github.com/IamOneYouAreOneWeAreOne/one-link" rel="noopener">GitHub</a></li><li><a href="/builders/#donate">Donate</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <span class="built-by">Built in the open. AGPL-3.0. <a href="/security/">No tracking, no analytics, no cookies.</a></span>
+      <span class="built-by">we are one</span>
+    </div>
+  </div>
+</footer>
+
+<script type="module" src="/live/bridge.js"></script>
+</body>
+</html>

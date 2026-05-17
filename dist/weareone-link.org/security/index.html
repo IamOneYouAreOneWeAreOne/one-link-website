@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="x-emitted-by" content="coherence-lang/1.0.3 one_link.ssg.build">
+  <!-- Route: /security/ / build: 2026-05-16T00:00:00Z / source: pipeline/ssg/src/one_link_build.cl -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Security &mdash; what One Link protects, and what it cannot</title>
+  <meta name="description" content="Honest threat model. What One Link defends against. What it cannot. The audits, the formal proofs, and the architectural reasons we collect nothing.">
+  <link rel="canonical" href="https://weareone-link.org/security/">
+  <meta name="theme-color" content="#04060b">
+  <meta name="color-scheme" content="dark">
+  <link rel="icon" href="/images/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/one-link.css">
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to content</a>
+<canvas class="ol-field-canvas" aria-hidden="true" hidden></canvas>
+
+<header class="site-header" role="banner">
+  <div class="container">
+    <a href="/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
+    <input type="checkbox" id="nav-toggle" class="nav-toggle-input">
+    <label for="nav-toggle" class="nav-toggle" aria-label="Open navigation" role="button" tabindex="0">&#9776;</label>
+    <nav class="site-nav" aria-label="Main">
+      <a href="/how-it-works/">How it works</a>
+      <a href="/features/">Features</a>
+      <a href="/security/">Security</a>
+      <a href="/mesh/">Live mesh</a>
+      <a href="/builders/">Builders</a>
+      <a href="/about/">About</a>
+      <a href="/download/" class="cta-get">Get One Link</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="hero" style="padding-bottom: 1rem;">
+    <div class="container">
+      <span class="we-are-one">Security</span>
+      <h1>What we protect against. <span class="grad">And what we cannot.</span></h1>
+      <p class="lede">Most "privacy" pages are policies. Promises that change when the company gets bought. This page is the architecture. The kind of promise you do not have to trust because it cannot be broken without rebuilding the product.</p>
+    </div>
+  </section>
+
+  <section class="section-tight">
+    <div class="container">
+      <h2 style="margin-top: 0;">What we collect</h2>
+      <p class="lede" style="margin-bottom: 1rem;">Nothing.</p>
+      <p style="color: var(--ol-text-soft); max-width: 56ch;">No email. No phone. No analytics. No tracking pixels. No fingerprinting. No cookies. No request logs that contain you. This site has zero third-party requests. The Cloudflare Worker does not write a single thing about who visited or what they downloaded.</p>
+      <p style="color: var(--ol-text-soft); max-width: 56ch;">If a government asked us tomorrow who downloaded One Link, who paired with whom, or what was sent through the network, the honest answer is "we do not know and there is no way to find out." That is by construction.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Defends against</span>
+      <h2>The attacks we kill <span class="grad">at the door.</span></h2>
+      <div class="ol-grid ol-grid-2">
+        <article class="ol-tile">
+          <h3>Passive eavesdropping.</h3>
+          <p>Anyone watching the wire sees ciphertext only. The keys are post-quantum hybrid (X25519 + ML-KEM-768). A quantum computer harvesting traffic today still cannot read it later.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Active impersonation.</h3>
+          <p>Pairing uses a 5-word SAS derived from the shared secret. If anyone tried to sit in the middle, the words on the two devices would not match. The math agreed only because nobody was between you.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Server compromise.</h3>
+          <p>There is no server holding your messages or files. A relay that gets compromised sees sealed boxes addressed to recipients it cannot identify. No archive to steal.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Traffic analysis (optional).</h3>
+          <p>Private mode (one tap) routes through three volunteer relays via Sphinx routing. No single hop sees both ends. Each hop's keys are PQ-blinded and field-witnessed.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Lost device.</h3>
+          <p>Threshold recovery splits your identity across friends. Recover with k-of-n. The math means a leaked share is useless without the others.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Coerced unlock.</h3>
+          <p>Duress mode opens a believable empty account with a second passphrase. The system cannot tell which is the real one.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Does not defend against</span>
+      <h2>What we cannot fix.</h2>
+      <p class="lede">Honest about the limits.</p>
+      <div class="ol-grid ol-grid-2">
+        <article class="ol-tile">
+          <h3>A camera over your shoulder.</h3>
+          <p>If someone is reading your screen, no protocol helps. We cannot protect against the physical world around your device.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>A compromised operating system.</h3>
+          <p>If malware owns your phone or laptop, it owns the keys. We sign every binary and reproducibly build everything, but the OS underneath is not ours.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>The other person leaking it.</h3>
+          <p>End-to-end encryption protects the channel. It cannot protect against the person you sent a message to deciding to share it. Like every conversation, ever.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Global passive adversaries on private mode.</h3>
+          <p>If an adversary watches the entire internet at once, three-hop routing is hard to defend against perfectly. We use timing padding to make it harder, not impossible.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Proofs and audits</span>
+      <h2>The receipts.</h2>
+      <div class="ol-grid ol-grid-2">
+        <article class="ol-tile">
+          <h3>Formal verification</h3>
+          <p>Critical protocol pieces (pairing handshake, threshold recovery, onion routing) have TLA+ specifications with invariants verified.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Constant-time crypto</h3>
+          <p>Macaroon verification + signature paths are constant-time tested with a 1M-iteration soundness gate. Timing variance under 2%.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Fuzz testing</h3>
+          <p>Nightly fuzz across 42 binaries. 5M iterations per release. Adversarial vector library grows on every red-team finding.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Reproducible releases</h3>
+          <p>Every release is built in a confidential-compute environment. Attestation document published alongside the binary. Anyone can rebuild from source and verify byte equality.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container" style="text-align: center;">
+      <a href="/download/" class="btn btn-primary btn-large">Get One Link <span class="arr">&rarr;</span></a>
+      <a href="/builders/" class="btn btn-ghost btn-large">Read the source</a>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer" role="contentinfo">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a href="/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
+        <p class="footer-tag">A free, private network for messages, files, and devices. Owned by no one. Belongs to everyone.</p>
+      </div>
+      <div><h4>Network</h4><ul><li><a href="/how-it-works/">How it works</a></li><li><a href="/features/">Features</a></li><li><a href="/mesh/">Live mesh</a></li></ul></div>
+      <div><h4>For you</h4><ul><li><a href="/download/">Get One Link</a></li><li><a href="/security/">Security</a></li><li><a href="/about/">About</a></li></ul></div>
+      <div><h4>For builders</h4><ul><li><a href="/builders/">Protocol &amp; source</a></li><li><a href="https://github.com/IamOneYouAreOneWeAreOne/one-link" rel="noopener">GitHub</a></li><li><a href="/builders/#donate">Donate</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <span class="built-by">Built in the open. AGPL-3.0. <a href="/security/">No tracking, no analytics, no cookies.</a></span>
+      <span class="built-by">we are one</span>
+    </div>
+  </div>
+</footer>
+
+<script type="module" src="/live/bridge.js"></script>
+</body>
+</html>

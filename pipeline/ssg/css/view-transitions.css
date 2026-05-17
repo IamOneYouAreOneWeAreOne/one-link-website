@@ -1,0 +1,58 @@
+/* ═══ View Transitions API ═══
+   Cross-page transitions for multi-page apps.
+   Progressive enhancement — ignored by unsupported browsers. */
+
+@view-transition {
+  navigation: auto;
+}
+
+/* Named transition elements */
+.site-logo { view-transition-name: logo; }
+.hero h1 { view-transition-name: hero-title; }
+
+/* Default page transition — crossfade */
+::view-transition-old(root) {
+  animation: fade-out 200ms ease-out;
+}
+
+::view-transition-new(root) {
+  animation: fade-in 200ms ease-in;
+}
+
+/* Hero title morphs between pages */
+::view-transition-old(hero-title) {
+  animation: slide-out-up 250ms var(--ease);
+}
+
+::view-transition-new(hero-title) {
+  animation: slide-in-up 250ms var(--ease);
+}
+
+/* Logo stays fixed during transition */
+::view-transition-old(logo),
+::view-transition-new(logo) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+@keyframes fade-out {
+  to { opacity: 0; }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+}
+
+@keyframes slide-out-up {
+  to {
+    opacity: 0;
+    transform: translateY(-1rem);
+  }
+}
+
+@keyframes slide-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+}

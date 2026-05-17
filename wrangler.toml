@@ -1,0 +1,86 @@
+name = "weareone-link-org"
+compatibility_date = "2024-12-01"
+main = "src/worker.js"
+
+# Primary public site: weareone-link.org
+# Serves static assets from dist/weareone-link.org/, plus dynamic
+# endpoints: /api/health, /api/capabilities, /api/topology, /api/session,
+# /api/attest, /api/presence (WebSocket), /native, /download/:os.
+
+[assets]
+directory = "./dist/weareone-link.org"
+binding = "ASSETS"
+run_worker_first = true
+
+# =============================================================================
+# DURABLE OBJECTS
+# =============================================================================
+# Durable Objects require Cloudflare Workers Paid plan ($5/mo). On the free
+# plan, KEEP THESE COMMENTED. The worker has fallback paths:
+#   * /api/presence returns 503 (the page still works without live presence)
+#   * /api/session returns the stub handshake
+#   * /native returns the JSON advertisement
+#
+# When you upgrade to Workers Paid, UNCOMMENT this whole block and run
+# `wrangler deploy` once more — wrangler auto-applies the v1 + v2 migrations.
+
+# [[durable_objects.bindings]]
+# name = "NATIVE_SESSIONS"
+# class_name = "NativeSession"
+
+# [[durable_objects.bindings]]
+# name = "PRESENCE"
+# class_name = "MeshPresence"
+
+# [[migrations]]
+# tag = "v1"
+# new_classes = ["NativeSession"]
+
+# [[migrations]]
+# tag = "v2"
+# new_classes = ["MeshPresence"]
+
+# =============================================================================
+# R2 BUCKETS  (uncomment after you create them in the Cloudflare dashboard)
+# =============================================================================
+# Create in dashboard:
+#   R2 -> Create bucket -> "one-link-releases"
+#   R2 -> Create bucket -> "one-link-attestations"
+# Then uncomment:
+
+# [[r2_buckets]]
+# binding = "RELEASES"
+# bucket_name = "one-link-releases"
+
+# [[r2_buckets]]
+# binding = "ATTESTATIONS"
+# bucket_name = "one-link-attestations"
+
+# =============================================================================
+# KV NAMESPACE  (uncomment after you create it)
+# =============================================================================
+# Create:  wrangler kv namespace create RELAY_KV
+# Wrangler prints the id; paste it below and uncomment.
+
+# [[kv_namespaces]]
+# binding = "RELAY_KV"
+# id = "REPLACE_WITH_REAL_KV_ID_FROM_WRANGLER_OUTPUT"
+
+# =============================================================================
+# ROUTES  (filled in after you have a *.workers.dev deploy working)
+# =============================================================================
+# First deploy gets you a URL like  weareone-link-org.<your-subdomain>.workers.dev
+# Once that works, uncomment these routes to point the real domain at the
+# worker. Make sure weareone-link.org is on Cloudflare DNS first (Add Site
+# in dashboard if it isn't).
+
+# [[routes]]
+# pattern = "weareone-link.org/*"
+# zone_name = "weareone-link.org"
+
+[vars]
+SITE_DOMAIN              = "weareone-link.org"
+CANONICAL_ORIGIN         = "https://weareone-link.org"
+RELEASE_RELAY_PUBKEY_HEX = "REPLACE_WITH_RELAY_ED25519_PUBKEY"
+PROTOCOL_VERSION         = "1"
+NATIVE_TRANSFER_CAP      = "NATIVE_TRANSFER_V1"

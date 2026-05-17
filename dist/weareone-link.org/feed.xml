@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>One Link</title>
+    <link>https://weareone-link.org/</link>
+    <description>Updates from the One Link network. Releases, security audits, protocol changes, relay news.</description>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 16 May 2026 00:00:00 GMT</lastBuildDate>
+    <atom:link xmlns:atom="http://www.w3.org/2005/Atom" href="https://weareone-link.org/feed.xml" rel="self" type="application/rss+xml"/>
+
+    <item>
+      <title>One Link is live</title>
+      <link>https://weareone-link.org/</link>
+      <guid isPermaLink="false">one-link-launch-2026-05-16</guid>
+      <pubDate>Fri, 16 May 2026 00:00:00 GMT</pubDate>
+      <description>The network is open. Get One Link, pair a device in five seconds, and start sharing. No accounts, no servers in the middle, free forever.</description>
+    </item>
+  </channel>
+</rss>

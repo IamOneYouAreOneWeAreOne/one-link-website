@@ -1,0 +1,108 @@
+<!-- Site Header — Sticky glassmorphism nav with mobile toggle (pure CSS) -->
+<a href="#main" class="skip-link">Skip to content</a>
+
+<header class="site-header" role="banner">
+  <div class="container">
+    <!-- Logo with view-transition name for cross-page morphing -->
+    <a href="/" class="site-logo" style="view-transition-name: logo" data-cel="Coherence <span>Energy Labs</span>" data-oue="One<span>Unity</span>">
+      Coherence <span>Energy Labs</span>
+    </a>
+
+    <!-- Pure CSS mobile nav toggle (checkbox hack) -->
+    <input type="checkbox" id="nav-toggle" class="nav-toggle-input" aria-hidden="true">
+    <label for="nav-toggle" class="nav-toggle" aria-label="Toggle navigation">
+      <span class="nav-toggle-bar"></span>
+      <span class="nav-toggle-bar"></span>
+      <span class="nav-toggle-bar"></span>
+    </label>
+
+    <nav class="site-nav" aria-label="Main navigation">
+      <!-- CEL domain navigation -->
+      <a href="/products">Products</a>
+      <a href="/research">Research</a>
+      <a href="/demos">Demos</a>
+      <a href="/developers">Developers</a>
+      <a href="/about">About</a>
+
+      <!-- Cross-domain link -->
+      <a href="https://oneunity.earth" class="nav-cta">OneUnity</a>
+    </nav>
+  </div>
+
+  <!-- Progress bar: fills on scroll via CSS animation-timeline -->
+  <div class="scroll-progress" aria-hidden="true"></div>
+</header>
+
+<style>
+  /* Pure CSS hamburger toggle — no JavaScript required */
+  .nav-toggle-input {
+    position: absolute;
+    width: 0;
+    height: 0;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .nav-toggle {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    padding: 8px;
+    z-index: 101;
+  }
+
+  .nav-toggle-bar {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background: var(--text);
+    border-radius: 2px;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+  }
+
+  /* Animate hamburger to X on open */
+  .nav-toggle-input:checked ~ .nav-toggle .nav-toggle-bar:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+  }
+  .nav-toggle-input:checked ~ .nav-toggle .nav-toggle-bar:nth-child(2) {
+    opacity: 0;
+  }
+  .nav-toggle-input:checked ~ .nav-toggle .nav-toggle-bar:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+  }
+
+  /* Mobile: show hamburger, hide nav until toggled */
+  @media (max-width: 768px) {
+    .nav-toggle {
+      display: flex;
+    }
+
+    .site-nav {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: min(300px, 80vw);
+      flex-direction: column;
+      background: var(--bg-surface);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      padding: 5rem 2rem 2rem;
+      transform: translateX(100%);
+      transition: transform 0.3s ease;
+      z-index: 100;
+      border-left: 1px solid var(--border);
+    }
+
+    .nav-toggle-input:checked ~ .site-nav {
+      transform: translateX(0);
+    }
+
+    .site-nav a {
+      padding: 0.75rem 0;
+      font-size: 1.125rem;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+  }
+</style>

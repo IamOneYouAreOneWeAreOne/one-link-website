@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="x-emitted-by" content="coherence-lang/1.0.3 one_link.ssg.build">
+  <!-- Route: /builders/ / build: 2026-05-16T00:00:00Z / source: pipeline/ssg/src/one_link_build.cl -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Builders &mdash; protocol, source, your own relay</title>
+  <meta name="description" content="Read the protocol. Read the source. Run your own relay. Fork the whole thing. AGPL-3.0.">
+  <link rel="canonical" href="https://weareone-link.org/builders/">
+  <meta name="theme-color" content="#04060b">
+  <meta name="color-scheme" content="dark">
+  <link rel="icon" href="/images/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/one-link.css">
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to content</a>
+<canvas class="ol-field-canvas" aria-hidden="true" hidden></canvas>
+
+<header class="site-header" role="banner">
+  <div class="container">
+    <a href="/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
+    <input type="checkbox" id="nav-toggle" class="nav-toggle-input">
+    <label for="nav-toggle" class="nav-toggle" aria-label="Open navigation" role="button" tabindex="0">&#9776;</label>
+    <nav class="site-nav" aria-label="Main">
+      <a href="/how-it-works/">How it works</a>
+      <a href="/features/">Features</a>
+      <a href="/security/">Security</a>
+      <a href="/mesh/">Live mesh</a>
+      <a href="/builders/">Builders</a>
+      <a href="/about/">About</a>
+      <a href="/download/" class="cta-get">Get One Link</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="hero" style="padding-bottom: 1rem;">
+    <div class="container">
+      <span class="we-are-one">Builders</span>
+      <h1>The whole thing is <span class="grad">yours to read.</span></h1>
+      <p class="lede">Every protocol, every crate, every shader, every word of this site. AGPL-3.0. Fork it, run your own, propose changes, ship your own client. Nothing is gated behind a partner program.</p>
+      <div class="cta-row">
+        <a href="https://github.com/IamOneYouAreOneWeAreOne/one-link" class="btn btn-primary" rel="noopener">Source on GitHub <span class="arr">&rarr;</span></a>
+        <a href="https://github.com/IamOneYouAreOneWeAreOne/one-link/blob/master/docs/PROTOCOL.md" class="btn btn-ghost" rel="noopener">Protocol spec</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">The crates</span>
+      <h2>One Link is <span class="grad">38 small crates.</span></h2>
+      <p class="lede">Each does one thing. Each is independently auditable. Each compiles to native, WASM, or both. Pulled together by the daemon.</p>
+
+      <div class="ol-grid ol-grid-2">
+        <article class="ol-tile">
+          <h3>ol_pair_qr</h3>
+          <p>QR pairing handshake. Ed25519 invite, X25519 chain key, 5-word SAS, Levenshtein-audited word list. PQ-hybrid via ML-KEM mix-in.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>ol_onion</h3>
+          <p>Sphinx Coherence routing. Ristretto255 filler-byte construction. PQ-hybrid blinding. Field-witness binding. Schnorr aggregation via Pippenger MSM.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>ol_coherence_field</h3>
+          <p>Damped Helmholtz solver for the tau_c routing field. 10,000 peers in 1.08 ms on commodity GPU. Couples to homology and ratchet.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>ol_transfer</h3>
+          <p>The native chunked transfer pipeline. AEAD per chunk, rekey every N, fountain coding fallback for lossy links.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>ol_ratchet</h3>
+          <p>Double Ratchet over the post-quantum hybrid root. Forward secrecy on every chunk and message.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>ol_capability</h3>
+          <p>Macaroon-based caps. Constant-time verification. 1M-iteration soundness gate. Granular per-resource scoping.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>ol_threshold_recovery</h3>
+          <p>k-of-n share split with BN multi-sig, per-signer R values. Survive a lost device without surviving a leak.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>ol_confidential</h3>
+          <p>Confidential-compute provider trait. Software baseline (ChaCha20-Poly1305 + Zeroize). Hardware backends (TPM, Secure Enclave, SGX, SEV-SNP, TrustZone) plug in.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>ol_routing</h3>
+          <p>tau_c-driven path selection. Routing decisions are field-gradient followers, not lookup-table walkers.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>ol_homology</h3>
+          <p>Topological partition detection. Spots network splits in one gossip round with zero false positives.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>ol_pqsig + ol_pqkem</h3>
+          <p>Ed25519 + ML-DSA-65 hybrid signatures, X25519 + ML-KEM-768 hybrid KEM. The post-quantum layer.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>ol_duress</h3>
+          <p>Secondary passphrase opens a believable empty account. The math gives you a way out under coercion.</p>
+        </article>
+      </div>
+
+      <p style="margin-top: 1.5rem; color: var(--ol-text-dim); text-align: center;">26 more crates in the source. <a href="https://github.com/IamOneYouAreOneWeAreOne/one-link/tree/master/native" rel="noopener" style="color: var(--ol-cyan);">See them all on GitHub</a>.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Run your own relay</span>
+      <h2>Become part of the network.</h2>
+      <p class="lede">A relay is a single binary that holds and forwards encrypted bundles. It cannot read anything. It does not need an account. Anyone can run one.</p>
+      <pre class="ol-code"><span class="d"># on a small VPS, raspberry pi, or your old laptop</span>
+<span class="c">curl</span> <span class="a">https://weareone-link.org/relay/install.sh</span> | sh
+<span class="c">one-link-relay</span> start
+
+<span class="d"># that is it. your relay shows up on the live mesh</span>
+<span class="d"># within seconds, and starts helping the network</span></pre>
+      <p style="margin-top: 1rem; color: var(--ol-text-soft);">No registration. No reputation system that we control. The network's topology detector picks healthy relays and routes around sick ones automatically.</p>
+    </div>
+  </section>
+
+  <section class="section" id="donate">
+    <div class="container" style="text-align: center;">
+      <span class="kicker">Keep this free</span>
+      <h2>One Link has <span class="grad">no business model.</span></h2>
+      <p class="lede" style="margin-left: auto; margin-right: auto;">Donations only. No subscription tier coming. No enterprise pitch coming. If you want to keep the relays paid for and the audits funded, here is how.</p>
+      <div class="ol-grid ol-grid-3" style="max-width: 720px; margin: 2rem auto 0;">
+        <article class="ol-tile">
+          <h3>Bitcoin</h3>
+          <p style="font-family: var(--ol-mono); font-size: 0.78rem; word-break: break-all; color: var(--ol-cyan);">bc1q-replace-with-real-address</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Lightning</h3>
+          <p style="font-family: var(--ol-mono); font-size: 0.85rem; color: var(--ol-cyan);">onelink@weareone-link.org</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Monero</h3>
+          <p style="font-family: var(--ol-mono); font-size: 0.78rem; word-break: break-all; color: var(--ol-cyan);">4-replace-with-real-address</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer" role="contentinfo">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a href="/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
+        <p class="footer-tag">A free, private network for messages, files, and devices. Owned by no one. Belongs to everyone.</p>
+      </div>
+      <div><h4>Network</h4><ul><li><a href="/how-it-works/">How it works</a></li><li><a href="/features/">Features</a></li><li><a href="/mesh/">Live mesh</a></li></ul></div>
+      <div><h4>For you</h4><ul><li><a href="/download/">Get One Link</a></li><li><a href="/security/">Security</a></li><li><a href="/about/">About</a></li></ul></div>
+      <div><h4>For builders</h4><ul><li><a href="/builders/">Protocol &amp; source</a></li><li><a href="https://github.com/IamOneYouAreOneWeAreOne/one-link" rel="noopener">GitHub</a></li><li><a href="/builders/#donate">Donate</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <span class="built-by">Built in the open. AGPL-3.0. <a href="/security/">No tracking, no analytics, no cookies.</a></span>
+      <span class="built-by">we are one</span>
+    </div>
+  </div>
+</footer>
+
+<script type="module" src="/live/bridge.js"></script>
+</body>
+</html>

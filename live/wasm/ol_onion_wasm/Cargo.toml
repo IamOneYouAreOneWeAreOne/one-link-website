@@ -1,0 +1,38 @@
+# =============================================================================
+# ol_onion_wasm  -  WASM bindings for One Link onion routing
+# =============================================================================
+#
+# Wraps the production ol_onion crate so the browser-side "private download"
+# toggle can preview a real 3-hop Sphinx-style onion-wrap, using the same
+# Rust code the daemon uses, byte-identical wire frames.
+#
+# License: AGPL-3.0-or-later
+# =============================================================================
+
+[package]
+name        = "ol_onion_wasm"
+version     = "0.21.0-alpha.0"
+edition     = "2021"
+publish     = false
+license     = "AGPL-3.0-or-later"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+ol_onion = { path = "../../../../Coherence/One_link/native/ol_onion" }
+
+# Direct deps needed for in-wrapper Circuit + HopDescriptor construction.
+x25519-dalek = { version = "2.0", features = ["static_secrets"] }
+rand_core    = { version = "0.6", default-features = false, features = ["getrandom"] }
+getrandom    = { version = "0.2", features = ["js"] }
+blake3       = { workspace = true }
+
+wasm-bindgen     = "=0.2.95"
+js-sys           = "0.3"
+console_error_panic_hook = { version = "0.1", optional = true }
+hex              = { workspace = true }
+
+[features]
+default     = ["debug-panic"]
+debug-panic = ["dep:console_error_panic_hook"]

@@ -1,0 +1,19 @@
+{
+  "emitted_by": "coherence-lang/1.0.3 one_link.ssg.build",
+  "build_stamp": "2026-05-16T00:00:00Z",
+  "source": "pipeline/ssg/src/one_link_build.cl",
+  "routes_emitted": [
+    "/",
+    "/download/",
+    "/how-it-works/",
+    "/features/",
+    "/security/",
+    "/mesh/",
+    "/builders/",
+    "/about/",
+    "/privacy/",
+    "/terms/",
+    "/404"
+  ],
+  "note": "Every page in dist/ has been touched by this build. The home page is programmatically composed; the other routes have their content hand-authored and the SSG injects provenance into <head>."
+}

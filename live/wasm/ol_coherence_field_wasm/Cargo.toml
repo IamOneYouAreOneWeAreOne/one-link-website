@@ -1,0 +1,35 @@
+# =============================================================================
+# ol_coherence_field_wasm  -  WASM bindings for One Link coherence field
+# =============================================================================
+#
+# Wraps the production ol_coherence_field crate so the browser-side mesh viz
+# can sample the SAME Helmholtz solver / Green-function kernel / BE-RAR
+# interpolation the daemon uses, locally, with no network call.
+#
+# Uses the upstream crate built with the new cfg-gate that omits rayon for
+# wasm32. The serial matvec path is what we actually need anyway: browser
+# graphs are small (hundreds of peers, not 50k+).
+#
+# License: AGPL-3.0-or-later
+# =============================================================================
+
+[package]
+name        = "ol_coherence_field_wasm"
+version     = "0.21.0-alpha.0"
+edition     = "2021"
+publish     = false
+license     = "AGPL-3.0-or-later"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+ol_coherence_field = { path = "../../../../Coherence/One_link/native/ol_coherence_field" }
+
+wasm-bindgen     = "=0.2.95"
+js-sys           = "0.3"
+console_error_panic_hook = { version = "0.1", optional = true }
+
+[features]
+default     = ["debug-panic"]
+debug-panic = ["dep:console_error_panic_hook"]
