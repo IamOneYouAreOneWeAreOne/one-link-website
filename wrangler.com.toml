@@ -7,10 +7,15 @@ main = "src/redirect.js"
 #
 # This worker has no static assets - it 301's every request. Simple and stateless.
 
-# After first deploy succeeds and the route is added, uncomment:
-# [[routes]]
-# pattern = "weareone-link.com/*"
-# zone_name = "weareone-link.com"
+# Custom Domain: wrangler auto-creates the DNS record AND attaches the
+# redirect worker, no manual DNS setup needed.
+[[routes]]
+pattern = "weareone-link.com"
+custom_domain = true
+
+[[routes]]
+pattern = "www.weareone-link.com"
+custom_domain = true
 
 [vars]
 CANONICAL_ORIGIN = "https://weareone-link.org"

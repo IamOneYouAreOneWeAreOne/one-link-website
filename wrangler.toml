@@ -74,9 +74,15 @@ run_worker_first = true
 # worker. Make sure weareone-link.org is on Cloudflare DNS first (Add Site
 # in dashboard if it isn't).
 
-# [[routes]]
-# pattern = "weareone-link.org/*"
-# zone_name = "weareone-link.org"
+# Custom Domain: wrangler auto-creates the DNS record AND routes traffic
+# to this worker in one shot. No manual DNS setup needed.
+[[routes]]
+pattern = "weareone-link.org"
+custom_domain = true
+
+[[routes]]
+pattern = "www.weareone-link.org"
+custom_domain = true
 
 [vars]
 SITE_DOMAIN              = "weareone-link.org"
