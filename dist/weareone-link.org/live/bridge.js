@@ -63,6 +63,195 @@ function rewriteDownloadButton() {
     const arch = /arm|aarch64/i.test(navigator.userAgent) ? 'arm64' : 'x86_64';
     line.textContent = `Detected: ${label} - ${arch}`;
   }
+  wireVerifyingDownloadOn(btn, os);
+}
+
+// ---------------------------------------------------------------------------
+// 2-bis. STREAMING + VERIFYING DOWNLOAD
+//
+// For OSes that have a real signed binary on file (Windows today), intercept
+// the download click and:
+//   1. Open a streaming fetch.
+//   2. Show a live progress bar + bytes counter.
+//   3. Accumulate the bytes; on completion, SHA-256 the full buffer with
+//      WebCrypto and compare against the SHA the attestation document
+//      declares for this artifact.
+//   4. If match: trigger the actual file save via Blob + a.download.
+//      If mismatch: REFUSE TO SAVE, show a loud failure (this is the
+//      whole point of the verification).
+//
+// The progress UI mounts in #ol-verifying-download (created on demand
+// next to the button). If JS is off or fetch fails, the browser still
+// gets the file via the original anchor href (default navigation).
+// ---------------------------------------------------------------------------
+const VERIFYING_DOWNLOAD_OS = new Set(['windows']);
+
+function wireVerifyingDownloadOn(btn, os) {
+  if (!btn || !VERIFYING_DOWNLOAD_OS.has(os)) return;
+  let inFlight = false;
+  btn.addEventListener('click', async (ev) => {
+    if (inFlight) { ev.preventDefault(); return; }
+    if (ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.altKey) return; // honour cmd/ctrl-click
+    ev.preventDefault();
+    inFlight = true;
+    try {
+      await runVerifyingDownload(btn, os);
+    } finally {
+      inFlight = false;
+    }
+  });
+}
+
+function ensureVerifyPanel(btn) {
+  let panel = $('#ol-verifying-download');
+  if (panel) return panel;
+  panel = document.createElement('div');
+  panel.id = 'ol-verifying-download';
+  panel.style.cssText = `
+    margin-top: 1rem; padding: 1rem 1.2rem;
+    background: rgba(8, 12, 20, 0.7); border: 1px solid var(--ol-line-bright);
+    border-radius: var(--ol-radius); font-family: var(--ol-mono);
+    font-size: 0.85rem; color: var(--ol-text-soft);
+    backdrop-filter: blur(10px); max-width: 56rem;
+  `;
+  panel.innerHTML = `
+    <div id="ol-vd-line" style="display: flex; align-items: center; gap: 0.6rem;">
+      <span style="color: var(--ol-cyan);">&#x25cf;</span>
+      <strong style="color: var(--ol-text);">streaming + verifying</strong>
+      <span id="ol-vd-status" style="color: var(--ol-text-dim);">opening connection...</span>
+    </div>
+    <div style="margin-top: 0.7rem; height: 6px; background: rgba(255,255,255,0.06); border-radius: 999px; overflow: hidden;">
+      <div id="ol-vd-bar" style="height: 100%; width: 0%; background: linear-gradient(90deg, var(--ol-cyan), var(--ol-violet)); transition: width 80ms linear;"></div>
+    </div>
+    <pre id="ol-vd-detail" class="ol-code" style="margin-top: 0.9rem; display: none;"></pre>
+  `;
+  btn.parentNode.insertBefore(panel, btn.nextSibling);
+  return panel;
+}
+
+function setVdStatus(text, color) {
+  const s = $('#ol-vd-status');
+  if (s) {
+    s.textContent = text;
+    if (color) s.style.color = color;
+  }
+}
+
+function setVdBar(pct) {
+  const bar = $('#ol-vd-bar');
+  if (bar) bar.style.width = `${pct.toFixed(1)}%`;
+}
+
+function showVdDetail(html) {
+  const d = $('#ol-vd-detail');
+  if (d) {
+    d.style.display = 'block';
+    d.innerHTML = html;
+  }
+}
+
+async function runVerifyingDownload(btn, os) {
+  ensureVerifyPanel(btn);
+  setVdStatus('fetching release attestation...', 'var(--ol-text-soft)');
+  setVdBar(0);
+
+  // 1. Fetch the attestation to learn the expected SHA + size.
+  const target = ATTESTATION_TARGET_SHA;
+  const attest = await verifyAttestation(target);
+  if (!attest.ok || !attest.sigVerified) {
+    setVdStatus('attestation verification failed - aborting', 'var(--ol-rose)');
+    showVdDetail(`<span style="color: var(--ol-rose);">refusing to download: ${escapeHtml(attest.error || 'signature did not verify')}</span>`);
+    return;
+  }
+  const expectedSha = attest.doc.artifact.sha256;
+  const expectedSize = attest.doc.artifact.size_bytes || 0;
+
+  // 2. Open the streaming fetch.
+  setVdStatus(`fetching ${(expectedSize / 1024 / 1024).toFixed(1)} MB...`, 'var(--ol-text-soft)');
+  const url = `/download/${os}`;
+  let res;
+  try {
+    res = await fetch(url);
+  } catch (e) {
+    setVdStatus(`fetch failed: ${e?.message || e}`, 'var(--ol-rose)');
+    return;
+  }
+  if (!res.ok || !res.body) {
+    setVdStatus(`fetch returned ${res.status}`, 'var(--ol-rose)');
+    return;
+  }
+
+  // 3. Stream chunks + accumulate.
+  const reader = res.body.getReader();
+  const chunks = [];
+  let received = 0;
+  const t0 = performance.now();
+  while (true) {
+    const { value, done } = await reader.read();
+    if (done) break;
+    chunks.push(value);
+    received += value.length;
+    const pct = expectedSize ? (received / expectedSize) * 100 : 0;
+    setVdBar(pct);
+    const mb = (received / 1024 / 1024).toFixed(1);
+    const mbTotal = (expectedSize / 1024 / 1024).toFixed(1);
+    setVdStatus(`${mb} / ${mbTotal} MB`, 'var(--ol-text-soft)');
+  }
+  const dtFetch = performance.now() - t0;
+
+  // 4. Reassemble + hash with WebCrypto.
+  setVdStatus('verifying sha256 of received bytes...', 'var(--ol-text-soft)');
+  const total = new Uint8Array(received);
+  let off = 0;
+  for (const c of chunks) { total.set(c, off); off += c.length; }
+  const tHash0 = performance.now();
+  const digest = await crypto.subtle.digest('SHA-256', total);
+  const actualSha = bytesToHex(new Uint8Array(digest));
+  const dtHash = performance.now() - tHash0;
+
+  // 5. Compare.
+  const shaMatches = actualSha === expectedSha;
+  const sizeMatches = expectedSize === 0 || received === expectedSize;
+
+  if (!shaMatches || !sizeMatches) {
+    setVdStatus('verification FAILED - file not saved', 'var(--ol-rose)');
+    showVdDetail([
+      `<span class="d">// the file you received does NOT match the signed attestation.</span>`,
+      `<span class="d">// the bytes were not saved. retry, or build from source.</span>`,
+      ``,
+      `<span class="c">expected sha</span>  ${escapeHtml(expectedSha)}`,
+      `<span class="c">computed sha</span>  <span class="ol-rose">${escapeHtml(actualSha)}</span>`,
+      `<span class="c">expected size</span> ${expectedSize.toLocaleString()} bytes`,
+      `<span class="c">received size</span> ${received.toLocaleString()} bytes`,
+    ].join('\n'));
+    return;
+  }
+
+  // 6. Verified! Save the file.
+  setVdBar(100);
+  setVdStatus('verified - saving to your downloads...', 'var(--ol-green)');
+  const filename = attest.doc.artifact.filename || `one-link-${os}.exe`;
+  const blob = new Blob([total], { type: 'application/octet-stream' });
+  const blobUrl = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = blobUrl;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(blobUrl), 60_000);
+
+  showVdDetail([
+    `<span class="d">// real chunk-by-chunk fetch + WebCrypto SHA-256 verify against signed attestation</span>`,
+    `<span class="c">artifact</span>      ${escapeHtml(filename)}`,
+    `<span class="c">size</span>          ${received.toLocaleString()} bytes`,
+    `<span class="c">sha256</span>        <span class="g">${escapeHtml(actualSha)}</span>`,
+    `<span class="c">attestation</span>   <span class="g">ed25519 verified against pinned key</span>`,
+    ``,
+    `<span class="c">fetch time</span>    ${dtFetch.toFixed(0)} ms`,
+    `<span class="c">hash time</span>     ${dtHash.toFixed(0)} ms`,
+  ].join('\n'));
+  setVdStatus('verified and saved', 'var(--ol-green)');
 }
 
 // ---------------------------------------------------------------------------

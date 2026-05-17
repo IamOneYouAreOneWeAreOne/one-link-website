@@ -29,7 +29,7 @@
    License: AGPL-3.0-or-later
    ============================================================================ */
 
-const SW_VERSION = '0.21.0-alpha.0+r29';
+const SW_VERSION = '0.21.0-alpha.0+r30';
 const CACHE_NAME  = `ol-cache-${SW_VERSION}`;
 const META_DB     = 'ol-sw-meta';
 
