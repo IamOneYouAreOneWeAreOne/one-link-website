@@ -152,7 +152,7 @@ The "blow socks off" feature set, with shipped status as of 2026-05-17 + r7.
 
 | # | Item | Status | Crate / file | Section |
 |---|---|---|---|---|
-| 1 | Download IS the protocol (browser becomes a One Link node) | partial | `ol_transfer` (not yet WASM), bridge.js | §6.2 |
+| 1 | Download IS the protocol (browser becomes a One Link node) | **shipped (verifying)** | bridge.js `runVerifyingDownload` (streams + SHA-256 verifies against signed attestation; transport-layer ol_transfer still pending) | §6.2 |
 | 2 | Pair-by-QR with real handshake in 5 seconds | **shipped** | `ol_pair_qr` WASM | §5.1, §6.1 |
 | 3 | Optional Sphinx onion-routed download (preview button) | **shipped** | `ol_onion` WASM + /download/ button | §5.3, §6.2 |
 | 4 | Coherence-field background = real Helmholtz on GPU | **shipped** | WGSL emitted from `wgsl_emitter` | §3.6, §6.1 |
@@ -180,8 +180,10 @@ The "blow socks off" feature set, with shipped status as of 2026-05-17 + r7.
 | 26 | Per-IP token-bucket rate limit on /api/share | **shipped** | `ShareRate` Durable Object | §3.2.3 |
 | 27 | Per-chunk forward-secret ratchet demo | **shipped** | `ol_ratchet` WASM + /security/ "walk the ratchet" | §6.5 |
 | 15 | Hardware-key TOFU recognition (software fallback) | **shipped** | `ol_hwkey` WASM (TofuStore) + /security/ "mint or recognize" | §6.5 |
+| 28 | In-browser attestation verifier (Ed25519 against pinned key) | **shipped** | `wireAttestationVerify` + WebCrypto Ed25519 on /download/ | §6.2 |
+| 29 | Streaming + verifying download (chunk-by-chunk SHA-256 against signed attestation) | **shipped** (Windows) | `runVerifyingDownload` on /download/ | §6.2 |
 
-**Summary as of r27**: 20 fully shipped, 2 partial, 5 deferred. Shipped items can be verified by visiting the site in a modern browser today. Partial items have the engine in place but the UI hook is incomplete. Deferred items remain honest "next push" candidates.
+**Summary as of r30**: 22 fully shipped, 1 partial, 5 deferred. Shipped items can be verified by visiting the site in a modern browser today. Partial items have the engine in place but the UI hook is incomplete. Deferred items remain honest "next push" candidates.
 
 ---
 
