@@ -148,7 +148,7 @@ body.ol-immersive::before {
 /* ----- HERO TITLE: words materialize from the substrate ----- */
 .ol-immersive-title {
   font-size: clamp(3rem, 8vw, 7rem);
-  line-height: 0.98;
+  line-height: 1.08;            /* was 0.98 - clipped descenders on the grad line */
   letter-spacing: -0.04em;
   font-weight: 700;
   margin: 0 0 1.6rem;
@@ -166,6 +166,9 @@ body.ol-immersive::before {
   background-clip: text;
   color: transparent;
   -webkit-text-fill-color: transparent;
+  /* background-clip:text crops to the font bbox - add padding so the y/g/p
+     descenders aren't sliced off at the bottom of the gradient region. */
+  padding-bottom: 0.12em;
 }
 .ol-w {
   display: inline-block;

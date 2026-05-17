@@ -424,15 +424,18 @@ async function startCoherenceFieldWebGPU(canvas) {
   // SPIKE the perturb_energy so a real pulse propagates through the field.
   // The compute shader's `inject_perturbation` path picks this up and the
   // damped Helmholtz oscillator radiates the energy outward over frames.
+  //
+  // mousemove WAS feeding the perturbation point (which made the field
+  // visibly trail the cursor). Removed: the perturbation point stays
+  // centered, and only intentional clicks add energy. Cleaner.
   let mouseX = 0.5, mouseY = 0.5;
   let pulseEnergy = 0;
   let pulseDecay = 0;
   canvas.style.pointerEvents = 'auto';
-  document.addEventListener('mousemove', (e) => {
-    mouseX = e.clientX / window.innerWidth;
-    mouseY = e.clientY / window.innerHeight;
-  }, { passive: true });
   document.addEventListener('click', (e) => {
+    // Click moves the perturbation point + adds a pulse. Intentional act,
+    // visible result. Unlike mousemove which made the field follow the
+    // cursor unintentionally.
     mouseX = e.clientX / window.innerWidth;
     mouseY = e.clientY / window.innerHeight;
     pulseEnergy = 1.8;
@@ -2123,6 +2126,18 @@ function setPresenceCount(n) {
 }
 
 function startPresence() {
+  // OPTIMISTIC SELF: show "1 here right now" + the self dot immediately on
+  // page load, before the WebSocket has connected. If the WS handshake fails
+  // (rare but happens on aggressive corporate firewalls / privacy extensions),
+  // the visitor still sees themselves in the widget. The local self id gets
+  // replaced with the real one when the welcome message arrives.
+  if (!presence.selfId) {
+    presence.selfId = 'local-' + Math.random().toString(16).slice(2, 10);
+    presence.geoHint = presenceGeoHint();
+    setPresenceCount(1);
+    renderPeerDots();
+  }
+
   if (!('WebSocket' in window)) return;
   const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
   const url = `${proto}//${location.host}/api/presence`;
