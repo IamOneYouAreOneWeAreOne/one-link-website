@@ -602,24 +602,19 @@ async function openSession() {
 // ---------------------------------------------------------------------------
 
 async function pollTopology(meshVizApi) {
-  let lastCount = 1247; // seed value matches static markup
   async function tick() {
     try {
       const res = await fetch('/api/topology', { headers: { Accept: 'application/json' } });
       if (res.ok) {
         const data = await res.json();
-        const nodes = data?.active_nodes ?? lastCount;
-        const relays = data?.active_relays ?? 38;
-
-        animateCounter('#ol-node-count', lastCount, nodes);
-        animateCounter('#ol-mesh-count', lastCount, nodes);
-        animateCounter('#ol-mesh-nodes', lastCount, nodes);
-        animateCounter('#ol-hero-count', lastCount, nodes);
+        const relays = data?.active_relays ?? 0;
         const r = $('#ol-mesh-relays');
         if (r) r.textContent = fmtCount(relays);
-
+        // Population counts come from the presence WebSocket (real
+        // visitor count), not from /api/topology (which is the relay-
+        // population stub and currently returns 0). We do NOT overwrite
+        // population counts from this poller anymore.
         if (meshVizApi) meshVizApi.setTopology(data);
-        lastCount = nodes;
       }
     } catch (e) {
       // network blip; quiet
@@ -1074,11 +1069,21 @@ function presenceGeoHint() {
 }
 
 function setPresenceCount(n) {
-  const el = $('#ol-presence-count');
+  const text = String(n);
+  // Top-right ribbon on home page.
   const bar = $('#ol-presence-bar');
-  if (!el || !bar) return;
-  bar.classList.add('is-live');
-  el.textContent = String(n);
+  const el  = $('#ol-presence-count');
+  if (bar && el) {
+    bar.classList.add('is-live');
+    el.textContent = text;
+  }
+  // Mesh-page hero "You are one of N" + overlay readouts. The presence
+  // count is the truth source; topology poller's `active_nodes` was a
+  // stub that returned 0. We override it here.
+  for (const sel of ['#ol-hero-count', '#ol-mesh-count', '#ol-mesh-nodes', '#ol-node-count']) {
+    const e = $(sel);
+    if (e) e.textContent = text;
+  }
 }
 
 function startPresence() {
@@ -1180,9 +1185,20 @@ function renderPeerDots() {
     if (!desired.has(child.dataset.peerId)) child.remove();
   }
 
+  // Avoid the hero text area on the home page (roughly the upper 60% of
+  // the viewport is occupied by the headline). Push dots into the bottom
+  // strip so they don't occlude the readable content. On /mesh/ where
+  // the canvas is the focal point, allow the full vertical range.
+  const homeMode = location.pathname === '/' || location.pathname === '/index.html';
+  const yMin = homeMode ? 60 : 12;
+  const yMax = homeMode ? 92 : 92;
+
   const place = (id, p, isSelf) => {
-    const xPct = Math.max(2, Math.min(98, p.lng * 100));
-    const yPct = Math.max(8, Math.min(92, (1 - p.lat) * 100));
+    const xPct = Math.max(4, Math.min(96, p.lng * 100));
+    // Compress vertical to the allowed strip while preserving relative
+    // ordering (peers with higher lat stay above peers with lower lat).
+    const rawY = (1 - p.lat) * 100;
+    const yPct = yMin + (rawY / 100) * (yMax - yMin);
     let dot = overlay.querySelector(`[data-peer-id="${id}"]`);
     if (!dot) {
       dot = document.createElement(isSelf ? 'div' : 'button');

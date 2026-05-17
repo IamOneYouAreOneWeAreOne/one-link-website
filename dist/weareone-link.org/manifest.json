@@ -1,5 +1,5 @@
 {
-  "version": "0.21.0-alpha.0+r10",
+  "version": "0.21.0-alpha.0+r11",
   "issued_at": "2026-05-17T00:00:00Z",
   "signed_by": "ed25519-pub-PLACEHOLDER",
   "signature": "ed25519-PLACEHOLDER",
@@ -7,7 +7,7 @@
   "assets": {
     "/css/one-link.css": "sha256-2728619ec26954332a07f3c87eb8c7fb4901e1fdc55c39b35f590c7883771f5f",
     "/css/immersive.css": "sha256-281599b768506300a406455de74df4bb3a18ccda654d7266acacbd623f4df45b",
-    "/live/bridge.js": "sha256-c09db08239ce8da304f71d3ea3afa386b9824b3b724d546a4bf4a739dc0aea63",
+    "/live/bridge.js": "sha256-ce04bae4195f79c52fd1a7391a9d16f44627649983cd7b2325b2de2b5c6de74e",
     "/live/wasm/ol_pair_qr.js": "sha256-c28b5a72ad92d6485ac55f5fe655ec8015d257999fbd270319f71641abf45035",
     "/live/wasm/ol_pair_qr_bg.wasm": "sha256-68e0144d3034c2db874f7bb4fe5e1a286a9bd8eeda046b56b39d0e44c45e4902",
     "/live/wasm/ol_pqkem.js": "sha256-b09dedc85f9b82beba22cf8654a94eaeb75ab281bed860aa44ca3a2ea34aac13",

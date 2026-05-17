@@ -34,12 +34,26 @@
   </div>
 </header>
 
+<!-- Live presence ribbon (top-right) + visible peer-dots overlay. -->
+<div class="ol-presence-bar" id="ol-presence-bar" aria-live="polite">
+  <span class="ol-presence-bar-dot"></span>
+  <span class="ol-presence-bar-text">
+    <span id="ol-presence-count">connecting</span>
+    <span class="ol-presence-bar-suffix">here right now</span>
+  </span>
+</div>
+<div class="ol-peer-overlay" id="ol-peer-overlay" aria-label="Other people viewing right now"></div>
+<div class="ol-ping-toast" id="ol-ping-toast" aria-live="polite" hidden>
+  <span class="ol-ping-glyph" aria-hidden="true">&#9883;</span>
+  <span class="ol-ping-text">someone said hello</span>
+</div>
+
 <main id="main">
 
   <section class="hero" style="padding-bottom: 1rem;">
     <div class="container">
       <span class="we-are-one">Live mesh</span>
-      <h1>You are one of <span class="grad" id="ol-hero-count">1,247</span>.</h1>
+      <h1>You are one of <span class="grad" id="ol-hero-count">0</span>.</h1>
       <p class="lede">Every dot is a real One Link node online right now. The colors are the coherence field that decides how packets find each other. No IPs. No usernames. No locations beyond approximate region. The moment your session opens, a new dot lights up.</p>
     </div>
   </section>
@@ -49,8 +63,8 @@
       <div class="ol-mesh-wrap" style="aspect-ratio: 21 / 9;">
         <canvas class="ol-mesh-canvas" id="ol-mesh-canvas" aria-label="Live global mesh visualization"></canvas>
         <div class="ol-mesh-overlay">
-          <div class="row"><span class="key">nodes</span><span class="val" id="ol-mesh-nodes">1,247</span></div>
-          <div class="row"><span class="key">relays</span><span class="val" id="ol-mesh-relays">38</span></div>
+          <div class="row"><span class="key">nodes</span><span class="val" id="ol-mesh-nodes">0</span></div>
+          <div class="row"><span class="key">relays</span><span class="val" id="ol-mesh-relays">0</span></div>
           <div class="row"><span class="key">field</span><span class="val">&tau;_c routing</span></div>
           <div class="row"><span class="key">sweep</span><span class="val">60 Hz</span></div>
           <div class="row"><span class="key">you</span><span class="val" id="ol-mesh-you">connecting...</span></div>
