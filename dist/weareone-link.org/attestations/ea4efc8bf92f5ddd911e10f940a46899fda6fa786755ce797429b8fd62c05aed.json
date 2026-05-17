@@ -11,8 +11,8 @@
   },
   "source": {
     "repo": "https://github.com/IamOneYouAreOneWeAreOne/one-link",
-    "commit": "eb87dd2f046f414f564a0f870f9d57eb4fe91422",
-    "describe": "v0.21.0-alpha.0-71-geb87dd2",
+    "commit": "bce145defbaffc0aac7b3a016bc323c449f9c8a2",
+    "describe": "v0.21.0-alpha.0-73-gbce145d",
     "license": "AGPL-3.0-or-later"
   },
   "build": {
@@ -27,7 +27,7 @@
   },
   "verifier_url": "https://weareone-link.org/api/attest/ea4efc8bf92f5ddd911e10f940a46899fda6fa786755ce797429b8fd62c05aed",
   "chain": {
-    "previous_release_sha256": "f905eef1b8c2a934d8e7c9a1e5d6b2f3c8a9d4e7b5c2a1f6e9d3b8a4c7e2f1d5",
+    "previous_release_sha256": "ea4efc8bf92f5ddd911e10f940a46899fda6fa786755ce797429b8fd62c05aed",
     "previous_signed_by": "release-signer-ed25519"
   },
   "deferred_signatures": [
@@ -43,13 +43,13 @@
     "To verify: hex-decode the signature, hex-decode the pubkey, ed25519.verify(sig, canonical_attestation_payload(doc), pk)."
   ],
   "signed_payload_spec": "json(doc with 'signatures' key removed) sort_keys=True separators=(',',':') -> ed25519 sign(raw 32-byte release key) -> 64-byte sig",
-  "signed_payload_sha256": "sha256-9a5a0d6194311af88867c7fc6a3d19958df0f5efd6e439a3d61bdf66931ab3ed",
+  "signed_payload_sha256": "sha256-b98aa7685ee0c305002c72489beb718914527d44dce357f1d3178db4a665c5b7",
   "signatures": [
     {
       "scheme": "ed25519",
       "signer": "release-signer-ed25519@weareone-link.org",
       "public_key_hex": "68c961f1ce26faa39acdf66d457e49126d1498aecbbce15ab49fe192d715cb2e",
-      "signature_hex": "cd7f05f02b570dbb78686fd43a42597379a3611fcc79bca8da71badf20d613b267f7777c945fae50b73ddfe3d739b45abab2f0e5ff5ceda9a7af55a1e9125a03"
+      "signature_hex": "8ba74d9d757f850faba2398c96b8446da5dd75dc6524aa12f59d50bcfb3f37944ef96ff67849a030ae230ffb53acbbcefbbea7d4a041f609414eba2c05c9a60f"
     }
   ]
 }

@@ -1336,10 +1336,10 @@ fn render_footer(domain: String, nav: List[NavItem]) -> String @ L0 {
         + "          <li><a href=\"https://coherenceenergylabs.com/coherence-lang/\" rel=\"noopener\">Coherence Language</a></li>\n"
     };
     let connect_links = if is_cel {
-        "          <li><a href=\"https://github.com/Jphilbrick10\">GitHub</a></li>\n"
+        "          <li><a href=\"https://github.com/IamOneYouAreOneWeAreOne\">GitHub</a></li>\n"
     } else {
         "          <li><a href=\"https://coherenceenergylabs.com\" rel=\"noopener\">Coherence Energy Labs</a></li>\n"
-        + "          <li><a href=\"https://github.com/Jphilbrick10\">GitHub</a></li>\n"
+        + "          <li><a href=\"https://github.com/IamOneYouAreOneWeAreOne\">GitHub</a></li>\n"
     };
 
     let mut nav_links = "";
@@ -2962,7 +2962,7 @@ fn build_about_focused() -> String @ L0 {
         + "      <div class=\"about-content\">\n"
         + "        <h2>What the company is</h2>\n"
         + "        <p>Coherence Energy Labs is a research and software company built around a single question: can coherence be formalized, tested, and engineered across science, computation, and real systems?</p>\n"
-        + "        <p>The lab is led by One Link contributor. Its public site is intentionally narrower than the full corpus so the company can be understood quickly without hiding the depth underneath.</p>\n"
+        + "        <p>The public site is intentionally narrower than the full corpus so the work can be understood quickly without hiding the depth underneath. Owned by no one. Belongs to everyone.</p>\n"
         + "        <h2>Current focus</h2>\n"
         + "        <p>Right now the focused public story is simple: explain S_One clearly, show the strongest current validation result, carry Coherence Language as the main software surface, and route deeper programs outward when they are ready.</p>\n"
         + "      </div>\n"
@@ -3155,8 +3155,8 @@ fn build_oue_page(node_id: String, title: String, subtitle: String, content: Str
 fn build_oue_origin() -> String @ L0 {
     build_oue_page(
         "oue-origin", "The Origin",
-        "How one person's journey through faith and physics led to a unified field theory.",
-        "    <p>Every great discovery begins with a question that won't let go. For One Link contributor, that question was deceptively simple: <em>What if everything is connected, not metaphorically, but mathematically?</em></p>\n"
+        "How the journey through faith and physics led to a unified field theory.",
+        "    <p>Every great discovery begins with a question that won't let go. The question here is deceptively simple: <em>What if everything is connected, not metaphorically, but mathematically?</em></p>\n"
         + "    <p>The answer came not from a laboratory, but from the intersection of lived experience, deep study, and an unwillingness to accept that science and faith must be enemies.</p>\n"
         + "    <h2>The Question</h2>\n"
         + "    <p>Physics describes forces. Religion describes meaning. Philosophy describes being. What if they're all describing the same thing, from different angles of a single coherence field?</p>\n"
@@ -3208,7 +3208,7 @@ fn build_oue_community() -> String @ L0 {
         "Connect with others who see the unity in all things.",
         "    <p>OneUnity is not a movement, a religion, or an organization. It's an invitation to anyone who senses that the divisions we've created between science and spirit, between self and other, between human and cosmos, are not as real as they seem.</p>\n"
         + "    <h2>Get Involved</h2>\n"
-        + "    <p>Follow the research on <a href=\"https://github.com/Jphilbrick10\">GitHub</a>. Engage with the equations. Test the predictions. The field is open to everyone.</p>\n",
+        + "    <p>Follow the research on <a href=\"https://github.com/IamOneYouAreOneWeAreOne\">GitHub</a>. Engage with the equations. Test the predictions. The field is open to everyone.</p>\n",
     )
 }
 
@@ -3278,7 +3278,7 @@ fn build_terms(domain: String) -> String @ L0 {
         + "    <h2>No Warranty</h2>\n"
         + "    <p>All content is provided \"as is\" without warranty of any kind.</p>\n"
         + "    <h2>Intellectual Property</h2>\n"
-        + "    <p>&copy; 2026 " + brand + ". Coherence Field Theory, the &tau;-field equations, and Coherence Language are original works by One Link contributor.</p>\n"
+        + "    <p>&copy; 2026 " + brand + ". Coherence Field Theory, the &tau;-field equations, and Coherence Language are open works released under permissive and copyleft licenses; the corpus belongs to whoever wants to study, run, or extend it.</p>\n"
         + "    </div>\n"
         + "  </div>\n"
         + "</section>";

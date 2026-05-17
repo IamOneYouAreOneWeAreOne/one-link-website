@@ -27,7 +27,6 @@ import cel.ssg.build as build;
 // =============================================================================
 
 const FOUNDING_DATE: String = "2024-01-01";
-const FOUNDER_NAME: String = "One Link contributor";
 
 // =============================================================================
 // JSON HELPERS — type-safe construction via std.data.json
@@ -84,14 +83,9 @@ pub fn organization(domain: String) -> String @ L0 {
     o = set(o, "description", str(description));
     o = set(o, "foundingDate", str(FOUNDING_DATE));
 
-    let mut founder = obj();
-    founder = set(founder, "@type", str("Person"));
-    founder = set(founder, "name", str(FOUNDER_NAME));
-    o = set(o, "founder", founder);
-
     if is_cel {
         o = set(o, "sameAs", arr([
-            str("https://github.com/Jphilbrick10"),
+            str("https://github.com/IamOneYouAreOneWeAreOne"),
         ]));
 
         // Known research areas

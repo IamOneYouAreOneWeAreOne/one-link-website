@@ -889,7 +889,7 @@ For developers. Lists 12 of the 38 native crates with one-line explanations. Run
 
 ## 6.8 `/about/`
 
-The covenant. What One Link is, what it is not, who is behind it (One Link contributor, single human), the relationship to Coherence Energy Labs.
+The covenant. What One Link is, what it is not, who is behind it (anyone who picks it up; no company, no founders), and the relationship to the coherence-field research program the protocol grew out of.
 
 ## 6.9 `/privacy/` and `/terms/`
 
