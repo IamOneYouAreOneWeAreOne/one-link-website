@@ -246,6 +246,22 @@ async function download(env, os, request) {
     return Response.redirect(new URL(target, request.url).toString(), 302);
   }
 
+  // Windows .exe: 59 MB single-file PyInstaller build with
+  // one_link_native bundled (Rust hot paths). Hosted on R2 (>25 MiB
+  // exceeds the Workers static-asset cap). Falls through to the
+  // "not yet" HTML page if R2 isn't reachable.
+  if (os === "windows" && env.RELEASES) {
+    const obj = await env.RELEASES.get("latest/one-link-windows.exe");
+    if (obj) {
+      const headers = new Headers();
+      headers.set("Content-Type", "application/octet-stream");
+      headers.set("Content-Disposition", 'attachment; filename="one-link.exe"');
+      headers.set("Cache-Control", "public, max-age=86400");
+      for (const [k, v] of Object.entries(PRIVACY_HEADERS)) headers.set(k, v);
+      return new Response(obj.body, { headers });
+    }
+  }
+
   // Real signed artifact path: serve directly from R2 when present.
   if (env.RELEASES) {
     const key = `latest/one-link-${os}.bin`;
