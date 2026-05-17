@@ -829,6 +829,26 @@ main { position: relative; z-index: 1; }
   box-shadow: 0 0 0 1px rgba(255, 212, 121, 0.04);
 }
 
+/* two-tab pair link */
+.ol-tab-pair-link {
+  color: var(--ol-cyan);
+  text-decoration: none;
+  font-size: 0.95rem;
+  border-bottom: 1px dashed var(--ol-cyan);
+  padding-bottom: 1px;
+}
+.ol-tab-pair-link:hover { color: var(--ol-cyan-hot); border-bottom-style: solid; }
+.ol-tab-pair-result {
+  margin-top: 0.8rem;
+  font-family: var(--ol-mono);
+  font-size: 0.85rem;
+}
+
+/* private-route demo button + output (kept generic so it can move) */
+.ol-private-demo .ol-status {
+  vertical-align: middle;
+}
+
 .ol-pair-card h3 {
   margin: 0 0 0.6rem;
   font-size: 1.4rem;

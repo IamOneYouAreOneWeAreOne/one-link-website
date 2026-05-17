@@ -1,13 +1,13 @@
 {
-  "version": "0.21.0-alpha.0+r8",
+  "version": "0.21.0-alpha.0+r9",
   "issued_at": "2026-05-17T00:00:00Z",
   "signed_by": "ed25519-pub-PLACEHOLDER",
   "signature": "ed25519-PLACEHOLDER",
   "note": "Real SHA-256 of every live asset. Real ed25519 signature wires in once the offline signer is provisioned. The Service Worker verifies these hashes byte-by-byte before serving any cached asset.",
   "assets": {
-    "/css/one-link.css": "sha256-d42c082c5001326d25d0273c3828d05e60526d3b33eed22102f597f84173f039",
+    "/css/one-link.css": "sha256-2728619ec26954332a07f3c87eb8c7fb4901e1fdc55c39b35f590c7883771f5f",
     "/css/immersive.css": "sha256-60c33649ad0bc7e26b4633bbde673c92d54e9e84630cb50962c5a3845c52fbe1",
-    "/live/bridge.js": "sha256-58276cf1549a06c4dd65db579065a9d391ef579bfae3a7232f14d1a6151eca2b",
+    "/live/bridge.js": "sha256-a56617e47328ad3f067e894d00f356e902d371b35122ca5e86ef86757a023991",
     "/live/wasm/ol_pair_qr.js": "sha256-c28b5a72ad92d6485ac55f5fe655ec8015d257999fbd270319f71641abf45035",
     "/live/wasm/ol_pair_qr_bg.wasm": "sha256-68e0144d3034c2db874f7bb4fe5e1a286a9bd8eeda046b56b39d0e44c45e4902",
     "/live/wasm/ol_pqkem.js": "sha256-b09dedc85f9b82beba22cf8654a94eaeb75ab281bed860aa44ca3a2ea34aac13",

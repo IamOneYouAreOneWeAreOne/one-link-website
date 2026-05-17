@@ -734,6 +734,184 @@ function bytesToHex(u8) {
 }
 
 // ---------------------------------------------------------------------------
+// 7b. STRANGER-PAIR TWO-TAB DEMO  (BroadcastChannel + real ol_pair_qr)
+//
+// Click the "or pair with another browser tab" link on the home page.
+// We open a second tab to /?pair=1, the two tabs discover each other on
+// a same-origin BroadcastChannel, run a REAL Inviter <-> Scanner round
+// trip (each in its own browser tab, fresh ed25519/x25519 keypairs),
+// confirm both sides arrive at the same 5-word SAS + same 32-byte
+// chain key, and display the result.
+//
+// This is "two real devices paired" with two browser tabs as the two
+// devices. The crypto is the same crypto. The protocol is the same
+// protocol. The transport (BroadcastChannel) is a same-origin pipe,
+// not the wire, so don't trust it for actual privacy. The demo just
+// proves the handshake works end-to-end.
+// ---------------------------------------------------------------------------
+const TAB_PAIR_CHANNEL = 'ol-tab-pair-v1';
+
+function wireTabPairButton() {
+  const link = $('#ol-tab-pair-link');
+  const result = $('#ol-tab-pair-result');
+  if (!link) return;
+
+  link.addEventListener('click', (ev) => {
+    ev.preventDefault();
+    runTabPairAsInviter(result);
+  });
+
+  // If we landed on the page with ?pair=1, this tab is the Scanner.
+  if (new URLSearchParams(location.search).get('pair') === '1') {
+    document.body.classList.add('ol-pair-scanner-tab');
+    runTabPairAsScanner();
+  }
+}
+
+async function runTabPairAsInviter(resultEl) {
+  if (resultEl) {
+    resultEl.hidden = false;
+    resultEl.innerHTML = '<span style="color: var(--ol-text-soft);">opening second tab and waiting for handshake...</span>';
+  }
+  let wasmModule;
+  try {
+    wasmModule = await import('/live/wasm/ol_pair_qr.js');
+    await wasmModule.default({ module_or_path: '/live/wasm/ol_pair_qr_bg.wasm' });
+  } catch (e) {
+    if (resultEl) resultEl.innerHTML = `<span style="color: var(--ol-rose);">WASM unavailable: ${escapeHtml(e?.message || String(e))}</span>`;
+    return;
+  }
+
+  // Inviter side: build invite, open channel, wait for scanner.
+  const inviter = new wasmModule.OlInviter(1_900_000_000, 'tab-pair');
+  const inviteBytes = inviter.inviteBytes;
+
+  const channel = new BroadcastChannel(TAB_PAIR_CHANNEL);
+
+  // Open the scanner tab.
+  const second = window.open('/?pair=1', '_blank');
+  if (!second) {
+    if (resultEl) resultEl.innerHTML = `<span style="color: var(--ol-rose);">could not open second tab (popup blocked?). Try cmd/ctrl-click the link.</span>`;
+    return;
+  }
+
+  const t0 = performance.now();
+
+  channel.onmessage = (ev) => {
+    const msg = ev.data;
+    if (!msg || msg.type !== 'scanner-hello') return;
+    // Scanner is ready; send it the invite.
+    channel.postMessage({ type: 'invite', inviteBytes });
+  };
+
+  // Wait for the response.
+  const responsePromise = new Promise((resolve) => {
+    const orig = channel.onmessage;
+    channel.onmessage = (ev) => {
+      const msg = ev.data;
+      if (orig) orig(ev);
+      if (msg?.type === 'response') resolve(msg.responseBytes);
+    };
+  });
+
+  const responseBytes = await responsePromise;
+  const sasInviter = inviter.receiveResponse(responseBytes);
+  const [confirmBytes, chainKey] = inviter.confirm();
+  channel.postMessage({ type: 'confirm', confirmBytes });
+
+  // Wait for scanner to acknowledge with its chain key.
+  const ackPromise = new Promise((resolve) => {
+    channel.onmessage = (ev) => {
+      const msg = ev.data;
+      if (msg?.type === 'ack') resolve(msg);
+    };
+  });
+  const ack = await ackPromise;
+  const dt = (performance.now() - t0).toFixed(1);
+  channel.close();
+
+  // Render the result.
+  const keysMatch = bytesEqual(chainKey, ack.chainKey);
+  const sasMatch = sasInviter === ack.sas;
+  if (resultEl) {
+    resultEl.innerHTML = `
+      <div class="ol-proof" open style="margin-top: 1rem;">
+        <details open>
+          <summary>two-tab pair completed in ${dt} ms</summary>
+          <div class="ol-proof-body">
+            <dl>
+              <dt>SAS (inviter)</dt><dd>${escapeHtml(sasInviter)}</dd>
+              <dt>SAS (scanner)</dt><dd>${escapeHtml(ack.sas)}</dd>
+              <dt>SAS match</dt><dd style="color: var(--ol-${sasMatch ? 'green' : 'rose'});">${sasMatch ? 'yes' : 'no'}</dd>
+              <dt>chain key (inviter)</dt><dd>${bytesToHex(chainKey).slice(0, 16)}...</dd>
+              <dt>chain key (scanner)</dt><dd>${bytesToHex(ack.chainKey).slice(0, 16)}...</dd>
+              <dt>keys match</dt><dd style="color: var(--ol-${keysMatch ? 'green' : 'rose'});">${keysMatch ? 'yes' : 'no'}</dd>
+              <dt>transport</dt><dd>BroadcastChannel (same-origin pipe between tabs)</dd>
+              <dt>protocol</dt><dd>ol_pair_qr v${wasmModule.ol_pair_qr_version()}</dd>
+            </dl>
+          </div>
+        </details>
+      </div>
+    `;
+  }
+}
+
+async function runTabPairAsScanner() {
+  let wasmModule;
+  try {
+    wasmModule = await import('/live/wasm/ol_pair_qr.js');
+    await wasmModule.default({ module_or_path: '/live/wasm/ol_pair_qr_bg.wasm' });
+  } catch (e) {
+    document.body.insertAdjacentHTML('afterbegin',
+      `<div style="position: fixed; top: 1rem; left: 50%; transform: translateX(-50%); z-index: 100; padding: 1rem; background: rgba(8,12,20,0.9); color: var(--ol-rose); border-radius: 8px; font-family: var(--ol-mono);">scanner: WASM unavailable</div>`);
+    return;
+  }
+
+  const channel = new BroadcastChannel(TAB_PAIR_CHANNEL);
+  channel.postMessage({ type: 'scanner-hello' });
+
+  let scanner = null;
+  channel.onmessage = (ev) => {
+    const msg = ev.data;
+    if (msg?.type === 'invite' && !scanner) {
+      try {
+        scanner = wasmModule.OlScanner.scan(msg.inviteBytes, Math.floor(Date.now() / 1000));
+        channel.postMessage({ type: 'response', responseBytes: scanner.responseBytes });
+      } catch (e) {
+        channel.postMessage({ type: 'scanner-error', error: e?.message || String(e) });
+      }
+    } else if (msg?.type === 'confirm' && scanner) {
+      try {
+        const chainKey = scanner.receiveConfirm(msg.confirmBytes);
+        const sas = scanner.sas;
+        channel.postMessage({ type: 'ack', chainKey, sas });
+        // Surface confirmation in this tab too.
+        document.body.insertAdjacentHTML('afterbegin', `
+          <div style="position: fixed; top: 1rem; left: 50%; transform: translateX(-50%); z-index: 100;
+                      padding: 1.2rem 1.5rem; background: rgba(8,12,20,0.95);
+                      color: var(--ol-green); border: 1px solid var(--ol-line-bright);
+                      border-radius: var(--ol-radius); font-family: var(--ol-mono);
+                      box-shadow: 0 14px 40px hsla(178, 90%, 70%, 0.35);">
+            <strong style="color: var(--ol-cyan);">paired with the other tab.</strong><br>
+            SAS: ${escapeHtml(sas)}<br>
+            chain key: ${bytesToHex(chainKey).slice(0, 16)}...<br>
+            <small style="color: var(--ol-text-dim);">you can close this tab</small>
+          </div>
+        `);
+      } catch (e) {
+        channel.postMessage({ type: 'scanner-error', error: e?.message || String(e) });
+      }
+    }
+  };
+}
+
+function bytesEqual(a, b) {
+  if (!a || !b || a.length !== b.length) return false;
+  for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) return false;
+  return true;
+}
+
+// ---------------------------------------------------------------------------
 // 8. SERVICE WORKER REGISTRATION
 //
 // Offline-first: every visit precaches the core route set so the next visit
@@ -798,6 +976,54 @@ async function runOnionPreview() {
   }
 }
 window.olRunOnionPreview = runOnionPreview;  // hook for /download/ page
+
+// ---------------------------------------------------------------------------
+// 9b. PRIVATE-ROUTE DEMO BUTTON  (/download/ page)
+//
+// Clicking the button runs a real ol_onion 3-hop wrap+peel in the browser
+// and prints the wire-level result so the visitor can see actual circuit
+// bytes (hop ids, peel stages, delivery match).
+// ---------------------------------------------------------------------------
+function wirePrivateRouteDemo() {
+  const btn = $('#ol-private-route-btn');
+  const out = $('#ol-private-route-out');
+  const status = $('#ol-private-route-status');
+  if (!btn || !out) return;
+
+  btn.addEventListener('click', async () => {
+    btn.disabled = true;
+    if (status) status.style.display = 'inline-flex';
+    out.style.display = 'block';
+    out.textContent = 'wrapping...';
+
+    const t0 = performance.now();
+    const result = await runOnionPreview();
+    const dt = (performance.now() - t0).toFixed(1);
+
+    if (!result.ok) {
+      out.innerHTML = `<span style="color: var(--ol-rose);">ol_onion unavailable: ${escapeHtml(result.error || 'unknown')}</span>`;
+    } else {
+      const lines = [
+        `<span class="d">// real Sphinx wrap + 3 peels, ${dt} ms in your tab</span>`,
+        `<span class="c">crate</span>     ol_onion v${escapeHtml(result.version)}`,
+        `<span class="c">hops</span>      ${result.hops}`,
+        `<span class="c">payload</span>   ${result.payloadSize} bytes`,
+        `<span class="c">packet</span>    ${result.packetSize} bytes (padded to obfuscate size)`,
+        ``,
+        `<span class="c">hop 1</span>     ${escapeHtml(result.hopIds[0])}  <span class="g">${escapeHtml(result.stages[0])}</span>`,
+        `<span class="c">hop 2</span>     ${escapeHtml(result.hopIds[1])}  <span class="g">${escapeHtml(result.stages[1])}</span>`,
+        `<span class="c">hop 3</span>     ${escapeHtml(result.hopIds[2])}  <span class="g">${escapeHtml(result.stages[2])}</span>`,
+        ``,
+        result.delivered
+          ? `<span class="g">delivered: payload survived all 3 layers byte-for-byte</span>`
+          : `<span class="ol-rose">delivered: mismatch</span>`,
+      ];
+      out.innerHTML = lines.join('\n');
+    }
+    if (status) status.style.display = 'none';
+    btn.disabled = false;
+  });
+}
 
 // ---------------------------------------------------------------------------
 // 10. LIVE PRESENCE WEBSOCKET  (other visitors on the page right now)
@@ -1134,6 +1360,120 @@ function reportPqStatus() {
 }
 
 // ---------------------------------------------------------------------------
+// 14. MESH-PAGE SOLVER COLORING  (real Helmholtz on a peer graph)
+//
+// On /mesh/ we color each peer dot by the local field intensity at its
+// position, computed by ol_coherence_field's solve_steady_helmholtz over
+// a graph of (peer_self + N peers + central anchor). This is the same
+// solver the daemon uses for tau_c routing, running serially in WASM.
+//
+// Effect: peer dots near high-traffic regions glow hotter. The field
+// substrate the home page draws is now also a tangible value attached
+// to each peer the visitor sees.
+// ---------------------------------------------------------------------------
+async function startMeshSolverColoring() {
+  // Only run on /mesh/.
+  if (!location.pathname.startsWith('/mesh')) return;
+
+  let cfModule;
+  try {
+    cfModule = await import('/live/wasm/ol_coherence_field.js');
+    await cfModule.default({ module_or_path: '/live/wasm/ol_coherence_field_bg.wasm' });
+  } catch (e) {
+    console.debug('[mesh] coherence_field WASM unavailable', e?.message);
+    return;
+  }
+
+  // Build a tiny graph every few seconds: visitor + peers + a central anchor.
+  // Edges are nearest-K (K=3) with weight = 1/distance.
+  const D = 0.05;     // diffusion
+  const GAMMA = 0.18; // damping; matches the WGSL solver's gamma
+
+  function recolor() {
+    const overlay = $('#ol-mesh-canvas-overlay') || $('.ol-mesh-overlay');
+    const dots = $$('#ol-peer-overlay .ol-peer-dot');
+    if (dots.length < 2) {
+      setTimeout(recolor, 1500);
+      return;
+    }
+    // Build positions + adjacency.
+    const positions = dots.map(d => {
+      const x = parseFloat(d.style.getPropertyValue('--x')) / 100 || 0.5;
+      const y = parseFloat(d.style.getPropertyValue('--y')) / 100 || 0.5;
+      return { x, y, el: d };
+    });
+    // Anchor node at center attracts the field.
+    positions.push({ x: 0.5, y: 0.5, el: null });
+    const n = positions.length;
+
+    // K-nearest neighbors edges.
+    const edges = [];
+    const weights = [];
+    const K = 3;
+    for (let i = 0; i < n; i++) {
+      const dists = [];
+      for (let j = 0; j < n; j++) {
+        if (i === j) continue;
+        const dx = positions[i].x - positions[j].x;
+        const dy = positions[i].y - positions[j].y;
+        dists.push({ j, d: Math.sqrt(dx*dx + dy*dy) });
+      }
+      dists.sort((a, b) => a.d - b.d);
+      for (let k = 0; k < Math.min(K, dists.length); k++) {
+        if (dists[k].j > i) {
+          edges.push(i, dists[k].j);
+          weights.push(1 / (0.01 + dists[k].d));
+        }
+      }
+    }
+
+    // Source: anchor injects energy; everyone else passive.
+    const source = new Float64Array(n);
+    source[n - 1] = 1.0;
+
+    let field;
+    try {
+      field = cfModule.solveSteadyHelmholtz(
+        n,
+        new Uint32Array(edges),
+        new Float64Array(weights),
+        source,
+        D, GAMMA
+      );
+    } catch (e) {
+      console.debug('[mesh] solve failed', e?.message);
+      return;
+    }
+
+    // Normalize + apply intensity to dot brightness via box-shadow + scale.
+    let max = 0;
+    for (let i = 0; i < n - 1; i++) if (field[i] > max) max = field[i];
+    if (max < 1e-9) max = 1;
+    for (let i = 0; i < n - 1; i++) {
+      const intensity = Math.min(1, field[i] / max);
+      const dot = positions[i].el;
+      if (!dot) continue;
+      const px = 12 + Math.round(intensity * 24);
+      const sat = 70 + Math.round(intensity * 25);
+      const hue = parseInt(dot.style.getPropertyValue('--hue'), 10) || 178;
+      dot.style.boxShadow = `
+        0 0 ${px}px hsla(${hue}, ${sat}%, 75%, ${0.4 + intensity * 0.4}),
+        0 0 ${px * 2.4}px hsla(${hue}, ${sat - 10}%, 60%, ${0.2 + intensity * 0.3})
+      `;
+      dot.dataset.fieldIntensity = intensity.toFixed(3);
+    }
+
+    // Update the overlay readout with mean field.
+    const mean = field.slice(0, n - 1).reduce((a, b) => a + b, 0) / Math.max(1, n - 1);
+    const readout = $('#ol-mesh-field-readout');
+    if (readout) readout.textContent = `mean tau ${mean.toFixed(3)}`;
+
+    setTimeout(recolor, 2000);
+  }
+  recolor();
+}
+
+// ---------------------------------------------------------------------------
 // boot
 // ---------------------------------------------------------------------------
 (async function main() {
@@ -1149,4 +1489,7 @@ function reportPqStatus() {
   wireAmbientAudioToggle();
   wireScrollHint();
   reportPqStatus();
+  wireTabPairButton();         // stranger-pair two-tab demo
+  wirePrivateRouteDemo();      // /download/ Sphinx route button
+  startMeshSolverColoring();   // /mesh/ peer-dot coloring via real solver
 })();

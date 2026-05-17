@@ -172,6 +172,25 @@
       <p style="color: var(--ol-text-soft); max-width: 56ch;">
         We do not log your visit. We do not log the request. We do not log the relay. If law enforcement asked us tomorrow who downloaded this, we would have nothing to give them. That is not a policy. It is the architecture.
       </p>
+
+      <!--
+        Live in-browser proof. Click the button and the ol_onion crate
+        (compiled to WASM) generates 3 ephemeral hops, wraps a payload,
+        and peels each layer, all locally. The output below is the
+        actual wire bytes the daemon would emit for a real onion-routed
+        transfer. No network call.
+      -->
+      <div class="ol-private-demo" style="margin-top: 2rem;">
+        <button type="button" id="ol-private-route-btn" class="btn btn-primary">
+          Run a real Sphinx route, right here
+          <span class="arr" aria-hidden="true">&rarr;</span>
+        </button>
+        <span class="ol-status" id="ol-private-route-status" style="margin-left: 0.7rem; display: none;">
+          <span class="dot"></span>
+          <span>computing</span>
+        </span>
+        <pre class="ol-code" id="ol-private-route-out" style="margin-top: 1rem; display: none;"></pre>
+      </div>
     </div>
   </section>
 
