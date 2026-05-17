@@ -570,6 +570,36 @@ body.ol-immersive::before {
 }
 
 /* =============================================================================
+   PEER HINT  ("tap any glowing dot to chat" - shown when peers visible)
+   ========================================================================== */
+.ol-peer-hint {
+  position: fixed;
+  bottom: 4.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 12;
+  font-family: var(--ol-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  color: var(--ol-text-soft);
+  padding: 0.4rem 0.85rem;
+  background: rgba(8, 12, 20, 0.7);
+  border: 1px solid rgba(110, 240, 244, 0.28);
+  border-radius: 999px;
+  backdrop-filter: blur(10px);
+  pointer-events: none;
+  animation: ol-peer-hint-pulse 3.6s ease-in-out infinite;
+}
+.ol-peer-hint:not([hidden]) { display: inline-flex; }
+@keyframes ol-peer-hint-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(110, 240, 244, 0); }
+  50%      { box-shadow: 0 0 0 4px rgba(110, 240, 244, 0.12); }
+}
+@media (max-width: 720px) {
+  .ol-peer-hint { bottom: 8rem; font-size: 0.7rem; }
+}
+
+/* =============================================================================
    STRANGER CHAT  (anonymous, ephemeral, server-relayed)
    ========================================================================== */
 .ol-chat-panel {

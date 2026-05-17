@@ -1190,20 +1190,27 @@ function renderPeerDots() {
     if (!desired.has(child.dataset.peerId)) child.remove();
   }
 
-  // Avoid the hero text area on the home page (roughly the upper 60% of
-  // the viewport is occupied by the headline). Push dots into the bottom
-  // strip so they don't occlude the readable content. On /mesh/ where
-  // the canvas is the focal point, allow the full vertical range.
+  // Push dots into the bottom strip so they don't occlude the hero text
+  // on the home page. On /mesh/ where the canvas is the focal point,
+  // dots can use the full vertical range.
   const homeMode = location.pathname === '/' || location.pathname === '/index.html';
-  const yMin = homeMode ? 60 : 12;
-  const yMax = homeMode ? 92 : 92;
+  const yMin = homeMode ? 84 : 14;
+  const yMax = homeMode ? 94 : 92;
 
   const place = (id, p, isSelf) => {
-    const xPct = Math.max(4, Math.min(96, p.lng * 100));
-    // Compress vertical to the allowed strip while preserving relative
-    // ordering (peers with higher lat stay above peers with lower lat).
-    const rawY = (1 - p.lat) * 100;
-    const yPct = yMin + (rawY / 100) * (yMax - yMin);
+    // Deterministic per-id jitter so multiple peers from the same geo
+    // bucket don't all stack on top of each other (e.g., two tabs from
+    // the same browser would otherwise both land on the same pixel).
+    const h = simpleHash(id);
+    const jitterX = ((h & 0xffff) / 0xffff - 0.5) * 0.16;    // +/- 8% of viewport
+    const jitterY = (((h >> 16) & 0xffff) / 0xffff - 0.5) * 0.08; // +/- 4%
+
+    const rawX = p.lng + jitterX;
+    const xPct = Math.max(4, Math.min(96, rawX * 100));
+    const rawYBase = (1 - p.lat) * 100;
+    const rawY = rawYBase + jitterY * 100;
+    const yPct = Math.max(yMin, Math.min(yMax,
+      yMin + (rawY / 100) * (yMax - yMin)));
     let dot = overlay.querySelector(`[data-peer-id="${id}"]`);
     if (!dot) {
       dot = document.createElement(isSelf ? 'div' : 'button');
@@ -1234,6 +1241,11 @@ function renderPeerDots() {
   for (const [id, p] of presence.peers) {
     place(id, p, false);
   }
+
+  // Show the "tap any glowing dot to chat" hint only when there's at
+  // least one other visitor we could click on.
+  const hint = $('#ol-peer-hint');
+  if (hint) hint.hidden = presence.peers.size === 0;
 }
 
 function simpleHash(s) {
