@@ -1,6 +1,6 @@
-# One Link Website — Complete Specification
+# One Link Website - Complete Specification
 
-**Version**: 0.21.0-alpha + r25
+**Version**: 0.21.0-alpha + r34
 **Status**: Living document. Reflects shipped code as of 2026-05-17.
 **Domains**: `weareone-link.org` (primary) + `weareone-link.com` (301 redirect)
 **License**: AGPL-3.0-or-later
@@ -152,21 +152,21 @@ The "blow socks off" feature set, with shipped status as of 2026-05-17 + r7.
 
 | # | Item | Status | Crate / file | Section |
 |---|---|---|---|---|
-| 1 | Download IS the protocol (browser becomes a One Link node) | **shipped (verifying)** | bridge.js `runVerifyingDownload` (streams + SHA-256 verifies against signed attestation; transport-layer ol_transfer still pending) | §6.2 |
+| 1 | Download IS the protocol (browser becomes a One Link node) | **shipped (verifying, Windows + Linux)** | bridge.js `runVerifyingDownload` (streams + SHA-256 verifies against signed attestation; transport-layer ol_transfer still pending) | §6.2 |
 | 2 | Pair-by-QR with real handshake in 5 seconds | **shipped** | `ol_pair_qr` WASM | §5.1, §6.1 |
 | 3 | Optional Sphinx onion-routed download (preview button) | **shipped** | `ol_onion` WASM + /download/ button | §5.3, §6.2 |
 | 4 | Coherence-field background = real Helmholtz on GPU | **shipped** | WGSL emitted from `wgsl_emitter` | §3.6, §6.1 |
-| 5 | Live global mesh map | partial (synthetic) | `ol_routing`, `ol_homology` not yet WASM | §6.6 |
+| 5 | Live global mesh map | **partial (synthetic + animated)** | presence DO + real Helmholtz field solver coloring + 1.4s ripple animation on peer join/leave; `ol_routing`/`ol_homology` still not WASM | §6.6 |
 | 6 | Reproducible-build attestation UI | **shipped** (schema, sample) | `ol_pqsig`, `ol_confidential` (schema only) | §4.5, §6.2, App C |
 | 7 | Two-tab browser daemon demo | **shipped** | `BroadcastChannel` + `ol_pair_qr` WASM | §6.1 |
 | 8 | Threshold recovery demo on page | **shipped** | `ol_threshold_recovery` WASM + /security/ | §6.5 |
 | 9 | Feature matrix generated from live capability advert | **shipped** | worker.js `/api/capabilities` + `startCapAdvertSync` | §4.2 |
 | 10 | Cryptographic site integrity (signed manifest, SW verify) | **shipped** | [sw.js](dist/weareone-link.org/sw.js), [manifest.json](dist/weareone-link.org/manifest.json) | §7.4 |
-| 11 | Site IS a One Link node (PQ-hybrid session on load) | **shipped** | `ol_pqkem` WASM | §5.2 |
+| 11 | Site IS a One Link node (PQ-hybrid session on load) | **shipped (X25519 server-real, ML-KEM browser-real)** | `ol_pqkem` browser WASM + Worker `crypto.subtle.generateKey({name:'X25519'})` on /api/session; ML-KEM-768 server half deferred until WASM-in-Worker bundler dance | §5.2, §4.4 |
 | 12 | Zero accounts / cookies / analytics / tracking | **shipped** (architectural) | worker.js, sw.js | §7.1 |
 | 13 | "Rebuild this site from source" button | deferred | future CI surface | §11 |
 | 14 | Website ships INSIDE the product (daemon serves it) | deferred | daemon work | §11 |
-| 15 | Hardware-key TOFU recognition | deferred | `ol_hwkey` not yet WASM | §11 |
+| 15 | Hardware-key TOFU recognition (software fallback) | **shipped** | `ol_hwkey` WASM (TofuStore) + /security/ "mint or recognize this device" | §6.5 |
 | 16 | Feature page generated live from cap advert | **shipped** | live capability banner above static matrix | §4.2 |
 | 17 | Self-defending site (in-browser bundle verifier) | **shipped** | [sw.js](dist/weareone-link.org/sw.js) + ed25519-signed manifest | §7.4 |
 | 18 | Stranger-pair right now (two visitors, real chat) | **shipped** | `MeshPresence` DO + `ol_pair_qr` WASM + E2EE chat panel | §3.2.2, §4.6, §6.1 |
@@ -179,11 +179,27 @@ The "blow socks off" feature set, with shipped status as of 2026-05-17 + r7.
 | 25 | CSP + HSTS + SRI + signed-manifest defense-in-depth | **shipped** | worker.js `PRIVACY_HEADERS` + scripts/inject-sri.py | §7.5, §7.7 |
 | 26 | Per-IP token-bucket rate limit on /api/share | **shipped** | `ShareRate` Durable Object | §3.2.3 |
 | 27 | Per-chunk forward-secret ratchet demo | **shipped** | `ol_ratchet` WASM + /security/ "walk the ratchet" | §6.5 |
-| 15 | Hardware-key TOFU recognition (software fallback) | **shipped** | `ol_hwkey` WASM (TofuStore) + /security/ "mint or recognize" | §6.5 |
 | 28 | In-browser attestation verifier (Ed25519 against pinned key) | **shipped** | `wireAttestationVerify` + WebCrypto Ed25519 on /download/ | §6.2 |
-| 29 | Streaming + verifying download (chunk-by-chunk SHA-256 against signed attestation) | **shipped** (Windows) | `runVerifyingDownload` on /download/ | §6.2 |
+| 29 | Streaming + verifying download (chunk-by-chunk SHA-256 against signed attestation) | **shipped** (Windows + Linux) | `runVerifyingDownload` on /download/ | §6.2 |
+| 30 | PWA install (Add to Home Screen launches site as standalone app) | **shipped** | `/app.webmanifest` + iOS/Android meta tags on all 13 pages | §6.1 |
+| 31 | Real X25519 server handshake (classical half of /api/session) | **shipped** | Worker WebCrypto `generateKey({name:'X25519'})` + in-memory keypair | §4.4 |
+| 32 | Linux signed release | **shipped** | PyInstaller onedir + gzip, 72 MB, glibc 2.28+, R2 + signed attestation | §6.2 |
 
-**Summary as of r30**: 22 fully shipped, 1 partial, 5 deferred. Shipped items can be verified by visiting the site in a modern browser today. Partial items have the engine in place but the UI hook is incomplete. Deferred items remain honest "next push" candidates.
+**Summary as of r34**: 26 fully shipped, 1 partial (item 5), 6 deferred (13, 14, 19, 22, plus macOS/iOS native builds and ML-KEM-768 server half).
+
+**Deferred items + why each is deferred:**
+
+| # | Item | Blocker |
+|---|---|---|
+| 13 | "Rebuild this site from source" button | needs CI surface; doable without external blockers, just hasn't shipped |
+| 14 | Website ships INSIDE the product (daemon serves it) | daemon-side work; needs the daemon to bundle the static dist/ and serve it on localhost |
+| 19 | Default-private mesh delivery for downloads | needs `ol_onion` UI wiring into the actual download path (currently preview-only) |
+| 22 | Tor onion mirror with cross-consistency proof | needs separate hosting setup |
+| - | macOS .dmg (signed) | Apple Developer enrollment ($99/yr + cert setup); only you can do this |
+| - | iOS TestFlight | same Apple Developer block |
+| - | Android signed APK | not blocked; just hasn't been built |
+| - | ML-KEM-768 server half of /api/session | WASM-in-Worker bundler dance (~2-4 hours of focused work) |
+| - | Live relay registry in RELAY_KV | needs a running demo daemon publishing real presence |
 
 ---
 
