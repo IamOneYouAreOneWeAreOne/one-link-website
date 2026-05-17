@@ -225,44 +225,202 @@ function nativeAdvert(env) {
 //
 // All downloads also publish an attestation entry the page can verify.
 // -----------------------------------------------------------------------------
-async function download(env, os) {
+async function download(env, os, request) {
   const known = new Set([
-    "windows",
-    "macos",
-    "linux",
-    "android",
-    "ios",
-    "openbsd",
-    "freebsd",
-    "source",
+    "windows", "macos", "linux", "android", "ios",
+    "openbsd", "freebsd", "source",
   ]);
   if (!known.has(os)) {
     return json({ error: "unknown os", supported: [...known] }, { status: 404 });
   }
+
+  // Source download is REAL and AVAILABLE TODAY: served as a static asset
+  // bundled into dist/. Works on any device, including iOS (downloads as a
+  // .tar.gz the user can email to themselves / open with Files app).
+  if (os === "source") {
+    const ua = (request?.headers.get("User-Agent") || "").toLowerCase();
+    const wantsZip = /windows|iphone|ipad|ios|android|mac os/.test(ua);
+    const target = wantsZip
+      ? "/downloads/one-link-source.zip"
+      : "/downloads/one-link-source.tar.gz";
+    return Response.redirect(new URL(target, request.url).toString(), 302);
+  }
+
+  // Real signed artifact path: serve directly from R2 when present.
   if (env.RELEASES) {
     const key = `latest/one-link-${os}.bin`;
     const obj = await env.RELEASES.get(key);
     if (obj) {
       const headers = new Headers();
       headers.set("Content-Type", "application/octet-stream");
-      headers.set(
-        "Content-Disposition",
-        `attachment; filename="one-link-${os}.bin"`
-      );
+      headers.set("Content-Disposition", `attachment; filename="one-link-${os}.bin"`);
       headers.set("Cache-Control", "public, max-age=86400");
       headers.set("X-Artifact-SHA256", obj.checksums?.sha256 || "");
       for (const [k, v] of Object.entries(PRIVACY_HEADERS)) headers.set(k, v);
       return new Response(obj.body, { headers });
     }
   }
-  return json(
-    {
-      error: "no signed release on file yet",
-      os,
-      note: "release relay publishes here once first signed build lands",
+
+  // No artifact yet. Branch on Accept header:
+  //   browser navigation (Accept: text/html) -> render an on-brand
+  //     HTML "not yet" page with OS-specific honest guidance.
+  //   programmatic clients (curl, fetch with JSON Accept) -> the old
+  //     JSON 503 shape so scripts can detect the state.
+  const accept = (request?.headers.get("Accept") || "").toLowerCase();
+  if (!accept.includes("text/html")) {
+    return json(
+      { error: "no signed release on file yet", os,
+        note: "browse to this URL in a browser for the human-readable page" },
+      { status: 503 }
+    );
+  }
+
+  return downloadComingSoonPage(os);
+}
+
+// -----------------------------------------------------------------------------
+// "Not yet" HTML page (on-brand, OS-specific, honest)
+// -----------------------------------------------------------------------------
+function downloadComingSoonPage(os) {
+  const repo = "https://github.com/IamOneYouAreOneWeAreOne/one-link";
+
+  // Per-OS honesty. We do NOT claim a binary will be ready by date X.
+  const blocks = {
+    ios: {
+      label: "iOS",
+      headline: "iOS is coming via TestFlight.",
+      lede: "iOS apps can only install through the App Store or TestFlight. We are not on either yet. Watch the repo and we will post the TestFlight link the moment it is open.",
+      cta: { label: "Watch on GitHub", href: repo },
+      note: "If you want a direct ping the moment TestFlight opens, drop a comment on issue #1 in the repo. No email or signup needed.",
     },
-    { status: 503 }
-  );
+    android: {
+      label: "Android",
+      headline: "Android build is being packaged.",
+      lede: "We are bundling a signed APK now. Until that lands, the source builds cleanly with the Android NDK. Instructions in the repo.",
+      cta: { label: "Build from source", href: `${repo}#android` },
+      note: null,
+    },
+    macos: {
+      label: "macOS",
+      headline: "macOS signed build is being notarized.",
+      lede: "Apple Developer ID notarization takes a beat. Until the signed .dmg lands, the daemon builds cleanly from source with cargo + Python 3.11+.",
+      cta: { label: "Build from source", href: `${repo}#macos` },
+      note: "macOS will refuse to open an unsigned binary served from a website. We are not going to ask you to bypass Gatekeeper. Either build it yourself or wait for the signed build.",
+    },
+    windows: {
+      label: "Windows",
+      headline: "Windows signed installer is being packaged.",
+      lede: "We are getting the Authenticode signing cert in place so SmartScreen does not yell at you. Until that lands, the daemon builds cleanly from source.",
+      cta: { label: "Build from source", href: `${repo}#windows` },
+      note: null,
+    },
+    linux: {
+      label: "Linux",
+      headline: "Linux build is being packaged.",
+      lede: "AppImage + .deb + .rpm coming. For now the daemon builds cleanly from source on any glibc 2.28+ distro.",
+      cta: { label: "Build from source", href: `${repo}#linux` },
+      note: null,
+    },
+    openbsd: {
+      label: "OpenBSD",
+      headline: "OpenBSD port pending.",
+      lede: "If you are on OpenBSD you can probably build from source faster than we can write a port. Patches welcome.",
+      cta: { label: "Source on GitHub", href: repo },
+      note: null,
+    },
+    freebsd: {
+      label: "FreeBSD",
+      headline: "FreeBSD port pending.",
+      lede: "Same story as OpenBSD. Build from source today.",
+      cta: { label: "Source on GitHub", href: repo },
+      note: null,
+    },
+    source: {
+      label: "Source",
+      headline: "Building from source today.",
+      lede: "AGPL-3.0. Every line of the daemon, every protocol crate, every shader. Clone, read, fork, run your own.",
+      cta: { label: "Clone on GitHub", href: repo },
+      note: "Requires Rust 1.95+, Python 3.11+, and an internet connection long enough to pull the workspace. Build instructions are in the repo README.",
+    },
+  };
+
+  const b = blocks[os] || blocks.source;
+
+  const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>One Link for ${b.label} &mdash; not yet</title>
+  <meta name="description" content="${b.headline}">
+  <meta name="theme-color" content="#04060b">
+  <meta name="color-scheme" content="dark">
+  <meta name="robots" content="noindex">
+  <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+  <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+  <link rel="stylesheet" href="/css/one-link.css">
+</head>
+<body>
+<header class="site-header" role="banner">
+  <div class="container">
+    <a href="/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
+    <nav class="site-nav" aria-label="Main">
+      <a href="/how-it-works/">How it works</a>
+      <a href="/features/">Features</a>
+      <a href="/security/">Security</a>
+      <a href="/download/" class="cta-get">All downloads</a>
+    </nav>
+  </div>
+</header>
+<main id="main">
+  <section class="hero" style="padding-bottom: 1rem;">
+    <div class="container">
+      <span class="we-are-one">${b.label}</span>
+      <h1>${b.headline}</h1>
+      <p class="lede">${b.lede}</p>
+      <div class="cta-row">
+        <a href="/download/source" class="btn btn-primary btn-large">
+          Download source today <span class="arr">&rarr;</span>
+        </a>
+        <a href="${b.cta.href}" class="btn btn-ghost btn-large" rel="noopener">
+          ${b.cta.label}
+        </a>
+        <a href="/download/" class="btn btn-ghost">Other platforms</a>
+      </div>
+      <p style="color: var(--ol-text-soft); max-width: 56ch; margin-top: 1rem; font-size: 0.92rem;">
+        The source archive (19 MB) works on every device including this one.
+        Every protocol, every crate, every shader, every word of the daemon.
+        AGPL-3.0.
+      </p>
+      ${b.note ? `<p style="color: var(--ol-text-soft); max-width: 56ch; margin-top: 1.5rem;">${b.note}</p>` : ""}
+    </div>
+  </section>
+  <section class="section-tight">
+    <div class="container">
+      <p style="color: var(--ol-text-dim); font-family: var(--ol-mono); font-size: 0.85rem;">
+        Honest status: no signed binary has been published to the release relay yet.
+        This page is what you see when the front door is still being painted.
+        The protocol works today. The polish is on the way.
+      </p>
+    </div>
+  </section>
+</main>
+<footer class="site-footer" role="contentinfo">
+  <div class="container">
+    <div class="footer-bottom">
+      <span class="built-by">Built in the open. AGPL-3.0. <a href="/security/">No tracking, no analytics, no cookies.</a></span>
+      <span class="built-by">we are one</span>
+    </div>
+  </div>
+</footer>
+</body>
+</html>`;
+
+  const headers = new Headers();
+  headers.set("Content-Type", "text/html; charset=utf-8");
+  headers.set("Cache-Control", "no-store");
+  for (const [k, v] of Object.entries(PRIVACY_HEADERS)) headers.set(k, v);
+  return new Response(html, { status: 503, headers });
 }
 
 // -----------------------------------------------------------------------------
@@ -285,7 +443,7 @@ export default {
 
     const downloadMatch = path.match(/^\/download\/([a-z]+)$/);
     if (downloadMatch && request.method === "GET")
-      return download(env, downloadMatch[1]);
+      return download(env, downloadMatch[1], request);
 
     // Live presence WebSocket: all sessions share a single Durable Object
     // instance ("global") for the demo. Trivially shardable later by region.

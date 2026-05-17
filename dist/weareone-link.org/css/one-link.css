@@ -612,6 +612,33 @@ main { position: relative; z-index: 1; }
 }
 .ol-download .alts a:hover { color: var(--ol-cyan); }
 
+.ol-platform-row {
+  display: flex !important;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.55rem 0.85rem;
+  background: rgba(8, 12, 20, 0.5);
+  border: 1px solid var(--ol-line);
+  border-radius: var(--ol-radius-sm);
+  font-family: var(--ol-mono);
+  transition: border-color 0.16s var(--ol-ease), color 0.16s var(--ol-ease);
+}
+.ol-platform-row:hover { border-color: var(--ol-line-bright); color: var(--ol-cyan); }
+.ol-platform-status {
+  font-size: 0.72rem;
+  color: var(--ol-amber);
+  letter-spacing: 0.04em;
+  padding: 0.18rem 0.5rem;
+  background: rgba(255, 212, 121, 0.08);
+  border: 1px solid rgba(255, 212, 121, 0.22);
+  border-radius: 999px;
+}
+.ol-platform-status.ready {
+  color: var(--ol-green);
+  background: rgba(126, 234, 160, 0.1);
+  border-color: rgba(126, 234, 160, 0.28);
+}
+
 .ol-attest {
   font-family: var(--ol-mono);
   font-size: 0.78rem;

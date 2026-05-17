@@ -73,15 +73,18 @@
           </p>
         </div>
 
-        <div class="alts" aria-label="Other devices">
-          <a href="/download/windows">Windows</a>
-          <a href="/download/macos">macOS</a>
-          <a href="/download/linux">Linux</a>
-          <a href="/download/android">Android</a>
-          <a href="/download/ios">iOS</a>
-          <a href="/download/openbsd">OpenBSD</a>
-          <a href="/download/source">Source (build it yourself)</a>
+        <div class="alts" aria-label="Other devices" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.6rem 1rem;">
+          <a href="/download/windows" class="ol-platform-row">Windows <span class="ol-platform-status">packaging</span></a>
+          <a href="/download/macos"   class="ol-platform-row">macOS   <span class="ol-platform-status">notarizing</span></a>
+          <a href="/download/linux"   class="ol-platform-row">Linux   <span class="ol-platform-status">packaging</span></a>
+          <a href="/download/android" class="ol-platform-row">Android <span class="ol-platform-status">packaging</span></a>
+          <a href="/download/ios"     class="ol-platform-row">iOS     <span class="ol-platform-status">via TestFlight</span></a>
+          <a href="/download/openbsd" class="ol-platform-row">OpenBSD <span class="ol-platform-status">build from source</span></a>
+          <a href="/download/source"  class="ol-platform-row">Source  <span class="ol-platform-status ready">AGPL, today</span></a>
         </div>
+        <p style="color: var(--ol-text-dim); font-size: 0.82rem; margin-top: 0.7rem; font-family: var(--ol-mono);">
+          honest status: no signed binary has been published to the release relay yet. the protocol works today; signed builds are in the queue. building from source works on every platform right now.
+        </p>
 
         <div class="ol-attest" id="ol-attest">
           <div class="row"><span class="key">version</span><span class="val">0.21.0</span></div>
