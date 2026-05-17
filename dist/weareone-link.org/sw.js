@@ -58,7 +58,9 @@ const PRECACHE_URLS = [
   '/live/wasm/ol_onion_bg.wasm',
   '/live/wasm/ol_coherence_field.js',
   '/live/wasm/ol_coherence_field_bg.wasm',
-  '/images/favicon.svg',
+  '/images/favicon.ico',
+  '/images/logo-128.png',
+  '/images/apple-touch-icon.png',
   '/manifest.json',
 ];
 

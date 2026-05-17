@@ -20,7 +20,11 @@
   <meta property="og:image" content="https://weareone-link.org/og/one-link.png">
   <meta name="twitter:card" content="summary_large_image">
 
-  <link rel="icon" href="/images/favicon.svg" type="image/svg+xml">
+  <!-- Same ONE Glyph the One Link app ships with. -->
+  <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="128x128" href="/images/logo-128.png">
+  <link rel="icon" type="image/png" sizes="256x256" href="/images/logo-256.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="/images/logo-512.png">
   <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
 
   <link rel="stylesheet" href="/css/one-link.css">
@@ -223,6 +227,12 @@
             <span class="word">harbor</span>
           </div>
           <p>That is the entire pairing flow. No password. No backup phrase. The five words mean the math agreed on both ends. If anyone tried to sit in the middle, the words would not match.</p>
+          <p>
+            <a href="#" class="ol-tab-pair-link" id="ol-tab-pair-link">
+              or pair with another browser tab right now &rarr;
+            </a>
+          </p>
+          <div class="ol-tab-pair-result" id="ol-tab-pair-result" hidden></div>
           <details class="ol-proof">
             <summary>What just happened, under the hood</summary>
             <div class="ol-proof-body">

@@ -545,7 +545,7 @@ async function openSession() {
   // post-quantum session shared secret with the relay.
   try {
     const kemModule = await import('/live/wasm/ol_pqkem.js');
-    await kemModule.default('/live/wasm/ol_pqkem_bg.wasm');
+    await kemModule.default({ module_or_path: '/live/wasm/ol_pqkem_bg.wasm' });
     const sizes = kemModule.pqKemSizes();
 
     // Stage 1: full Alice<->Bob round trip locally so the SAS-style "math
@@ -664,7 +664,7 @@ async function startPairDemo() {
 
   try {
     const wasmModule = await import('/live/wasm/ol_pair_qr.js');
-    await wasmModule.default('/live/wasm/ol_pair_qr_bg.wasm');
+    await wasmModule.default({ module_or_path: '/live/wasm/ol_pair_qr_bg.wasm' });
 
     // One full Inviter <-> Scanner round-trip in-browser, no network.
     // The bytes + SAS produced are wire-identical to what the daemon emits.
@@ -780,7 +780,7 @@ function setSwStatus(text, color) {
 async function runOnionPreview() {
   try {
     const mod = await import('/live/wasm/ol_onion.js');
-    await mod.default('/live/wasm/ol_onion_bg.wasm');
+    await mod.default({ module_or_path: '/live/wasm/ol_onion_bg.wasm' });
     const payload = new TextEncoder().encode('we are one');
     const result = mod.liveDemoRoundTrip(payload);
     return {

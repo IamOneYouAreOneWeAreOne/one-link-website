@@ -190,23 +190,18 @@ main { position: relative; z-index: 1; }
 }
 
 .site-logo .logo-mark {
-  width: 28px;
-  height: 28px;
+  width: 30px;
+  height: 30px;
   display: inline-block;
   border-radius: 50%;
   background:
-    radial-gradient(circle at 30% 28%, #fff 0%, #c7faff 20%, var(--ol-cyan) 50%, #163b3e 85%, transparent 100%);
+    url("/images/logo-128.png") center / 78% no-repeat,
+    radial-gradient(circle at 35% 30%, #ffffff 0%, #e8f8fa 18%, #c7faff 38%, #6ef0f4 70%, #1d4a4d 100%);
   box-shadow:
-    0 0 0 1px rgba(110, 240, 244, 0.25),
+    0 0 0 1px rgba(110, 240, 244, 0.32),
     0 0 22px rgba(110, 240, 244, 0.42);
   position: relative;
-}
-.site-logo .logo-mark::after {
-  content: "";
-  position: absolute;
-  inset: 4px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 60% 60%, transparent 40%, rgba(155, 140, 255, 0.35) 80%);
+  /* Real ONE Glyph from the One Link app, same image bit-for-bit. */
 }
 
 .site-nav {

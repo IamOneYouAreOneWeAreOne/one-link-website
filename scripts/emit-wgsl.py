@@ -60,6 +60,25 @@ def main() -> int:
 
     body = emit_coherence_field_shaders()
 
+    # The upstream emitter combines a compute pipeline AND a render
+    # pipeline into one .wgsl string, with the SAME storage-buffer
+    # binding (@group(0) @binding(0)) declared twice (once read_write
+    # for compute, once read for render). WebGPU rejects this as a
+    # binding-redeclaration error: ":236:23 error: redeclaration of
+    # 'field'".
+    #
+    # Workaround: slice at the second binding declaration and ship
+    # only the compute half. bridge.js provides its own inline render
+    # shader that reads from the same storage buffer as a separate
+    # shader module.
+    marker = "@group(0) @binding(0)"
+    first  = body.find(marker)
+    second = body.find(marker, first + 1) if first >= 0 else -1
+    if second > 0:
+        compute_end = body.rfind("\n", 0, second)
+        body = body[:compute_end].rstrip() + "\n"
+        print(":: sliced render-pipeline section to avoid binding redeclaration")
+
     header = (
         "// =============================================================================\n"
         "// One Link  -  Coherence-field WGSL shader\n"
