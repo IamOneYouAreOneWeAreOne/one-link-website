@@ -1187,30 +1187,44 @@ function renderPeerDots() {
 
   // Remove dots that no longer belong.
   for (const child of Array.from(overlay.children)) {
-    if (!desired.has(child.dataset.peerId)) child.remove();
+    if (!desired.has(child.dataset?.peerId)) {
+      if (child.nodeType === 1 && child.dataset?.peerId) child.remove();
+    }
   }
 
-  // Push dots into the bottom strip so they don't occlude the hero text
-  // on the home page. On /mesh/ where the canvas is the focal point,
-  // dots can use the full vertical range.
-  const homeMode = location.pathname === '/' || location.pathname === '/index.html';
-  const yMin = homeMode ? 84 : 14;
-  const yMax = homeMode ? 94 : 92;
+  // The widget is bounded; dots live INSIDE its rect. We render them
+  // positioned in the widget's own coordinate space (% of widget size),
+  // not % of viewport. The "live mesh" header sits at the top so we
+  // reserve the upper ~26px for it.
+  const totalPeers = presence.peers.size + (presence.selfId ? 1 : 0);
+  overlay.dataset.count = String(totalPeers);
+  overlay.classList.toggle('is-empty', totalPeers === 0);
+
+  // Top margin (for the "live mesh / N here" header) and bottom margin
+  // (for the "tap a dot to chat" hint). Dots cluster in the middle.
+  const yMin = 18;   // % inside the widget
+  const yMax = 82;
+  const xMin = 6;
+  const xMax = 94;
+
+  // Scale dot size based on density so 100s of peers don't overlap fully.
+  let dotScale = 1.0;
+  if (totalPeers > 60) dotScale = 0.7;
+  if (totalPeers > 200) dotScale = 0.55;
+  if (totalPeers > 500) dotScale = 0.4;
 
   const place = (id, p, isSelf) => {
-    // Deterministic per-id jitter so multiple peers from the same geo
-    // bucket don't all stack on top of each other (e.g., two tabs from
-    // the same browser would otherwise both land on the same pixel).
     const h = simpleHash(id);
-    const jitterX = ((h & 0xffff) / 0xffff - 0.5) * 0.16;    // +/- 8% of viewport
-    const jitterY = (((h >> 16) & 0xffff) / 0xffff - 0.5) * 0.08; // +/- 4%
+    // Deterministic xy jitter inside the widget bounds so co-located
+    // peers fan out into a constellation rather than collapsing to one.
+    const jx = ((h & 0xffff) / 0xffff - 0.5) * 0.6;       // strong intra-bucket spread
+    const jy = (((h >> 16) & 0xffff) / 0xffff - 0.5) * 0.6;
 
-    const rawX = p.lng + jitterX;
-    const xPct = Math.max(4, Math.min(96, rawX * 100));
-    const rawYBase = (1 - p.lat) * 100;
-    const rawY = rawYBase + jitterY * 100;
-    const yPct = Math.max(yMin, Math.min(yMax,
-      yMin + (rawY / 100) * (yMax - yMin)));
+    const rawX = (p.lng + jx * 0.3) * 100;              // 30% of widget width worth of jitter
+    const rawY = ((1 - p.lat) + jy * 0.3) * 100;
+    const xPct = Math.max(xMin, Math.min(xMax, rawX * (xMax - xMin) / 100 + xMin * 0.0));
+    const yPct = Math.max(yMin, Math.min(yMax, rawY * (yMax - yMin) / 100 + yMin * 0.0));
+
     let dot = overlay.querySelector(`[data-peer-id="${id}"]`);
     if (!dot) {
       dot = document.createElement(isSelf ? 'div' : 'button');
@@ -1218,7 +1232,7 @@ function renderPeerDots() {
       dot.className = 'ol-peer-dot' + (isSelf ? ' is-self' : '');
       dot.dataset.peerId = id;
       if (!isSelf) {
-        dot.setAttribute('aria-label', 'Send anonymous ping to a stranger');
+        dot.setAttribute('aria-label', 'Start anonymous chat with a stranger');
         dot.dataset.label = regionForLng(p.lng);
         dot.addEventListener('click', () => sendPing(id, dot));
       }
@@ -1226,10 +1240,10 @@ function renderPeerDots() {
     }
     dot.style.setProperty('--x', xPct + '%');
     dot.style.setProperty('--y', yPct + '%');
+    dot.style.transform = `scale(${dotScale})`;
     if (!isSelf) {
       dot.dataset.label = regionForLng(p.lng);
-      // deterministic hue per peer id so each dot has its own color
-      const hue = simpleHash(id) % 360;
+      const hue = h % 360;
       dot.style.setProperty('--hue', String(hue));
     }
   };
@@ -1242,10 +1256,20 @@ function renderPeerDots() {
     place(id, p, false);
   }
 
-  // Show the "tap any glowing dot to chat" hint only when there's at
-  // least one other visitor we could click on.
-  const hint = $('#ol-peer-hint');
-  if (hint) hint.hidden = presence.peers.size === 0;
+  // Hint sits inside the widget footer.
+  let hint = overlay.querySelector('.ol-peer-hint-inline');
+  if (!hint) {
+    hint = document.createElement('div');
+    hint.className = 'ol-peer-hint-inline';
+    overlay.appendChild(hint);
+  }
+  hint.textContent = presence.peers.size === 0
+    ? 'open another tab or wait for someone'
+    : 'tap any glowing dot to chat';
+
+  // Hide the old standalone peer-hint pill if present (legacy element).
+  const oldHint = $('#ol-peer-hint');
+  if (oldHint) oldHint.hidden = true;
 }
 
 function simpleHash(s) {

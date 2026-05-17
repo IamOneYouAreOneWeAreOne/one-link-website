@@ -315,16 +315,104 @@ body.ol-immersive::before {
 }
 
 /* =============================================================================
-   PEER-DOTS OVERLAY  (real other visitors, rendered as clickable DOM dots
-   floating over the WebGPU canvas)
+   LIVE MESH WIDGET  (bounded panel bottom-right, scales 2 -> 10,000+ visitors)
+   =============================================================================
+   Replaces the full-viewport overlay. Visitor dots live INSIDE this widget's
+   bounded space, never on the page itself. The widget is the truth source
+   for who's online and the only place you click to start a chat.
    ========================================================================== */
 .ol-peer-overlay {
   position: fixed;
-  inset: 0;
-  z-index: 5;                  /* above field, below header + tooltips */
-  pointer-events: none;        /* dots opt in individually */
+  bottom: 1.3rem;
+  right: 1.3rem;
+  z-index: 8;
+  width: clamp(260px, 28vw, 340px);
+  height: 220px;
+  background: rgba(4, 6, 11, 0.88);
+  border: 1px solid var(--ol-line-bright);
+  border-radius: var(--ol-radius-lg);
+  box-shadow: 0 18px 60px hsla(178, 80%, 60%, 0.18), 0 0 0 1px rgba(110, 240, 244, 0.18);
+  backdrop-filter: blur(14px);
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  pointer-events: auto;
+  transition: transform .25s var(--ol-ease), opacity .25s var(--ol-ease);
 }
+.ol-peer-overlay::before {
+  content: "live mesh";
+  position: absolute;
+  top: 0.55rem;
+  left: 0.85rem;
+  z-index: 2;
+  font-family: var(--ol-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ol-cyan);
+  font-weight: 600;
+  pointer-events: none;
+}
+.ol-peer-overlay::after {
+  content: attr(data-count) " here right now";
+  position: absolute;
+  top: 0.55rem;
+  right: 0.85rem;
+  z-index: 2;
+  font-family: var(--ol-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  color: var(--ol-text-soft);
+  pointer-events: none;
+}
+.ol-peer-overlay.is-empty { opacity: 0.5; }
+
+/* When the widget is collapsed/hidden the bar collapses to a pill. */
+.ol-peer-overlay.is-collapsed {
+  width: auto;
+  height: auto;
+  padding: 0.55rem 1rem;
+  border-radius: 999px;
+  cursor: pointer;
+}
+.ol-peer-overlay.is-collapsed::before,
+.ol-peer-overlay.is-collapsed::after { position: static; }
+
+@media (max-width: 720px) {
+  .ol-peer-overlay {
+    width: auto;
+    left: 1rem;
+    right: 1rem;
+    bottom: 1rem;
+    height: 180px;
+  }
+}
+@media (max-width: 720px) and (orientation: landscape) {
+  .ol-peer-overlay { display: none; }
+}
+
+/* Hide widget on the dedicated /mesh/ page (it has its own big canvas).
+   This rule applies only when the body has the mesh marker. */
+body.ol-mesh-page .ol-peer-overlay { display: none; }
+
+/* inline hint at the bottom of the widget */
+.ol-peer-hint-inline {
+  position: absolute;
+  bottom: 0.55rem;
+  left: 0.85rem;
+  right: 0.85rem;
+  font-family: var(--ol-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  color: var(--ol-text-dim);
+  text-align: center;
+  pointer-events: none;
+}
+
+/* old top-right presence ribbon is redundant now; widget header carries the count */
+.ol-presence-bar { display: none !important; }
+/* hide the old fly-out hint pill too */
+.ol-peer-hint { display: none !important; }
 
 .ol-peer-dot {
   --x: 50%;
@@ -333,10 +421,10 @@ body.ol-immersive::before {
   position: absolute;
   left: var(--x);
   top: var(--y);
-  width: 14px;
-  height: 14px;
-  margin-left: -7px;
-  margin-top: -7px;
+  width: 12px;
+  height: 12px;
+  margin-left: -6px;
+  margin-top: -6px;
   border-radius: 50%;
   background:
     radial-gradient(circle at 35% 30%,
