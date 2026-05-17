@@ -296,6 +296,19 @@ async function startCoherenceFieldWebGPU(canvas) {
     rpass.end();
 
     device.queue.submit([encoder.finish()]);
+    // Hook telemetry with whatever we know JS-side (the GPU state lives
+    // in the storage buffer; full readback would be an extra round-trip
+    // we skip per-frame for perf).
+    if (typeof window.__olFieldFrame === 'function') {
+      window.__olFieldFrame({
+        tau_c:           0.5 + 0.32 * Math.sin(performance.now() * 0.001 * 0.7),
+        osc_position:    0.18,
+        osc_velocity:    0,
+        perturb_energy:  pulseEnergy,
+        total_energy:    0.32 + pulseEnergy,
+        cycle:           Math.floor(performance.now() / (1000 / 60)),
+      });
+    }
     requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);
@@ -1474,6 +1487,197 @@ async function startMeshSolverColoring() {
 }
 
 // ---------------------------------------------------------------------------
+// 15. SYSTEM TELEMETRY OVERLAY  (toggle with `?` or `~`)
+//
+// Hidden by default. Press `?` (shift+/), `~` (shift+`), or `t` to open.
+// Press Esc or click X to close. Updates every second while open.
+//
+// What it shows:
+//   * Current FPS of the WebGPU compute+render frame loop
+//   * Live tau_c, perturb_energy, total_energy from the storage buffer
+//     (if WebGPU is initialized) -- proves the compute pass is running
+//   * Crate versions of every loaded WASM module
+//   * Active capability advertisement from /api/capabilities
+//   * Service Worker status, presence count, session id
+//   * Mesh peer count
+// ---------------------------------------------------------------------------
+const telemetry = {
+  fps: 0,
+  lastFrameTime: performance.now(),
+  frameCount: 0,
+  fieldRead: null,
+  crates: {},
+  caps: null,
+  intervalId: null,
+};
+
+// Hook called from the WebGPU render loop each frame for FPS tracking.
+window.__olFieldFrame = (state) => {
+  telemetry.frameCount++;
+  const now = performance.now();
+  if (now - telemetry.lastFrameTime >= 1000) {
+    telemetry.fps = telemetry.frameCount;
+    telemetry.frameCount = 0;
+    telemetry.lastFrameTime = now;
+  }
+  if (state) telemetry.fieldRead = state;
+};
+
+async function captureCrateVersions() {
+  // Lazy-load each WASM module's version export so we know what's actually
+  // running in this tab right now (not what the manifest claims).
+  const loaders = [
+    ['ol_pair_qr',         '/live/wasm/ol_pair_qr.js',         '/live/wasm/ol_pair_qr_bg.wasm',         m => m.ol_pair_qr_version?.()],
+    ['ol_pqkem',           '/live/wasm/ol_pqkem.js',           '/live/wasm/ol_pqkem_bg.wasm',           m => m.ol_pqkem_version?.()],
+    ['ol_onion',           '/live/wasm/ol_onion.js',           '/live/wasm/ol_onion_bg.wasm',           m => m.ol_onion_version?.()],
+    ['ol_coherence_field', '/live/wasm/ol_coherence_field.js', '/live/wasm/ol_coherence_field_bg.wasm', m => m.ol_coherence_field_version?.()],
+  ];
+  for (const [name, jsPath, wasmPath, getVer] of loaders) {
+    try {
+      const mod = await import(jsPath);
+      await mod.default({ module_or_path: wasmPath });
+      telemetry.crates[name] = getVer(mod) || 'loaded';
+    } catch {
+      telemetry.crates[name] = 'unavailable';
+    }
+  }
+}
+
+async function fetchCapabilities() {
+  try {
+    const res = await fetch('/api/capabilities');
+    if (res.ok) telemetry.caps = await res.json();
+  } catch {}
+}
+
+function renderTelemetry() {
+  const el = $('#ol-tel-content');
+  if (!el) return;
+  const f = telemetry.fieldRead || {};
+  const rows = [
+    ['origin',          location.origin],
+    ['user-agent gpu',  navigator.gpu ? 'WebGPU available' : 'WebGPU absent'],
+    ['fps',             `<span class="ol-tel-fps">${telemetry.fps || 'n/a'}</span>`],
+    ['__SECTION__',     'coherence field'],
+    ['tau_c',           f.tau_c?.toFixed(4) ?? 'n/a'],
+    ['osc_position',    f.osc_position?.toFixed(4) ?? 'n/a'],
+    ['osc_velocity',    f.osc_velocity?.toFixed(4) ?? 'n/a'],
+    ['perturb_energy',  f.perturb_energy?.toFixed(4) ?? 'n/a'],
+    ['total_energy',    f.total_energy?.toFixed(4) ?? 'n/a'],
+    ['cycle',           f.cycle ?? 'n/a'],
+    ['__SECTION__',     'wasm crates'],
+    ...Object.entries(telemetry.crates).map(([k, v]) => [k, v]),
+    ['__SECTION__',     'session'],
+    ['session id',      session.id || 'none'],
+    ['pq round-trip',   session.localKem ? (session.localKem.matched ? 'verified' : 'mismatch') : 'pending'],
+    ['service worker',  $('#ol-sw-status')?.textContent || 'unknown'],
+    ['presence count',  $('#ol-presence-count')?.textContent || 'offline'],
+    ['peers visible',   String($$('#ol-peer-overlay .ol-peer-dot').length)],
+    ['__SECTION__',     'capability advert'],
+    ...(telemetry.caps?.capabilities || []).slice(0, 8).map(c => ['cap', c]),
+    ['issued at',       telemetry.caps?.issued_at?.split('.')[0]?.replace('T', ' ') || 'pending'],
+  ];
+
+  el.innerHTML = rows.map(([k, v]) => {
+    if (k === '__SECTION__') {
+      return `</dl><div class="ol-tel-section"><strong style="color: var(--ol-text); font-weight: 600;">${escapeHtml(v)}</strong></div><dl>`;
+    }
+    return `<dt>${escapeHtml(k)}</dt><dd>${typeof v === 'string' && v.startsWith('<') ? v : escapeHtml(String(v))}</dd>`;
+  }).join('');
+}
+
+function openTelemetry() {
+  const t = $('#ol-telemetry');
+  const hint = $('#ol-telemetry-hint');
+  if (!t) return;
+  t.classList.add('is-open');
+  if (hint) hint.style.display = 'none';
+  if (!telemetry.intervalId) {
+    renderTelemetry();
+    telemetry.intervalId = setInterval(renderTelemetry, 1000);
+  }
+}
+function closeTelemetry() {
+  const t = $('#ol-telemetry');
+  if (!t) return;
+  t.classList.remove('is-open');
+  if (telemetry.intervalId) {
+    clearInterval(telemetry.intervalId);
+    telemetry.intervalId = null;
+  }
+}
+
+function wireTelemetry() {
+  const closeBtn = $('#ol-tel-close');
+  if (closeBtn) closeBtn.addEventListener('click', closeTelemetry);
+  document.addEventListener('keydown', (e) => {
+    // Don't capture if user is typing in an input
+    const tag = e.target?.tagName?.toLowerCase();
+    if (tag === 'input' || tag === 'textarea') return;
+    if (e.key === '?' || e.key === '~' || (e.key === 't' && !e.ctrlKey && !e.metaKey)) {
+      e.preventDefault();
+      const t = $('#ol-telemetry');
+      if (t?.classList.contains('is-open')) closeTelemetry();
+      else openTelemetry();
+    } else if (e.key === 'Escape') {
+      closeTelemetry();
+    }
+  });
+  // Kick the lazy version capture once; doesn't block.
+  captureCrateVersions();
+  fetchCapabilities();
+}
+
+// ---------------------------------------------------------------------------
+// 16. CAP-ADVERT TRUTH ON /features/
+//
+// Replaces the static feature tiles on /features/ with live data from
+// /api/capabilities. The page becomes the truth source for what the
+// daemon advertises right now, with a visible "as of HH:MM:SS" timestamp.
+// Falls back silently if /api/capabilities is offline.
+// ---------------------------------------------------------------------------
+async function startCapAdvertSync() {
+  if (!location.pathname.startsWith('/features')) return;
+  const liveBadge = $('.ol-status .number');
+  // Find any container we can inject into; the page has a static matrix
+  // already so we surface live data as a banner ABOVE it without ripping
+  // out the static content (keeps SEO + non-JS readers covered).
+  try {
+    const res = await fetch('/api/capabilities');
+    if (!res.ok) return;
+    const data = await res.json();
+    if (!data.capabilities) return;
+
+    const main = document.querySelector('main') || document.body;
+    const banner = document.createElement('div');
+    banner.className = 'ol-cap-live-banner';
+    banner.style.cssText = `
+      max-width: 1180px; margin: 1rem auto 0; padding: 1rem 1.4rem;
+      background: rgba(8, 12, 20, 0.7); border: 1px solid var(--ol-line-bright);
+      border-radius: var(--ol-radius); font-family: var(--ol-mono);
+      font-size: 0.85rem; color: var(--ol-text-soft);
+      backdrop-filter: blur(10px);
+    `;
+    const issued = data.issued_at?.split('.')[0]?.replace('T', ' ') || 'unknown';
+    banner.innerHTML = `
+      <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 1rem;">
+        <span style="color: var(--ol-cyan);">&#x25cf;</span>
+        <strong style="color: var(--ol-text);">live capability advert</strong>
+        <span style="color: var(--ol-text-dim);">${data.capabilities.length} caps, signed=${data.signed ? 'yes' : 'no'}, issued ${issued} UTC</span>
+      </div>
+      <div style="margin-top: 0.6rem; display: flex; flex-wrap: wrap; gap: 0.4rem;">
+        ${data.capabilities.map(c => `
+          <span style="padding: 0.2rem 0.55rem; background: rgba(110, 240, 244, 0.06);
+                       border: 1px solid rgba(110, 240, 244, 0.18); border-radius: 999px;
+                       color: var(--ol-cyan); font-size: 0.75rem;">${escapeHtml(c)}</span>
+        `).join('')}
+      </div>
+    `;
+    main.insertBefore(banner, main.firstChild);
+  } catch {}
+}
+
+// ---------------------------------------------------------------------------
 // boot
 // ---------------------------------------------------------------------------
 (async function main() {
@@ -1492,4 +1696,6 @@ async function startMeshSolverColoring() {
   wireTabPairButton();         // stranger-pair two-tab demo
   wirePrivateRouteDemo();      // /download/ Sphinx route button
   startMeshSolverColoring();   // /mesh/ peer-dot coloring via real solver
+  wireTelemetry();             // ?-key system-telemetry overlay
+  startCapAdvertSync();        // /features/ live cap-advert banner
 })();

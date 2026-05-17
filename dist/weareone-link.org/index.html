@@ -324,6 +324,18 @@
   <span class="ol-audio-label">sound</span>
 </button>
 
+<!-- System telemetry overlay. Hidden by default. Toggle with `?` key. -->
+<aside class="ol-telemetry" id="ol-telemetry" aria-label="System telemetry">
+  <h4>
+    <span>system telemetry</span>
+    <button type="button" class="ol-tel-close" id="ol-tel-close" aria-label="Close">&times;</button>
+  </h4>
+  <dl id="ol-tel-content">
+    <dt>loading...</dt><dd>&nbsp;</dd>
+  </dl>
+</aside>
+<span class="ol-telemetry-hint" id="ol-telemetry-hint">press <kbd>?</kbd> for system telemetry</span>
+
 <script type="module" src="/live/bridge.js"></script>
 </body>
 </html>

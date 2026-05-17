@@ -477,6 +477,98 @@ body.ol-immersive::before {
   filter: drop-shadow(0 0 6px hsla(178, 90%, 70%, 0.7));
 }
 
+/* =============================================================================
+   SYSTEM TELEMETRY OVERLAY  (toggle with `?` or `~`)
+   ========================================================================== */
+.ol-telemetry {
+  position: fixed;
+  top: 78px;
+  left: 1.3rem;
+  z-index: 50;
+  width: 320px;
+  max-width: calc(100vw - 2rem);
+  background: rgba(2, 4, 10, 0.92);
+  border: 1px solid var(--ol-line-bright);
+  border-radius: var(--ol-radius);
+  padding: 1rem 1.1rem;
+  font-family: var(--ol-mono);
+  font-size: 0.78rem;
+  color: var(--ol-text-soft);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 18px 60px hsla(178, 90%, 50%, 0.18);
+  display: none;
+  pointer-events: auto;
+}
+.ol-telemetry.is-open { display: block; }
+.ol-telemetry h4 {
+  margin: 0 0 0.7rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ol-cyan);
+  font-weight: 600;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.ol-telemetry .ol-tel-close {
+  background: none;
+  border: none;
+  color: var(--ol-text-dim);
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+  padding: 0;
+}
+.ol-telemetry .ol-tel-close:hover { color: var(--ol-rose); }
+.ol-telemetry dl {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.32rem 0.9rem;
+  margin: 0;
+}
+.ol-telemetry dt { color: var(--ol-text-dim); }
+.ol-telemetry dd { margin: 0; color: var(--ol-cyan); word-break: break-all; }
+.ol-telemetry dd.muted { color: var(--ol-text-soft); }
+.ol-telemetry .ol-tel-section {
+  margin-top: 0.8rem;
+  padding-top: 0.6rem;
+  border-top: 1px dashed var(--ol-line);
+}
+.ol-telemetry .ol-tel-fps {
+  color: var(--ol-green);
+  font-weight: 600;
+}
+.ol-telemetry-hint {
+  position: fixed;
+  bottom: 1rem;
+  left: 1rem;
+  z-index: 25;
+  font-family: var(--ol-mono);
+  font-size: 0.7rem;
+  color: var(--ol-text-dim);
+  padding: 0.35rem 0.6rem;
+  background: rgba(8, 12, 20, 0.5);
+  border: 1px solid var(--ol-line);
+  border-radius: 6px;
+  backdrop-filter: blur(8px);
+  pointer-events: none;
+  opacity: 0;
+  animation: ol-fade-in 1s var(--ol-ease) 4s forwards;
+}
+.ol-telemetry-hint kbd {
+  display: inline-block;
+  padding: 0 4px;
+  background: rgba(110, 240, 244, 0.1);
+  border: 1px solid var(--ol-line-bright);
+  border-radius: 3px;
+  color: var(--ol-cyan);
+  font-family: inherit;
+}
+@media (max-width: 720px) {
+  .ol-telemetry-hint { display: none; }
+}
+
 /* legacy class kept for any non-immersive page */
 .ol-remote-tooltip {
   position: fixed;
