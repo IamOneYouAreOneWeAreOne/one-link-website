@@ -127,8 +127,14 @@ body::before {
   height: 100%;
   z-index: 0;
   pointer-events: none;
-  opacity: 0.5;
-  mix-blend-mode: screen;
+  opacity: 0.15;                /* tuned down: was 0.5, too dominant */
+  mix-blend-mode: soft-light;   /* tints rather than overpaints */
+  filter: saturate(0.5) blur(0.5px);
+  transition: opacity 0.6s ease-out;
+}
+.ol-field-canvas.is-pulsing {
+  opacity: 0.4;
+  transition: opacity 0.18s ease-out;
 }
 
 /* =============================================================================

@@ -2232,6 +2232,34 @@ function renderPeerDots() {
   const overlay = $('#ol-peer-overlay');
   if (!overlay) return;
 
+  // Mount the "see all" link once. Lives in the bottom-right of the widget
+  // and navigates to the dedicated /mesh/ page. We skip on /mesh/ itself
+  // (where the widget is hidden anyway via body.ol-mesh-page).
+  if (!overlay.querySelector('.ol-mesh-expand-link') && !document.body.classList.contains('ol-mesh-page')) {
+    const link = document.createElement('a');
+    link.className = 'ol-mesh-expand-link';
+    link.href = '/mesh/';
+    link.textContent = 'see all →';
+    link.setAttribute('aria-label', 'Open the full live mesh page');
+    link.style.cssText = `
+      position: absolute; bottom: 0.55rem; right: 0.85rem;
+      font-family: var(--ol-mono); font-size: 0.68rem;
+      letter-spacing: 0.04em; color: var(--ol-cyan);
+      text-decoration: none; opacity: 0.75;
+      transition: opacity 0.15s, transform 0.15s;
+      z-index: 4; pointer-events: auto;
+    `;
+    link.addEventListener('mouseenter', () => {
+      link.style.opacity = '1';
+      link.style.transform = 'translateX(2px)';
+    });
+    link.addEventListener('mouseleave', () => {
+      link.style.opacity = '0.75';
+      link.style.transform = 'translateX(0)';
+    });
+    overlay.appendChild(link);
+  }
+
   // Build a fresh map of desired dot ids (peers + self) and reconcile.
   const desired = new Set();
   if (presence.selfId) desired.add(presence.selfId);
@@ -3136,32 +3164,41 @@ async function startCapAdvertSync() {
     const data = await res.json();
     if (!data.capabilities) return;
 
+    // Find a tasteful slot: the "live from /api/capabilities" pill in the
+    // hero status. Replace its number text with the real count, and append
+    // a collapsed <details> at the BOTTOM of /features/ for anyone who
+    // wants to see the raw cap list. No more heavy banner above the hero.
+    const liveBadgePill = document.querySelector('.ol-status .number');
+    const liveBadgeTime = document.querySelector('.ol-status > span:last-child');
+    if (liveBadgePill) liveBadgePill.textContent = `${data.capabilities.length} caps`;
+    if (liveBadgeTime) {
+      const issued = data.issued_at?.split('.')[0]?.replace('T', ' ') || 'unknown';
+      liveBadgeTime.textContent = `as of ${issued} UTC`;
+    }
+
+    // Tiny collapsed details at the bottom of the page for the curious.
     const main = document.querySelector('main') || document.body;
-    const banner = document.createElement('div');
-    banner.className = 'ol-cap-live-banner';
-    banner.style.cssText = `
-      max-width: 1180px; margin: 1rem auto 0; padding: 1rem 1.4rem;
-      background: rgba(8, 12, 20, 0.7); border: 1px solid var(--ol-line-bright);
-      border-radius: var(--ol-radius); font-family: var(--ol-mono);
-      font-size: 0.85rem; color: var(--ol-text-soft);
-      backdrop-filter: blur(10px);
-    `;
+    const det = document.createElement('section');
+    det.className = 'section';
+    det.style.cssText = 'padding-top: 0;';
     const issued = data.issued_at?.split('.')[0]?.replace('T', ' ') || 'unknown';
-    banner.innerHTML = `
-      <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 1rem;">
-        <span style="color: var(--ol-cyan);">&#x25cf;</span>
-        <strong style="color: var(--ol-text);">live capability advert</strong>
-        <span style="color: var(--ol-text-dim);">${data.capabilities.length} caps, signed=${data.signed ? 'yes' : 'no'}, issued ${issued} UTC</span>
-      </div>
-      <div style="margin-top: 0.6rem; display: flex; flex-wrap: wrap; gap: 0.4rem;">
-        ${data.capabilities.map(c => `
-          <span style="padding: 0.2rem 0.55rem; background: rgba(110, 240, 244, 0.06);
-                       border: 1px solid rgba(110, 240, 244, 0.18); border-radius: 999px;
-                       color: var(--ol-cyan); font-size: 0.75rem;">${escapeHtml(c)}</span>
-        `).join('')}
+    det.innerHTML = `
+      <div class="container" style="max-width: 880px;">
+        <details style="background: rgba(8, 12, 20, 0.5); border: 1px solid var(--ol-line); border-radius: var(--ol-radius); padding: 0.8rem 1.2rem; font-family: var(--ol-mono); font-size: 0.85rem; color: var(--ol-text-soft);">
+          <summary style="cursor: pointer; color: var(--ol-text);">
+            <span style="color: var(--ol-cyan);">&#x25cf;</span>
+            raw capability advert
+            <span style="color: var(--ol-text-dim); margin-left: 0.5rem;">${data.capabilities.length} caps &middot; signed=${data.signed ? 'yes' : 'no'} &middot; ${issued} UTC</span>
+          </summary>
+          <div style="margin-top: 0.7rem; display: flex; flex-wrap: wrap; gap: 0.35rem;">
+            ${data.capabilities.map(c => `
+              <span style="padding: 0.18rem 0.5rem; background: rgba(110, 240, 244, 0.06); border: 1px solid rgba(110, 240, 244, 0.18); border-radius: 999px; color: var(--ol-cyan); font-size: 0.72rem;">${escapeHtml(c)}</span>
+            `).join('')}
+          </div>
+        </details>
       </div>
     `;
-    main.insertBefore(banner, main.firstChild);
+    main.appendChild(det);
   } catch {}
 }
 
