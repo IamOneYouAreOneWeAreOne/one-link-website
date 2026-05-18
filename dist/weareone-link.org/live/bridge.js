@@ -692,68 +692,166 @@ function startMeshViz() {
 
   const start = performance.now();
 
+  // Packets traveling along mesh edges (visually: bright particles drifting
+  // from one peer to another along the gradient between them). Spawned on a
+  // schedule so the field always has visible flow even with few peers.
+  /** @type {Array<{from:number,to:number,t:number,speed:number,hue:number}>} */
+  let packets = [];
+  let lastPacketSpawn = 0;
+  function spawnPacketsIfNeeded(now) {
+    if (nodes.length < 2) return;
+    if (now - lastPacketSpawn < 280) return;     // ~3.5 packets/s baseline
+    lastPacketSpawn = now;
+    // Pick two distinct nodes randomly. Prefer relays as source if any exist.
+    const relayPool = nodes.filter(n => n.relay);
+    const fromIdx = relayPool.length > 0 && Math.random() < 0.65
+      ? nodes.indexOf(relayPool[(Math.random() * relayPool.length) | 0])
+      : (Math.random() * nodes.length) | 0;
+    let toIdx = (Math.random() * nodes.length) | 0;
+    if (toIdx === fromIdx) toIdx = (toIdx + 1) % nodes.length;
+    packets.push({
+      from: fromIdx, to: toIdx, t: 0,
+      speed: 0.7 + Math.random() * 0.7,            // tau_c units per second
+      hue: 178 + (Math.random() - 0.5) * 40,        // cyan-ish, slight drift
+    });
+    if (packets.length > 64) packets = packets.slice(-64);
+  }
+
   function frame() {
     const w = canvas.width;
     const h = canvas.height;
     const t = (performance.now() - start) / 1000;
+    const nowMs = performance.now();
 
-    // Background gradient (sampled tau_c field hint).
-    const grad = ctx.createRadialGradient(w * 0.5, h * 0.55, w * 0.05, w * 0.5, h * 0.55, w * 0.85);
-    grad.addColorStop(0, 'rgba(110, 240, 244, 0.05)');
-    grad.addColorStop(0.6, 'rgba(155, 140, 255, 0.03)');
-    grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+    // ---- background: deep space + tau_c field colormap from peer ripples
     ctx.clearRect(0, 0, w, h);
     ctx.fillStyle = '#02040a';
     ctx.fillRect(0, 0, w, h);
-    ctx.fillStyle = grad;
-    ctx.fillRect(0, 0, w, h);
 
-    // Faint connection web between near neighbors of relays.
-    ctx.strokeStyle = 'rgba(110, 240, 244, 0.07)';
-    ctx.lineWidth = 1;
-    const relays = nodes.filter(n => n.relay);
-    for (const r of relays) {
+    // Field as composite radial waves. Each peer is a Helmholtz oscillator
+    // emitting concentric energy that decays with distance and time. Painted
+    // additively (lighter blend) so overlapping ripples brighten — that's the
+    // "interference pattern" the page copy talks about.
+    if (nodes.length > 0) {
+      ctx.globalCompositeOperation = 'lighter';
       for (const n of nodes) {
-        if (n === r) continue;
-        const dx = n.x - r.x;
-        const dy = n.y - r.y;
-        const d = Math.sqrt(dx * dx + dy * dy);
-        if (d < 0.11 && Math.random() < 0.15) {
+        const px = n.x * w;
+        const py = n.y * h;
+        const wave = 0.55 + 0.45 * Math.sin(t * 1.3 + n.phase * 2);
+        const radius = (Math.min(w, h) * 0.22) * (0.7 + 0.6 * wave);
+        const grad = ctx.createRadialGradient(px, py, 0, px, py, radius);
+        const hue = n.you ? 42 : n.relay ? 178 : 200;
+        const sat = n.you ? 95 : 88;
+        const peak = n.you ? 0.32 : n.relay ? 0.22 : 0.12;
+        grad.addColorStop(0,    `hsla(${hue}, ${sat}%, 62%, ${peak * wave})`);
+        grad.addColorStop(0.4,  `hsla(${hue + 25}, ${sat}%, 55%, ${peak * 0.4 * wave})`);
+        grad.addColorStop(1,    `hsla(${hue + 50}, 70%, 40%, 0)`);
+        ctx.fillStyle = grad;
+        ctx.fillRect(px - radius, py - radius, radius * 2, radius * 2);
+      }
+      ctx.globalCompositeOperation = 'source-over';
+    }
+
+    // ---- mesh edges (peer <-> peer) — brightness from midpoint field
+    if (nodes.length >= 2) {
+      ctx.lineCap = 'round';
+      for (let i = 0; i < nodes.length; i++) {
+        for (let j = i + 1; j < nodes.length; j++) {
+          const a = nodes[i], b = nodes[j];
+          const dx = b.x - a.x, dy = b.y - a.y;
+          const d = Math.sqrt(dx * dx + dy * dy);
+          // Show edges for the closest peers always, plus a long-range subset
+          // so the mesh visibly spans the canvas. Bright edges < 0.32, faint
+          // long-range edges 0.32-0.55.
+          if (d > 0.55) continue;
+          const isNear = d < 0.32;
+          const breathing = 0.5 + 0.5 * Math.sin(t * 1.7 + i * 0.7 + j * 0.5);
+          const alpha = (isNear ? 0.18 : 0.06) * (0.7 + 0.3 * breathing);
+          const ax = a.x * w, ay = a.y * h;
+          const bx = b.x * w, by = b.y * h;
+          const g = ctx.createLinearGradient(ax, ay, bx, by);
+          g.addColorStop(0,    `hsla(178, 90%, 70%, ${alpha * 0.6})`);
+          g.addColorStop(0.5,  `hsla(195, 95%, 80%, ${alpha})`);
+          g.addColorStop(1,    `hsla(220, 90%, 70%, ${alpha * 0.6})`);
+          ctx.strokeStyle = g;
+          ctx.lineWidth = isNear ? 1.1 * dpr : 0.6 * dpr;
           ctx.beginPath();
-          ctx.moveTo(r.x * w, r.y * h);
-          ctx.lineTo(n.x * w, n.y * h);
+          ctx.moveTo(ax, ay);
+          ctx.lineTo(bx, by);
           ctx.stroke();
         }
       }
     }
 
-    // Dots.
-    for (const n of nodes) {
-      const pulse = 0.6 + 0.4 * Math.sin(t * n.speed + n.phase);
-      const size = (n.relay ? 3.2 : 1.7) * dpr;
-      const alpha = n.relay ? 0.85 : 0.55;
-      const color = n.you ? '255, 212, 121'
-                   : n.relay ? '110, 240, 244'
-                   : '155, 200, 220';
-
-      ctx.fillStyle = `rgba(${color}, ${alpha * pulse})`;
+    // ---- packets (bright moving particles along edges)
+    spawnPacketsIfNeeded(nowMs);
+    const stillAlive = [];
+    for (const p of packets) {
+      const a = nodes[p.from], b = nodes[p.to];
+      if (!a || !b) continue;
+      p.t += p.speed * (1 / 60);
+      if (p.t >= 1) continue;
+      const x = (a.x + (b.x - a.x) * p.t) * w;
+      const y = (a.y + (b.y - a.y) * p.t) * h;
+      const fade = Math.sin(Math.PI * p.t);  // bright in middle, fades at ends
+      const r = 2.4 * dpr;
+      const glow = ctx.createRadialGradient(x, y, 0, x, y, r * 6);
+      glow.addColorStop(0,   `hsla(${p.hue}, 95%, 90%, ${0.9 * fade})`);
+      glow.addColorStop(0.4, `hsla(${p.hue}, 90%, 70%, ${0.45 * fade})`);
+      glow.addColorStop(1,   `hsla(${p.hue}, 80%, 60%, 0)`);
+      ctx.fillStyle = glow;
       ctx.beginPath();
-      ctx.arc(n.x * w, n.y * h, size, 0, Math.PI * 2);
+      ctx.arc(x, y, r * 6, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = `hsla(${p.hue}, 95%, 95%, ${fade})`;
+      ctx.beginPath();
+      ctx.arc(x, y, r, 0, Math.PI * 2);
+      ctx.fill();
+      stillAlive.push(p);
+    }
+    packets = stillAlive;
+
+    // ---- peer dots — glowing spheres matching the widget aesthetic
+    for (const n of nodes) {
+      const pulse = 0.7 + 0.3 * Math.sin(t * n.speed + n.phase);
+      const px = n.x * w;
+      const py = n.y * h;
+      const isYou = n.you;
+      const isRelay = n.relay;
+      const r = (isYou ? 7 : isRelay ? 5 : 3.5) * dpr;
+      const haloR = r * (isYou ? 5 : isRelay ? 4 : 3) * (0.85 + 0.25 * pulse);
+      const hue = isYou ? 42 : isRelay ? 178 : 200;
+
+      // Glow halo
+      const halo = ctx.createRadialGradient(px, py, r * 0.5, px, py, haloR);
+      halo.addColorStop(0,   `hsla(${hue}, 95%, 75%, ${isYou ? 0.7 : 0.5})`);
+      halo.addColorStop(0.4, `hsla(${hue}, 90%, 65%, ${isYou ? 0.35 : 0.22})`);
+      halo.addColorStop(1,   `hsla(${hue}, 80%, 60%, 0)`);
+      ctx.fillStyle = halo;
+      ctx.beginPath();
+      ctx.arc(px, py, haloR, 0, Math.PI * 2);
       ctx.fill();
 
-      // Outer halo on relays + you.
-      if (n.relay || n.you) {
-        const haloR = (n.you ? 14 : 9) * dpr * (0.7 + 0.4 * pulse);
-        const halo = ctx.createRadialGradient(n.x * w, n.y * h, size, n.x * w, n.y * h, haloR);
-        halo.addColorStop(0, `rgba(${color}, 0.5)`);
-        halo.addColorStop(1, `rgba(${color}, 0)`);
-        ctx.fillStyle = halo;
-        ctx.beginPath();
-        ctx.arc(n.x * w, n.y * h, haloR, 0, Math.PI * 2);
-        ctx.fill();
+      // Solid bright core (with subtle gradient for sphere feel)
+      const core = ctx.createRadialGradient(px - r * 0.25, py - r * 0.3, 0, px, py, r);
+      core.addColorStop(0,   `hsla(${hue}, 95%, 96%, 1.0)`);
+      core.addColorStop(0.5, `hsla(${hue}, 90%, 72%, 0.98)`);
+      core.addColorStop(1,   `hsla(${hue}, 80%, 50%, 0.85)`);
+      ctx.fillStyle = core;
+      ctx.beginPath();
+      ctx.arc(px, py, r, 0, Math.PI * 2);
+      ctx.fill();
+
+      // "you" label
+      if (isYou) {
+        ctx.fillStyle = 'hsla(42, 95%, 85%, 0.9)';
+        ctx.font = `${10 * dpr}px "JetBrains Mono", "SF Mono", monospace`;
+        ctx.textAlign = 'center';
+        ctx.fillText('you', px, py - haloR * 0.45 - 4 * dpr);
       }
     }
 
+    if (document.hidden) { setTimeout(frame, 250); return; }
     requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);
