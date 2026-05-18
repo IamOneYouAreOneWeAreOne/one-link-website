@@ -27,9 +27,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r65">
-  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r65">
-  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r65">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r66">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r66">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r66">
 </head>
 <body>
 <a href="#main" class="skip-link">Skip to content</a>
@@ -159,15 +159,15 @@
         </article>
         <article class="ol-tile">
           <h3>End-to-end encrypted by default.</h3>
-          <p>The cleartext never leaves your device. Every chunk, every message. <span class="ol-soft-text">Crates: <code class="ol-inline-code">ol_ratchet</code>, <code class="ol-inline-code">ol_transfer</code>. Forward secrecy on every chunk.</span></p>
+          <p>The cleartext never leaves your device. Every chunk, every message. <span class="ol-soft-text">Crates: <code class="ol-inline-code">ol_ratchet</code>, <code class="ol-inline-code">ol_transfer</code>. Per-message forward secrecy active today; per-chunk activation lands with the chunk-store cutover in v0.22.</span></p>
         </article>
         <article class="ol-tile">
           <h3>No central server in the path.</h3>
           <p>Direct peer-to-peer when possible, encrypted-relay forwarding when not. The relays we operate are just nodes; the network keeps running if every one of them goes away. <span class="ol-soft-text">Anyone can run a relay.</span></p>
         </article>
         <article class="ol-tile">
-          <h3>Post-quantum hybrid by default.</h3>
-          <p>X25519 + ML-KEM-768 for key exchange, Ed25519 + ML-DSA-65 for signatures. If either half breaks, the other still holds. <span class="ol-soft-text">Crates: <code class="ol-inline-code">ol_pqkem</code>, <code class="ol-inline-code">ol_pqsig</code>.</span></p>
+          <h3>Post-quantum hybrid signatures live everywhere.</h3>
+          <p>Ed25519 + ML-DSA-65 hybrid for every signature today. X25519 + ML-KEM-768 hybrid keys live on Sphinx onion hops today; the pair handshake and channel root activate the ML-KEM half in v0.22 (the wire format already reserves the slot). If either half of the hybrid breaks, the other still holds. <span class="ol-soft-text">Crates: <code class="ol-inline-code">ol_pqkem</code>, <code class="ol-inline-code">ol_pqsig</code>, <code class="ol-inline-code">ol_onion</code>.</span></p>
         </article>
         <article class="ol-tile">
           <h3>Reproducible signed builds.</h3>
@@ -175,7 +175,7 @@
         </article>
         <article class="ol-tile">
           <h3>Send anything peer-to-peer, no size cap.</h3>
-          <p>Native chunked transfer with per-chunk AEAD and fountain-coded loss recovery. 50 GB transfers tested. <span class="ol-soft-text">Crate: <code class="ol-inline-code">ol_transfer</code>.</span></p>
+          <p>Native chunked transfer with per-chunk AEAD and fountain-coded loss recovery. 10 GB transfers verified in the torture simulator. <span class="ol-soft-text">Crate: <code class="ol-inline-code">ol_transfer</code>.</span></p>
         </article>
         <article class="ol-tile">
           <h3>Works on LAN or offline.</h3>
@@ -199,7 +199,7 @@
         </article>
         <article class="ol-tile">
           <h3>Confidential-compute attestation.</h3>
-          <p>The build proves where it ran and what it ran. <span class="ol-soft-text">Crate: <code class="ol-inline-code">ol_confidential</code>. Software baseline today; hardware backends (TPM, SE, SGX, SEV-SNP, TrustZone) plug in.</span></p>
+          <p>The build proves where it ran and what it ran. <span class="ol-soft-text">Crate: <code class="ol-inline-code">ol_confidential</code>. Software baseline live today. Windows TPM provider in flight. The trait surface admits macOS Secure Enclave, Linux SGX/SEV-SNP, and Android TrustZone providers in future cycles.</span></p>
         </article>
       </div>
       <p class="ol-right-foot">Last reviewed 2026-05-17.</p>
@@ -233,6 +233,6 @@
   </div>
 </footer>
 
-<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r65"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r66"></script>
 </body>
 </html>

@@ -27,9 +27,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r65">
-  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r65">
-  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r65">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r66">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r66">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r66">
 </head>
 <body class="ol-mesh-page">
 <a href="#main" class="skip-link">Skip to content</a>
@@ -124,7 +124,7 @@
       <h2>The <span class="grad">tau_c</span> coherence field.</h2>
       <div class="ol-grid ol-grid-2 ol-gap-3 ol-items-start">
         <div>
-          <p>One Link does not use a routing table. It uses a continuous field. Each peer's local view of the field is a small ripple in a damped Helmholtz oscillator. Packets follow the field gradient toward their destination, the same way water finds the low point of a hill.</p>
+          <p>One Link does not use a routing table. It uses a continuous field. Each peer's local view of the field is a small ripple in a damped Helmholtz oscillator. Chunk fetches follow the field gradient toward the healthiest holder, the same way water finds the low point of a hill. Full multi-hop field-routed delivery activates with the relay-mesh cutover in v0.22.</p>
           <p>When a relay disappears, the field re-settles in a single round. When new peers join, their ripples integrate into the field. The math is the same equations that describe quantum coherence and biological membranes. We borrowed the idea from physics.</p>
           <p>The colormap on the canvas above is the field's energy state, sampled at 60 Hz, smoothed for the eye. The dots are peers. The brighter the local field, the more traffic is flowing through that region.</p>
         </div>
@@ -203,6 +203,6 @@
   </div>
 </footer>
 
-<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r65"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r66"></script>
 </body>
 </html>

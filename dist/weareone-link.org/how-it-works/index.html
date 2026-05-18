@@ -27,9 +27,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r65">
-  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r65">
-  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r65">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r66">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r66">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r66">
 </head>
 <body>
 <a href="#main" class="skip-link">Skip to content</a>
@@ -149,7 +149,7 @@
         <div class="ol-proof-body">
           <dl>
             <dt>identity</dt><dd>Ed25519 + ML-DSA-65 hybrid signature. Your device key signs everything you do.</dd>
-            <dt>session keys</dt><dd>X25519 + ML-KEM-768 hybrid key exchange. Post-quantum ready.</dd>
+            <dt>session keys</dt><dd>X25519 today, with the ML-KEM-768 hybrid slot reserved in the wire format. Sphinx onion hops use the hybrid live; pair and channel handshakes activate it in v0.22.</dd>
             <dt>forward secrecy</dt><dd>Double Ratchet (Signal-style) over the hybrid root.</dd>
             <dt>per-chunk crypto</dt><dd>ChaCha20-Poly1305 AEAD, rekey every N chunks.</dd>
             <dt>pairing verification</dt><dd>5-word SAS derived from the shared secret. Levenshtein-audited word list.</dd>
@@ -157,9 +157,9 @@
             <dt>signature aggregation</dt><dd>Schnorr aggregation over Ristretto255 with Pippenger MSM batch verify.</dd>
             <dt>confidential build</dt><dd>ol_confidential AttestationDoc with PQ-hybrid, peer nonce, 30s freshness.</dd>
             <dt>threshold recovery</dt><dd>BN multi-sig with per-signer R values, k-of-n share split.</dd>
-            <dt>routing</dt><dd>tau_c routing field driven by ol_coherence_field Helmholtz solver.</dd>
+            <dt>routing</dt><dd>tau_c coherence field (ol_coherence_field Helmholtz solver) ranks chunk holders today. Full multi-hop field-routed delivery activates with the relay-mesh cutover in v0.22.</dd>
             <dt>capability access</dt><dd>Macaroon-based caps with constant-time verification and 1M-iter soundness gate.</dd>
-            <dt>storage</dt><dd>ChunkRatchet at rest. Zeroize on drop.</dd>
+            <dt>storage</dt><dd>ChunkRatchet in transit. Zeroize on drop. At-rest encryption is opt-in today via the ONE_LINK_PASSPHRASE wrap on the identity key; the PWA tier ships always-on at-rest encryption in v0.22.</dd>
           </dl>
         </div>
       </details>
@@ -196,6 +196,6 @@
   </div>
 </footer>
 
-<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r65"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r66"></script>
 </body>
 </html>

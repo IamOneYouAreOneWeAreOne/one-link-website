@@ -36,9 +36,9 @@
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
 
-  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r65">
-  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r65">
-  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r65">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r66">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r66">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r66">
 
   <script type="application/ld+json">{
     "@context": "https://schema.org",
@@ -186,7 +186,7 @@
           <span>site verified</span>
           <span class="number" id="ol-sw-status">checking</span>
         </span>
-        <span class="ol-status" id="ol-pq-status" title="X25519 + ML-KEM-768 hybrid key exchange, post-quantum ready, computed in your tab.">
+        <span class="ol-status" id="ol-pq-status" title="X25519 today, with the ML-KEM-768 hybrid slot reserved in the wire format. Full hybrid handshake activates in v0.22. Computed in your tab.">
           <span class="dot ol-swatch-amber"></span>
           <span>pq session</span>
           <span class="number" id="ol-pq-status-text">deriving</span>
@@ -265,7 +265,7 @@
             <summary>What just happened, under the hood</summary>
             <div class="ol-proof-body">
               <dl>
-                <dt>handshake</dt><dd>X25519 + ML-KEM-768 hybrid</dd>
+                <dt>handshake</dt><dd>X25519 today (ML-KEM-768 hybrid slot reserved in the wire format; full hybrid lands v0.22)</dd>
                 <dt>verification</dt><dd>5-word SAS derived from the shared secret</dd>
                 <dt>identity</dt><dd>Ed25519 + ML-DSA-65 hybrid signature</dd>
                 <dt>field witness</dt><dd>environment witness mixed in to bind to physical context</dd>
@@ -365,6 +365,6 @@
 </aside>
 <span class="ol-telemetry-hint" id="ol-telemetry-hint">press <kbd>?</kbd> for system telemetry</span>
 
-<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r65"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r66"></script>
 </body>
 </html>
