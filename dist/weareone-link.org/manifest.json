@@ -1,8 +1,8 @@
 {
-  "version": "0.21.0-alpha.0+r40",
+  "version": "0.21.0-alpha.0+r41",
   "issued_at": "2026-05-17T00:00:00Z",
   "signed_by": "ed25519-pub-79c4c8da1ed485541a03057a588bfd88cd6530b407d524866842ec004498464c",
-  "signature": "ed25519-5506ad9318f60435c45ee958c6879c9116ea29dee8afe2abeb95c7ccafc275131aaf3aaa488489a789437cfa06a206165398648dec8d12cda05009c0be41df04",
+  "signature": "ed25519-14cd45a7f21ce93e0891a7516f2b4281a3b2bd7a83f3d3c50a74c2c63ce410710933ef8a1ce312b76bd7ea5b420eaea40e94903d74cf01407895b047c648660a",
   "note": "Real SHA-256 of every live asset. Real ed25519 signature wires in once the offline signer is provisioned. The Service Worker verifies these hashes byte-by-byte before serving any cached asset.",
   "assets": {
     "/css/one-link.css": "sha256-5c3e5ef714c6331fd2c4395703b2ba0c392c4697f23fe7961aa0b4901a70dbe9",
@@ -32,9 +32,9 @@
     "/images/logo-512.png": "sha256-3308fbd87251492895ec509586fddd5d330617f491d925c241d3078004de2fe8",
     "/images/apple-touch-icon.png": "sha256-661b99db462d13319db4734d0d8e8d817de109c63d98be6faa19a9165e89ac12",
     "/app.webmanifest": "sha256-5b0405c03006a6e171cf0c90d6be20a501064331e77a0b5068d5c4b5d21f068a",
-    "/sw.js": "sha256-3d29907e48c70984987ffb31c3e6e8d77a45199ae39a799f5ba574821b68b046",
-    "/index.html": "sha256-ac62636980d9d227064fcf855e6e1dff84470fda87596056e5274f0d1ed7755c"
+    "/sw.js": "sha256-0e139f29bf0b6554f97ee2c11afe3e997a3a9d5118a4a17debd8d94144289a37",
+    "/index.html": "sha256-d6680e0ded7a017cf8fe535110d8d2bc73fe95d6b5e4eec313ea21a4859fecc0"
   },
-  "signed_sha256": "sha256-baf3f7ec871ecf80152db35bf546c658656ba9621483dd0a5e7ab50090ac091d",
+  "signed_sha256": "sha256-8268b0ecdfe199abe2a1538193d4d97e98314977f10fff4532f79eae972f814c",
   "sig_payload_spec": "json({version, assets}) with sorted asset keys, separators (',',':') -> ed25519 sign(raw 32-byte seed) -> 64-byte sig"
 }
