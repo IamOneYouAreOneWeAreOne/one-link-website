@@ -14,9 +14,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r66">
-  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r66">
-  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r66">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r67">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r67">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r67">
   <meta name="theme-color" content="#04060b" media="(prefers-color-scheme: dark)">
   <meta name="theme-color" content="#f0f4f8" media="(prefers-color-scheme: light)">
 </head>
@@ -50,6 +50,9 @@
         No email. No phone number. No name. No analytics. No cookies. No tracking pixels. No fingerprinting. No third-party scripts. The Cloudflare Worker that serves this page does not log who visited or what they downloaded. The relays do not log anything about the people using the network.
       </p>
       <p class="ol-prose">
+        For complete honesty about the edge runtime: this site runs on Cloudflare Workers as our CDN. Cloudflare sees the IP of every request the way any CDN does. The "N here right now" pill uses a Cloudflare Durable Object that holds nothing but a per-session random ID for the lifetime of your tab. The /share/ Worker holds your ciphertext for up to 24 hours so the recipient can fetch it once. See <a class="ol-cyan-text" href="/transparency/">/transparency/</a> for the full sub-processor disclosure.
+      </p>
+      <p class="ol-prose">
         Asked tomorrow who downloaded One Link or who paired with whom, the honest answer is "the information lives only on the devices the people own, where it belongs." That is by design. The architecture is the policy.
       </p>
       <p class="ol-prose">
@@ -63,7 +66,7 @@
         <li>Your connections live between you and the people you chose. The relays carry sealed envelopes they cannot open.</li>
       </ul>
       <p class="ol-prose-mt">
-        Last updated 2026-05-16. <a class="ol-cyan-text" href="/security/">See the full security model</a>.
+        Last updated 2026-05-18. <a class="ol-cyan-text" href="/security/">See the full security model</a>.
       </p>
     </div>
   </section>
@@ -85,6 +88,6 @@
     </div>
   </div>
 </footer>
-<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r66"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r67"></script>
 </body>
 </html>
