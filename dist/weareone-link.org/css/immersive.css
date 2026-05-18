@@ -515,20 +515,21 @@ body.ol-mesh-page .ol-peer-overlay { display: none; }
   position: absolute;
   left: var(--x);
   top: var(--y);
-  width: 12px;
-  height: 12px;
-  margin-left: -6px;
-  margin-top: -6px;
+  width: 20px;
+  height: 20px;
+  aspect-ratio: 1 / 1;          /* hard-pin square (defense vs flex/grid distortion) */
+  margin-left: -10px;
+  margin-top: -10px;
   border-radius: 50%;
   background:
-    radial-gradient(circle at 35% 30%,
-      hsla(var(--hue), 95%, 88%, 1.0) 0%,
-      hsla(var(--hue), 90%, 65%, 0.85) 40%,
-      hsla(var(--hue), 60%, 35%, 0.25) 80%,
+    radial-gradient(circle at 50% 38%,
+      hsla(var(--hue), 95%, 92%, 1.0) 0%,
+      hsla(var(--hue), 90%, 68%, 0.92) 45%,
+      hsla(var(--hue), 70%, 38%, 0.35) 82%,
       transparent 100%);
   box-shadow:
-    0 0 12px hsla(var(--hue), 90%, 70%, 0.65),
-    0 0 36px hsla(var(--hue), 85%, 60%, 0.35);
+    0 0 14px hsla(var(--hue), 90%, 70%, 0.7),
+    0 0 38px hsla(var(--hue), 85%, 60%, 0.38);
   pointer-events: auto;
   cursor: pointer;
   transition: transform .25s var(--ol-ease-out), box-shadow .25s var(--ol-ease-out);
@@ -577,10 +578,10 @@ body.ol-mesh-page .ol-peer-overlay { display: none; }
    through to the layer below. The self dot itself has no click handler. */
 .ol-peer-dot.is-self {
   --hue: 42;
-  width: 18px;
-  height: 18px;
-  margin-left: -9px;
-  margin-top: -9px;
+  width: 28px;
+  height: 28px;
+  margin-left: -14px;
+  margin-top: -14px;
   animation: ol-self-pulse 2.0s ease-in-out infinite;
   cursor: default;
   pointer-events: none;
@@ -750,7 +751,9 @@ body.ol-mesh-page .ol-peer-overlay { display: none; }
 }
 .ol-telemetry-hint {
   position: fixed;
-  bottom: 1rem;
+  bottom: 4.5rem;              /* stacks ABOVE .ol-audio-toggle (which sits at
+                                  bottom: 1.3rem, left: 1.3rem). Was bottom:1rem,
+                                  same column as audio - they covered each other. */
   left: 1rem;
   z-index: 25;
   font-family: var(--ol-mono);
@@ -815,7 +818,9 @@ body.ol-mesh-page .ol-peer-overlay { display: none; }
   position: fixed;
   bottom: 1.3rem;
   right: 1.3rem;
-  z-index: 70;
+  z-index: 70;                  /* sits ABOVE the live-mesh widget (z-index 8).
+                                   When chat opens, JS collapses the widget so
+                                   the panel and the widget don't overlap. */
   width: min(360px, calc(100vw - 2rem));
   background: rgba(4, 6, 11, 0.95);
   border: 1px solid var(--ol-line-bright);

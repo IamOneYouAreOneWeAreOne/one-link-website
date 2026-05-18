@@ -2715,6 +2715,29 @@ async function startChatWith(peerId) {
   if (chat.active && chat.active.peerId !== peerId) {
     sendChatFrame('chat-leave', chat.active.peerId);
   }
+
+  // Open the panel IMMEDIATELY in "connecting..." state so the user sees
+  // visible feedback that their click registered (was opening AFTER the
+  // 200-400ms WASM load, which felt like clicking did nothing).
+  chat.active = {
+    peerId, state: 'connecting', hue: peerHue(peerId), label: peerLabel(peerId),
+    role: 'inviter', inviter: null, key: null, sas: null,
+  };
+  openChatPanel(peerId);
+  // Collapse the live-mesh widget so the chat panel (same bottom-right
+  // corner) isn't visually layered under the widget.
+  const meshWidget = document.getElementById('ol-peer-overlay');
+  if (meshWidget && !meshWidget.classList.contains('is-collapsed')) {
+    meshWidget.classList.add('is-collapsed');
+    const toggle = meshWidget.querySelector('.ol-mesh-toggle');
+    if (toggle) {
+      toggle.setAttribute('aria-expanded', 'false');
+      toggle.setAttribute('aria-label', 'Expand live mesh widget');
+      toggle.innerHTML = '<span aria-hidden="true">+</span>';
+    }
+    try { sessionStorage.setItem('ol.mesh.collapsed', '1'); } catch {}
+  }
+
   // Inviter side. Build a real ol_pair_qr Invite + send invite bytes
   // alongside the chat-request so the recipient can scan immediately
   // and complete a real handshake instead of agreeing in plaintext.
@@ -2724,14 +2747,15 @@ async function startChatWith(peerId) {
     inviter = new m.OlInviter(1_900_000_000, `chat:${presence.selfId?.slice(0, 8) || 'anon'}`);
   } catch (e) {
     console.debug('[chat] inviter init failed', e?.message);
+    setChatState('crypto unavailable', 'is-closed');
     return;
   }
-  chat.active = {
-    peerId, state: 'requesting', hue: peerHue(peerId), label: peerLabel(peerId),
-    role: 'inviter', inviter, key: null, sas: null,
-  };
-  openChatPanel(peerId);
-  sendChatFrame('chat-request', peerId, { invite_hex: hexEncode(inviter.inviteBytes) });
+  chat.active.inviter = inviter;
+  chat.active.state = 'requesting';
+  setChatState('asking', 'is-pending');
+  if (!sendChatFrame('chat-request', peerId, { invite_hex: hexEncode(inviter.inviteBytes) })) {
+    setChatState('offline (presence socket down)', 'is-closed');
+  }
 }
 
 async function handleChatRequest(fromId, msg) {
