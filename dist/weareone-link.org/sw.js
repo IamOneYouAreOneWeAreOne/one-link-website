@@ -29,7 +29,7 @@
    License: AGPL-3.0-or-later
    ============================================================================ */
 
-const SW_VERSION = '0.21.0-alpha.0+r45';
+const SW_VERSION = '0.21.0-alpha.0+r46';
 const CACHE_NAME  = `ol-cache-${SW_VERSION}`;
 const META_DB     = 'ol-sw-meta';
 
@@ -142,18 +142,23 @@ self.addEventListener('fetch', (event) => {
       return cached || new Response('offline', { status: 503 });
     }
 
-    // 2. Static assets: cache-first with byte-hash integrity verification.
+    // 2. Static assets: cache-first WITH SYNCHRONOUS integrity verification.
+    //    If the cached bytes pass the manifest hash check, serve them.
+    //    If they fail (stale-cache after a deploy), evict + refetch INLINE
+    //    so the visitor never sees a broken page from a stale asset.
     const cached = await cache.match(req);
     if (cached) {
-      verifyAgainstManifest(cached.clone(), req.url).catch(async (err) => {
-        // mismatch -> evict + refetch
+      try {
+        await verifyAgainstManifest(cached.clone(), req.url);
+        return cached;          // fresh enough, serve from cache
+      } catch (err) {
+        console.warn('[sw] cached integrity mismatch, evicting + refetching', req.url, err.message);
         await cache.delete(req);
-        console.warn('[sw] integrity mismatch, evicting', req.url, err.message);
-      });
-      return cached;
+        // fall through to network refetch below
+      }
     }
 
-    // 3. First-time fetch.
+    // 3. First-time fetch OR refetch after stale eviction.
     try {
       const fresh = await fetch(req);
       if (fresh && fresh.ok) cache.put(req, fresh.clone()).catch(() => {});

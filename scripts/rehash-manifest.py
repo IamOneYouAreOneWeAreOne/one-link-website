@@ -55,19 +55,12 @@ def main() -> int:
     dist = site_root / "dist" / "weareone-link.org"
     manifest_path = dist / "manifest.json"
 
-    # ---- Stage 1: SRI injection (mutates HTML) -------------------------
-    sri_script = site_root / "scripts" / "inject-sri.py"
-    if sri_script.exists():
-        print(":: stage 1: chaining into inject-sri.py")
-        rc = subprocess.run(
-            [sys.executable, str(sri_script)], cwd=str(site_root)
-        ).returncode
-        if rc != 0:
-            print(f"!! inject-sri.py exited {rc}, aborting before rehash")
-            return rc
-
+    # ---- Stage 1: SRI injection DISABLED (was the cause of stale-cache
+    #               unstyled-page bugs - the SW + signed manifest provides
+    #               a stronger integrity guarantee that doesn't break when
+    #               the browser cache lags a release behind).
     # ---- Stage 2: bump version + sync sw.js BEFORE we hash --------------
-    print(":: stage 2: rehashing manifest")
+    print(":: stage 1: rehashing manifest (SRI step skipped on purpose)")
     with manifest_path.open("r", encoding="utf-8") as f:
         manifest = json.load(f)
 
