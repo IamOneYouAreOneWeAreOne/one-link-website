@@ -515,21 +515,24 @@ body.ol-mesh-page .ol-peer-overlay { display: none; }
   position: absolute;
   left: var(--x);
   top: var(--y);
-  width: 20px;
-  height: 20px;
+  width: 14px;
+  height: 14px;
   aspect-ratio: 1 / 1;          /* hard-pin square (defense vs flex/grid distortion) */
-  margin-left: -10px;
-  margin-top: -10px;
+  margin-left: -7px;
+  margin-top: -7px;
   border-radius: 50%;
+  /* Symmetric radial gradient — center highlight, fades evenly outward.
+     Was using `50% 38%` which gave a 3D-ball look but read as egg-shaped
+     when the box-shadow added vertical glow asymmetry. */
   background:
-    radial-gradient(circle at 50% 38%,
+    radial-gradient(circle at 50% 50%,
       hsla(var(--hue), 95%, 92%, 1.0) 0%,
-      hsla(var(--hue), 90%, 68%, 0.92) 45%,
-      hsla(var(--hue), 70%, 38%, 0.35) 82%,
+      hsla(var(--hue), 90%, 70%, 0.94) 40%,
+      hsla(var(--hue), 70%, 45%, 0.55) 78%,
       transparent 100%);
   box-shadow:
-    0 0 14px hsla(var(--hue), 90%, 70%, 0.7),
-    0 0 38px hsla(var(--hue), 85%, 60%, 0.38);
+    0 0 10px hsla(var(--hue), 90%, 70%, 0.6),
+    0 0 24px hsla(var(--hue), 85%, 60%, 0.28);
   pointer-events: auto;
   cursor: pointer;
   transition: transform .25s var(--ol-ease-out), box-shadow .25s var(--ol-ease-out);
@@ -578,10 +581,10 @@ body.ol-mesh-page .ol-peer-overlay { display: none; }
    through to the layer below. The self dot itself has no click handler. */
 .ol-peer-dot.is-self {
   --hue: 42;
-  width: 28px;
-  height: 28px;
-  margin-left: -14px;
-  margin-top: -14px;
+  width: 18px;
+  height: 18px;
+  margin-left: -9px;
+  margin-top: -9px;
   animation: ol-self-pulse 2.0s ease-in-out infinite;
   cursor: default;
   pointer-events: none;

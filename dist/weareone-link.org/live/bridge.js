@@ -2746,7 +2746,17 @@ async function startChatWith(peerId) {
     const m = await ensurePqModule();
     inviter = new m.OlInviter(1_900_000_000, `chat:${presence.selfId?.slice(0, 8) || 'anon'}`);
   } catch (e) {
-    console.debug('[chat] inviter init failed', e?.message);
+    const errMsg = (e && (e.message || String(e))) || 'unknown error';
+    console.warn('[chat] inviter init failed:', errMsg, e);
+    // Surface the actual error in the panel + log it so we know what to fix
+    // instead of a vague "crypto unavailable" with no signal to the user.
+    const els = chatPanelEls();
+    if (els.log) {
+      const div = document.createElement('div');
+      div.style.cssText = 'color: var(--ol-rose); font-family: var(--ol-mono); font-size: 0.78rem; padding: 0.6rem 0.2rem;';
+      div.textContent = `crypto init error: ${errMsg.slice(0, 220)}`;
+      els.log.appendChild(div);
+    }
     setChatState('crypto unavailable', 'is-closed');
     return;
   }
