@@ -113,6 +113,26 @@ const PRIVACY_HEADERS = {
 // contradicts the "we collect nothing" doctrine even though we did not
 // ask for it. Override with an empty NEL policy so the browser disables
 // reporting for this origin entirely.
+// Content directories that serve an index.html. Used to issue 301 on the
+// no-trailing-slash form (the assets binding would otherwise 307).
+const CONTENT_DIRS = new Set([
+  "/about", "/builders", "/download", "/features", "/how-it-works",
+  "/mesh", "/one", "/privacy", "/security", "/share", "/terms",
+]);
+
+// Permanent redirect helper that strips Cloudflare auto-injected telemetry
+// headers from the response. Used everywhere we 301 in this worker.
+function permanentRedirect(location) {
+  return new Response(null, {
+    status: 301,
+    headers: {
+      Location: location,
+      "Cache-Control": "public, max-age=31536000",
+      ...NEL_OPT_OUT_HEADERS,
+    },
+  });
+}
+
 const NEL_OPT_OUT_HEADERS = {
   "NEL": '{"report_to":"","max_age":0,"success_fraction":0,"failure_fraction":0}',
   "Report-To": '{"group":"","max_age":0,"endpoints":[]}',
@@ -128,6 +148,20 @@ function applyHeaders(response) {
   // anything, so we explicitly stomp them).
   for (const [k, v] of Object.entries(NEL_OPT_OUT_HEADERS)) {
     headers.set(k, v);
+  }
+  // HTML pages have no cross-origin-fetch use case (the SRI-with-crossorigin
+  // dance only applies to <script integrity=...> + <link integrity=...>
+  // tags, not to the HTML document that hosts them). Drop the wildcard
+  // CORS header for text/html responses so an attacker on origin X can't
+  // fetch+parse our HTML in their tab. Also bump cache-control so the CDN
+  // can actually serve a HIT instead of must-revalidating every request.
+  const ct = (headers.get("Content-Type") || "").toLowerCase();
+  if (ct.includes("text/html")) {
+    headers.delete("Access-Control-Allow-Origin");
+    headers.set(
+      "Cache-Control",
+      "public, max-age=0, must-revalidate, s-maxage=300, stale-while-revalidate=86400"
+    );
   }
   return new Response(response.body, {
     status: response.status,
@@ -615,14 +649,33 @@ export default {
       // Build the response manually rather than Response.redirect() so we can
       // overwrite Cloudflare's auto-injected NEL/Report-To telemetry headers
       // on the redirect itself (privacy-by-construction also covers redirects).
-      return new Response(null, {
-        status: 301,
-        headers: {
-          Location: url.toString(),
-          "Cache-Control": "public, max-age=31536000",
-          ...NEL_OPT_OUT_HEADERS,
-        },
-      });
+      return permanentRedirect(url.toString());
+    }
+
+    // Canonical-case redirect: every path on this site is lowercase. If a
+    // visitor (or a sloppy link in someone else's post) hits an uppercased
+    // variant like /Features/, send them to the canonical lowercase path.
+    // Skip /api/ + /share/<id> since their case-sensitivity is genuine.
+    if (/[A-Z]/.test(path) && !path.startsWith("/api/") && !path.startsWith("/share/")) {
+      url.pathname = path.toLowerCase();
+      return permanentRedirect(url.toString());
+    }
+
+    // Trailing-slash normalization on content directories. The assets binding
+    // would otherwise emit a 307 — and Google treats 301 as a stronger
+    // canonical signal than 307, so route the small fixed set of content
+    // dirs through a 301 first.
+    if (CONTENT_DIRS.has(path)) {
+      url.pathname = path + "/";
+      return permanentRedirect(url.toString());
+    }
+
+    // /favicon.ico is conventional; the page <head> already references the
+    // canonical /images/favicon.ico, but link-preview crawlers + browser
+    // address-bar guesses hit the apex /favicon.ico. 301 there.
+    if (path === "/favicon.ico") {
+      url.pathname = "/images/favicon.ico";
+      return permanentRedirect(url.toString());
     }
 
     if (path === "/api/health") return health(env);
@@ -636,7 +689,7 @@ export default {
     if (attestMatch) return attestation(env, attestMatch[1], request);
 
     const downloadMatch = path.match(/^\/download\/([a-z]+)$/);
-    if (downloadMatch && request.method === "GET")
+    if (downloadMatch && (request.method === "GET" || request.method === "HEAD"))
       return download(env, downloadMatch[1], request);
 
     // ---------------------------------------------------------------

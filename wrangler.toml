@@ -11,6 +11,8 @@ main = "src/worker.js"
 directory = "./dist/weareone-link.org"
 binding = "ASSETS"
 run_worker_first = true
+# Serve the designed /404.html (with 404 status) on any unmatched path.
+not_found_handling = "404-page"
 
 # =============================================================================
 # DURABLE OBJECTS

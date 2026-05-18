@@ -8,7 +8,8 @@
   <title>One Link - we are one</title>
   <meta name="description" content="Send anything. To anyone. From any device. No accounts. No servers. No middlemen. Only you and they can read it. Free forever.">
   <link rel="canonical" href="https://weareone-link.org/">
-  <meta name="theme-color" content="#04060b">
+  <meta name="theme-color" content="#04060b" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#f0f4f8" media="(prefers-color-scheme: light)">
   <meta name="color-scheme" content="dark">
   <meta name="robots" content="index, follow">
 
@@ -19,6 +20,9 @@
   <meta property="og:url" content="https://weareone-link.org/">
   <meta property="og:image" content="https://weareone-link.org/og/one-link.png">
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="One Link">
+  <meta name="twitter:description" content="Send anything. To anyone. Only you and they can read it.">
+  <meta name="twitter:image" content="https://weareone-link.org/og/one-link.png">
 
   <!-- Same ONE Glyph the One Link app ships with. -->
   <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
@@ -32,6 +36,7 @@
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
 
+  <link rel="modulepreload" href="/live/bridge.js">
   <link rel="stylesheet" href="/css/one-link.css">
   <link rel="stylesheet" href="/css/immersive.css">
 
@@ -114,7 +119,7 @@
     </a>
     <input type="checkbox" id="nav-toggle" class="nav-toggle-input" aria-hidden="true">
     <label for="nav-toggle" class="nav-toggle" aria-label="Open navigation" role="button" tabindex="0">&#9776;</label>
-    <nav class="site-nav" aria-label="Main">
+    <nav class="site-nav" id="primary-nav" aria-label="Main">
       <a href="/how-it-works/">How it works</a>
       <a href="/features/">Features</a>
       <a href="/security/">Security</a>
@@ -307,7 +312,7 @@
         </p>
       </div>
       <div>
-        <h4>Network</h4>
+        <h3>Network</h3>
         <ul>
           <li><a href="/how-it-works/">How it works</a></li>
           <li><a href="/features/">Features</a></li>
@@ -315,7 +320,7 @@
         </ul>
       </div>
       <div>
-        <h4>For you</h4>
+        <h3>For you</h3>
         <ul>
           <li><a href="/download/">Get One Link</a></li>
           <li><a href="/security/">Security</a></li>
@@ -323,7 +328,7 @@
         </ul>
       </div>
       <div>
-        <h4>For builders</h4>
+        <h3>For builders</h3>
         <ul>
           <li><a href="/builders/">Protocol &amp; source</a></li>
           <li><a href="/download/source" rel="noopener">Source archive</a></li>

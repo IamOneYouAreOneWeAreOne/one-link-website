@@ -303,6 +303,15 @@ async function startCoherenceField() {
   if (!canvas) return;
   if (prefersReducedMotion) return; // honor user; CSS fallback stays in.
 
+  // Gate the shader on desktop + non-data-saver. The Helmholtz solver pegs
+  // a single CPU core on mid-range phones for the JS fallback path, and even
+  // the WebGPU path is meaningful battery on a phone in your pocket. Phones
+  // and bandwidth-conscious users get the CSS gradient backdrop instead.
+  const isCapable = window.matchMedia &&
+    window.matchMedia('(min-width: 720px) and (pointer: fine)').matches;
+  const saveData = navigator.connection && navigator.connection.saveData;
+  if (!isCapable || saveData) return;
+
   canvas.hidden = false;
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
   const resize = () => {
@@ -523,6 +532,10 @@ async function startCoherenceFieldWebGPU(canvas) {
     rpass.end();
 
     device.queue.submit([encoder.finish()]);
+    // Skip the JS-side telemetry callback when the tab is hidden — the
+    // browser throttles rAF then, but skipping the function call avoids
+    // any work an observer might schedule.
+    if (document.hidden) { requestAnimationFrame(frame); return; }
     // Hook telemetry with whatever we know JS-side (the GPU state lives
     // in the storage buffer; full readback would be an extra round-trip
     // we skip per-frame for perf).
@@ -603,6 +616,7 @@ function startCoherenceField2D(canvas) {
     ctx.imageSmoothingQuality = 'high';
     ctx.drawImage(off, 0, 0, w, h);
 
+    if (document.hidden) { requestAnimationFrame(frame); return; }
     requestAnimationFrame(frame);
   }
 
@@ -3234,6 +3248,29 @@ async function startCapAdvertSync() {
 }
 
 // ---------------------------------------------------------------------------
+// Mobile-nav toggle (a real <button aria-expanded>, not a label-for-checkbox)
+// ---------------------------------------------------------------------------
+function wireNavToggle() {
+  const btn = document.getElementById('nav-toggle');
+  const nav = document.getElementById('primary-nav');
+  if (!btn || !nav || btn.tagName !== 'BUTTON') return;
+  const setOpen = (open) => {
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    btn.setAttribute('aria-label', open ? 'Close navigation' : 'Open navigation');
+  };
+  btn.addEventListener('click', () => {
+    setOpen(btn.getAttribute('aria-expanded') !== 'true');
+  });
+  // Close on Escape; close when a nav link is followed.
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && btn.getAttribute('aria-expanded') === 'true') setOpen(false);
+  });
+  nav.addEventListener('click', (e) => {
+    if (e.target.closest('a')) setOpen(false);
+  });
+}
+
+// ---------------------------------------------------------------------------
 // boot
 // ---------------------------------------------------------------------------
 (async function main() {
@@ -3241,6 +3278,7 @@ async function startCapAdvertSync() {
   olOpLogEnsureDom();
   olOpLog('site loaded', performance.now() - (performance.timeOrigin ? 0 : performance.now()), 'ok');
 
+  wireNavToggle();
   rewriteDownloadButton();
   await olTimed('coherence field init', () => startCoherenceField());
   const meshVizApi = startMeshViz();

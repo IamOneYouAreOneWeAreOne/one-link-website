@@ -13,15 +13,24 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
+  <link rel="modulepreload" href="/live/bridge.js">
   <link rel="stylesheet" href="/css/one-link.css">
-  <meta name="theme-color" content="#04060b">
+  <meta name="theme-color" content="#04060b" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#f0f4f8" media="(prefers-color-scheme: light)">
 </head>
 <body>
+<a href="#main" class="skip-link">Skip to content</a>
 <canvas class="ol-field-canvas" aria-hidden="true" hidden></canvas>
 <header class="site-header" role="banner">
   <div class="container">
     <a href="/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
-    <nav class="site-nav" aria-label="Main">
+    <button type="button" id="nav-toggle" class="nav-toggle" aria-label="Open navigation" aria-expanded="false" aria-controls="primary-nav">&#9776;</button>
+    <nav class="site-nav" id="primary-nav" aria-label="Main">
+      <a href="/how-it-works/">How it works</a>
+      <a href="/features/">Features</a>
+      <a href="/security/">Security</a>
+      <a href="/share/">Share</a>
+      <a href="/one/">One</a>
       <a href="/download/" class="cta-get">Get One Link</a>
     </nav>
   </div>
@@ -31,14 +40,62 @@
     <div class="container">
       <span class="we-are-one">404</span>
       <h1>Nothing here. <span class="grad">Try the network.</span></h1>
-      <p class="lede">This page does not exist. The path you followed is gone or never was. The good news is the rest of One Link still works.</p>
+      <p class="lede">This page does not exist. The path you followed is gone or never was. The rest of One Link still works.</p>
       <div class="cta-row">
         <a href="/" class="btn btn-primary btn-large">Go home <span class="arr">&rarr;</span></a>
         <a href="/download/" class="btn btn-ghost btn-large">Get One Link</a>
       </div>
     </div>
   </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Where you might be headed</span>
+      <h2>Pick a direction.</h2>
+      <div class="ol-grid ol-grid-2">
+        <article class="ol-tile">
+          <h3>Get One Link</h3>
+          <p>Free, signed binaries for every platform plus a one-click source build.</p>
+          <a href="/download/" class="ol-tile-link">Download <span class="arr">&rarr;</span></a>
+        </article>
+        <article class="ol-tile">
+          <h3>How it works</h3>
+          <p>Pair, share, route. Three primitives, post-quantum-hybrid by default.</p>
+          <a href="/how-it-works/" class="ol-tile-link">Read the architecture <span class="arr">&rarr;</span></a>
+        </article>
+        <article class="ol-tile">
+          <h3>The live mesh</h3>
+          <p>Every active One Link node on a coherence-field map updating in real time.</p>
+          <a href="/mesh/" class="ol-tile-link">See the mesh <span class="arr">&rarr;</span></a>
+        </article>
+        <article class="ol-tile">
+          <h3>The source</h3>
+          <p>Every protocol, every crate, every shader. AGPL-3.0. Fork it, audit it, run a relay.</p>
+          <a href="/builders/" class="ol-tile-link">Builders &amp; protocol <span class="arr">&rarr;</span></a>
+        </article>
+      </div>
+    </div>
+  </section>
 </main>
+
+<footer class="site-footer" role="contentinfo">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a href="/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
+        <p class="footer-tag">A free, private network for messages, files, and devices. Owned by no one. Belongs to everyone.</p>
+      </div>
+      <div><h3>Network</h3><ul><li><a href="/how-it-works/">How it works</a></li><li><a href="/features/">Features</a></li><li><a href="/mesh/">Live mesh</a></li></ul></div>
+      <div><h3>For you</h3><ul><li><a href="/download/">Get One Link</a></li><li><a href="/security/">Security</a></li><li><a href="/about/">About</a></li></ul></div>
+      <div><h3>For builders</h3><ul><li><a href="/builders/">Protocol &amp; source</a></li><li><a href="/download/source" rel="noopener">Source archive</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <span class="built-by">&copy; 2026 One Link contributors. <a href="/terms/">AGPL-3.0</a>. <a href="/security/">No tracking.</a> <a href="mailto:weareone@oneunity.earth">weareone@oneunity.earth</a></span>
+      <span class="built-by">we are one</span>
+    </div>
+  </div>
+</footer>
+
 <script type="module" src="/live/bridge.js"></script>
 </body>
 </html>

@@ -14,8 +14,10 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
+  <link rel="modulepreload" href="/live/bridge.js">
   <link rel="stylesheet" href="/css/one-link.css">
-  <meta name="theme-color" content="#04060b">
+  <meta name="theme-color" content="#04060b" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#f0f4f8" media="(prefers-color-scheme: light)">
 </head>
 <body>
 <a href="#main" class="skip-link">Skip to content</a>
@@ -23,9 +25,8 @@
 <header class="site-header" role="banner">
   <div class="container">
     <a href="/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
-    <input type="checkbox" id="nav-toggle" class="nav-toggle-input">
-    <label for="nav-toggle" class="nav-toggle" aria-label="Open navigation" role="button" tabindex="0">&#9776;</label>
-    <nav class="site-nav" aria-label="Main">
+    <button type="button" id="nav-toggle" class="nav-toggle" aria-label="Open navigation" aria-expanded="false" aria-controls="primary-nav">&#9776;</button>
+    <nav class="site-nav" id="primary-nav" aria-label="Main">
       <a href="/how-it-works/">How it works</a>
       <a href="/features/">Features</a>
       <a href="/security/">Security</a>

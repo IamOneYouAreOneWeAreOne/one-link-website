@@ -23,7 +23,7 @@
   /* Text */
   --ol-text: #f0f4f8;
   --ol-text-soft: #b6c0d0;
-  --ol-text-dim: #6c7889;
+  --ol-text-dim: #7e8a9c;
 
   /* Electric accents */
   --ol-cyan: #6ef0f4;     /* primary trust */
@@ -93,9 +93,12 @@ body {
     radial-gradient(1000px 700px at 82% 88%, rgba(155, 140, 255, 0.06) 0%, transparent 60%),
     var(--ol-bg);
   color: var(--ol-text);
-  min-height: 100vh;
+  min-height: 100vh;        /* fallback */
+  min-height: 100svh;       /* small viewport: avoids iOS Safari URL-bar clip */
   overflow-x: hidden;
   position: relative;
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
 }
 
 ::selection { background: var(--ol-cyan); color: var(--ol-bg); }
@@ -238,7 +241,12 @@ main { position: relative; z-index: 1; }
 }
 .site-nav a:not(.cta-get):hover::after { right: 0; }
 .site-nav a:hover { color: var(--ol-text); }
-.site-nav a:focus-visible { color: var(--ol-text); outline: none; }
+.site-nav a:focus-visible {
+  color: var(--ol-text);
+  outline: 2px solid var(--ol-cyan);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
 
 .site-nav a.cta-get {
   color: var(--ol-bg);
@@ -256,18 +264,22 @@ main { position: relative; z-index: 1; }
     0 12px 36px rgba(110, 240, 244, 0.32);
 }
 
-/* Mobile nav (CSS-only) */
-.nav-toggle-input { display: none; }
+/* Mobile nav (real <button aria-expanded>) */
+.nav-toggle-input { display: none; }  /* legacy fallback; the button drives now */
 .nav-toggle {
   display: none;
   cursor: pointer;
   color: var(--ol-text);
   font-size: 1.4rem;
   user-select: none;
+  background: transparent;
+  border: 1px solid var(--ol-line);
+  border-radius: 8px;
+  padding: 6px 12px;
 }
 
 @media (max-width: 760px) {
-  .nav-toggle { display: inline-block; }
+  .nav-toggle { display: inline-flex; align-items: center; justify-content: center; }
   .site-nav {
     position: absolute;
     top: 100%;
@@ -293,6 +305,8 @@ main { position: relative; z-index: 1; }
     text-align: center;
     border-bottom: none;
   }
+  /* Open state driven by aria-expanded on the button (real a11y semantics). */
+  .nav-toggle[aria-expanded="true"] ~ .site-nav,
   .nav-toggle-input:checked ~ .site-nav { transform: translateY(0); }
 }
 
@@ -664,11 +678,16 @@ main { position: relative; z-index: 1; }
   max-width: 640px;
 }
 .ol-drop-zone:hover,
-.ol-drop-zone:focus-visible,
 .ol-drop-zone.is-hover {
   background: rgba(110, 240, 244, 0.06);
   border-color: var(--ol-cyan);
-  outline: none;
+  transform: translateY(-1px);
+}
+.ol-drop-zone:focus-visible {
+  background: rgba(110, 240, 244, 0.06);
+  border-color: var(--ol-cyan);
+  outline: 2px solid var(--ol-cyan);
+  outline-offset: 4px;
   transform: translateY(-1px);
 }
 .ol-drop-icon {
@@ -717,6 +736,11 @@ main { position: relative; z-index: 1; }
   min-width: 0;
 }
 .ol-share-url:focus { outline: none; border-color: var(--ol-cyan); }
+.ol-share-url:focus-visible {
+  outline: 2px solid var(--ol-cyan);
+  outline-offset: 2px;
+  border-color: var(--ol-cyan);
+}
 .ol-share-meta {
   margin-top: 0.7rem;
   font-size: 0.78rem;
@@ -1174,4 +1198,98 @@ main { position: relative; z-index: 1; }
     display: none;
   }
   body { background: #fff; color: #000; }
+}
+
+/* =============================================================================
+   ACCESSIBILITY + MOBILE HARDENING  (post-audit pass)
+   ========================================================================== */
+
+/* Touch-target floor. WCAG 2.5.5 + Apple HIG + Material both land on 44x44. */
+.site-nav a,
+.ol-platform-row,
+.ol-tab-pair-link,
+.nav-toggle,
+.ol-peer-dot,
+.btn,
+.cta-get,
+.ol-chat-send,
+.ol-chat-close,
+.ol-chat-accept,
+.ol-chat-decline {
+  min-height: 44px;
+  touch-action: manipulation;
+}
+.ol-chat-send,
+.ol-chat-close { min-width: 44px; }
+
+/* Tablet breakpoint (iPad portrait sat in a no-man's land between 760 and ∞). */
+@media (min-width: 761px) and (max-width: 1024px) {
+  .container { max-width: 92%; }
+  .hero h1 { font-size: clamp(2.4rem, 5.4vw, 4rem); }
+  .ol-grid-3 { grid-template-columns: 1fr 1fr; }
+  .ol-grid-2 { gap: 2rem; }
+}
+
+/* Comparison table escape hatch on small screens. */
+@media (max-width: 720px) {
+  .ol-compare-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: var(--ol-radius-sm);
+    box-shadow: inset -16px 0 14px -14px rgba(110, 240, 244, 0.18);
+  }
+}
+
+/* Windows High-Contrast Mode + user contrast preference: don't lose CTAs to
+   gradient-clip. forced-colors overrides everything: use system tokens. */
+@media (forced-colors: active) {
+  .btn,
+  .btn-primary,
+  .btn-ghost,
+  .cta-get,
+  .site-nav a.cta-get {
+    background: ButtonFace !important;
+    color: ButtonText !important;
+    border: 1px solid ButtonText !important;
+    box-shadow: none !important;
+  }
+  .hero h1 .grad,
+  .grad {
+    background: none !important;
+    -webkit-text-fill-color: CanvasText !important;
+    color: CanvasText !important;
+  }
+  :focus-visible {
+    outline: 2px solid Highlight !important;
+    outline-offset: 2px !important;
+  }
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --ol-text-soft: #d7dde7;
+    --ol-text-dim: #b6c0d0;
+    --ol-line: rgba(150, 175, 200, 0.22);
+    --ol-line-strong: rgba(150, 175, 200, 0.4);
+  }
+  .btn,
+  .ol-tile,
+  .site-header {
+    border-color: var(--ol-text-soft) !important;
+  }
+}
+
+/* Peer-dot focus state: was identical to :hover, so keyboard users couldn't
+   tell which dot they had landed on. Distinct ring. */
+.ol-peer-dot:focus-visible {
+  outline: 2px solid var(--ol-cyan);
+  outline-offset: 3px;
+  border-radius: 50%;
+}
+
+/* Hide scrollbar on hero CTA hint row but keep keyboard visibility. */
+.ol-hero-cta-hint:focus-visible {
+  outline: 2px solid var(--ol-cyan);
+  outline-offset: 2px;
+  border-radius: 4px;
 }
