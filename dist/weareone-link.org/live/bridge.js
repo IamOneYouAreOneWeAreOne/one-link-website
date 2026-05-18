@@ -1020,7 +1020,20 @@ function wireTabPairButton() {
 
   link.addEventListener('click', (ev) => {
     ev.preventDefault();
-    runTabPairAsInviter(result);
+    // CRITICAL: window.open must be called SYNCHRONOUSLY inside the click
+    // handler to stay inside the user-gesture context. Any `await` before
+    // it lets the browser silently block the popup. Open the tab first
+    // (which is fine — the second tab waits for the BroadcastChannel msg
+    // before doing anything), then load WASM and start the handshake.
+    const second = window.open('/?pair=1', '_blank');
+    if (!second) {
+      if (result) {
+        result.hidden = false;
+        result.innerHTML = `<span style="color: var(--ol-rose);">could not open second tab (popup blocked). Try cmd/ctrl-click the link, or allow popups for this site, then click again.</span>`;
+      }
+      return;
+    }
+    runTabPairAsInviter(result, second);
   });
 
   // If we landed on the page with ?pair=1, this tab is the Scanner.
@@ -1030,7 +1043,7 @@ function wireTabPairButton() {
   }
 }
 
-async function runTabPairAsInviter(resultEl) {
+async function runTabPairAsInviter(resultEl, secondTab) {
   if (resultEl) {
     resultEl.hidden = false;
     resultEl.innerHTML = '<span style="color: var(--ol-text-soft);">opening second tab and waiting for handshake...</span>';
@@ -1041,6 +1054,7 @@ async function runTabPairAsInviter(resultEl) {
     await wasmModule.default({ module_or_path: '/live/wasm/ol_pair_qr_bg.wasm' });
   } catch (e) {
     if (resultEl) resultEl.innerHTML = `<span style="color: var(--ol-rose);">WASM unavailable: ${escapeHtml(e?.message || String(e))}</span>`;
+    if (secondTab && !secondTab.closed) try { secondTab.close(); } catch {}
     return;
   }
 
@@ -1049,13 +1063,6 @@ async function runTabPairAsInviter(resultEl) {
   const inviteBytes = inviter.inviteBytes;
 
   const channel = new BroadcastChannel(TAB_PAIR_CHANNEL);
-
-  // Open the scanner tab.
-  const second = window.open('/?pair=1', '_blank');
-  if (!second) {
-    if (resultEl) resultEl.innerHTML = `<span style="color: var(--ol-rose);">could not open second tab (popup blocked?). Try cmd/ctrl-click the link.</span>`;
-    return;
-  }
 
   const t0 = performance.now();
 
