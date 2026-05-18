@@ -572,7 +572,9 @@ body.ol-mesh-page .ol-peer-overlay { display: none; }
   .ol-peer-dot.ol-field-ripple { animation: none; }
 }
 
-/* self dot: amber + brighter + crown */
+/* self dot: amber + brighter + crown. pointer-events:none so the self
+   dot never blocks clicks landing on adjacent peer dots — clicks pass
+   through to the layer below. The self dot itself has no click handler. */
 .ol-peer-dot.is-self {
   --hue: 42;
   width: 18px;
@@ -581,6 +583,11 @@ body.ol-mesh-page .ol-peer-overlay { display: none; }
   margin-top: -9px;
   animation: ol-self-pulse 2.0s ease-in-out infinite;
   cursor: default;
+  pointer-events: none;
+  z-index: 2;
+}
+.ol-peer-dot:not(.is-self) {
+  z-index: 3;    /* peer dots float ABOVE self dot for click priority */
 }
 .ol-peer-dot.is-self::after {
   content: "you";

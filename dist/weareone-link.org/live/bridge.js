@@ -2422,13 +2422,18 @@ function renderPeerDots() {
 
   const place = (id, p, isSelf) => {
     const h = simpleHash(id);
-    // Deterministic xy jitter inside the widget bounds so co-located
-    // peers fan out into a constellation rather than collapsing to one.
-    const jx = ((h & 0xffff) / 0xffff - 0.5) * 0.6;       // strong intra-bucket spread
-    const jy = (((h >> 16) & 0xffff) / 0xffff - 0.5) * 0.6;
+    // Deterministic xy jitter inside the widget bounds so co-located peers
+    // fan out into a constellation rather than collapsing to one tap target.
+    // The spread is larger when there are few peers (so each dot is its own
+    // click area), tightening as N grows past a dozen.
+    const looseness = totalPeers <= 8 ? 1.0
+                    : totalPeers <= 24 ? 0.7
+                    : 0.45;
+    const jx = ((h & 0xffff) / 0xffff - 0.5) * 1.6;
+    const jy = (((h >> 16) & 0xffff) / 0xffff - 0.5) * 1.6;
 
-    const rawX = (p.lng + jx * 0.3) * 100;              // 30% of widget width worth of jitter
-    const rawY = ((1 - p.lat) + jy * 0.3) * 100;
+    const rawX = (p.lng + jx * 0.55 * looseness) * 100;   // up to ~88% widget width
+    const rawY = ((1 - p.lat) + jy * 0.55 * looseness) * 100;
     const xPct = Math.max(xMin, Math.min(xMax, rawX * (xMax - xMin) / 100 + xMin * 0.0));
     const yPct = Math.max(yMin, Math.min(yMax, rawY * (yMax - yMin) / 100 + yMin * 0.0));
 
