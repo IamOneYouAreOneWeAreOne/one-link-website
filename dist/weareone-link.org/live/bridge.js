@@ -2600,6 +2600,48 @@ async function openChatText(key, iv_b64, ct_b64) {
   return new TextDecoder().decode(pt);
 }
 
+function mountChatPanelIfMissing() {
+  // The live-mesh widget is on every page (after the immersive.css universal
+  // load fix). But the chat panel + toast HTML used to live only on the home
+  // and /mesh/ pages, which meant clicking a peer dot on /security/, /share/,
+  // /features/, etc. silently returned (panel === null inside openChatPanel).
+  // Inject the markup once at boot if it's missing, so chat works everywhere.
+  if (document.getElementById('ol-chat-panel')) return;
+  const wrap = document.createElement('div');
+  wrap.innerHTML = `
+<div class="ol-ping-toast" id="ol-ping-toast" aria-live="polite" hidden>
+  <span class="ol-ping-glyph" aria-hidden="true">⚓</span>
+  <span class="ol-ping-text">someone said hello</span>
+</div>
+<div class="ol-chat-panel" id="ol-chat-panel" hidden role="dialog" aria-label="Anonymous stranger chat">
+  <div class="ol-chat-head">
+    <span class="ol-chat-dot" id="ol-chat-dot"></span>
+    <span class="ol-chat-title" id="ol-chat-title">stranger</span>
+    <span class="ol-chat-state" id="ol-chat-state">connecting</span>
+    <button type="button" class="ol-chat-close" id="ol-chat-close" aria-label="Close chat">&times;</button>
+  </div>
+  <div class="ol-chat-log" id="ol-chat-log" aria-live="polite"></div>
+  <form class="ol-chat-form" id="ol-chat-form">
+    <input type="text" id="ol-chat-input" maxlength="280" placeholder="say something kind..." autocomplete="off" aria-label="Message">
+    <button type="submit" class="ol-chat-send" aria-label="Send">&rarr;</button>
+  </form>
+  <div class="ol-chat-foot">ephemeral &middot; anonymous &middot; end-to-end encrypted</div>
+</div>
+<div class="ol-chat-request-toast" id="ol-chat-request-toast" hidden role="alert">
+  <div class="ol-chat-request-dot" id="ol-chat-request-dot"></div>
+  <div class="ol-chat-request-body">
+    <strong>someone wants to talk</strong>
+    <div class="ol-chat-request-detail">stranger from <span id="ol-chat-request-where">somewhere</span></div>
+  </div>
+  <div class="ol-chat-request-actions">
+    <button type="button" class="ol-chat-decline" id="ol-chat-decline">ignore</button>
+    <button type="button" class="ol-chat-accept" id="ol-chat-accept">say hi</button>
+  </div>
+</div>`;
+  // Move all generated children into <body> so they're top-level.
+  while (wrap.firstChild) document.body.appendChild(wrap.firstChild);
+}
+
 function chatPanelEls() {
   return {
     panel: $('#ol-chat-panel'),
@@ -3390,6 +3432,7 @@ function wireNavToggle() {
   startMeshSolverColoring();   // /mesh/ peer-dot coloring via real solver
   wireTelemetry();             // ?-key system-telemetry overlay
   startCapAdvertSync();        // /features/ live cap-advert banner
+  mountChatPanelIfMissing();   // ensure chat dialog HTML exists on every page
   wireChat();                  // anonymous stranger chat overlay
   startMouseReactiveField();   // cursor adds energy to the coherence field
 })();
