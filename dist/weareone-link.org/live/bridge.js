@@ -685,7 +685,10 @@ function startMeshViz() {
       });
     }
   }
-  seedNodes(420);
+  // Empty until real presence data arrives. No fake 420-dot starter cloud —
+  // the canvas reads true node count from MeshPresence via setPresence()
+  // (called whenever the presence WebSocket emits an update).
+  seedNodes(0);
 
   const start = performance.now();
 
@@ -757,10 +760,20 @@ function startMeshViz() {
 
   return {
     setTopology(data) {
+      // Reserved for relay-population data once /api/topology returns
+      // active_relays > 0. Visitor counts come via setPresence() now.
       const n = data?.active_nodes;
       if (typeof n === 'number' && n > 0) {
         seedNodes(Math.min(n, 1200));
       }
+    },
+    /**
+     * Reseed the canvas from REAL presence data.
+     * @param {number} liveCount  - true count of online One Link nodes (incl. self)
+     */
+    setPresence(liveCount) {
+      const count = Math.max(0, Math.min(liveCount | 0, 1200));
+      if (count !== nodes.length) seedNodes(count);
     },
     markYou() {
       if (nodes.length === 0) return;
@@ -2152,6 +2165,10 @@ function presenceGeoHint() {
   }
 }
 
+// Module-level handle to the /mesh/ big-canvas API so setPresenceCount() can
+// drive it without threading the reference through every caller.
+let _meshVizApi = null;
+
 function setPresenceCount(n) {
   const text = String(n);
   // Top-right ribbon on home page.
@@ -2167,6 +2184,11 @@ function setPresenceCount(n) {
   for (const sel of ['#ol-hero-count', '#ol-mesh-count', '#ol-mesh-nodes', '#ol-node-count']) {
     const e = $(sel);
     if (e) e.textContent = text;
+  }
+  // Drive the /mesh/ big-canvas with the real count so we don't render
+  // hundreds of fake dots while N=1 (audit P0 honesty fix).
+  if (_meshVizApi && typeof _meshVizApi.setPresence === 'function') {
+    _meshVizApi.setPresence(n);
   }
 }
 
@@ -2273,37 +2295,83 @@ function regionForLng(lng) {
   return 'somewhere';
 }
 
+function mountMeshWidgetHead() {
+  const overlay = document.getElementById('ol-peer-overlay');
+  if (!overlay) return;
+  if (overlay.querySelector('.ol-mesh-head')) return;
+  if (document.body.classList.contains('ol-mesh-page')) return;
+
+  // Build a real header bar: title (linked to /mesh/), count, minimize toggle.
+  // Replaces the ::before / ::after pseudos and the legacy "see all" link so
+  // controls don't conflict with the sound toggle in the bottom-right.
+  const head = document.createElement('div');
+  head.className = 'ol-mesh-head';
+
+  const title = document.createElement('a');
+  title.className = 'ol-mesh-title';
+  title.href = '/mesh/';
+  title.textContent = 'live mesh';
+  title.setAttribute('aria-label', 'Open the full live mesh page');
+
+  const count = document.createElement('span');
+  count.className = 'ol-mesh-count';
+  count.id = 'ol-mesh-widget-count';
+  count.textContent = '0 here right now';
+
+  const toggle = document.createElement('button');
+  toggle.type = 'button';
+  toggle.className = 'ol-mesh-toggle';
+  toggle.setAttribute('aria-controls', 'ol-peer-overlay');
+  toggle.setAttribute('aria-expanded', 'true');
+  toggle.setAttribute('aria-label', 'Minimize live mesh widget');
+  toggle.innerHTML = '<span aria-hidden="true">&minus;</span>';
+
+  // Per-tab persistence (sessionStorage, not localStorage — disappears when
+  // the tab closes, so we never carry state across sessions).
+  const STORE_KEY = 'ol.mesh.collapsed';
+  let collapsed = false;
+  try { collapsed = sessionStorage.getItem(STORE_KEY) === '1'; } catch {}
+
+  const applyCollapse = (next) => {
+    overlay.classList.toggle('is-collapsed', next);
+    toggle.setAttribute('aria-expanded', next ? 'false' : 'true');
+    toggle.setAttribute('aria-label',
+      next ? 'Expand live mesh widget' : 'Minimize live mesh widget');
+    toggle.innerHTML = next
+      ? '<span aria-hidden="true">+</span>'
+      : '<span aria-hidden="true">&minus;</span>';
+    try { sessionStorage.setItem(STORE_KEY, next ? '1' : '0'); } catch {}
+  };
+  applyCollapse(collapsed);
+
+  toggle.addEventListener('click', (e) => {
+    e.stopPropagation();
+    applyCollapse(!overlay.classList.contains('is-collapsed'));
+  });
+
+  // Tapping anywhere on the collapsed pill (except interactive children) re-expands it.
+  overlay.addEventListener('click', (e) => {
+    if (!overlay.classList.contains('is-collapsed')) return;
+    if (e.target.closest('a, button')) return;
+    applyCollapse(false);
+  });
+
+  head.appendChild(title);
+  head.appendChild(count);
+  head.appendChild(toggle);
+  overlay.appendChild(head);
+}
+
 function renderPeerDots() {
+  // The /mesh/ page has its own full-bleed canvas and hides the widget via
+  // `body.ol-mesh-page .ol-peer-overlay { display: none }`. Skip rendering
+  // entirely there so a stale cached CSS can't reveal raw widget text.
+  if (document.body.classList.contains('ol-mesh-page')) return;
+
   const overlay = $('#ol-peer-overlay');
   if (!overlay) return;
 
-  // Mount the "see all" link once. Lives in the bottom-right of the widget
-  // and navigates to the dedicated /mesh/ page. We skip on /mesh/ itself
-  // (where the widget is hidden anyway via body.ol-mesh-page).
-  if (!overlay.querySelector('.ol-mesh-expand-link') && !document.body.classList.contains('ol-mesh-page')) {
-    const link = document.createElement('a');
-    link.className = 'ol-mesh-expand-link';
-    link.href = '/mesh/';
-    link.textContent = 'see all →';
-    link.setAttribute('aria-label', 'Open the full live mesh page');
-    link.style.cssText = `
-      position: absolute; bottom: 0.55rem; right: 0.85rem;
-      font-family: var(--ol-mono); font-size: 0.68rem;
-      letter-spacing: 0.04em; color: var(--ol-cyan);
-      text-decoration: none; opacity: 0.75;
-      transition: opacity 0.15s, transform 0.15s;
-      z-index: 4; pointer-events: auto;
-    `;
-    link.addEventListener('mouseenter', () => {
-      link.style.opacity = '1';
-      link.style.transform = 'translateX(2px)';
-    });
-    link.addEventListener('mouseleave', () => {
-      link.style.opacity = '0.75';
-      link.style.transform = 'translateX(0)';
-    });
-    overlay.appendChild(link);
-  }
+  mountMeshWidgetHead();
 
   // Build a fresh map of desired dot ids (peers + self) and reconcile.
   const desired = new Set();
@@ -2324,6 +2392,13 @@ function renderPeerDots() {
   const totalPeers = presence.peers.size + (presence.selfId ? 1 : 0);
   overlay.dataset.count = String(totalPeers);
   overlay.classList.toggle('is-empty', totalPeers === 0);
+
+  // Real DOM count (the ::after pseudo is suppressed once the head bar mounts).
+  const countEl = document.getElementById('ol-mesh-widget-count');
+  if (countEl) {
+    countEl.textContent =
+      totalPeers === 1 ? '1 here right now' : `${totalPeers} here right now`;
+  }
 
   // Top margin (for the "live mesh / N here" header) and bottom margin
   // (for the "tap a dot to chat" hint). Dots cluster in the middle.
@@ -3282,6 +3357,7 @@ function wireNavToggle() {
   rewriteDownloadButton();
   await olTimed('coherence field init', () => startCoherenceField());
   const meshVizApi = startMeshViz();
+  _meshVizApi = meshVizApi;   // expose for setPresenceCount() honesty hook
   await olTimed('open session', () => openSession());
   pollTopology(meshVizApi);
   markYou(meshVizApi);

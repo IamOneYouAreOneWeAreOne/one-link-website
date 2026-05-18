@@ -352,6 +352,12 @@ body.ol-immersive::before {
   pointer-events: auto;
   transition: transform .25s var(--ol-ease), opacity .25s var(--ol-ease);
 }
+/* Real header bar with title-link + count + minimize toggle.
+   Suppresses the ::before/::after pseudo fallback once mounted. */
+.ol-peer-overlay:has(.ol-mesh-head)::before,
+.ol-peer-overlay:has(.ol-mesh-head)::after { content: none; }
+/* Pseudo fallback for older browsers without :has() — only render when
+   the head hasn't mounted yet (the JS replaces it right after boot). */
 .ol-peer-overlay::before {
   content: "live mesh";
   position: absolute;
@@ -378,18 +384,93 @@ body.ol-immersive::before {
   color: var(--ol-text-soft);
   pointer-events: none;
 }
+
+.ol-mesh-head {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.45rem 0.75rem 0.45rem 0.85rem;
+  z-index: 5;
+  pointer-events: auto;
+}
+.ol-mesh-title {
+  font-family: var(--ol-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ol-cyan);
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.15s, transform 0.15s;
+}
+.ol-mesh-title:hover { color: var(--ol-cyan-hot); transform: translateX(1px); }
+.ol-mesh-title:focus-visible {
+  outline: 2px solid var(--ol-cyan);
+  outline-offset: 3px;
+  border-radius: 3px;
+}
+.ol-mesh-count {
+  font-family: var(--ol-mono);
+  font-size: 0.68rem;
+  color: var(--ol-text-soft);
+  letter-spacing: 0.04em;
+  margin-left: auto;
+  margin-right: 0.4rem;
+  white-space: nowrap;
+}
+.ol-mesh-toggle {
+  background: rgba(110, 240, 244, 0.06);
+  border: 1px solid rgba(110, 240, 244, 0.28);
+  color: var(--ol-text-soft);
+  font-family: var(--ol-mono);
+  font-size: 0.95rem;
+  font-weight: 600;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border-radius: 50%;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+.ol-mesh-toggle:hover,
+.ol-mesh-toggle:focus-visible {
+  color: var(--ol-cyan);
+  border-color: var(--ol-cyan);
+  background: rgba(110, 240, 244, 0.14);
+}
+.ol-mesh-toggle:focus-visible {
+  outline: 2px solid var(--ol-cyan);
+  outline-offset: 2px;
+}
+
 .ol-peer-overlay.is-empty { opacity: 0.5; }
 
-/* When the widget is collapsed/hidden the bar collapses to a pill. */
+/* Collapsed: widget shrinks to a compact pill that shows only the head bar. */
 .ol-peer-overlay.is-collapsed {
   width: auto;
   height: auto;
-  padding: 0.55rem 1rem;
+  padding: 0;
   border-radius: 999px;
   cursor: pointer;
 }
+.ol-peer-overlay.is-collapsed .ol-mesh-head {
+  position: static;
+  padding: 0.4rem 0.6rem 0.4rem 1rem;
+}
+.ol-peer-overlay.is-collapsed .ol-peer-dot,
+.ol-peer-overlay.is-collapsed .ol-peer-hint-inline,
 .ol-peer-overlay.is-collapsed::before,
-.ol-peer-overlay.is-collapsed::after { position: static; }
+.ol-peer-overlay.is-collapsed::after {
+  display: none !important;
+}
 
 @media (max-width: 720px) {
   .ol-peer-overlay {
