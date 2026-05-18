@@ -1378,7 +1378,8 @@ async function runTabPairAsScanner() {
     const msg = ev.data;
     if (msg?.type === 'invite' && !scanner) {
       try {
-        scanner = wasmModule.OlScanner.scan(msg.inviteBytes, Math.floor(Date.now() / 1000));
+        // now_unix is u64 → BigInt on JS boundary (same trap as OlInviter ctor).
+        scanner = wasmModule.OlScanner.scan(msg.inviteBytes, BigInt(Math.floor(Date.now() / 1000)));
         channel.postMessage({ type: 'response', responseBytes: scanner.responseBytes });
       } catch (e) {
         channel.postMessage({ type: 'scanner-error', error: e?.message || String(e) });
@@ -3085,9 +3086,21 @@ async function acceptOrDeclineRequest(accept) {
   let scanner;
   try {
     const m = await ensurePqModule();
-    scanner = m.OlScanner.scan(hexDecode(req.inviteHex), Math.floor(Date.now() / 1000));
+    // now_unix is u64 on the Rust side → BigInt on the JS boundary.
+    // Passing a Number throws "Cannot convert N to a BigInt" inside the
+    // try block, which caught silently as "scanner init failed" and
+    // sent chat-decline to the inviter — making the accept invisibly fail.
+    scanner = m.OlScanner.scan(hexDecode(req.inviteHex), BigInt(Math.floor(Date.now() / 1000)));
   } catch (e) {
-    console.debug('[chat] scanner init failed', e?.message);
+    console.warn('[chat] scanner init failed:', e?.message || e);
+    // Surface the actual error in the panel so the user can see it.
+    const els2 = chatPanelEls();
+    if (els2.log) {
+      const div = document.createElement('div');
+      div.style.cssText = 'color: var(--ol-rose); font-family: var(--ol-mono); font-size: 0.78rem; padding: 0.6rem 0.2rem;';
+      div.textContent = `accept failed: ${(e?.message || String(e)).slice(0, 220)}`;
+      els2.log.appendChild(div);
+    }
     sendChatFrame('chat-decline', req.peerId);
     return;
   }
