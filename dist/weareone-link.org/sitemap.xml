@@ -11,4 +11,7 @@
   <url><loc>https://weareone-link.org/about/</loc><changefreq>monthly</changefreq><priority>0.70</priority></url>
   <url><loc>https://weareone-link.org/privacy/</loc><changefreq>yearly</changefreq><priority>0.30</priority></url>
   <url><loc>https://weareone-link.org/terms/</loc><changefreq>yearly</changefreq><priority>0.30</priority></url>
+  <url><loc>https://weareone-link.org/accessibility/</loc><changefreq>monthly</changefreq><priority>0.40</priority></url>
+  <url><loc>https://weareone-link.org/transparency/</loc><changefreq>monthly</changefreq><priority>0.55</priority></url>
+  <url><loc>https://weareone-link.org/changelog/</loc><changefreq>weekly</changefreq><priority>0.50</priority></url>
 </urlset>

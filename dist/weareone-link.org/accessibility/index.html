@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Accessibility - One Link</title>
+  <meta name="description" content="One Link's accessibility statement. WCAG 2.1 AA target, keyboard-first, screen-reader tested, high-contrast and reduced-motion respected.">
+  <link rel="canonical" href="https://weareone-link.org/accessibility/">
+  <meta name="theme-color" content="#04060b" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#f0f4f8" media="(prefers-color-scheme: light)">
+  <meta name="color-scheme" content="dark">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="One Link">
+  <meta property="og:title" content="Accessibility - One Link">
+  <meta property="og:description" content="One Link's accessibility statement. WCAG 2.1 AA target, keyboard-first, screen-reader tested, high-contrast and reduced-motion respected.">
+  <meta property="og:url" content="https://weareone-link.org/accessibility/">
+  <meta property="og:image" content="https://weareone-link.org/og/one-link.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Accessibility - One Link">
+  <meta name="twitter:description" content="One Link's accessibility statement. WCAG 2.1 AA target, keyboard-first, screen-reader tested, high-contrast and reduced-motion respected.">
+  <meta name="twitter:image" content="https://weareone-link.org/og/one-link.png">
+  <link rel="icon" type="image/x-icon" href="/images/favicon.ico"><link rel="icon" type="image/png" sizes="128x128" href="/images/logo-128.png"><link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+  <link rel="manifest" href="/app.webmanifest">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="One Link">
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="modulepreload" href="/live/bridge.js">
+  <link rel="stylesheet" href="/css/one-link.css">
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to content</a>
+<canvas class="ol-field-canvas" aria-hidden="true" hidden></canvas>
+<header class="site-header" role="banner">
+  <div class="container">
+    <a href="/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
+    <button type="button" id="nav-toggle" class="nav-toggle" aria-label="Open navigation" aria-expanded="false" aria-controls="primary-nav">&#9776;</button>
+    <nav class="site-nav" id="primary-nav" aria-label="Main">
+      <a href="/how-it-works/">How it works</a>
+      <a href="/features/">Features</a>
+      <a href="/security/">Security</a>
+      <a href="/share/">Share</a>
+      <a href="/one/">One</a>
+      <a href="/download/" class="cta-get">Get One Link</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <section class="hero">
+    <div class="container">
+      <span class="we-are-one">Accessibility</span>
+      <h1>One Link is for <span class="grad">every body.</span></h1>
+      <p class="lede">A network for everyone should reach everyone. This page is a continuously updated statement of how we're building for that, what we test, what we know is still imperfect, and how to tell us when we miss.</p>
+    </div>
+  </section>
+
+  <section class="section-tight">
+    <div class="container">
+      <span class="kicker">Standard we target</span>
+      <h2>WCAG 2.1 <span class="grad">AA</span>.</h2>
+      <p class="lede">We aim for full Web Content Accessibility Guidelines 2.1 Level AA conformance on every page of this site. The same standard the EU Accessibility Act 2025, the UK Equality Act, and US Section 508 reference.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">What this means in practice</span>
+      <h2>Promises this site keeps.</h2>
+      <div class="ol-grid ol-grid-2">
+        <article class="ol-tile">
+          <h3>Keyboard-first navigation</h3>
+          <p>Every interactive element is reachable with Tab. Every focused element has a visible 2px ring in our brand cyan. A Skip to content link is the first focusable element on every page. Escape closes any open menu or dialog.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Screen-reader semantics</h3>
+          <p>Real heading hierarchy (h1 to h3, no skipping). Real buttons for buttons, real links for links. aria-current marks the page you're on in the nav. aria-live announces the SAS code, OS detection, and other dynamic state.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Color and contrast</h3>
+          <p>4.5:1 minimum on every text-over-background pair, including the dimmed metadata rows. Gradient calls-to-action have a solid fallback. Information is never carried by color alone.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Motion respected</h3>
+          <p>prefers-reduced-motion: reduce disables the coherence-field background, the typing-cursor animations, and the auto-cycling demo timings. The site stays fully usable with motion off.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>High-contrast supported</h3>
+          <p>forced-colors: active (Windows High Contrast Mode) maps gradients to system tokens so call-to-action buttons remain legible. prefers-contrast: more lifts text and border tokens further.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Touch and pointer</h3>
+          <p>Every tappable target is 44 by 44 pixels minimum, matching Apple Human Interface and Material Design floors. touch-action: manipulation removes the 300ms tap delay on older mobile browsers.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">What we still have to fix</span>
+      <h2>Honest list.</h2>
+      <p class="lede">No site is fully accessible. Here is what we know is imperfect today, what we are working on, and what is intentional.</p>
+      <div class="ol-grid ol-grid-2">
+        <article class="ol-tile">
+          <h3>WebGPU coherence field</h3>
+          <p>The background shader is decorative and is fully gated on prefers-reduced-motion plus a desktop pointer-fine + non-saveData check. No information is carried by it. Skipping it changes nothing.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>QR scanning</h3>
+          <p>The pair-by-QR live demo uses a visual QR code. We are working on a parallel one-tap copy-paste flow so users who do not use a camera can complete the same pairing.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Audio cues</h3>
+          <p>Our ambient audio mode is opt-in only. Every interactive demo is fully usable without audio. We do not use audio to convey state.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">How we test</span>
+      <h2>Continuous, not one-shot.</h2>
+      <p class="lede">Accessibility is verified on every change, not at a single audit. CI runs pa11y across every page. Real keyboard-only and screen-reader walkthroughs ship with major releases. The site source is open, so anyone can confirm.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Tell us when we miss</span>
+      <h2>Let us know.</h2>
+      <p class="lede">If anything on this site or in One Link is not accessible to you, we want to hear. Email <a class="ol-cyan-text" href="mailto:weareone@oneunity.earth">weareone@oneunity.earth</a> with the page and what broke. We aim to acknowledge within five days and fix as quickly as we can.</p>
+      <p class="lede">Last updated 2026-05-17.</p>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer" role="contentinfo">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a href="/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
+        <p class="footer-tag">A free, private network for messages, files, and devices. Owned by no one. Belongs to everyone.</p>
+      </div>
+      <div><h3>Network</h3><ul><li><a href="/how-it-works/">How it works</a></li><li><a href="/features/">Features</a></li><li><a href="/mesh/">Live mesh</a></li></ul></div>
+      <div><h3>For you</h3><ul><li><a href="/download/">Get One Link</a></li><li><a href="/security/">Security</a></li><li><a href="/accessibility/">Accessibility</a></li><li><a href="/transparency/">Transparency</a></li></ul></div>
+      <div><h3>For builders</h3><ul><li><a href="/builders/">Protocol &amp; source</a></li><li><a href="/changelog/">Changelog</a></li><li><a href="/download/source" rel="noopener">Source archive</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <span class="built-by">&copy; 2026 One Link contributors. <a href="/terms/">AGPL-3.0</a>. <a href="/security/">No tracking.</a> <a href="mailto:weareone@oneunity.earth">weareone@oneunity.earth</a></span>
+      <span class="built-by">we are one</span>
+    </div>
+  </div>
+</footer>
+
+<script type="module" src="/live/bridge.js"></script>
+</body>
+</html>

@@ -51,7 +51,7 @@
 
 <main id="main">
 
-  <section class="hero" style="padding-bottom: 1rem;">
+  <section class="hero ol-pb-sm">
     <div class="container">
       <span class="we-are-one">Builders</span>
       <h1>The whole thing is <span class="grad">yours to read.</span></h1>
@@ -120,7 +120,7 @@
         </article>
       </div>
 
-      <p style="margin-top: 1.5rem; color: var(--ol-text-dim); text-align: center;">26 more crates in the source. <a href="/download/source" rel="noopener" style="color: var(--ol-cyan);">See them all on GitHub</a>.</p>
+      <p class="ol-footnote-dim">26 more crates in the source. <a class="ol-cyan-text" href="/download/source" rel="noopener">See them all on GitHub</a>.</p>
     </div>
   </section>
 
@@ -128,20 +128,20 @@
     <div class="container">
       <span class="kicker">Reproducible by you</span>
       <h2>Rebuild this site <span class="grad">in your tab.</span></h2>
-      <p class="lede" style="max-width: 64ch;">
+      <p class="lede ol-mw-64ch">
         One click downloads the signed source archive, computes its SHA-256 locally, and compares it against the attestation chain. If you and we both arrive at the same hash, no human has touched the result. Every release should be reproducible by anyone with a network connection and a browser. Here it is.
       </p>
 
-      <div class="ol-private-demo" style="margin-top: 1.5rem;">
+      <div class="ol-private-demo ol-mt">
         <button type="button" id="ol-rebuild-btn" class="btn btn-primary">
           Verify this site's source archive
           <span class="arr" aria-hidden="true">&rarr;</span>
         </button>
-        <span class="ol-status" id="ol-rebuild-status" style="margin-left: 0.7rem; display: none;">
+        <span class="ol-status ol-status-inline" id="ol-rebuild-status">
           <span class="dot"></span>
           <span>downloading + hashing</span>
         </span>
-        <pre class="ol-code" id="ol-rebuild-out" style="margin-top: 1rem; display: none;"></pre>
+        <pre class="ol-code ol-output-pre" id="ol-rebuild-out"></pre>
       </div>
     </div>
   </section>
@@ -157,7 +157,7 @@
 
 <span class="d"># that is it. your relay shows up on the live mesh</span>
 <span class="d"># within seconds, and starts helping the network</span></pre>
-      <p style="margin-top: 1rem; color: var(--ol-text-soft);">No registration. No reputation system that we control. The network's topology detector picks healthy relays and routes around sick ones automatically.</p>
+      <p class="ol-footnote-soft">No registration. No reputation system that we control. The network's topology detector picks healthy relays and routes around sick ones automatically.</p>
     </div>
   </section>
 
@@ -178,8 +178,8 @@
         <p class="footer-tag">A free, private network for messages, files, and devices. Owned by no one. Belongs to everyone.</p>
       </div>
       <div><h3>Network</h3><ul><li><a href="/how-it-works/">How it works</a></li><li><a href="/features/">Features</a></li><li><a href="/mesh/">Live mesh</a></li></ul></div>
-      <div><h3>For you</h3><ul><li><a href="/download/">Get One Link</a></li><li><a href="/security/">Security</a></li><li><a href="/about/">About</a></li></ul></div>
-      <div><h3>For builders</h3><ul><li><a href="/builders/">Protocol &amp; source</a></li><li><a href="/download/source" rel="noopener">Source archive</a></li></ul></div>
+      <div><h3>For you</h3><ul><li><a href="/download/">Get One Link</a></li><li><a href="/security/">Security</a></li><li><a href="/accessibility/">Accessibility</a></li><li><a href="/transparency/">Transparency</a></li></ul></div>
+      <div><h3>For builders</h3><ul><li><a href="/builders/">Protocol &amp; source</a></li><li><a href="/changelog/">Changelog</a></li><li><a href="/download/source" rel="noopener">Source archive</a></li></ul></div>
     </div>
     <div class="footer-bottom">
       <span class="built-by">&copy; 2026 One Link contributors. <a href="/terms/">AGPL-3.0</a>. <a href="/security/">No tracking.</a> <a href="mailto:weareone@oneunity.earth">weareone@oneunity.earth</a></span>

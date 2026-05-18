@@ -51,7 +51,7 @@
 
 <main id="main">
 
-  <section class="hero" style="padding-bottom: 1rem;">
+  <section class="hero ol-pb-sm">
     <div class="container">
       <span class="we-are-one">Security</span>
       <h1>The math <span class="grad">keeps the promise.</span></h1>
@@ -61,10 +61,10 @@
 
   <section class="section-tight">
     <div class="container">
-      <h2 style="margin-top: 0;">What we collect</h2>
-      <p class="lede" style="margin-bottom: 1rem;">Nothing.</p>
-      <p style="color: var(--ol-text-soft); max-width: 56ch;">No email. No phone. No analytics. No tracking pixels. No fingerprinting. No cookies. No request logs that contain you. This site has zero third-party requests. The Cloudflare Worker does not write a single thing about who visited or what they downloaded.</p>
-      <p style="color: var(--ol-text-soft); max-width: 56ch;">If a government asked us tomorrow who downloaded One Link, who paired with whom, or what was sent through the network, the honest answer is "we do not know and there is no way to find out." That is by construction.</p>
+      <h2 class="ol-mt-0">What we collect</h2>
+      <p class="lede ol-mb-sm">Nothing.</p>
+      <p class="ol-soft-text ol-mw-56ch">No email. No phone. No analytics. No tracking pixels. No fingerprinting. No cookies. No request logs that contain you. This site has zero third-party requests. The Cloudflare Worker does not write a single thing about who visited or what they downloaded.</p>
+      <p class="ol-soft-text ol-mw-56ch">If a government asked us tomorrow who downloaded One Link, who paired with whom, or what was sent through the network, the honest answer is "we do not know and there is no way to find out." That is by construction.</p>
     </div>
   </section>
 
@@ -86,7 +86,7 @@
           <p>There is no server holding your messages or files. A relay that gets compromised sees sealed boxes addressed to recipients it cannot identify. No archive to steal.</p>
         </article>
         <article class="ol-tile">
-          <h3>Traffic analysis <span style="color: var(--ol-text-dim); font-size: 0.7em; font-weight: 400;">(in flight, lands v0.22)</span></h3>
+          <h3>Traffic analysis <span class="ol-tile-badge">(in flight, lands v0.22)</span></h3>
           <p>The Sphinx-routed three-hop private mode is implemented end-to-end as a WASM-verifiable primitive (see the live demo on /download/). User-toggle wiring into the daemon's transport layer lands in v0.22. Until then the bytes still take a direct path.</p>
         </article>
         <article class="ol-tile">
@@ -94,7 +94,7 @@
           <p>Threshold recovery splits your identity across friends. Recover with k-of-n. The math means a leaked share is useless without the others. Try the 3-of-5 Shamir demo below to see the bytes.</p>
         </article>
         <article class="ol-tile">
-          <h3>Coerced unlock <span style="color: var(--ol-text-dim); font-size: 0.7em; font-weight: 400;">(in flight, lands v0.22)</span></h3>
+          <h3>Coerced unlock <span class="ol-tile-badge">(in flight, lands v0.22)</span></h3>
           <p>Duress mode opens a believable empty account with a second passphrase. The cryptographic primitive ships in the ol_duress crate today; the daemon-level wiring (so the second passphrase unlocks an alternate vault) lands in v0.22.</p>
         </article>
       </div>
@@ -156,20 +156,20 @@
     <div class="container">
       <span class="kicker">Prove it</span>
       <h2>Mint a hybrid identity, <span class="grad">right here in your tab.</span></h2>
-      <p class="lede" style="max-width: 64ch;">
-        One click runs the real <code style="font-family: var(--ol-mono); color: var(--ol-cyan);">ol_pqsig</code> crate (compiled to WASM) inside your browser. It generates a fresh Ed25519 + ML-DSA-65 hybrid keypair, signs a short message, verifies the signature, then flips one bit and shows you both halves refusing to verify. No network call. No server-side trust. The same code path the daemon uses for capability commits.
+      <p class="lede ol-mw-64ch">
+        One click runs the real <code class="ol-inline-code">ol_pqsig</code> crate (compiled to WASM) inside your browser. It generates a fresh Ed25519 + ML-DSA-65 hybrid keypair, signs a short message, verifies the signature, then flips one bit and shows you both halves refusing to verify. No network call. No server-side trust. The same code path the daemon uses for capability commits.
       </p>
 
-      <div class="ol-private-demo" style="margin-top: 1.5rem;">
+      <div class="ol-private-demo ol-mt">
         <button type="button" id="ol-pqsig-btn" class="btn btn-primary">
           Sign a message with Ed25519 + ML-DSA-65
           <span class="arr" aria-hidden="true">&rarr;</span>
         </button>
-        <span class="ol-status" id="ol-pqsig-status" style="margin-left: 0.7rem; display: none;">
+        <span class="ol-status ol-status-inline" id="ol-pqsig-status">
           <span class="dot"></span>
           <span>computing</span>
         </span>
-        <pre class="ol-code" id="ol-pqsig-out" style="margin-top: 1rem; display: none;"></pre>
+        <pre class="ol-code ol-output-pre" id="ol-pqsig-out"></pre>
       </div>
     </div>
   </section>
@@ -178,20 +178,20 @@
     <div class="container">
       <span class="kicker">Threshold recovery</span>
       <h2>Split a secret across five hands. <span class="grad">Recover from any three.</span></h2>
-      <p class="lede" style="max-width: 64ch;">
-        One click runs <code style="font-family: var(--ol-mono); color: var(--ol-cyan);">ol_threshold_recovery</code> (Shamir secret sharing over GF(2^8), same crate the daemon uses). Your browser splits a 32-byte secret into 5 shares, then recovers it from any 3, and proves that any 2 cannot. The shares look random because they are random. The secret only exists when 3 of them come together.
+      <p class="lede ol-mw-64ch">
+        One click runs <code class="ol-inline-code">ol_threshold_recovery</code> (Shamir secret sharing over GF(2^8), same crate the daemon uses). Your browser splits a 32-byte secret into 5 shares, then recovers it from any 3, and proves that any 2 cannot. The shares look random because they are random. The secret only exists when 3 of them come together.
       </p>
 
-      <div class="ol-private-demo" style="margin-top: 1.5rem;">
+      <div class="ol-private-demo ol-mt">
         <button type="button" id="ol-threshold-btn" class="btn btn-primary">
           Split and recover a secret with 3-of-5 Shamir
           <span class="arr" aria-hidden="true">&rarr;</span>
         </button>
-        <span class="ol-status" id="ol-threshold-status" style="margin-left: 0.7rem; display: none;">
+        <span class="ol-status ol-status-inline" id="ol-threshold-status">
           <span class="dot"></span>
           <span>computing</span>
         </span>
-        <pre class="ol-code" id="ol-threshold-out" style="margin-top: 1rem; display: none;"></pre>
+        <pre class="ol-code ol-output-pre" id="ol-threshold-out"></pre>
       </div>
     </div>
   </section>
@@ -200,20 +200,20 @@
     <div class="container">
       <span class="kicker">Forward secrecy</span>
       <h2>Every message gets a fresh key. <span class="grad">Compromising one tells you nothing about the next.</span></h2>
-      <p class="lede" style="max-width: 64ch;">
-        One click runs <code style="font-family: var(--ol-mono); color: var(--ol-cyan);">ol_ratchet</code> (per-chunk forward-secret KDF chain, BLAKE3-derived). Your browser generates a fresh chain key, derives six sequential message keys, and shows that they are mutually distinct and that the ratchet refuses to rewind. An attacker who captures the key for chunk 3 cannot reconstruct the key for chunk 4 because the chain step is a one-way hash.
+      <p class="lede ol-mw-64ch">
+        One click runs <code class="ol-inline-code">ol_ratchet</code> (per-chunk forward-secret KDF chain, BLAKE3-derived). Your browser generates a fresh chain key, derives six sequential message keys, and shows that they are mutually distinct and that the ratchet refuses to rewind. An attacker who captures the key for chunk 3 cannot reconstruct the key for chunk 4 because the chain step is a one-way hash.
       </p>
 
-      <div class="ol-private-demo" style="margin-top: 1.5rem;">
+      <div class="ol-private-demo ol-mt">
         <button type="button" id="ol-ratchet-btn" class="btn btn-primary">
           Walk the ratchet six steps
           <span class="arr" aria-hidden="true">&rarr;</span>
         </button>
-        <span class="ol-status" id="ol-ratchet-status" style="margin-left: 0.7rem; display: none;">
+        <span class="ol-status ol-status-inline" id="ol-ratchet-status">
           <span class="dot"></span>
           <span>computing</span>
         </span>
-        <pre class="ol-code" id="ol-ratchet-out" style="margin-top: 1rem; display: none;"></pre>
+        <pre class="ol-code ol-output-pre" id="ol-ratchet-out"></pre>
       </div>
     </div>
   </section>
@@ -222,26 +222,26 @@
     <div class="container">
       <span class="kicker">Trust on first use</span>
       <h2>Your device is recognized <span class="grad">without us knowing who you are.</span></h2>
-      <p class="lede" style="max-width: 64ch;">
-        One click runs <code style="font-family: var(--ol-mono); color: var(--ol-cyan);">ol_hwkey</code> (TOFU software fallback, same trait surface the daemon uses with Secure Enclave / StrongBox / TPM on real hardware). Your browser mints a 32-byte device root on first visit and stores it locally. The button derives a deterministic device fingerprint from that root, then simulates an impersonation attempt with a random key and shows the TOFU store reject it in constant time. No identifier is sent to any server.
+      <p class="lede ol-mw-64ch">
+        One click runs <code class="ol-inline-code">ol_hwkey</code> (TOFU software fallback, same trait surface the daemon uses with Secure Enclave / StrongBox / TPM on real hardware). Your browser mints a 32-byte device root on first visit and stores it locally. The button derives a deterministic device fingerprint from that root, then simulates an impersonation attempt with a random key and shows the TOFU store reject it in constant time. No identifier is sent to any server.
       </p>
 
-      <div class="ol-private-demo" style="margin-top: 1.5rem;">
+      <div class="ol-private-demo ol-mt">
         <button type="button" id="ol-hwkey-btn" class="btn btn-primary">
           Mint or recognize this device
           <span class="arr" aria-hidden="true">&rarr;</span>
         </button>
-        <span class="ol-status" id="ol-hwkey-status" style="margin-left: 0.7rem; display: none;">
+        <span class="ol-status ol-status-inline" id="ol-hwkey-status">
           <span class="dot"></span>
           <span>computing</span>
         </span>
-        <pre class="ol-code" id="ol-hwkey-out" style="margin-top: 1rem; display: none;"></pre>
+        <pre class="ol-code ol-output-pre" id="ol-hwkey-out"></pre>
       </div>
     </div>
   </section>
 
   <section class="section">
-    <div class="container" style="text-align: center;">
+    <div class="container ol-text-center">
       <a href="/download/" class="btn btn-primary btn-large">Get One Link <span class="arr">&rarr;</span></a>
       <a href="/builders/" class="btn btn-ghost btn-large">Read the source</a>
     </div>
@@ -257,8 +257,8 @@
         <p class="footer-tag">A free, private network for messages, files, and devices. Owned by no one. Belongs to everyone.</p>
       </div>
       <div><h3>Network</h3><ul><li><a href="/how-it-works/">How it works</a></li><li><a href="/features/">Features</a></li><li><a href="/mesh/">Live mesh</a></li></ul></div>
-      <div><h3>For you</h3><ul><li><a href="/download/">Get One Link</a></li><li><a href="/security/">Security</a></li><li><a href="/about/">About</a></li></ul></div>
-      <div><h3>For builders</h3><ul><li><a href="/builders/">Protocol &amp; source</a></li><li><a href="/download/source" rel="noopener">Source archive</a></li></ul></div>
+      <div><h3>For you</h3><ul><li><a href="/download/">Get One Link</a></li><li><a href="/security/">Security</a></li><li><a href="/accessibility/">Accessibility</a></li><li><a href="/transparency/">Transparency</a></li></ul></div>
+      <div><h3>For builders</h3><ul><li><a href="/builders/">Protocol &amp; source</a></li><li><a href="/changelog/">Changelog</a></li><li><a href="/download/source" rel="noopener">Source archive</a></li></ul></div>
     </div>
     <div class="footer-bottom">
       <span class="built-by">&copy; 2026 One Link contributors. <a href="/terms/">AGPL-3.0</a>. <a href="/security/">No tracking.</a> <a href="mailto:weareone@oneunity.earth">weareone@oneunity.earth</a></span>

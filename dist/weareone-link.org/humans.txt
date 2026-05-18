@@ -1,0 +1,20 @@
+/* TEAM */
+One Link contributors
+  github:  https://github.com/IamOneYouAreOneWeAreOne
+  email:   weareone@oneunity.earth
+  doctrine: we are one
+
+/* THANKS */
+Every human who runs a relay.
+Every human who pairs a device with another.
+Every human who reads the source.
+
+/* SITE */
+language:    English
+doctype:     HTML5
+ia:          12 pages, one-page-one-purpose
+standards:   WCAG 2.1 AA, RFC 9116 (security.txt), GDPR-aligned
+components:  Rust + WASM + WebTransport + WebGPU
+back-end:    Cloudflare Workers + Durable Objects + R2
+build:       Coherence-Lang SSG
+stack:       no npm, no third-party scripts, no tracking, no cookies

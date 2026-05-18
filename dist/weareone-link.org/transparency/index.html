@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Transparency - One Link</title>
+  <meta name="description" content="Warrant canary, government-request log, and disclosure posture for One Link. Public, dated, and verifiable.">
+  <link rel="canonical" href="https://weareone-link.org/transparency/">
+  <meta name="theme-color" content="#04060b" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#f0f4f8" media="(prefers-color-scheme: light)">
+  <meta name="color-scheme" content="dark">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="One Link">
+  <meta property="og:title" content="Transparency - One Link">
+  <meta property="og:description" content="Warrant canary, government-request log, and disclosure posture for One Link. Public, dated, and verifiable.">
+  <meta property="og:url" content="https://weareone-link.org/transparency/">
+  <meta property="og:image" content="https://weareone-link.org/og/one-link.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Transparency - One Link">
+  <meta name="twitter:description" content="Warrant canary, government-request log, and disclosure posture for One Link. Public, dated, and verifiable.">
+  <meta name="twitter:image" content="https://weareone-link.org/og/one-link.png">
+  <link rel="icon" type="image/x-icon" href="/images/favicon.ico"><link rel="icon" type="image/png" sizes="128x128" href="/images/logo-128.png"><link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+  <link rel="manifest" href="/app.webmanifest">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="One Link">
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="modulepreload" href="/live/bridge.js">
+  <link rel="stylesheet" href="/css/one-link.css">
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to content</a>
+<canvas class="ol-field-canvas" aria-hidden="true" hidden></canvas>
+<header class="site-header" role="banner">
+  <div class="container">
+    <a href="/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
+    <button type="button" id="nav-toggle" class="nav-toggle" aria-label="Open navigation" aria-expanded="false" aria-controls="primary-nav">&#9776;</button>
+    <nav class="site-nav" id="primary-nav" aria-label="Main">
+      <a href="/how-it-works/">How it works</a>
+      <a href="/features/">Features</a>
+      <a href="/security/">Security</a>
+      <a href="/share/">Share</a>
+      <a href="/one/">One</a>
+      <a href="/download/" class="cta-get">Get One Link</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <section class="hero">
+    <div class="container">
+      <span class="we-are-one">Transparency</span>
+      <h1>What we know. <span class="grad">What we don't.</span></h1>
+      <p class="lede">One Link is software you run. The architecture was designed so that the smallest possible amount of information passes through anything we operate. This page is the dated, public record of what that means.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Warrant canary</span>
+      <h2>Last verified <span class="grad">2026-05-17</span>.</h2>
+      <div class="ol-grid ol-grid-2 ol-items-start">
+        <div>
+          <p>As of the date above, the One Link contributors have received zero government requests of any kind related to this project, its source repositories, its relay infrastructure, or its website. We have issued zero National Security Letters or equivalent gag orders, because no such instrument has been served.</p>
+          <p>This page is updated on a monthly cadence. The disappearance or expiration of this statement is itself the signal.</p>
+          <p>The statement is signed and committed to the public source repository at every refresh, so historical attestations are tamper-evident via git log.</p>
+        </div>
+        <div>
+          <pre class="ol-code"><span class="d">// canary statement, plain</span>
+<span class="c">date</span>:               2026-05-17
+<span class="c">requests_received</span>:  0
+<span class="c">gag_orders_received</span>: 0
+<span class="c">subpoenas_received</span>: 0
+<span class="c">NSLs_received</span>:      0
+<span class="c">next_refresh</span>:       2026-06-17
+
+<span class="d">// signed in commit history</span></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">What the architecture leaves out of our reach</span>
+      <h2>The smallest possible <span class="grad">surface.</span></h2>
+      <div class="ol-grid ol-grid-3">
+        <article class="ol-tile">
+          <h3>Message content</h3>
+          <p>End-to-end encrypted with post-quantum-hybrid keys. The cleartext never reaches a relay, never reaches a server, never reaches us. There is no plaintext for any party other than the peers to hand over.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Account identifiers</h3>
+          <p>One Link uses opaque rotating peer IDs. There is no email, phone number, or username database to subpoena. Recognition happens device to device through pairing.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Social graph</h3>
+          <p>Pairings are stored on the devices that hold them, not on a server. The aggregate "who knows who" graph that messengers typically retain does not exist anywhere we operate.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Relay logs</h3>
+          <p>Relays are designed to be stateless forwarders. They route sealed envelopes by topology, not by identity. They do not retain access logs across restarts. Anyone can run one.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Location</h3>
+          <p>The live mesh page shows approximate continental region only, derived from relay topology. No precise location of any peer is held anywhere we control.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Payment records</h3>
+          <p>One Link is free. There is no subscription, no purchase history, no billing address. There is nothing to compel.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">What this site does involve us in</span>
+      <h2>The honest list.</h2>
+      <p class="lede">For full visibility, here is exactly what the website surface (this domain, not the One Link daemon) processes:</p>
+      <div class="ol-grid ol-grid-2">
+        <article class="ol-tile">
+          <h3>Cloudflare as host</h3>
+          <p>weareone-link.org runs on Cloudflare Workers. Cloudflare sees the IP of every request, as any CDN does. We have configured the worker to override Cloudflare's default error-reporting telemetry headers so no NEL beacons fire from your browser.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Anonymous presence overlay</h3>
+          <p>The "N here right now" pill uses a Cloudflare Durable Object that holds nothing but a per-session random ID for the lifetime of your tab. The ID rotates every visit. No identifying data is stored.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Encrypted share buffer</h3>
+          <p>/share/ accepts ciphertext only. The key lives in the URL fragment and never reaches the server. The ciphertext is deleted at first download or after 24 hours, whichever comes first.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>No tracking, no analytics</h3>
+          <p>Zero cookies. Zero analytics. Zero third-party scripts. Zero ad networks. Zero tracking pixels. This is enforced by the Content-Security-Policy that ships with every page.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Cadence</span>
+      <h2>Refreshed monthly. <span class="grad">Always.</span></h2>
+      <p class="lede">If this page falls behind, that is itself a signal. Subscribe to the source repository for atomic notifications when this file changes.</p>
+      <p class="lede">Source: <a class="ol-cyan-text" href="https://github.com/IamOneYouAreOneWeAreOne/one-link-website/commits/master/dist/weareone-link.org/transparency/index.html" rel="noopener">commit history for this page</a>.</p>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer" role="contentinfo">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a href="/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
+        <p class="footer-tag">A free, private network for messages, files, and devices. Owned by no one. Belongs to everyone.</p>
+      </div>
+      <div><h3>Network</h3><ul><li><a href="/how-it-works/">How it works</a></li><li><a href="/features/">Features</a></li><li><a href="/mesh/">Live mesh</a></li></ul></div>
+      <div><h3>For you</h3><ul><li><a href="/download/">Get One Link</a></li><li><a href="/security/">Security</a></li><li><a href="/accessibility/">Accessibility</a></li><li><a href="/transparency/">Transparency</a></li></ul></div>
+      <div><h3>For builders</h3><ul><li><a href="/builders/">Protocol &amp; source</a></li><li><a href="/changelog/">Changelog</a></li><li><a href="/download/source" rel="noopener">Source archive</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <span class="built-by">&copy; 2026 One Link contributors. <a href="/terms/">AGPL-3.0</a>. <a href="/security/">No tracking.</a> <a href="mailto:weareone@oneunity.earth">weareone@oneunity.earth</a></span>
+      <span class="built-by">we are one</span>
+    </div>
+  </div>
+</footer>
+
+<script type="module" src="/live/bridge.js"></script>
+</body>
+</html>

@@ -75,7 +75,11 @@
 const CSP = [
   "default-src 'self'",
   "script-src 'self' 'wasm-unsafe-eval'",
-  "style-src 'self' 'unsafe-inline'",
+  // 'unsafe-inline' was needed for ~159 inline style="" attrs site-wide.
+  // The audit P1 sweep migrated all of them to utility classes in
+  // one-link.css, so we can now enforce style-src to same-origin only.
+  // Any future inline style="" will fail loudly in the browser console.
+  "style-src 'self'",
   "img-src 'self' data: blob:",
   "font-src 'self'",
   "connect-src 'self'",
@@ -84,6 +88,7 @@ const CSP = [
   "media-src 'self' blob:",
   "object-src 'none'",
   "frame-ancestors 'none'",
+  "frame-src 'none'",
   "base-uri 'self'",
   "form-action 'self'",
   "upgrade-insecure-requests",
@@ -118,6 +123,7 @@ const PRIVACY_HEADERS = {
 const CONTENT_DIRS = new Set([
   "/about", "/builders", "/download", "/features", "/how-it-works",
   "/mesh", "/one", "/privacy", "/security", "/share", "/terms",
+  "/accessibility", "/transparency", "/changelog",
 ]);
 
 // Permanent redirect helper that strips Cloudflare auto-injected telemetry

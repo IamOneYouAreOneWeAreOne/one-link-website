@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Changelog - One Link</title>
+  <meta name="description" content="Every shipped change to One Link and to this site. Public, dated, signed.">
+  <link rel="canonical" href="https://weareone-link.org/changelog/">
+  <meta name="theme-color" content="#04060b" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#f0f4f8" media="(prefers-color-scheme: light)">
+  <meta name="color-scheme" content="dark">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="One Link">
+  <meta property="og:title" content="Changelog - One Link">
+  <meta property="og:description" content="Every shipped change to One Link and to this site. Public, dated, signed.">
+  <meta property="og:url" content="https://weareone-link.org/changelog/">
+  <meta property="og:image" content="https://weareone-link.org/og/one-link.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Changelog - One Link">
+  <meta name="twitter:description" content="Every shipped change to One Link and to this site. Public, dated, signed.">
+  <meta name="twitter:image" content="https://weareone-link.org/og/one-link.png">
+  <link rel="icon" type="image/x-icon" href="/images/favicon.ico"><link rel="icon" type="image/png" sizes="128x128" href="/images/logo-128.png"><link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+  <link rel="manifest" href="/app.webmanifest">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="One Link">
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="modulepreload" href="/live/bridge.js">
+  <link rel="stylesheet" href="/css/one-link.css">
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to content</a>
+<canvas class="ol-field-canvas" aria-hidden="true" hidden></canvas>
+<header class="site-header" role="banner">
+  <div class="container">
+    <a href="/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
+    <button type="button" id="nav-toggle" class="nav-toggle" aria-label="Open navigation" aria-expanded="false" aria-controls="primary-nav">&#9776;</button>
+    <nav class="site-nav" id="primary-nav" aria-label="Main">
+      <a href="/how-it-works/">How it works</a>
+      <a href="/features/">Features</a>
+      <a href="/security/">Security</a>
+      <a href="/share/">Share</a>
+      <a href="/one/">One</a>
+      <a href="/download/" class="cta-get">Get One Link</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <section class="hero">
+    <div class="container">
+      <span class="we-are-one">Changelog</span>
+      <h1>Every shipped <span class="grad">change.</span></h1>
+      <p class="lede">Every release of One Link, every push to this site, in reverse chronological order. The git history is the source of truth; this page is the human-readable view of it.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">2026-05-18</span>
+      <h2><span class="grad">site</span> v0.21.0-alpha.0+r48 - audit closeout</h2>
+      <ul>
+        <li>WCAG 2.1 AA accessibility pass: real focus rings on every interactive element; mobile-nav swapped from label-for-checkbox to real button aria-expanded; footer heading hierarchy fixed h4 to h3; 44 by 44 touch-target floor; contrast on dimmed text lifted to 4.5:1; forced-colors + prefers-contrast media queries.</li>
+        <li>Mobile + responsive: 100svh for iOS Safari URL-bar; env(safe-area-inset) for notch + landscape; tablet breakpoint 761-1024px; comparison-table overflow-scroll with edge shadow under 720px; WebGPU shader gated on desktop + non-saveData.</li>
+        <li>Performance: HTML cache-control gains s-maxage=300 + stale-while-revalidate=86400; modulepreload for bridge.js site-wide; document.hidden short-circuit in both render loops.</li>
+        <li>SEO + canonical URLs in worker: 301 lowercase canonical (/Features/ to /features/); 301 trailing-slash for content dirs (was 307 from assets); 301 /favicon.ico to /images/favicon.ico; HEAD on /download/source honored; dual theme-color (light + dark media); Twitter Card title/desc/image on all OG pages; designed /404.html wired via not_found_handling.</li>
+        <li>Trust pages added: /accessibility/, /transparency/ (warrant canary + government-request log), /changelog/.</li>
+        <li>.well-known/security.txt (RFC 9116) with disclosure policy and SLA.</li>
+        <li>Privacy: dropped Access-Control-Allow-Origin: * from HTML responses; deleted dist/_headers (worker is source of truth, removed the X-No-Tracking deception header it carried).</li>
+        <li>www -> apex 301 redirect at the worker layer (closes duplicate-200 problem; NEL/Report-To stripped on the redirect itself).</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">2026-05-16 .. 2026-05-17</span>
+      <h2><span class="grad">site</span> v0.21.0-alpha.0+r34 .. r47 - public preview</h2>
+      <ul>
+        <li>Positive-forward framing sweep across all pages: zero "what we do not do" / "five companies" / "what we cannot fix" copy.</li>
+        <li>Real ed25519-signed release attestations for Windows + Linux + source archive.</li>
+        <li>Live MeshPresence Durable Object: real "N here right now" pill (replaces hardcoded counter).</li>
+        <li>OS detection on home hero CTA + /download/ page CTAs.</li>
+        <li>Service Worker with verify-against-signed-manifest before serve; cached integrity mismatch evicts + refetches.</li>
+        <li>Repos migrated to IamOneYouAreOneWeAreOne organization with personal identifiers fully stripped.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">2026-05-14</span>
+      <h2><span class="grad">daemon</span> ol_onion Sphinx T1.5 - Schnorr batch aggregation</h2>
+      <ul>
+        <li>Ristretto255 sign + verify with Pippenger MSM batch_verify; 2.6x speedup at N=64 over sequential verification.</li>
+        <li>271 ol_onion tests, including 9 proptests at 1M iterations, 12 adversarial vectors, 7 KAT vectors.</li>
+        <li>Closes the last deferred Sphinx Tier-1 item.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">2026-05-13</span>
+      <h2><span class="grad">daemon</span> Row 10 confidential-compute, Phase 1</h2>
+      <ul>
+        <li>ol_confidential crate: ConfidentialProvider trait + SoftwareProvider (ChaCha20-Poly1305 sealing + Zeroize).</li>
+        <li>AttestationDoc: post-quantum-hybrid + peer-nonce + 30s freshness + field-witness binding.</li>
+        <li>TLA+ spec, 46 tests / 0 failed, lib clippy -D warnings clean.</li>
+        <li>Coherence Mesh: 10 of 10 rows now shipped (Phase 1 of Row 10).</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">2026-05-11</span>
+      <h2><span class="grad">daemon</span> Phase E - coherence-field substrate</h2>
+      <ul>
+        <li>ol_coherence_field crate: ports the S_One stack (reaction-diffusion to Helmholtz to Green-function to BE-RAR to apparent-horizon anchor).</li>
+        <li>Three couplings: homology to field, field to prefetch, field to ratchet.</li>
+        <li>pyo3 daemon surface live; 12/13 plan gates flipped to Met with numerical evidence.</li>
+        <li>Bench: 10k peers in 1.08ms on a single CPU core.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Earlier history</span>
+      <h2>Every commit since v0.1.0.</h2>
+      <p class="lede">The full history is in the public git repository, signed and dated:</p>
+      <div class="cta-row">
+        <a href="https://github.com/IamOneYouAreOneWeAreOne/one-link/commits/master" class="btn btn-primary" rel="noopener">Daemon git history <span class="arr">&rarr;</span></a>
+        <a href="https://github.com/IamOneYouAreOneWeAreOne/one-link-website/commits/master" class="btn btn-ghost" rel="noopener">Website git history</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer" role="contentinfo">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a href="/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
+        <p class="footer-tag">A free, private network for messages, files, and devices. Owned by no one. Belongs to everyone.</p>
+      </div>
+      <div><h3>Network</h3><ul><li><a href="/how-it-works/">How it works</a></li><li><a href="/features/">Features</a></li><li><a href="/mesh/">Live mesh</a></li></ul></div>
+      <div><h3>For you</h3><ul><li><a href="/download/">Get One Link</a></li><li><a href="/security/">Security</a></li><li><a href="/accessibility/">Accessibility</a></li><li><a href="/transparency/">Transparency</a></li></ul></div>
+      <div><h3>For builders</h3><ul><li><a href="/builders/">Protocol &amp; source</a></li><li><a href="/changelog/">Changelog</a></li><li><a href="/download/source" rel="noopener">Source archive</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <span class="built-by">&copy; 2026 One Link contributors. <a href="/terms/">AGPL-3.0</a>. <a href="/security/">No tracking.</a> <a href="mailto:weareone@oneunity.earth">weareone@oneunity.earth</a></span>
+      <span class="built-by">we are one</span>
+    </div>
+  </div>
+</footer>
+
+<script type="module" src="/live/bridge.js"></script>
+</body>
+</html>

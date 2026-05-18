@@ -1287,9 +1287,177 @@ main { position: relative; z-index: 1; }
   border-radius: 50%;
 }
 
-/* Hide scrollbar on hero CTA hint row but keep keyboard visibility. */
+/* Hero CTA hint (OS-detected install-method one-liner, fades in once
+   bridge.js has resolved the OS). */
+.ol-hero-cta-hint {
+  font-family: var(--ol-mono);
+  font-size: 0.78rem;
+  color: var(--ol-text-dim);
+  margin: 0.6rem 0 0;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
 .ol-hero-cta-hint:focus-visible {
   outline: 2px solid var(--ol-cyan);
   outline-offset: 2px;
   border-radius: 4px;
 }
+
+/* =============================================================================
+   UTILITY CLASSES  (audit P1: replace 159 inline style="" attributes so the
+   CSP can drop 'unsafe-inline' from style-src — a real defense-in-depth win.)
+   Kept short, single-purpose, and named after the inline pattern they replace.
+   ========================================================================== */
+
+/* Spacing */
+.ol-mt-xs { margin-top: 0.7rem; }
+.ol-mt-sm { margin-top: 1rem; }
+.ol-mt    { margin-top: 1.5rem; }
+.ol-mt-lg { margin-top: 2rem; }
+.ol-mt-0  { margin-top: 0; }
+.ol-pb-sm { padding-bottom: 1rem; }
+.ol-pb    { padding-bottom: 2rem; }
+.ol-ml-xs { margin-left: 0.7rem; }
+.ol-mx-auto { margin-left: auto; margin-right: auto; }
+
+/* Layout */
+.ol-text-center { text-align: center; }
+.ol-justify-center { justify-content: center; }
+.ol-items-start { align-items: flex-start; }
+.ol-items-center { align-items: center; }
+.ol-gap-3 { gap: 3rem; }
+.ol-word-break { word-break: break-all; }
+
+/* Widths */
+.ol-mw-720 { max-width: 720px; }
+.ol-mw-680 { max-width: 680px; }
+.ol-mw-640 { max-width: 640px; }
+.ol-mw-56ch { max-width: 56ch; }
+.ol-mw-64ch { max-width: 64ch; }
+.ol-mw-52ch { max-width: 52ch; }
+.ol-mw-42ch { max-width: 42ch; }
+.ol-mw-38ch { max-width: 38ch; }
+
+/* Typography */
+.ol-italic { font-style: italic; }
+.ol-text-xs { font-size: 0.82rem; }
+.ol-mono { font-family: var(--ol-mono); }
+
+/* Colors */
+.ol-cyan-text { color: var(--ol-cyan); }
+.ol-green-text { color: var(--ol-green); }
+.ol-soft-text { color: var(--ol-text-soft); }
+.ol-dim-text { color: var(--ol-text-dim); }
+
+/* Composite (paragraph-of-body-text used 24x across legal/long-form pages) */
+.ol-prose {
+  color: var(--ol-text-soft);
+  font-size: 1.1rem;
+  line-height: 1.7;
+}
+
+/* Demo-output triplet (status badge inline-flex, output pre block hidden until run) */
+.ol-status-inline { margin-left: 0.7rem; display: none; }
+.ol-output-pre    { margin-top: 1rem; display: none; }
+
+/* Inline code tag in demo intros (mono + cyan, kept under 1.5em line) */
+.ol-inline-code {
+  font-family: var(--ol-mono);
+  color: var(--ol-cyan);
+}
+
+/* Mesh-canvas aspect-ratio wrapper */
+.ol-mesh-aspect-cinema { aspect-ratio: 21 / 9; }
+
+/* /one/ + /security/ tile sub-heading: small caps + mono */
+.ol-tile-subhead {
+  color: var(--ol-text);
+  font-size: 1.35rem;
+  line-height: 1.6;
+  font-family: var(--ol-mono);
+  margin-bottom: 0.4rem;
+}
+
+/* Footnote-tier dim badge after a tile heading */
+.ol-tile-badge {
+  color: var(--ol-text-dim);
+  font-size: 0.7em;
+  font-weight: 400;
+}
+
+/* Sphinx-style 3-up tag grid used on /security/ + /features/ */
+.ol-tag-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.6rem 1rem;
+}
+
+/* Centered narrow caption row */
+.ol-caption-centered {
+  text-align: center;
+  color: var(--ol-text-dim);
+  margin-top: 1.4rem;
+  font-size: 0.92rem;
+}
+
+/* Footnote row in /builders/ + /security/ blocks */
+.ol-footnote-soft {
+  margin-top: 1rem;
+  color: var(--ol-text-soft);
+}
+
+/* Footnote row in /builders/ that points at GitHub */
+.ol-footnote-dim {
+  margin-top: 1.5rem;
+  color: var(--ol-text-dim);
+  text-align: center;
+}
+
+/* Page-local: dim + mono attestation row, used on /builders/ + /download/ */
+.ol-attest-dim {
+  color: var(--ol-text-dim);
+  font-size: 0.82rem;
+  margin-top: 0.7rem;
+  font-family: var(--ol-mono);
+}
+
+/* Hero word-stagger delays (the only inline style="--d:.NNs" pattern across the
+   site). Promoted to classes so we can drop 'unsafe-inline' from CSP style-src.
+   Consumed by /css/immersive.css via `animation-delay: var(--d, 0s)`. */
+.ol-d-04  { --d: 0.04s;  }
+.ol-d-16  { --d: 0.16s;  }
+.ol-d-36  { --d: 0.36s;  }
+.ol-d-46  { --d: 0.46s;  }
+.ol-d-70  { --d: 0.70s;  }
+.ol-d-78  { --d: 0.78s;  }
+.ol-d-86  { --d: 0.86s;  }
+.ol-d-94  { --d: 0.94s;  }
+.ol-d-102 { --d: 1.02s; }
+.ol-d-110 { --d: 1.10s; }
+.ol-d-118 { --d: 1.18s; }
+
+/* Composite spacing leftovers from the inline-style audit. */
+.ol-mt-xl-center { margin-top: 2.5rem; text-align: center; }
+.ol-mb-sm        { margin-bottom: 1rem; }
+.ol-mw-24ch      { max-width: 24ch; }
+.ol-mw-56ch-cap  { max-width: 56ch; margin: 0 auto 2rem; }
+.ol-mw-720-center { max-width: 720px; text-align: center; }
+.ol-mw-mono-small { color: var(--ol-text-dim); font-family: var(--ol-mono); font-size: 0.85rem; }
+.ol-right-foot    { text-align: right; color: var(--ol-text-dim); font-size: 0.85rem; margin-top: 0.7rem; }
+.ol-list-prose    { color: var(--ol-text-soft); font-size: 1.05rem; line-height: 1.85; padding-left: 1.2rem; }
+.ol-prose-mt      { color: var(--ol-text-soft); font-size: 1.1rem; line-height: 1.7; margin-top: 1.5rem; }
+.ol-h-mono-cyan-lg {
+  color: var(--ol-cyan);
+  font-size: 1.55rem;
+  line-height: 1.6;
+  font-family: var(--ol-mono);
+  font-weight: 600;
+}
+.ol-inline-code-em { color: var(--ol-cyan); font-family: var(--ol-mono); font-size: 0.95em; }
+
+/* Status-dot color swatches (live-mesh page peer-dot legend). */
+.ol-swatch-cyan  { background: var(--ol-cyan);  box-shadow: 0 0 10px var(--ol-cyan); }
+.ol-swatch-amber { background: var(--ol-amber); box-shadow: 0 0 10px var(--ol-amber); }
+.ol-swatch-green { background: var(--ol-green); box-shadow: 0 0 10px var(--ol-green); }
+.ol-swatch-rose  { background: var(--ol-rose);  box-shadow: 0 0 10px var(--ol-rose); }
+.ol-swatch-violet{ background: var(--ol-violet);box-shadow: 0 0 10px var(--ol-violet); }

@@ -54,7 +54,7 @@
 <main id="main">
 
   <!-- ============================================================ HERO -->
-  <section class="hero" style="padding-bottom: 1rem;">
+  <section class="hero ol-pb-sm">
     <div class="container">
       <span class="we-are-one">Get One Link</span>
       <h1>One tap. <span class="grad">It just works.</span></h1>
@@ -74,12 +74,12 @@
             Download for macOS
             <span class="arr" aria-hidden="true">&darr;</span>
           </a>
-          <p style="color: var(--ol-text-soft); margin: 0; max-width: 52ch;">
+          <p class="ol-soft-text ol-mw-52ch">
             The download opens a real One Link session with the release relay, streams the binary chunk by chunk, and verifies the signature in your browser as it arrives. If your network blocks anything alien, it falls back to a plain signed download silently.
           </p>
         </div>
 
-        <div class="alts" aria-label="Other devices" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.6rem 1rem;">
+        <div class="alts ol-tag-grid" aria-label="Other devices">
           <a href="/download/windows" class="ol-platform-row">Windows <span class="ol-platform-status ready">59 MB .exe, today</span></a>
           <a href="/download/macos"   class="ol-platform-row">macOS   <span class="ol-platform-status">notarizing</span></a>
           <a href="/download/linux"   class="ol-platform-row">Linux   <span class="ol-platform-status ready">72 MB .tar.gz, today</span></a>
@@ -88,22 +88,22 @@
           <a href="/download/openbsd" class="ol-platform-row">OpenBSD <span class="ol-platform-status">build from source</span></a>
           <a href="/download/source"  class="ol-platform-row">Source  <span class="ol-platform-status ready">AGPL, today</span></a>
         </div>
-        <p style="color: var(--ol-text-dim); font-size: 0.82rem; margin-top: 0.7rem; font-family: var(--ol-mono);">
+        <p class="ol-attest-dim">
           honest status: Windows + Linux ship today, signed. macOS + Android + iOS are next. building from source works on every platform right now.
         </p>
 
         <div class="ol-attest" id="ol-attest">
           <div class="row"><span class="key">version</span><span class="val">0.21.0-alpha.0</span></div>
           <div class="row"><span class="key">platform</span><span class="val">windows .exe, 58.7 MB</span></div>
-          <div class="row"><span class="key">sha256</span><span class="val" id="ol-sha" style="word-break: break-all;">ea4efc8bf92f5ddd911e10f940a46899fda6fa786755ce797429b8fd62c05aed</span></div>
-          <div class="row"><span class="key">blake3</span><span class="val muted" style="word-break: break-all;">dbd29b475fba238344609089973c49fb7a947e58b187cd3591bb615c46c818f8</span></div>
-          <div class="row"><span class="key">signature</span><span class="val">Ed25519 <span style="color: var(--ol-green);">live + verifiable</span> &middot; ML-DSA-65 <span style="color: var(--ol-text-soft);">deferred</span></span></div>
+          <div class="row"><span class="key">sha256</span><span class="val ol-word-break" id="ol-sha">ea4efc8bf92f5ddd911e10f940a46899fda6fa786755ce797429b8fd62c05aed</span></div>
+          <div class="row"><span class="key">blake3</span><span class="val muted ol-word-break">dbd29b475fba238344609089973c49fb7a947e58b187cd3591bb615c46c818f8</span></div>
+          <div class="row"><span class="key">signature</span><span class="val">Ed25519 <span class="ol-green-text">live + verifiable</span> &middot; ML-DSA-65 <span class="ol-soft-text">deferred</span></span></div>
           <div class="row"><span class="key">source</span><span class="val muted">eb87dd2 (v0.21.0-alpha.0-71-geb87dd2)</span></div>
           <div class="row"><span class="key">verify</span><span class="val"><a class="verify" href="/api/attest/ea4efc8bf92f5ddd911e10f940a46899fda6fa786755ce797429b8fd62c05aed">read attestation chain</a> &middot; or use the live verifier below</span></div>
         </div>
       </div>
 
-      <p style="text-align: center; color: var(--ol-text-dim); margin-top: 1.4rem; font-size: 0.92rem;">
+      <p class="ol-caption-centered">
         No account. No email. No tracking. Free forever.
       </p>
     </div>
@@ -147,7 +147,7 @@
   <!-- ============================================================ HOW THE DOWNLOAD ACTUALLY WORKS -->
   <section class="section">
     <div class="container">
-      <div class="ol-grid ol-grid-2" style="gap: 3rem; align-items: center;">
+      <div class="ol-grid ol-grid-2 ol-gap-3 ol-items-center">
         <div>
           <span class="kicker">The download itself</span>
           <h2>It is <span class="grad">already</span> One Link.</h2>
@@ -178,7 +178,7 @@
       <p class="lede">
         Tap the toggle and the binary takes a three-hop route through volunteer relays on its way to you. Nobody, not even us, knows who pulled it. Same file, same hash, slower by a beat.
       </p>
-      <p style="color: var(--ol-text-soft); max-width: 56ch;">
+      <p class="ol-soft-text ol-mw-56ch">
         Your visit lives in your tab. The request lives between you and the relay. The relay lives between you and the file. Nothing about the download is recorded anywhere it could be retrieved later. The architecture itself keeps it that way.
       </p>
 
@@ -189,16 +189,16 @@
         actual wire bytes the daemon would emit for a real onion-routed
         transfer. No network call.
       -->
-      <div class="ol-private-demo" style="margin-top: 2rem;">
+      <div class="ol-private-demo ol-mt-lg">
         <button type="button" id="ol-private-route-btn" class="btn btn-primary">
           Run a real Sphinx route, right here
           <span class="arr" aria-hidden="true">&rarr;</span>
         </button>
-        <span class="ol-status" id="ol-private-route-status" style="margin-left: 0.7rem; display: none;">
+        <span class="ol-status ol-status-inline" id="ol-private-route-status">
           <span class="dot"></span>
           <span>computing</span>
         </span>
-        <pre class="ol-code" id="ol-private-route-out" style="margin-top: 1rem; display: none;"></pre>
+        <pre class="ol-code ol-output-pre" id="ol-private-route-out"></pre>
       </div>
     </div>
   </section>
@@ -208,33 +208,33 @@
     <div class="container">
       <span class="kicker">Cryptographic receipt</span>
       <h2>Verify the binary <span class="grad">before you run it.</span></h2>
-      <p class="lede" style="max-width: 64ch;">
+      <p class="lede ol-mw-64ch">
         Every release ships next to a signed attestation document. The button below fetches that attestation, recomputes the canonical bytes locally, and verifies the Ed25519 signature against the pinned release-signing pubkey in your browser. A green check means the bytes you're about to receive are bit-for-bit what the maintainer signed. The proof is right here, every time.
       </p>
 
-      <div class="ol-private-demo" style="margin-top: 1.5rem;">
+      <div class="ol-private-demo ol-mt">
         <button type="button" id="ol-attest-btn" class="btn btn-primary">
           Verify the latest Windows attestation in this tab
           <span class="arr" aria-hidden="true">&rarr;</span>
         </button>
-        <span class="ol-status" id="ol-attest-status" style="margin-left: 0.7rem; display: none;">
+        <span class="ol-status ol-status-inline" id="ol-attest-status">
           <span class="dot"></span>
           <span>fetching + verifying</span>
         </span>
-        <pre class="ol-code" id="ol-attest-out" style="margin-top: 1rem; display: none;"></pre>
+        <pre class="ol-code ol-output-pre" id="ol-attest-out"></pre>
       </div>
     </div>
   </section>
 
   <!-- ============================================================ SOURCE -->
   <section class="section">
-    <div class="container" style="text-align: center;">
+    <div class="container ol-text-center">
       <span class="kicker">Or build it yourself</span>
       <h2>The whole thing is <span class="grad">in the open.</span></h2>
-      <p class="lede" style="margin-left: auto; margin-right: auto;">
+      <p class="lede ol-mx-auto">
         AGPL-3.0. Every line of the daemon, every protocol crate, every shader, every word of this site. Clone it. Read it. Fork it. Run your own relay.
       </p>
-      <div class="cta-row" style="justify-content: center;">
+      <div class="cta-row ol-justify-center">
         <a href="/download/source" class="btn btn-ghost btn-large" rel="noopener">
           See the source on GitHub
         </a>
@@ -258,8 +258,8 @@
         <p class="footer-tag">A free, private network for messages, files, and devices. Owned by no one. Belongs to everyone.</p>
       </div>
       <div><h3>Network</h3><ul><li><a href="/how-it-works/">How it works</a></li><li><a href="/features/">Features</a></li><li><a href="/mesh/">Live mesh</a></li></ul></div>
-      <div><h3>For you</h3><ul><li><a href="/download/">Get One Link</a></li><li><a href="/security/">Security</a></li><li><a href="/about/">About</a></li></ul></div>
-      <div><h3>For builders</h3><ul><li><a href="/builders/">Protocol &amp; source</a></li><li><a href="/download/source" rel="noopener">Source archive</a></li></ul></div>
+      <div><h3>For you</h3><ul><li><a href="/download/">Get One Link</a></li><li><a href="/security/">Security</a></li><li><a href="/accessibility/">Accessibility</a></li><li><a href="/transparency/">Transparency</a></li></ul></div>
+      <div><h3>For builders</h3><ul><li><a href="/builders/">Protocol &amp; source</a></li><li><a href="/changelog/">Changelog</a></li><li><a href="/download/source" rel="noopener">Source archive</a></li></ul></div>
     </div>
     <div class="footer-bottom">
       <span class="built-by">&copy; 2026 One Link contributors. <a href="/terms/">AGPL-3.0</a>. <a href="/security/">No tracking.</a> <a href="mailto:weareone@oneunity.earth">weareone@oneunity.earth</a></span>
