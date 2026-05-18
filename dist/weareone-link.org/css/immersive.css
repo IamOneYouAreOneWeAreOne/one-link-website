@@ -291,7 +291,8 @@ body.ol-immersive::before {
 .ol-audio-toggle {
   position: fixed;
   bottom: 1.3rem;
-  right: 1.3rem;
+  left: 1.3rem;                 /* bottom-LEFT, not bottom-right (was colliding
+                                   with the live-mesh widget in bottom-right) */
   z-index: 30;
   display: inline-flex;
   align-items: center;
@@ -317,14 +318,13 @@ body.ol-immersive::before {
   color: var(--ol-cyan);
   border-color: var(--ol-line-bright);
 }
-.ol-audio-toggle[aria-pressed="true"] .ol-audio-icon::before {
-  content: "\1F50A";  /* speaker with sound waves */
-}
 .ol-audio-toggle .ol-audio-icon { display: inline-block; }
-.ol-audio-toggle .ol-audio-icon::before { content: "\1F507"; } /* muted */
+/* NOTE: the icon emoji is owned by the HTML (`&#x1F507;`) — JS swaps it on
+   press. We previously also injected the emoji via ::before content which
+   doubled it visually ("🔇🔇 sound"). Removed. */
 
 @media (max-width: 720px) {
-  .ol-audio-toggle { bottom: 4.5rem; right: 1rem; }
+  .ol-audio-toggle { bottom: 4.5rem; left: 1rem; right: auto; }
 }
 
 /* =============================================================================

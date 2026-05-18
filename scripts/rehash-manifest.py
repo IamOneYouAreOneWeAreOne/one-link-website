@@ -110,8 +110,9 @@ def main() -> int:
     # browser ever re-fetches an updated CSS/JS/image is if the URL changes.
     # Bump a `?v={version}` query on every HTML reference so the URL is fresh.
     bust_targets = [
-        ("/css/one-link.css", re.compile(r'(/css/one-link\.css)(\?v=[^"\s]+)?')),
-        ("/live/bridge.js",   re.compile(r'(/live/bridge\.js)(\?v=[^"\s]+)?')),
+        ("/css/one-link.css",  re.compile(r'(/css/one-link\.css)(\?v=[^"\s]+)?')),
+        ("/css/immersive.css", re.compile(r'(/css/immersive\.css)(\?v=[^"\s]+)?')),
+        ("/live/bridge.js",    re.compile(r'(/live/bridge\.js)(\?v=[^"\s]+)?')),
     ]
     html_pages = list(dist.rglob("*.html"))
     bust_count = 0

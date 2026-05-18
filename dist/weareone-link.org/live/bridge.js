@@ -2935,14 +2935,19 @@ function ambientAudioStop() {
 function wireAmbientAudioToggle() {
   const btn = $('#ol-audio-toggle');
   if (!btn) return;
+  const iconEl = btn.querySelector('.ol-audio-icon');
+  const ICON_MUTED = '\u{1F507}'; // muted speaker
+  const ICON_LIVE  = '\u{1F50A}'; // speaker with waves
   btn.addEventListener('click', () => {
     const on = btn.getAttribute('aria-pressed') === 'true';
     if (on) {
       ambientAudioStop();
       btn.setAttribute('aria-pressed', 'false');
+      if (iconEl) iconEl.textContent = ICON_MUTED;
     } else {
       ambientAudioStart();
       btn.setAttribute('aria-pressed', 'true');
+      if (iconEl) iconEl.textContent = ICON_LIVE;
     }
   });
 }
