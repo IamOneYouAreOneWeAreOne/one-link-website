@@ -2767,6 +2767,20 @@ async function startChatWith(peerId) {
   setChatState('asking', 'is-pending');
   if (!sendChatFrame('chat-request', peerId, { invite_hex: hexEncode(inviter.inviteBytes) })) {
     setChatState('offline (presence socket down)', 'is-closed');
+    return;
+  }
+  // Surface a clear instruction in the chat log so the user knows what to
+  // do next — without this they just see "asking" silently and assume
+  // typing is broken. The recipient needs to click "say hi" on THEIR side.
+  const els = chatPanelEls();
+  if (els.log) {
+    const note = document.createElement('div');
+    note.className = 'ol-chat-instruction';
+    note.style.cssText = 'color: var(--ol-text-soft); font-family: var(--ol-mono); font-size: 0.82rem; padding: 0.7rem 0.2rem; line-height: 1.5;';
+    note.innerHTML =
+      'request sent. they will see a <strong style="color: var(--ol-cyan);">someone wants to talk</strong> toast in their top-right corner.' +
+      '<br><br>they click <strong style="color: var(--ol-cyan);">say hi</strong> &rarr; both panels flip to <strong style="color: var(--ol-green);">live</strong> &rarr; typing is enabled.';
+    els.log.appendChild(note);
   }
 }
 
