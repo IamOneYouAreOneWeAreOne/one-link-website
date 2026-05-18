@@ -668,7 +668,23 @@ function startMeshViz() {
     return anchors[0];
   }
 
+  /** @type {Array<{id?:string, x:number, y:number, phase:number, speed:number, you:boolean, relay:boolean}>} */
   let nodes = [];
+
+  // Active chat partner (peer id) — highlighted on the canvas with a brighter
+  // glow + active mesh edge to self. null when no chat is active.
+  let chatPartnerId = null;
+
+  // Stable-randoms keyed by peer id so a peer keeps its position + phase
+  // across re-renders (so dots don't teleport when the peer list changes).
+  const nodeCacheById = new Map();
+  function stableJitter(id, salt) {
+    let h = 5381;
+    for (let i = 0; i < id.length; i++) h = ((h << 5) + h) ^ id.charCodeAt(i);
+    h ^= salt * 0x9e3779b1;
+    return ((h >>> 0) % 10000) / 10000;
+  }
+
   function seedNodes(n) {
     nodes = [];
     for (let i = 0; i < n; i++) {
@@ -676,6 +692,7 @@ function startMeshViz() {
       const jitterR = 0.05 + Math.random() * 0.09;
       const jitterTheta = Math.random() * Math.PI * 2;
       nodes.push({
+        id: undefined,                          // anonymous filler node
         x: a.x + Math.cos(jitterTheta) * jitterR,
         y: a.y + Math.sin(jitterTheta) * jitterR,
         phase: Math.random() * Math.PI * 2,
@@ -685,9 +702,52 @@ function startMeshViz() {
       });
     }
   }
-  // Empty until real presence data arrives. No fake 420-dot starter cloud —
-  // the canvas reads true node count from MeshPresence via setPresence()
-  // (called whenever the presence WebSocket emits an update).
+
+  /**
+   * Drive the canvas directly from real MeshPresence peers.
+   * Each peer becomes a node with a deterministic, stable position derived
+   * from its id + the longitude hint, so dots don't shuffle around on
+   * re-renders. Self peer is marked .you.
+   */
+  function setRealPeers(selfId, selfGeo, peers /* Map<id,{lat,lng}> */) {
+    /** @type {Array<any>} */
+    const next = [];
+    const seen = new Set();
+    const addOne = (id, p, isSelf) => {
+      seen.add(id);
+      let cached = nodeCacheById.get(id);
+      if (!cached) {
+        // Position: anchor near peer's (lat, lng) but spread by a stable
+        // id-derived jitter so co-located peers fan out into a constellation.
+        const jx = (stableJitter(id, 1) - 0.5) * 0.18;
+        const jy = (stableJitter(id, 2) - 0.5) * 0.18;
+        cached = {
+          id,
+          x: Math.max(0.05, Math.min(0.95, (p?.lng ?? 0.5) + jx)),
+          y: Math.max(0.10, Math.min(0.90, (1 - (p?.lat ?? 0.5)) + jy)),
+          phase: stableJitter(id, 3) * Math.PI * 2,
+          speed: 0.45 + stableJitter(id, 4) * 0.55,
+          relay: false,                          // self-reported relay role only
+        };
+        nodeCacheById.set(id, cached);
+      }
+      next.push({ ...cached, you: isSelf });
+    };
+    if (selfId) addOne(selfId, selfGeo || { lat: 0.5, lng: 0.5 }, true);
+    if (peers) {
+      for (const [pid, p] of peers) {
+        if (pid === selfId) continue;
+        addOne(pid, p, false);
+      }
+    }
+    // Evict cached entries that didn't show up this pass (peer left).
+    for (const id of Array.from(nodeCacheById.keys())) {
+      if (!seen.has(id)) nodeCacheById.delete(id);
+    }
+    nodes = next;
+  }
+
+  // Empty until real presence data arrives. No fake 420-dot starter cloud.
   seedNodes(0);
 
   const start = performance.now();
@@ -755,26 +815,46 @@ function startMeshViz() {
     // ---- mesh edges (peer <-> peer) — brightness from midpoint field
     if (nodes.length >= 2) {
       ctx.lineCap = 'round';
+      const youIdx = nodes.findIndex(n => n.you);
+      const partnerIdx = chatPartnerId ? nodes.findIndex(n => n.id === chatPartnerId) : -1;
       for (let i = 0; i < nodes.length; i++) {
         for (let j = i + 1; j < nodes.length; j++) {
           const a = nodes[i], b = nodes[j];
           const dx = b.x - a.x, dy = b.y - a.y;
           const d = Math.sqrt(dx * dx + dy * dy);
-          // Show edges for the closest peers always, plus a long-range subset
-          // so the mesh visibly spans the canvas. Bright edges < 0.32, faint
-          // long-range edges 0.32-0.55.
           if (d > 0.55) continue;
+
+          // Active chat edge: bright animated, regardless of distance.
+          const isActiveChatEdge =
+            youIdx >= 0 && partnerIdx >= 0 &&
+            ((i === youIdx && j === partnerIdx) || (i === partnerIdx && j === youIdx));
+
           const isNear = d < 0.32;
           const breathing = 0.5 + 0.5 * Math.sin(t * 1.7 + i * 0.7 + j * 0.5);
-          const alpha = (isNear ? 0.18 : 0.06) * (0.7 + 0.3 * breathing);
+          let alpha = (isNear ? 0.18 : 0.06) * (0.7 + 0.3 * breathing);
+          let lineW = isNear ? 1.1 * dpr : 0.6 * dpr;
+          let stops = [
+            [0,    `hsla(178, 90%, 70%, ${alpha * 0.6})`],
+            [0.5,  `hsla(195, 95%, 80%, ${alpha})`],
+            [1,    `hsla(220, 90%, 70%, ${alpha * 0.6})`],
+          ];
+          if (isActiveChatEdge) {
+            // Energy ripples along the edge: brighter, animated phase.
+            const pulse = 0.6 + 0.4 * Math.sin(t * 3.2);
+            alpha = 0.55 + 0.25 * pulse;
+            lineW = 2.6 * dpr;
+            stops = [
+              [0,    `hsla(42, 95%, 70%, ${alpha})`],
+              [0.5,  `hsla(160, 95%, 78%, ${alpha + 0.1})`],
+              [1,    `hsla(290, 90%, 78%, ${alpha})`],
+            ];
+          }
           const ax = a.x * w, ay = a.y * h;
           const bx = b.x * w, by = b.y * h;
           const g = ctx.createLinearGradient(ax, ay, bx, by);
-          g.addColorStop(0,    `hsla(178, 90%, 70%, ${alpha * 0.6})`);
-          g.addColorStop(0.5,  `hsla(195, 95%, 80%, ${alpha})`);
-          g.addColorStop(1,    `hsla(220, 90%, 70%, ${alpha * 0.6})`);
+          for (const [stop, color] of stops) g.addColorStop(stop, color);
           ctx.strokeStyle = g;
-          ctx.lineWidth = isNear ? 1.1 * dpr : 0.6 * dpr;
+          ctx.lineWidth = lineW;
           ctx.beginPath();
           ctx.moveTo(ax, ay);
           ctx.lineTo(bx, by);
@@ -794,14 +874,17 @@ function startMeshViz() {
       const x = (a.x + (b.x - a.x) * p.t) * w;
       const y = (a.y + (b.y - a.y) * p.t) * h;
       const fade = Math.sin(Math.PI * p.t);  // bright in middle, fades at ends
-      const r = 2.4 * dpr;
-      const glow = ctx.createRadialGradient(x, y, 0, x, y, r * 6);
-      glow.addColorStop(0,   `hsla(${p.hue}, 95%, 90%, ${0.9 * fade})`);
-      glow.addColorStop(0.4, `hsla(${p.hue}, 90%, 70%, ${0.45 * fade})`);
+      const r = (p.bold ? 4.2 : 2.4) * dpr;
+      const haloMul = p.bold ? 10 : 6;
+      const a1 = (p.bold ? 1.0 : 0.9) * fade;
+      const a2 = (p.bold ? 0.65 : 0.45) * fade;
+      const glow = ctx.createRadialGradient(x, y, 0, x, y, r * haloMul);
+      glow.addColorStop(0,   `hsla(${p.hue}, 95%, 92%, ${a1})`);
+      glow.addColorStop(0.4, `hsla(${p.hue}, 90%, 72%, ${a2})`);
       glow.addColorStop(1,   `hsla(${p.hue}, 80%, 60%, 0)`);
       ctx.fillStyle = glow;
       ctx.beginPath();
-      ctx.arc(x, y, r * 6, 0, Math.PI * 2);
+      ctx.arc(x, y, r * haloMul, 0, Math.PI * 2);
       ctx.fill();
       ctx.fillStyle = `hsla(${p.hue}, 95%, 95%, ${fade})`;
       ctx.beginPath();
@@ -818,9 +901,20 @@ function startMeshViz() {
       const py = n.y * h;
       const isYou = n.you;
       const isRelay = n.relay;
-      const r = (isYou ? 7 : isRelay ? 5 : 3.5) * dpr;
-      const haloR = r * (isYou ? 5 : isRelay ? 4 : 3) * (0.85 + 0.25 * pulse);
-      const hue = isYou ? 42 : isRelay ? 178 : 200;
+      const isPartner = !!chatPartnerId && n.id === chatPartnerId;
+      const r = (isYou ? 7 : isPartner ? 6.5 : isRelay ? 5 : 3.5) * dpr;
+      const haloR = r * (isYou ? 5 : isPartner ? 5 : isRelay ? 4 : 3) * (0.85 + 0.25 * pulse);
+      const hue = isYou ? 42 : isPartner ? 300 : isRelay ? 178 : 200;
+
+      // Active-chat ring around the partner dot.
+      if (isPartner) {
+        const ringR = r * 3.2 + 4 * dpr * Math.sin(t * 4.0);
+        ctx.strokeStyle = `hsla(${hue}, 95%, 80%, ${0.55 + 0.3 * pulse})`;
+        ctx.lineWidth = 1.4 * dpr;
+        ctx.beginPath();
+        ctx.arc(px, py, ringR, 0, Math.PI * 2);
+        ctx.stroke();
+      }
 
       // Glow halo
       const halo = ctx.createRadialGradient(px, py, r * 0.5, px, py, haloR);
@@ -856,26 +950,66 @@ function startMeshViz() {
   }
   requestAnimationFrame(frame);
 
+  // ------ click hit-test + hover cursor (canvas-level) ---------------------
+  const hitTest = (ev) => {
+    const rect = canvas.getBoundingClientRect();
+    const cx = (ev.clientX - rect.left) / rect.width;
+    const cy = (ev.clientY - rect.top)  / rect.height;
+    const tol = 0.04;
+    let best = null, bestD = Infinity;
+    for (const n of nodes) {
+      const dx = n.x - cx, dy = n.y - cy;
+      const d  = dx * dx + dy * dy;
+      if (d < bestD) { bestD = d; best = n; }
+    }
+    return (best && Math.sqrt(bestD) <= tol && !best.you && best.id) ? best : null;
+  };
+  canvas.addEventListener('click', (ev) => {
+    const hit = hitTest(ev);
+    if (!hit) return;
+    if (typeof window.olStartChatWithPeer === 'function') {
+      window.olStartChatWithPeer(hit.id);
+    }
+  });
+  canvas.addEventListener('mousemove', (ev) => {
+    canvas.style.cursor = hitTest(ev) ? 'pointer' : 'default';
+  });
+
   return {
     setTopology(data) {
-      // Reserved for relay-population data once /api/topology returns
-      // active_relays > 0. Visitor counts come via setPresence() now.
       const n = data?.active_nodes;
-      if (typeof n === 'number' && n > 0) {
-        seedNodes(Math.min(n, 1200));
-      }
+      if (typeof n === 'number' && n > 0) seedNodes(Math.min(n, 1200));
     },
-    /**
-     * Reseed the canvas from REAL presence data.
-     * @param {number} liveCount  - true count of online One Link nodes (incl. self)
-     */
+    /** Legacy: count-only. Kept for fallback when real peer data is unavailable. */
     setPresence(liveCount) {
       const count = Math.max(0, Math.min(liveCount | 0, 1200));
       if (count !== nodes.length) seedNodes(count);
     },
+    /** Preferred: real peers from MeshPresence. Drives the canvas with stable
+     *  positions derived from peer ids so dots don't teleport on updates. */
+    setRealPeers,
+    /** Highlight a peer as the active chat partner (brighter glow + active edge
+     *  to self). Pass null to clear. */
+    setChatPartner(peerId) {
+      chatPartnerId = peerId;
+    },
+    /** Fire a visible packet between two peers (or self <-> partner) with a
+     *  payload hue. Used by the chat hook to make each message physically
+     *  visible flowing across the mesh. */
+    firePacket(fromId, toId, opts) {
+      const fromIdx = nodes.findIndex(n => n.id === fromId);
+      const toIdx   = nodes.findIndex(n => n.id === toId);
+      if (fromIdx < 0 || toIdx < 0 || fromIdx === toIdx) return false;
+      packets.push({
+        from: fromIdx, to: toIdx, t: 0,
+        speed: (opts && opts.speed) || 1.4,
+        hue:   (opts && opts.hue) ?? 42,
+        bold:  true,
+      });
+      return true;
+    },
     markYou() {
       if (nodes.length === 0) return;
-      // pick a node near the visitor's region (rough longitude estimate from TZ).
       const tzMinutes = -new Date().getTimezoneOffset();
       const x = ((tzMinutes / 60 + 12) / 24);
       let best = nodes[0], bestD = Infinity;
@@ -2292,10 +2426,14 @@ function setPresenceCount(n) {
     const e = $(sel);
     if (e) e.textContent = text;
   }
-  // Drive the /mesh/ big-canvas with the real count so we don't render
-  // hundreds of fake dots while N=1 (audit P0 honesty fix).
-  if (_meshVizApi && typeof _meshVizApi.setPresence === 'function') {
-    _meshVizApi.setPresence(n);
+  // Drive the /mesh/ big-canvas with the REAL peer data so the dots are
+  // identifiable, clickable, and positioned at each peer's geo hint.
+  if (_meshVizApi) {
+    if (typeof _meshVizApi.setRealPeers === 'function') {
+      _meshVizApi.setRealPeers(presence.selfId, presence.geoHint, presence.peers);
+    } else if (typeof _meshVizApi.setPresence === 'function') {
+      _meshVizApi.setPresence(n);   // legacy fallback
+    }
   }
 }
 
@@ -2348,7 +2486,12 @@ function startPresence() {
             if (p.id === presence.selfId) continue;
             presence.peers.set(p.id, p);
           }
-          renderPeerDots();        // re-render dot overlay
+          renderPeerDots();        // re-render widget dot overlay
+          // Also push to the /mesh/ big canvas so the dots are real peers
+          // identifiable by id (enables click-to-chat on the mesh).
+          if (_meshVizApi && typeof _meshVizApi.setRealPeers === 'function') {
+            _meshVizApi.setRealPeers(presence.selfId, presence.geoHint, presence.peers);
+          }
           break;
         }
         case 'ping': {
@@ -2723,6 +2866,7 @@ function mountChatPanelIfMissing() {
     <span class="ol-chat-dot" id="ol-chat-dot"></span>
     <span class="ol-chat-title" id="ol-chat-title">stranger</span>
     <span class="ol-chat-state" id="ol-chat-state">connecting</span>
+    <a href="#" class="ol-chat-on-mesh-link" id="ol-chat-on-mesh-link" aria-label="Open this chat on the live mesh page">see on the mesh &rarr;</a>
     <button type="button" class="ol-chat-close" id="ol-chat-close" aria-label="Close chat">&times;</button>
   </div>
   <div class="ol-chat-log" id="ol-chat-log" aria-live="polite"></div>
@@ -2758,6 +2902,7 @@ function chatPanelEls() {
     log:   $('#ol-chat-log'),
     form:  $('#ol-chat-form'),
     input: $('#ol-chat-input'),
+    onMesh: $('#ol-chat-on-mesh-link'),
     toast: $('#ol-chat-request-toast'),
     toastDot: $('#ol-chat-request-dot'),
     toastWhere: $('#ol-chat-request-where'),
@@ -2794,12 +2939,23 @@ function openChatPanel(peerId) {
   els.input.value = '';
   els.input.disabled = true;
   setChatState('asking', 'is-pending');
+  // Highlight the partner on the /mesh/ big canvas (no-op on other pages).
+  if (_meshVizApi && typeof _meshVizApi.setChatPartner === 'function') {
+    _meshVizApi.setChatPartner(peerId);
+  }
+  // On /mesh/, dock the chat panel inside the canvas frame.
+  document.body.classList.add('ol-chat-active');
 }
 
 function closeChatPanelLocal() {
   const els = chatPanelEls();
   if (els.panel) els.panel.hidden = true;
   chat.active = null;
+  // Clear the partner highlight on the canvas.
+  if (_meshVizApi && typeof _meshVizApi.setChatPartner === 'function') {
+    _meshVizApi.setChatPartner(null);
+  }
+  document.body.classList.remove('ol-chat-active');
 }
 
 function sendChatFrame(type, peerId, extra) {
@@ -3011,9 +3167,22 @@ async function handleChatMsg(fromId, msg) {
   try {
     const text = await openChatText(chat.active.key, msg.iv_b64, msg.ct_b64);
     appendChatMsg(text.slice(0, 280), 'other');
+    // Fire a visible packet on the mesh canvas: peer -> self.
+    // Hue scaled to message length so longer messages glow warmer.
+    firePacketOnMesh(fromId, presence.selfId, text.length);
   } catch (e) {
     appendChatMsg('(could not decrypt: ' + (e?.message || 'unknown') + ')', 'system');
   }
+}
+
+function firePacketOnMesh(fromId, toId, payloadLen) {
+  if (!_meshVizApi || typeof _meshVizApi.firePacket !== 'function') return;
+  // Color scale: short msg = cyan (178), long msg = warm magenta (320).
+  const len = Math.max(1, Math.min(280, payloadLen || 1));
+  const hue = 178 + (len / 280) * 142;     // 178..320
+  // Speed scale: longer msg travels slightly slower (more bytes to carry).
+  const speed = 1.6 - (len / 280) * 0.5;
+  _meshVizApi.firePacket(fromId, toId, { hue, speed });
 }
 
 function appendChatMsg(text, kind) {
@@ -3048,6 +3217,8 @@ function wireChat() {
         if (sendChatFrame('chat-msg', chat.active.peerId, sealed)) {
           appendChatMsg(text, 'self');
           els.input.value = '';
+          // Fire a visible packet on the mesh canvas: self -> peer.
+          firePacketOnMesh(presence.selfId, chat.active.peerId, text.length);
         }
       } catch (err) {
         appendChatMsg('(send failed: ' + (err?.message || 'unknown') + ')', 'system');
@@ -3062,6 +3233,41 @@ function wireChat() {
   }
   if (els.toastAccept) els.toastAccept.addEventListener('click', () => acceptOrDeclineRequest(true));
   if (els.toastDecline) els.toastDecline.addEventListener('click', () => acceptOrDeclineRequest(false));
+
+  // "see on the mesh →" — open /mesh/?chat=peerId in same tab so the visitor
+  // watches their own messages animate as packets on the live mesh canvas.
+  if (els.onMesh) {
+    els.onMesh.addEventListener('click', (e) => {
+      e.preventDefault();
+      const pid = chat.active?.peerId;
+      if (!pid) return;
+      location.href = `/mesh/?chat=${encodeURIComponent(pid)}`;
+    });
+  }
+
+  // Expose for the mesh-canvas click hit-test (uses window-scoped hook so the
+  // canvas module doesn't need to import the chat module).
+  window.olStartChatWithPeer = (peerId) => {
+    if (!peerId) return;
+    startChatWith(peerId).catch(err => console.warn('[chat] startChatWith failed', err));
+  };
+
+  // Deep-link: /mesh/?chat=<peerId> — auto-open chat with that peer once
+  // they appear in our peer list. Useful for "see this on the mesh →"
+  // links from the widget chat panel.
+  try {
+    const want = new URLSearchParams(location.search).get('chat');
+    if (want) {
+      const tryOpen = () => {
+        if (presence.peers.has(want)) {
+          startChatWith(want).catch(err => console.warn('[chat] deep-link failed', err));
+        } else {
+          setTimeout(tryOpen, 600);
+        }
+      };
+      setTimeout(tryOpen, 500);
+    }
+  } catch {}
 }
 
 // Expose a small public hook so the field renderer can also pulse on ping.

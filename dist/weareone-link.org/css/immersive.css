@@ -1054,6 +1054,64 @@ body.ol-mesh-page .ol-peer-overlay { display: none; }
   .ol-chat-request-toast { left: 1rem; right: 1rem; max-width: none; }
 }
 
+/* =============================================================================
+   DOCKED CHAT ON /mesh/  — chat panel slides in from the right edge of the
+   mesh canvas area so the conversation lives ON the mesh, not next to it.
+   Packets the chat fires animate in the canvas behind the panel.
+   ========================================================================== */
+body.ol-mesh-page.ol-chat-active .ol-chat-panel {
+  /* Anchored to right side of viewport, taller, with a slide-in animation
+     and a faint cyan-edge glow so the panel reads as docked into the mesh. */
+  bottom: 2rem;
+  right: 2rem;
+  top: auto;
+  width: min(380px, calc(100vw - 3rem));
+  max-height: min(72vh, 620px);
+  animation: ol-chat-dock-in 0.42s var(--ol-ease-out) both;
+  box-shadow:
+    0 18px 60px hsla(178, 90%, 50%, 0.28),
+    0 0 0 1px rgba(110, 240, 244, 0.32),
+    0 0 40px hsla(178, 90%, 65%, 0.18);
+}
+body.ol-mesh-page.ol-chat-active .ol-chat-log {
+  flex: 1 1 auto;
+  min-height: 220px;
+}
+body.ol-mesh-page.ol-chat-active .ol-mesh-overlay {
+  /* Slide the legend overlay up so the chat panel doesn't cover it */
+  bottom: auto;
+  top: 1rem;
+  left: 1rem;
+  right: auto;
+}
+@keyframes ol-chat-dock-in {
+  0%   { opacity: 0; transform: translateX(40px) scale(0.97); }
+  100% { opacity: 1; transform: translateX(0)    scale(1.0);  }
+}
+
+/* "See on the mesh →" link inside the chat panel (off-mesh pages only).
+   Sits in the chat-head between title and close, opens /mesh/?chat=peerId
+   so the visitor can watch the packets flow on the big canvas. */
+.ol-chat-on-mesh-link {
+  display: none;
+  margin-left: auto;
+  margin-right: 0.4rem;
+  font-family: var(--ol-mono);
+  font-size: 0.74rem;
+  color: var(--ol-cyan);
+  text-decoration: none;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  transition: color 0.15s, transform 0.15s;
+}
+.ol-chat-on-mesh-link:hover {
+  color: var(--ol-cyan-hot);
+  transform: translateX(2px);
+}
+body:not(.ol-mesh-page) .ol-chat-on-mesh-link {
+  display: inline;
+}
+
 /* legacy class kept for any non-immersive page */
 .ol-remote-tooltip {
   position: fixed;
