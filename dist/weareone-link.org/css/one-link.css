@@ -367,11 +367,24 @@ main { position: relative; z-index: 1; }
   line-height: 1.5;
 }
 
-.hero .cta-row {
+/* Default cta-row layout. .hero variant inherits from this; sections can
+   add `ol-justify-center` to center the buttons explicitly. */
+.cta-row {
   display: flex;
   flex-wrap: wrap;
   gap: 0.8rem 1rem;
   align-items: center;
+}
+.hero .cta-row { /* keep selector alive for legacy specificity matches */ }
+.cta-row.ol-justify-center { justify-content: center; }
+
+/* When the lede sits inside a text-centered container, also center the
+   block itself (the `.section .lede` rule sets margin: 0 0 2.5rem which
+   pins it flush-left; this restores the symmetric auto side-margins). */
+.ol-text-center .lede,
+.ol-text-center p.lede {
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* =============================================================================
