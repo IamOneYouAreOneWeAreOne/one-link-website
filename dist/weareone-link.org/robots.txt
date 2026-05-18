@@ -1,8 +1,20 @@
 User-agent: *
 Allow: /
+Allow: /download/
 Disallow: /api/
 Disallow: /native
-Disallow: /download/
+# Per-OS binary endpoints are payload routes (return the actual binary
+# or a "not yet" page), not content worth indexing. /share/<id> is
+# one-shot encrypted ciphertext, indexing it makes no sense either.
+Disallow: /download/windows
+Disallow: /download/macos
+Disallow: /download/linux
+Disallow: /download/android
+Disallow: /download/ios
+Disallow: /download/openbsd
+Disallow: /download/freebsd
+Disallow: /download/source
+Disallow: /share/
 
 # AI scrapers: we have nothing to hide, but we are not your training corpus.
 User-agent: GPTBot

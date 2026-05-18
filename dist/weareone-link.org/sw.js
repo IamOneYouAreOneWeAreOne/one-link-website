@@ -29,7 +29,7 @@
    License: AGPL-3.0-or-later
    ============================================================================ */
 
-const SW_VERSION = '0.21.0-alpha.0+r44';
+const SW_VERSION = '0.21.0-alpha.0+r45';
 const CACHE_NAME  = `ol-cache-${SW_VERSION}`;
 const META_DB     = 'ol-sw-meta';
 
@@ -51,44 +51,21 @@ const META_DB     = 'ol-sw-meta';
 const MANIFEST_PUBKEY_HEX =
   '79c4c8da1ed485541a03057a588bfd88cd6530b407d524866842ec004498464c';
 
-// Files we eagerly precache so the site works the first time you go offline.
-// Anything else gets cached on first visit (lazy stale-while-revalidate).
+// Files eagerly precached so the site works on first offline visit.
+// LEAN: only the homepage shell + critical CSS/JS + small icons.
+// Everything else (WASM bundles, secondary pages, shaders) is cached
+// lazily on first request. Drops first-visit precache from ~1.6 MB to
+// under 200 KB so landing on the homepage does not pull binaries the
+// visitor may never use. The integrity layer (signed manifest + SRI)
+// still verifies every cached asset on read, lazy or not.
 const PRECACHE_URLS = [
   '/',
-  '/download/',
-  '/how-it-works/',
-  '/features/',
-  '/security/',
-  '/mesh/',
-  '/builders/',
-  '/about/',
-  '/privacy/',
-  '/terms/',
   '/css/one-link.css',
   '/css/immersive.css',
   '/live/bridge.js',
-  '/live/shaders/coherence-field.wgsl',
-  '/live/wasm/ol_pair_qr.js',
-  '/live/wasm/ol_pair_qr_bg.wasm',
-  '/live/wasm/ol_pqkem.js',
-  '/live/wasm/ol_pqkem_bg.wasm',
-  '/live/wasm/ol_pqsig.js',
-  '/live/wasm/ol_pqsig_bg.wasm',
-  '/live/wasm/ol_threshold_recovery.js',
-  '/live/wasm/ol_threshold_recovery_bg.wasm',
-  '/live/wasm/ol_ratchet.js',
-  '/live/wasm/ol_ratchet_bg.wasm',
-  '/live/wasm/ol_hwkey.js',
-  '/live/wasm/ol_hwkey_bg.wasm',
-  '/live/wasm/ol_onion.js',
-  '/live/wasm/ol_onion_bg.wasm',
-  '/live/wasm/ol_coherence_field.js',
-  '/live/wasm/ol_coherence_field_bg.wasm',
   '/images/favicon.ico',
   '/images/favicon.svg',
   '/images/logo-128.png',
-  '/images/logo-256.png',
-  '/images/logo-512.png',
   '/images/apple-touch-icon.png',
   '/manifest.json',
   '/app.webmanifest',
