@@ -413,16 +413,34 @@ async function download(env, os, request) {
     return json({ error: "unknown os", supported: [...known] }, { status: 404 });
   }
 
-  // Source download is REAL and AVAILABLE TODAY: served as a static asset
-  // bundled into dist/. Works on any device, including iOS (downloads as a
-  // .tar.gz the user can email to themselves / open with Files app).
-  if (os === "source") {
+  // Source download is REAL and AVAILABLE TODAY: served from R2 so the
+  // 38 MB tarball does not have to live in the website git history.
+  // Works on any device, including iOS (downloads as a .tar.gz the user
+  // can email to themselves / open with Files app).
+  if (os === "source" && env.RELEASES) {
     const ua = (request?.headers.get("User-Agent") || "").toLowerCase();
     const wantsZip = /windows|iphone|ipad|ios|android|mac os/.test(ua);
-    const target = wantsZip
-      ? "/downloads/one-link-source.zip"
-      : "/downloads/one-link-source.tar.gz";
-    return Response.redirect(new URL(target, request.url).toString(), 302);
+    const key = wantsZip
+      ? "latest/one-link-source.zip"
+      : "latest/one-link-source.tar.gz";
+    const obj = await env.RELEASES.get(key);
+    if (obj) {
+      const headers = new Headers();
+      headers.set("Content-Type", wantsZip ? "application/zip" : "application/gzip");
+      headers.set(
+        "Content-Disposition",
+        `attachment; filename="${wantsZip ? "one-link-source.zip" : "one-link-source.tar.gz"}"`
+      );
+      headers.set("Cache-Control", "public, max-age=86400");
+      for (const [k, v] of Object.entries(PRIVACY_HEADERS)) headers.set(k, v);
+      for (const [k, v] of Object.entries(NEL_OPT_OUT_HEADERS)) headers.set(k, v);
+      return new Response(obj.body, { headers });
+    }
+    // R2 miss: 503 with honest reason.
+    return json(
+      { error: "source archive temporarily unavailable", note: "R2 object missing; retry shortly" },
+      { status: 503 }
+    );
   }
 
   // Windows .exe: 59 MB single-file PyInstaller build with
@@ -738,7 +756,24 @@ export default {
 
     // Everything else: static assets
     const assetResponse = await env.ASSETS.fetch(request);
-    return applyHeaders(assetResponse);
+    const finalized = applyHeaders(assetResponse);
+    // Long-cache the asset paths the HTML cache-busts via `?v=N`. Any change
+    // to the file bumps the version query, forcing a fresh URL; until then
+    // `immutable` lets the browser skip even a conditional revalidate.
+    if (path.startsWith("/css/") ||
+        path.startsWith("/live/") ||
+        path.startsWith("/images/") ||
+        path.startsWith("/og/") ||
+        path === "/app.webmanifest") {
+      const h = new Headers(finalized.headers);
+      h.set("Cache-Control", "public, max-age=31536000, immutable");
+      return new Response(finalized.body, {
+        status: finalized.status,
+        statusText: finalized.statusText,
+        headers: h,
+      });
+    }
+    return finalized;
   },
 };
 

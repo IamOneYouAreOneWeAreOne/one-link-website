@@ -29,7 +29,7 @@ from __future__ import annotations
 
 import hashlib
 import json
-import re
+import re  # noqa: F401  - used below by the cache-bust pass
 import subprocess
 import sys
 from pathlib import Path
@@ -103,6 +103,40 @@ def main() -> int:
 
     print(f":: bumped version {old_version} -> {new_version}")
     print(f":: rehashed {len(updated)} assets in {manifest_path.relative_to(site_root)}")
+
+    # ---- Stage 2b: cache-bust the long-lived asset URLs in every HTML page.
+    # The worker serves /css/*, /live/*, /images/*, /og/* with
+    # `Cache-Control: public, max-age=31536000, immutable` — so the only way a
+    # browser ever re-fetches an updated CSS/JS/image is if the URL changes.
+    # Bump a `?v={version}` query on every HTML reference so the URL is fresh.
+    bust_targets = [
+        ("/css/one-link.css", re.compile(r'(/css/one-link\.css)(\?v=[^"\s]+)?')),
+        ("/live/bridge.js",   re.compile(r'(/live/bridge\.js)(\?v=[^"\s]+)?')),
+    ]
+    html_pages = list(dist.rglob("*.html"))
+    bust_count = 0
+    for page in html_pages:
+        text = page.read_text(encoding="utf-8")
+        orig = text
+        for _, pat in bust_targets:
+            text = pat.sub(rf"\1?v={new_version}", text)
+        if text != orig:
+            page.write_text(text, encoding="utf-8")
+            bust_count += 1
+    print(f":: cache-busted /css + /live URLs in {bust_count} HTML files")
+
+    # The HTML files just got rewritten, so their SHA-256s in the manifest are
+    # now stale. Re-hash the HTML entries one more time.
+    for asset_path in list(manifest.get("assets", {}).keys()):
+        if not asset_path.endswith(".html"):
+            continue
+        local = dist / asset_path.lstrip("/")
+        if local.exists():
+            manifest["assets"][asset_path] = f"sha256-{sha256_hex(local)}"
+    with manifest_path.open("w", encoding="utf-8") as f:
+        json.dump(manifest, f, indent=2)
+        f.write("\n")
+    print(":: re-hashed HTML entries after cache-bust pass")
 
     # ---- Stage 3: sign --------------------------------------------------
     signer = site_root / "scripts" / "sign-manifest.py"

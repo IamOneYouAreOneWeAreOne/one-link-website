@@ -27,8 +27,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="modulepreload" href="/live/bridge.js">
-  <link rel="stylesheet" href="/css/one-link.css">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r50">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r50">
 </head>
 <body>
 <a href="#main" class="skip-link">Skip to content</a>
@@ -88,7 +88,7 @@
 
         <article class="ol-tile">
           <h3>Shared folders</h3>
-          <p>Drop a file in, it appears on the other side. Versioned, conflict-free, no "the cloud."</p>
+          <p>Drop a file in, it appears on the other side. Versioned, conflict-free, stored on your devices.</p>
         </article>
 
         <article class="ol-tile">
@@ -112,8 +112,8 @@
       <div class="ol-grid ol-grid-3">
 
         <article class="ol-tile">
-          <h3>Three-hop private routing</h3>
-          <p>One toggle. Sphinx-routed through volunteer relays. Post-quantum blinded at every hop. No one knows who sent what to whom.</p>
+          <h3>Three-hop private routing <span class="ol-tile-badge">(in flight, lands v0.22)</span></h3>
+          <p>One toggle. Sphinx-routed through volunteer relays. Post-quantum blinded at every hop. No one knows who sent what to whom. The crates are shipped today; the daemon toggle wires in v0.22.</p>
         </article>
 
         <article class="ol-tile">
@@ -132,13 +132,13 @@
         </article>
 
         <article class="ol-tile">
-          <h3>Duress mode</h3>
-          <p>A second passphrase that opens a believable empty account. The math gives you a way out.</p>
+          <h3>Duress mode <span class="ol-tile-badge">(in flight, lands v0.22)</span></h3>
+          <p>A second passphrase that opens a believable empty account. The math gives you a way out. Primitive crate shipped; daemon wiring lands in v0.22.</p>
         </article>
 
         <article class="ol-tile">
           <h3>Confidential builds</h3>
-          <p>Every release is built in a sealed environment with attestation. You can verify nobody touched it.</p>
+          <p>Every release is built in a sealed environment with attestation. You can verify the binary matches the attested build.</p>
         </article>
 
       </div>
@@ -147,42 +147,61 @@
 
   <section class="section">
     <div class="container">
-      <span class="kicker">How we compare</span>
-      <h2>Side by side with <span class="grad">everyone else.</span></h2>
-      <p class="lede">Honest table. We marked "yes" only where the architecture itself guarantees it. Policy promises do not count.</p>
+      <span class="kicker">The promises, kept by the architecture</span>
+      <h2>What One Link <span class="grad">guarantees.</span></h2>
+      <p class="lede">Each line is a property the math itself enforces, not a policy someone could change later. The crate or proof behind each one is named, linkable, and audit-ready.</p>
 
-      <div class="ol-compare-wrap">
-        <table class="ol-compare">
-          <thead>
-            <tr>
-              <th></th>
-              <th class="ol-own">One Link</th>
-              <th>Signal</th>
-              <th>WhatsApp</th>
-              <th>iMessage</th>
-              <th>Telegram</th>
-              <th>AirDrop</th>
-              <th>Magic Wormhole</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr><td>No account / email / phone</td><td class="yes">yes</td><td class="no">phone</td><td class="no">phone</td><td class="no">apple id</td><td class="no">phone</td><td class="yes">yes</td><td class="yes">yes</td></tr>
-            <tr><td>End to end by default</td><td class="yes">yes</td><td class="yes">yes</td><td class="yes">yes</td><td class="yes">yes</td><td class="no">no</td><td class="yes">yes</td><td class="yes">yes</td></tr>
-            <tr><td>No central server in path</td><td class="yes">yes</td><td class="no">no</td><td class="no">no</td><td class="no">no</td><td class="no">no</td><td class="yes">yes (local)</td><td class="no">no</td></tr>
-            <tr><td>Post-quantum hybrid keys</td><td class="yes">yes</td><td class="no">no</td><td class="no">no</td><td class="yes">PQ3</td><td class="no">no</td><td class="no">no</td><td class="no">no</td></tr>
-            <tr><td>Optional three-hop routing</td><td class="yes">yes</td><td class="no">no</td><td class="no">no</td><td class="no">no</td><td class="no">no</td><td class="no">no</td><td class="no">no</td></tr>
-            <tr><td>Send 50GB+ peer to peer</td><td class="yes">yes</td><td class="no">no</td><td class="no">no</td><td class="no">no</td><td class="no">no</td><td class="yes">local only</td><td class="yes">yes</td></tr>
-            <tr><td>Works offline / LAN only</td><td class="yes">yes</td><td class="no">no</td><td class="no">no</td><td class="no">no</td><td class="no">no</td><td class="yes">yes</td><td class="no">no</td></tr>
-            <tr><td>Source open and verifiable</td><td class="yes">AGPL</td><td class="yes">GPL</td><td class="no">no</td><td class="no">no</td><td class="no">partial</td><td class="no">no</td><td class="yes">MIT</td></tr>
-            <tr><td>Reproducible signed builds</td><td class="yes">yes</td><td class="yes">partial</td><td class="no">no</td><td class="no">no</td><td class="no">no</td><td class="no">no</td><td class="no">no</td></tr>
-            <tr><td>Pair devices in 5 seconds</td><td class="yes">QR + SAS</td><td class="no">link</td><td class="no">QR</td><td class="no">apple id</td><td class="no">QR</td><td class="yes">tap</td><td class="no">code</td></tr>
-            <tr><td>Free forever, no tier</td><td class="yes">yes</td><td class="yes">yes</td><td class="yes">yes</td><td class="yes">yes</td><td class="no">tiers</td><td class="yes">yes</td><td class="yes">yes</td></tr>
-            <tr><td>Threshold key recovery</td><td class="yes">yes</td><td class="no">no</td><td class="no">no</td><td class="no">no</td><td class="no">no</td><td class="no">no</td><td class="no">no</td></tr>
-            <tr><td>Confidential-compute attestation</td><td class="yes">yes</td><td class="no">no</td><td class="no">no</td><td class="yes">partial</td><td class="no">no</td><td class="no">no</td><td class="no">no</td></tr>
-          </tbody>
-        </table>
+      <div class="ol-grid ol-grid-2">
+        <article class="ol-tile">
+          <h3>No account, no email, no phone number.</h3>
+          <p>Identity is a keypair on your device. There is no user database anywhere. <span class="ol-soft-text">Crate: <code class="ol-inline-code">ol_pair_qr</code>. Identifier rotation built into the protocol.</span></p>
+        </article>
+        <article class="ol-tile">
+          <h3>End-to-end encrypted by default.</h3>
+          <p>The cleartext never leaves your device. Every chunk, every message. <span class="ol-soft-text">Crates: <code class="ol-inline-code">ol_ratchet</code>, <code class="ol-inline-code">ol_transfer</code>. Forward secrecy on every chunk.</span></p>
+        </article>
+        <article class="ol-tile">
+          <h3>No central server in the path.</h3>
+          <p>Direct peer-to-peer when possible, encrypted-relay forwarding when not. The relays we operate are just nodes; the network keeps running if every one of them goes away. <span class="ol-soft-text">Anyone can run a relay.</span></p>
+        </article>
+        <article class="ol-tile">
+          <h3>Post-quantum hybrid by default.</h3>
+          <p>X25519 + ML-KEM-768 for key exchange, Ed25519 + ML-DSA-65 for signatures. If either half breaks, the other still holds. <span class="ol-soft-text">Crates: <code class="ol-inline-code">ol_pqkem</code>, <code class="ol-inline-code">ol_pqsig</code>.</span></p>
+        </article>
+        <article class="ol-tile">
+          <h3>Reproducible signed builds.</h3>
+          <p>Every release is built in a sealed environment with an attestation document. Anyone can rebuild from source and verify byte equality. <span class="ol-soft-text">Verify in your tab on the download page.</span></p>
+        </article>
+        <article class="ol-tile">
+          <h3>Send anything peer-to-peer, no size cap.</h3>
+          <p>Native chunked transfer with per-chunk AEAD and fountain-coded loss recovery. 50 GB transfers tested. <span class="ol-soft-text">Crate: <code class="ol-inline-code">ol_transfer</code>.</span></p>
+        </article>
+        <article class="ol-tile">
+          <h3>Works on LAN or offline.</h3>
+          <p>The protocol is mDNS- and Bluetooth-aware. Pair across a room, send across an air-gapped network, sync when you reconnect.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Source open and verifiable.</h3>
+          <p>AGPL-3.0. Every crate, every shader, every word of this site. <a href="https://github.com/IamOneYouAreOneWeAreOne/one-link" rel="noopener" class="ol-cyan-text">github.com/IamOneYouAreOneWeAreOne/one-link</a></p>
+        </article>
+        <article class="ol-tile">
+          <h3>Pair devices in five seconds.</h3>
+          <p>QR plus a five-word short-authentication-string. The words mean the math agreed. <span class="ol-soft-text">Crate: <code class="ol-inline-code">ol_pair_qr</code>. Levenshtein-audited wordlist.</span></p>
+        </article>
+        <article class="ol-tile">
+          <h3>Free forever, no tier, no upsell.</h3>
+          <p>No business model. No subscription. No "pro" anything. The network is community-run, and so is the project.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Threshold key recovery.</h3>
+          <p>Split your account across k of n trusted shares. Survive a lost device without surviving a leak. <span class="ol-soft-text">Crate: <code class="ol-inline-code">ol_threshold_recovery</code>. BN multi-sig with per-signer R values.</span></p>
+        </article>
+        <article class="ol-tile">
+          <h3>Confidential-compute attestation.</h3>
+          <p>The build proves where it ran and what it ran. <span class="ol-soft-text">Crate: <code class="ol-inline-code">ol_confidential</code>. Software baseline today; hardware backends (TPM, SE, SGX, SEV-SNP, TrustZone) plug in.</span></p>
+        </article>
       </div>
-      <p class="ol-right-foot">Last reviewed 2026-05-16. Open a PR if anything in this table is wrong.</p>
+      <p class="ol-right-foot">Last reviewed 2026-05-17.</p>
     </div>
   </section>
 
@@ -213,6 +232,6 @@
   </div>
 </footer>
 
-<script type="module" src="/live/bridge.js"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r50"></script>
 </body>
 </html>

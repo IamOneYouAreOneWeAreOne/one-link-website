@@ -25,8 +25,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="modulepreload" href="/live/bridge.js">
-  <link rel="stylesheet" href="/css/one-link.css">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r50">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r50">
 </head>
 <body>
 <a href="#main" class="skip-link">Skip to content</a>
@@ -57,7 +57,7 @@
   <section class="hero ol-pb-sm">
     <div class="container">
       <span class="we-are-one">Get One Link</span>
-      <h1>One tap. <span class="grad">It just works.</span></h1>
+      <h1>One tap. <span class="grad">Ready the moment it opens.</span></h1>
       <p class="lede">
         We detected your device and prepared the right build. Signed, reproducibly built, and downloaded through the network itself instead of a normal HTTP fetch. The proof is right under the button.
       </p>
@@ -81,11 +81,11 @@
 
         <div class="alts ol-tag-grid" aria-label="Other devices">
           <a href="/download/windows" class="ol-platform-row">Windows <span class="ol-platform-status ready">59 MB .exe, today</span></a>
-          <a href="/download/macos"   class="ol-platform-row">macOS   <span class="ol-platform-status">notarizing</span></a>
+          <a href="/download/macos"   class="ol-platform-row">macOS   <span class="ol-platform-status">in flight</span></a>
           <a href="/download/linux"   class="ol-platform-row">Linux   <span class="ol-platform-status ready">72 MB .tar.gz, today</span></a>
-          <a href="/download/android" class="ol-platform-row">Android <span class="ol-platform-status">packaging</span></a>
-          <a href="/download/ios"     class="ol-platform-row">iOS     <span class="ol-platform-status">via TestFlight</span></a>
-          <a href="/download/openbsd" class="ol-platform-row">OpenBSD <span class="ol-platform-status">build from source</span></a>
+          <a href="/download/android" class="ol-platform-row">Android <span class="ol-platform-status">in flight</span></a>
+          <a href="/download/ios"     class="ol-platform-row">iOS     <span class="ol-platform-status">in flight</span></a>
+          <a href="/download/openbsd" class="ol-platform-row">OpenBSD <span class="ol-platform-status">source build, today</span></a>
           <a href="/download/source"  class="ol-platform-row">Source  <span class="ol-platform-status ready">AGPL, today</span></a>
         </div>
         <p class="ol-attest-dim">
@@ -97,7 +97,7 @@
           <div class="row"><span class="key">platform</span><span class="val">windows .exe, 58.7 MB</span></div>
           <div class="row"><span class="key">sha256</span><span class="val ol-word-break" id="ol-sha">ea4efc8bf92f5ddd911e10f940a46899fda6fa786755ce797429b8fd62c05aed</span></div>
           <div class="row"><span class="key">blake3</span><span class="val muted ol-word-break">dbd29b475fba238344609089973c49fb7a947e58b187cd3591bb615c46c818f8</span></div>
-          <div class="row"><span class="key">signature</span><span class="val">Ed25519 <span class="ol-green-text">live + verifiable</span> &middot; ML-DSA-65 <span class="ol-soft-text">deferred</span></span></div>
+          <div class="row"><span class="key">signature</span><span class="val">Ed25519 <span class="ol-green-text">live + verifiable</span> &middot; ML-DSA-65 <span class="ol-soft-text">in flight (lands v0.22)</span></span></div>
           <div class="row"><span class="key">source</span><span class="val muted">eb87dd2 (v0.21.0-alpha.0-71-geb87dd2)</span></div>
           <div class="row"><span class="key">verify</span><span class="val"><a class="verify" href="/api/attest/ea4efc8bf92f5ddd911e10f940a46899fda6fa786755ce797429b8fd62c05aed">read attestation chain</a> &middot; or use the live verifier below</span></div>
         </div>
@@ -124,7 +124,7 @@
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L4 6v6c0 5 3.5 9 8 10 4.5-1 8-5 8-10V6l-8-4z"/></svg>
           </span>
           <h3>Signed and verifiable today.</h3>
-          <p>Every release carries an Ed25519 signature you can verify in your tab right now (button below). The post-quantum ML-DSA-65 half lands once the offline release rig is provisioned. Both halves required at the daemon's verifier in the next cycle.</p>
+          <p>Every release carries an Ed25519 signature you can verify in your tab right now (button below). The post-quantum ML-DSA-65 half lands once the offline release rig is provisioned. Both halves required at the daemon's verifier in v0.22.</p>
         </article>
         <article class="ol-tile">
           <span class="ol-icon" aria-hidden="true">
@@ -268,6 +268,6 @@
   </div>
 </footer>
 
-<script type="module" src="/live/bridge.js"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r50"></script>
 </body>
 </html>

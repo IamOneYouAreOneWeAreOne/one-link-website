@@ -52,3 +52,12 @@ Thumbs.db
 # Worker can deploy the prebuilt assets without a CI build step).
 /dist-local/
 staging/
+
+# Release binaries + source archives: served from R2 in production. The
+# 38 MB source tarballs do not belong in the website git history.
+dist/weareone-link.org/downloads/*.tar.gz
+dist/weareone-link.org/downloads/*.zip
+dist/weareone-link.org/downloads/*.exe
+dist/weareone-link.org/downloads/*.bin
+dist/weareone-link.org/downloads/*.dmg
+dist/weareone-link.org/downloads/*.apk
