@@ -52,18 +52,49 @@ function detectOS() {
   return { os: 'source', label: 'your platform' };
 }
 
+// Per-OS download artifact summary shown beneath the homepage CTA.
+// Keeps visitors honest about what they're about to receive on click:
+// platform, file size, and whether the byte-by-byte streaming verify
+// will run (Windows + Linux today; the rest land on a "not yet" page).
+const HOMEPAGE_CTA_HINT = {
+  windows: '58.7 MB .exe, signed + verified in your tab',
+  linux:   '72 MB .tar.gz, signed + verified in your tab',
+  macos:   'macOS .dmg notarizing - click for source builds today',
+  android: 'Android APK packaging - click for source builds today',
+  ios:     'iOS via TestFlight - click for source builds today',
+  openbsd: 'OpenBSD: build from source today',
+  freebsd: 'FreeBSD: build from source today',
+  source:  'AGPL source archive, 19 MB tar.gz',
+};
+
 function rewriteDownloadButton() {
-  const btn = $('#ol-download-button');
-  const line = $('#ol-detected-os');
-  if (!btn) return;
   const { os, label } = detectOS();
-  btn.href = `/download/${os}`;
-  btn.firstChild.nodeValue = `Download for ${label} `;
-  if (line) {
-    const arch = /arm|aarch64/i.test(navigator.userAgent) ? 'arm64' : 'x86_64';
-    line.textContent = `Detected: ${label} - ${arch}`;
+  const arch = /arm|aarch64/i.test(navigator.userAgent) ? 'arm64' : 'x86_64';
+
+  // /download/ page primary button (already on that page only).
+  const btn = $('#ol-download-button');
+  if (btn) {
+    btn.href = `/download/${os}`;
+    btn.firstChild.nodeValue = `Download for ${label} `;
+    const line = $('#ol-detected-os');
+    if (line) line.textContent = `Detected: ${label} - ${arch}`;
+    wireVerifyingDownloadOn(btn, os);
   }
-  wireVerifyingDownloadOn(btn, os);
+
+  // Homepage hero CTA: rewrites "Get One Link" -> "Get One Link for <OS>"
+  // and points at /download/<os> so the streaming verifying-download flow
+  // kicks in immediately on click for OSes that have a real signed binary.
+  const cta = $('#ol-hero-cta');
+  if (cta) {
+    cta.href = `/download/${os}`;
+    cta.firstChild.nodeValue = `Get One Link for ${label} `;
+    const hint = $('#ol-hero-cta-hint');
+    if (hint) {
+      hint.textContent = `auto-detected: ${label} ${arch} · ${HOMEPAGE_CTA_HINT[os] || 'click for source'}`;
+      hint.style.opacity = '1';
+    }
+    wireVerifyingDownloadOn(cta, os);
+  }
 }
 
 // ---------------------------------------------------------------------------
