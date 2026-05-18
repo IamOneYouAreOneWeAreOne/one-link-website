@@ -985,9 +985,36 @@ export class MeshPresence {
 
   maybeBroadcastPeers() {
     const now = Date.now();
-    if (now - this.lastBroadcast < PRESENCE_BROADCAST_THROTTLE_MS) return;
-    this.lastBroadcast = now;
-    this.broadcast({ type: "peers", peers: this.peersSnapshot() });
+    const sinceLast = now - this.lastBroadcast;
+    if (sinceLast >= PRESENCE_BROADCAST_THROTTLE_MS) {
+      this.lastBroadcast = now;
+      this.broadcast({ type: "peers", peers: this.peersSnapshot() });
+      return;
+    }
+    // We're inside the throttle window. Schedule a deferred broadcast for
+    // the remainder of the window so the most recent peer change still
+    // reaches everyone. Without this, when N tabs connect in quick
+    // succession (≤1.5s) only the first one's broadcast fires; the rest
+    // are silently dropped and tabs never learn about each other.
+    if (this._deferredBroadcast) return;
+    const delay = PRESENCE_BROADCAST_THROTTLE_MS - sinceLast;
+    this._deferredBroadcast = setTimeout(() => {
+      this._deferredBroadcast = null;
+      this.lastBroadcast = Date.now();
+      this.broadcast({ type: "peers", peers: this.peersSnapshot() });
+    }, delay);
+  }
+
+  /** Send the current peer snapshot DIRECTLY to one session, bypassing the
+   *  broadcast throttle. New connections need this so they see existing
+   *  peers immediately instead of waiting for someone else to trigger a
+   *  broadcast. */
+  sendPeersTo(sessionId) {
+    const s = this.sessions.get(sessionId);
+    if (!s) return;
+    try {
+      s.ws.send(JSON.stringify({ type: "peers", peers: this.peersSnapshot() }));
+    } catch {}
   }
 
   handleMessage(sessionId, raw) {
@@ -1011,6 +1038,9 @@ export class MeshPresence {
           population: this.sessions.size,
         }));
         this.broadcast({ type: "population", n: this.sessions.size });
+        // 1. Direct: tell the new tab who's already here (bypasses throttle).
+        this.sendPeersTo(sessionId);
+        // 2. Throttled broadcast: tell everyone else about the new tab.
         this.maybeBroadcastPeers();
         break;
       }

@@ -1059,7 +1059,9 @@ async function runTabPairAsInviter(resultEl, secondTab) {
   }
 
   // Inviter side: build invite, open channel, wait for scanner.
-  const inviter = new wasmModule.OlInviter(1_900_000_000, 'tab-pair');
+  // expiry_unix is u64 on the Rust side → BigInt on the JS boundary.
+  // Passing a Number throws "Cannot convert N to a BigInt" at wasm-bindgen.
+  const inviter = new wasmModule.OlInviter(1_900_000_000n, 'tab-pair');
   const inviteBytes = inviter.inviteBytes;
 
   const channel = new BroadcastChannel(TAB_PAIR_CHANNEL);
@@ -2744,7 +2746,7 @@ async function startChatWith(peerId) {
   let inviter;
   try {
     const m = await ensurePqModule();
-    inviter = new m.OlInviter(1_900_000_000, `chat:${presence.selfId?.slice(0, 8) || 'anon'}`);
+    inviter = new m.OlInviter(1_900_000_000n, `chat:${presence.selfId?.slice(0, 8) || 'anon'}`);
   } catch (e) {
     const errMsg = (e && (e.message || String(e))) || 'unknown error';
     console.warn('[chat] inviter init failed:', errMsg, e);
