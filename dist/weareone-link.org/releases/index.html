@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Releases - One Link</title>
+  <meta name="description" content="Signed binary releases of One Link. Every release published with an Ed25519 signature and a reproducible-build attestation document.">
+  <link rel="canonical" href="https://weareone-link.org/releases/">
+  <meta name="theme-color" content="#04060b" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#f0f4f8" media="(prefers-color-scheme: light)">
+  <meta name="color-scheme" content="dark">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="One Link">
+  <meta property="og:title" content="Releases - One Link">
+  <meta property="og:description" content="Signed binary releases of One Link. Every release published with an Ed25519 signature and a reproducible-build attestation document.">
+  <meta property="og:url" content="https://weareone-link.org/releases/">
+  <meta property="og:image" content="https://weareone-link.org/og/one-link.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Releases - One Link">
+  <meta name="twitter:description" content="Signed binary releases of One Link. Every release published with an Ed25519 signature and a reproducible-build attestation document.">
+  <meta name="twitter:image" content="https://weareone-link.org/og/one-link.png">
+  <link rel="icon" type="image/x-icon" href="/images/favicon.ico"><link rel="icon" type="image/png" sizes="128x128" href="/images/logo-128.png"><link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+  <link rel="manifest" href="/app.webmanifest">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="One Link">
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r68">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r68">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r68">
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to content</a>
+<canvas class="ol-field-canvas" aria-hidden="true" hidden></canvas>
+<header class="site-header" role="banner">
+  <div class="container">
+    <a href="/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
+    <button type="button" id="nav-toggle" class="nav-toggle" aria-label="Open navigation" aria-expanded="false" aria-controls="primary-nav">&#9776;</button>
+    <nav class="site-nav" id="primary-nav" aria-label="Main">
+      <a href="/how-it-works/">How it works</a>
+      <a href="/features/">Features</a>
+      <a href="/security/">Security</a>
+      <a href="/share/">Share</a>
+      <a href="/one/">One</a>
+      <a href="/download/" class="cta-get">Get One Link</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <section class="hero">
+    <div class="container">
+      <span class="we-are-one">Releases</span>
+      <h1>Every signed <span class="grad">binary.</span></h1>
+      <p class="lede">Every release of One Link, signed end-to-end and published with a reproducible-build attestation. The canonical record lives in the public git repository on GitHub. This page is the human-readable index of it.</p>
+      <div class="cta-row">
+        <a href="https://github.com/IamOneYouAreOneWeAreOne/one-link/releases" class="btn btn-primary" rel="noopener external">All releases on GitHub <span class="arr">&rarr;</span></a>
+        <a href="/download/" class="btn btn-ghost">Get the current build</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Current</span>
+      <h2>v0.21.0-alpha.0</h2>
+      <p class="lede">The current build is an alpha. Windows + Linux ship signed binaries today. macOS + Android + iOS ship from source while the signing rigs come online. Every platform builds cleanly from source on every release.</p>
+      <ul>
+        <li>Coherence Mesh: 10 of 10 rows shipped (Phase 1 of Row 10 confidential-compute scaffold).</li>
+        <li>Sphinx onion routing: T1.1 Ristretto + T1.2 PQ-hybrid blinding + T1.3 field-binding + T1.5 Schnorr aggregation all live.</li>
+        <li>Coherence-field substrate: production with daemon couplings (homology -&gt; field, field -&gt; prefetch, field -&gt; ratchet).</li>
+        <li>3,565 tests passing across Rust workspace + Python daemon regression suite.</li>
+      </ul>
+      <p>See the <a class="ol-cyan-text" href="/changelog/">site changelog</a> for everything shipped since v0.1.0, and the <a class="ol-cyan-text" href="/download/">download page</a> for the current platform-by-platform state.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">How releases work</span>
+      <h2>Every binary is signed and reproducible.</h2>
+      <div class="ol-grid ol-grid-2">
+        <article class="ol-tile">
+          <h3>Ed25519 release signature.</h3>
+          <p>Every binary is signed offline with an Ed25519 release key. The verifier on the download page checks the signature in your browser against the pinned pubkey before you ever run the bytes.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Reproducible attestation.</h3>
+          <p>Every release ships next to a signed attestation document that proves which source commit produced it and which sealed build environment ran the compiler. Anyone can rebuild from source and verify byte equality.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Post-quantum signatures land v0.22.</h3>
+          <p>Today's release signatures are Ed25519. The ML-DSA-65 half of the hybrid (Ed25519 + ML-DSA-65) lands once the offline release rig is provisioned. The crate is shipped and verified today; the operational rig follows.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>One Link delivers itself.</h3>
+          <p>The /download/ button does not fetch a file over plain HTTP. It opens a real One Link session with the release relay, negotiates a hybrid key, and streams the binary chunk by chunk through the same protocol your phone will use tomorrow.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Earlier releases</span>
+      <h2>The full history is on GitHub.</h2>
+      <p class="lede">Every tag, every signed binary, every attestation document lives in the public release feed alongside the source.</p>
+      <div class="cta-row">
+        <a href="https://github.com/IamOneYouAreOneWeAreOne/one-link/releases" class="btn btn-primary" rel="noopener external">Daemon releases <span class="arr">&rarr;</span></a>
+        <a href="https://github.com/IamOneYouAreOneWeAreOne/one-link-website/releases" class="btn btn-ghost" rel="noopener external">Website releases</a>
+      </div>
+      <p class="ol-mt-md ol-mono ol-soft-text"><a class="ol-cyan-text" href="https://github.com/IamOneYouAreOneWeAreOne/one-link/releases" rel="noopener external">github.com/IamOneYouAreOneWeAreOne/one-link/releases</a></p>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer" role="contentinfo">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a href="/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
+        <p class="footer-tag">A free, private network for messages, files, and devices. Owned by no one. Belongs to everyone.</p>
+      </div>
+      <div><h3>Network</h3><ul><li><a href="/how-it-works/">How it works</a></li><li><a href="/features/">Features</a></li><li><a href="/mesh/">Live mesh</a></li></ul></div>
+      <div><h3>For you</h3><ul><li><a href="/download/">Get One Link</a></li><li><a href="/security/">Security</a></li><li><a href="/accessibility/">Accessibility</a></li><li><a href="/transparency/">Transparency</a></li></ul></div>
+      <div><h3>For builders</h3><ul><li><a href="/builders/">Protocol &amp; source</a></li><li><a href="/changelog/">Changelog</a></li><li><a href="/releases/">Releases</a></li><li><a href="/download/source" rel="noopener">Source archive</a></li><li><a href="https://github.com/IamOneYouAreOneWeAreOne/one-link" rel="noopener external">GitHub</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <span class="built-by">&copy; 2026 One Link contributors. <a href="/terms/">AGPL-3.0</a>. <a href="/security/">No tracking.</a> <a href="mailto:weareone@oneunity.earth">weareone@oneunity.earth</a></span>
+      <span class="built-by">we are one</span>
+    </div>
+  </div>
+</footer>
+
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r68"></script>
+</body>
+</html>
