@@ -619,7 +619,7 @@ Four wrapper crates compile real production One Link Rust crates to WebAssembly.
 
 ## 5.1 `ol_pair_qr_wasm`
 
-**Wraps**: [`ol_pair_qr`]($HOME/Projects/Coherence/One_link/native/ol_pair_qr) (Phase F2 of Coherence Mesh Plan)
+**Wraps**: [`ol_pair_qr`](https://github.com/IamOneYouAreOneWeAreOne/one-link/tree/master/native/ol_pair_qr) (Phase F2 of Coherence Mesh Plan)
 **Output**: `ol_pair_qr.js` (25 KB) + `ol_pair_qr_bg.wasm` (250 KB)
 **Demo on site**: home page pair-by-QR card
 
@@ -660,7 +660,7 @@ The `qrcode` crate is compiled INTO our WASM (no third-party JS QR encoder). The
 
 ## 5.2 `ol_pqkem_wasm`
 
-**Wraps**: [`ol_pqkem`]($HOME/Projects/Coherence/One_link/native/ol_pqkem) (PQ-hybrid KEM per ADR-0017)
+**Wraps**: [`ol_pqkem`](https://github.com/IamOneYouAreOneWeAreOne/one-link/tree/master/native/ol_pqkem) (PQ-hybrid KEM per ADR-0017)
 **Output**: `ol_pqkem.js` (21 KB) + `ol_pqkem_bg.wasm` (191 KB)
 **Demo on site**: hero PQ-session status badge ("deriving" -> "verified")
 
@@ -692,7 +692,7 @@ Hybrid construction per ADR-0017: ML-KEM-768 || X25519 with a BLAKE3 combiner th
 
 ## 5.3 `ol_onion_wasm`
 
-**Wraps**: [`ol_onion`]($HOME/Projects/Coherence/One_link/native/ol_onion) (Phase F3, Sphinx-style routing)
+**Wraps**: [`ol_onion`](https://github.com/IamOneYouAreOneWeAreOne/one-link/tree/master/native/ol_onion) (Phase F3, Sphinx-style routing)
 **Output**: `ol_onion.js` (16 KB) + `ol_onion_bg.wasm` (161 KB)
 **Demo on site**: /download/ "private route" toggle (UI pending)
 
@@ -717,7 +717,7 @@ Generates 3 ephemeral X25519 hops, wraps payload in 3 nested AEAD layers, peels 
 
 ## 5.4 `ol_coherence_field_wasm`
 
-**Wraps**: [`ol_coherence_field`]($HOME/Projects/Coherence/One_link/native/ol_coherence_field) (Phase E, Helmholtz solver)
+**Wraps**: [`ol_coherence_field`](https://github.com/IamOneYouAreOneWeAreOne/one-link/tree/master/native/ol_coherence_field) (Phase E, Helmholtz solver)
 **Output**: `ol_coherence_field.js` (10 KB) + `ol_coherence_field_bg.wasm` (77 KB)
 **Demo on site**: future mesh-page solver (data piping in next push)
 
@@ -1116,7 +1116,7 @@ Today we call `emit_coherence_field_shaders()` directly; it returns the canonica
 clc.cmd              Windows shim, finds Python + calls tools/clc.py
 clc.ps1              PowerShell variant of the same
 tools/clc.py         Resolves COHERENCE_COMPILER env or falls back to
-                     $HOME\Projects\Coherence\coherence_lang
+                     $COHERENCE_COMPILER (env var)
                      Imports coherence_lang.compiler.cli.main and dispatches.
 ```
 
@@ -1134,7 +1134,7 @@ To use the system-wide `clc` command (PowerShell aliases `clc` to `Clear-Content
 
 ## 9.1 What we bind
 
-Four production crates from [`$HOME/Projects/Coherence/One_link/native/`]($HOME/Projects/Coherence/One_link/native/) are pulled by path-dependency into our wasm wrappers:
+Four production crates from [`https://github.com/IamOneYouAreOneWeAreOne/one-link/tree/master/native/`](https://github.com/IamOneYouAreOneWeAreOne/one-link/tree/master/native/) are pulled by path-dependency into our wasm wrappers:
 
 | Wrapper | Production crate | Daemon role |
 |---|---|---|
@@ -1316,15 +1316,15 @@ Every alien-tech claim made on the public surface, mapped to the code that backs
 | "No tracking, no analytics, no cookies." | [src/worker.js](src/worker.js), [sw.js](dist/weareone-link.org/sw.js) | Grep worker + SW for `Set-Cookie`, `analytics`, `track` — zero hits. Open DevTools → Application → Cookies/Storage — empty. |
 | "Real handshake right here" (pair card) | [live/wasm/ol_pair_qr_wasm/src/lib.rs](live/wasm/ol_pair_qr_wasm/src/lib.rs) → `liveDemoRoundTrip` | DevTools → Network → see `ol_pair_qr_bg.wasm` load. Console: `await import('/live/wasm/ol_pair_qr.js').then(m => m.default('/live/wasm/ol_pair_qr_bg.wasm')).then(()=>{}); ` |
 | "PQ session" badge | [live/wasm/ol_pqkem_wasm/src/lib.rs](live/wasm/ol_pqkem_wasm/src/lib.rs) → `liveDemoRoundTrip` | Page load: status pill ticks "deriving" → "verified". Match means `alice_ss == bob_ss` bytewise. |
-| "X25519 + ML-KEM-768 hybrid" | [ol_pqkem]($HOME/Projects/Coherence/One_link/native/ol_pqkem) (production daemon crate) | The wasm wrapper has `ol_pqkem = { path = "..." }`. Daemon and browser run the same code. |
-| "Ed25519 + ML-DSA-65 hybrid signatures" | [ol_pqsig]($HOME/Projects/Coherence/One_link/native/ol_pqsig) + [ol_pqsig_wasm](live/wasm/ol_pqsig_wasm/) | Visit `/security/` → click "Sign a message with Ed25519 + ML-DSA-65". DevTools → Network → see `ol_pqsig_bg.wasm` load (257 KB). Output shows fresh 1984-byte hybrid pubkey + 3373-byte hybrid signature + verify-clean + reject-tampered-msg + reject-tampered-PQ-half. |
-| "Threshold recovery splits your identity across friends" | [ol_threshold_recovery]($HOME/Projects/Coherence/One_link/native/ol_threshold_recovery) + [ol_threshold_recovery_wasm](live/wasm/ol_threshold_recovery_wasm/) | Visit `/security/` → click "Split and recover a secret with 3-of-5 Shamir". Generates fresh 32-byte secret, splits into 5 shares, recovers from any 3, refuses with only 2. Real Shamir over GF(2^8). |
-| "Every message gets a fresh key. Forward secrecy." | [ol_ratchet]($HOME/Projects/Coherence/One_link/native/ol_ratchet) + [ol_ratchet_wasm](live/wasm/ol_ratchet_wasm/) | Visit `/security/` → click "Walk the ratchet six steps". Generates fresh chain key, derives 6 sequential message keys (all 32 bytes, all distinct), proves rewind refusal + skip-cap (MAX_SKIP_STEPS = 65,536 DoS guard). |
-| "Your device is recognized without us knowing who you are." | [ol_hwkey]($HOME/Projects/Coherence/One_link/native/ol_hwkey) (TofuStore) + [ol_hwkey_wasm](live/wasm/ol_hwkey_wasm/) | Visit `/security/` → click "Mint or recognize this device". First visit mints a 32-byte device root in localStorage; subsequent visits recognize it via deterministic BLAKE3 derivation. Attempted impersonation with random key gets rejected via constant-time `subtle::ConstantTimeEq`. |
-| "Sphinx Coherence onion routing" | [ol_onion]($HOME/Projects/Coherence/One_link/native/ol_onion) | `ol_onion_wasm.liveDemoRoundTrip(payload)` runs real 3-hop wrap+peel. |
+| "X25519 + ML-KEM-768 hybrid" | [ol_pqkem](https://github.com/IamOneYouAreOneWeAreOne/one-link/tree/master/native/ol_pqkem) (production daemon crate) | The wasm wrapper has `ol_pqkem = { path = "..." }`. Daemon and browser run the same code. |
+| "Ed25519 + ML-DSA-65 hybrid signatures" | [ol_pqsig](https://github.com/IamOneYouAreOneWeAreOne/one-link/tree/master/native/ol_pqsig) + [ol_pqsig_wasm](live/wasm/ol_pqsig_wasm/) | Visit `/security/` → click "Sign a message with Ed25519 + ML-DSA-65". DevTools → Network → see `ol_pqsig_bg.wasm` load (257 KB). Output shows fresh 1984-byte hybrid pubkey + 3373-byte hybrid signature + verify-clean + reject-tampered-msg + reject-tampered-PQ-half. |
+| "Threshold recovery splits your identity across friends" | [ol_threshold_recovery](https://github.com/IamOneYouAreOneWeAreOne/one-link/tree/master/native/ol_threshold_recovery) + [ol_threshold_recovery_wasm](live/wasm/ol_threshold_recovery_wasm/) | Visit `/security/` → click "Split and recover a secret with 3-of-5 Shamir". Generates fresh 32-byte secret, splits into 5 shares, recovers from any 3, refuses with only 2. Real Shamir over GF(2^8). |
+| "Every message gets a fresh key. Forward secrecy." | [ol_ratchet](https://github.com/IamOneYouAreOneWeAreOne/one-link/tree/master/native/ol_ratchet) + [ol_ratchet_wasm](live/wasm/ol_ratchet_wasm/) | Visit `/security/` → click "Walk the ratchet six steps". Generates fresh chain key, derives 6 sequential message keys (all 32 bytes, all distinct), proves rewind refusal + skip-cap (MAX_SKIP_STEPS = 65,536 DoS guard). |
+| "Your device is recognized without us knowing who you are." | [ol_hwkey](https://github.com/IamOneYouAreOneWeAreOne/one-link/tree/master/native/ol_hwkey) (TofuStore) + [ol_hwkey_wasm](live/wasm/ol_hwkey_wasm/) | Visit `/security/` → click "Mint or recognize this device". First visit mints a 32-byte device root in localStorage; subsequent visits recognize it via deterministic BLAKE3 derivation. Attempted impersonation with random key gets rejected via constant-time `subtle::ConstantTimeEq`. |
+| "Sphinx Coherence onion routing" | [ol_onion](https://github.com/IamOneYouAreOneWeAreOne/one-link/tree/master/native/ol_onion) | `ol_onion_wasm.liveDemoRoundTrip(payload)` runs real 3-hop wrap+peel. |
 | "Real Helmholtz physics on GPU" | [scripts/emit-wgsl.py](scripts/emit-wgsl.py) → coherence_lang wgsl_emitter | The shader at /live/shaders/coherence-field.wgsl has `coh_oscillator_force`, `coh_tau`, real PDE solver compute pass. |
-| "10,000 peers in 1.08 ms" | [ol_coherence_field]($HOME/Projects/Coherence/One_link/native/ol_coherence_field) benchmark output | Cited from daemon benches. Browser runs the same solver via `ol_coherence_field_wasm`. |
-| "5-word SAS, Levenshtein-audited word list" | [ol_pair_qr::sas]($HOME/Projects/Coherence/One_link/native/ol_pair_qr/src/sas.rs) | 30-bit entropy, 64-word dictionary, deterministic from transcript hash. |
+| "10,000 peers in 1.08 ms" | [ol_coherence_field](https://github.com/IamOneYouAreOneWeAreOne/one-link/tree/master/native/ol_coherence_field) benchmark output | Cited from daemon benches. Browser runs the same solver via `ol_coherence_field_wasm`. |
+| "5-word SAS, Levenshtein-audited word list" | [ol_pair_qr::sas](https://github.com/IamOneYouAreOneWeAreOne/one-link/tree/master/native/ol_pair_qr/src/sas.rs) | 30-bit entropy, 64-word dictionary, deterministic from transcript hash. |
 | "Live N here right now" | [src/worker.js](src/worker.js) `MeshPresence` DO + [live/bridge.js](dist/weareone-link.org/live/bridge.js) presence client | Open two browser windows; count ticks to 2. |
 | "Anonymous ping between strangers" | Same as above + `sendPing` in [live/bridge.js](dist/weareone-link.org/live/bridge.js) | Two windows; click each other's dots; both see flash. |
 | "Site verified" badge | [sw.js](dist/weareone-link.org/sw.js) `verifyAgainstManifest` | DevTools → Application → Service Workers → confirm active. Modify a cached asset byte; SW evicts. |
@@ -1459,7 +1459,7 @@ If they fail, revert the daemon change (restore unconditional rayon dep + remove
 
 ## Coherence Lang toolchain "doctor" fails
 
-Cause: `COHERENCE_COMPILER` env not set + default path `$HOME\Projects\Coherence\coherence_lang` doesn't exist.
+Cause: `COHERENCE_COMPILER` env not set + default path `$COHERENCE_COMPILER (env var)` doesn't exist.
 
 Fix: set `COHERENCE_COMPILER` to the absolute path of the `coherence_lang` checkout that contains `coherence_lang/compiler/cli/main.py`.
 

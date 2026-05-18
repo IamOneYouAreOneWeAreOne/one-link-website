@@ -37,7 +37,7 @@
     <nav class="site-nav" aria-label="Main">
       <a href="/how-it-works/">How it works</a>
       <a href="/features/">Features</a>
-      <a href="/security/">Security</a>
+      <a href="/security/" aria-current="page">Security</a>
       <a href="/share/">Share</a>
       <a href="/one/">One</a>
       <a href="/download/" class="cta-get">Get One Link</a>
@@ -82,16 +82,16 @@
           <p>There is no server holding your messages or files. A relay that gets compromised sees sealed boxes addressed to recipients it cannot identify. No archive to steal.</p>
         </article>
         <article class="ol-tile">
-          <h3>Traffic analysis (optional).</h3>
-          <p>Private mode (one tap) routes through three volunteer relays via Sphinx routing. No single hop sees both ends. Each hop's keys are PQ-blinded and field-witnessed.</p>
+          <h3>Traffic analysis <span style="color: var(--ol-text-dim); font-size: 0.7em; font-weight: 400;">(in flight, lands v0.22)</span></h3>
+          <p>The Sphinx-routed three-hop private mode is implemented end-to-end as a WASM-verifiable primitive (see the live demo on /download/). User-toggle wiring into the daemon's transport layer lands in v0.22. Until then the bytes still take a direct path.</p>
         </article>
         <article class="ol-tile">
           <h3>Lost device.</h3>
-          <p>Threshold recovery splits your identity across friends. Recover with k-of-n. The math means a leaked share is useless without the others.</p>
+          <p>Threshold recovery splits your identity across friends. Recover with k-of-n. The math means a leaked share is useless without the others. Try the 3-of-5 Shamir demo below to see the bytes.</p>
         </article>
         <article class="ol-tile">
-          <h3>Coerced unlock.</h3>
-          <p>Duress mode opens a believable empty account with a second passphrase. The system cannot tell which is the real one.</p>
+          <h3>Coerced unlock <span style="color: var(--ol-text-dim); font-size: 0.7em; font-weight: 400;">(in flight, lands v0.22)</span></h3>
+          <p>Duress mode opens a believable empty account with a second passphrase. The cryptographic primitive ships in the ol_duress crate today; the daemon-level wiring (so the second passphrase unlocks an alternate vault) lands in v0.22.</p>
         </article>
       </div>
     </div>
@@ -257,7 +257,7 @@
       <div><h4>For builders</h4><ul><li><a href="/builders/">Protocol &amp; source</a></li><li><a href="/download/source" rel="noopener">Source archive</a></li></ul></div>
     </div>
     <div class="footer-bottom">
-      <span class="built-by">Built in the open. AGPL-3.0. <a href="/security/">No tracking, no analytics, no cookies.</a></span>
+      <span class="built-by">&copy; 2026 One Link contributors. <a href="/terms/">AGPL-3.0</a>. <a href="/security/">No tracking.</a> <a href="mailto:weareone@oneunity.earth">weareone@oneunity.earth</a></span>
       <span class="built-by">we are one</span>
     </div>
   </div>

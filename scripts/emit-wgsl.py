@@ -24,7 +24,7 @@ from pathlib import Path
 
 COHERENCE_ROOT = os.environ.get(
     "COHERENCE_COMPILER",
-    r"$HOME\Projects\Coherence\coherence_lang",
+    str(Path(__file__).resolve().parent.parent.parent / "coherence_lang"),
 )
 sys.path.insert(0, COHERENCE_ROOT)
 

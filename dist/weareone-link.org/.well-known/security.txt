@@ -1,0 +1,20 @@
+# One Link security contact (RFC 9116)
+# https://www.rfc-editor.org/rfc/rfc9116
+
+Contact: mailto:weareone@oneunity.earth
+Expires: 2027-05-17T00:00:00.000Z
+Preferred-Languages: en
+Canonical: https://weareone-link.org/.well-known/security.txt
+Policy: https://weareone-link.org/security/
+Acknowledgments: https://weareone-link.org/security/
+
+# Reporting
+# Please report vulnerabilities to weareone@oneunity.earth.
+# Encrypt sensitive reports with the One Link pair-by-QR flow
+# at https://weareone-link.org/share/ if you have One Link installed.
+# Responsible disclosure: we will respond within 5 days and
+# coordinate a fix and public attestation if you wish.
+
+# Source
+# https://github.com/IamOneYouAreOneWeAreOne/one-link
+# https://github.com/IamOneYouAreOneWeAreOne/one-link-website

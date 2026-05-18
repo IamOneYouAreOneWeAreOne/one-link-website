@@ -18,11 +18,19 @@
   <meta name="theme-color" content="#04060b">
 </head>
 <body>
+<a href="#main" class="skip-link">Skip to content</a>
 <canvas class="ol-field-canvas" aria-hidden="true" hidden></canvas>
 <header class="site-header" role="banner">
   <div class="container">
     <a href="/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
+    <input type="checkbox" id="nav-toggle" class="nav-toggle-input">
+    <label for="nav-toggle" class="nav-toggle" aria-label="Open navigation" role="button" tabindex="0">&#9776;</label>
     <nav class="site-nav" aria-label="Main">
+      <a href="/how-it-works/">How it works</a>
+      <a href="/features/">Features</a>
+      <a href="/security/">Security</a>
+      <a href="/share/">Share</a>
+      <a href="/one/">One</a>
       <a href="/download/" class="cta-get">Get One Link</a>
     </nav>
   </div>
@@ -53,8 +61,17 @@
 </main>
 <footer class="site-footer" role="contentinfo">
   <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a href="/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
+        <p class="footer-tag">A free, private network for messages, files, and devices. Owned by no one. Belongs to everyone.</p>
+      </div>
+      <div><h3>Network</h3><ul><li><a href="/how-it-works/">How it works</a></li><li><a href="/features/">Features</a></li><li><a href="/mesh/">Live mesh</a></li></ul></div>
+      <div><h3>For you</h3><ul><li><a href="/download/">Get One Link</a></li><li><a href="/security/">Security</a></li><li><a href="/one/">One</a></li><li><a href="/about/">About</a></li></ul></div>
+      <div><h3>For builders</h3><ul><li><a href="/builders/">Protocol &amp; source</a></li><li><a href="https://github.com/IamOneYouAreOneWeAreOne/one-link" rel="noopener">GitHub</a></li><li><a href="/.well-known/security.txt">Security contact</a></li></ul></div>
+    </div>
     <div class="footer-bottom">
-      <span class="built-by"><a href="/">Back to home</a></span>
+      <span class="built-by">&copy; 2026 One Link contributors. <a href="/terms/">AGPL-3.0</a>. <a href="mailto:weareone@oneunity.earth">weareone@oneunity.earth</a></span>
       <span class="built-by">we are one</span>
     </div>
   </div>

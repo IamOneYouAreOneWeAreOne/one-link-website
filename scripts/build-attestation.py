@@ -129,7 +129,7 @@ def main() -> int:
     parser.add_argument("--no-link-previous", action="store_true",
                         help="don't chain to a previous attestation")
     parser.add_argument("--daemon-repo", type=Path,
-                        default=Path(r"$HOME/Projects/Coherence/One_link"),
+                        default=Path(os.environ.get("ONE_LINK_DAEMON_REPO", "../One_link")),
                         help="path to One_link source repo for git metadata")
     parser.add_argument("--name", default="one-link", help="artifact display name")
     parser.add_argument("--version", default="0.21.0", help="artifact version")

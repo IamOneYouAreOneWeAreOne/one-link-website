@@ -108,10 +108,26 @@ const PRIVACY_HEADERS = {
   "Access-Control-Allow-Origin": "*",
 };
 
+// Cloudflare auto-injects NEL (Network Error Logging) + Report-To headers
+// that stream telemetry to a.nel.cloudflare.com on every page load. That
+// contradicts the "we collect nothing" doctrine even though we did not
+// ask for it. Override with an empty NEL policy so the browser disables
+// reporting for this origin entirely.
+const NEL_OPT_OUT_HEADERS = {
+  "NEL": '{"report_to":"","max_age":0,"success_fraction":0,"failure_fraction":0}',
+  "Report-To": '{"group":"","max_age":0,"endpoints":[]}',
+};
+
 function applyHeaders(response) {
   const headers = new Headers(response.headers);
   for (const [k, v] of Object.entries(PRIVACY_HEADERS)) {
     if (!headers.has(k)) headers.set(k, v);
+  }
+  // Always overwrite Cloudflare's auto-injected NEL/Report-To with the
+  // opt-out shape (these are set by CF regardless of whether origin sets
+  // anything, so we explicitly stomp them).
+  for (const [k, v] of Object.entries(NEL_OPT_OUT_HEADERS)) {
+    headers.set(k, v);
   }
   return new Response(response.body, {
     status: response.status,
@@ -125,6 +141,7 @@ function json(payload, init = {}) {
   headers.set("Content-Type", "application/json; charset=utf-8");
   headers.set("Cache-Control", "no-store");
   for (const [k, v] of Object.entries(PRIVACY_HEADERS)) headers.set(k, v);
+  for (const [k, v] of Object.entries(NEL_OPT_OUT_HEADERS)) headers.set(k, v);
   return new Response(JSON.stringify(payload, null, 2), { ...init, headers });
 }
 
@@ -573,7 +590,11 @@ function downloadComingSoonPage(os) {
   headers.set("Content-Type", "text/html; charset=utf-8");
   headers.set("Cache-Control", "no-store");
   for (const [k, v] of Object.entries(PRIVACY_HEADERS)) headers.set(k, v);
-  return new Response(html, { status: 503, headers });
+  for (const [k, v] of Object.entries(NEL_OPT_OUT_HEADERS)) headers.set(k, v);
+  // 200 (not 503): the page IS the response for this URL today; 5xx makes
+  // Google de-index over time. The page is honest about the binary being
+  // in flight; that does not mean the page itself is a server error.
+  return new Response(html, { status: 200, headers });
 }
 
 // -----------------------------------------------------------------------------
@@ -583,6 +604,26 @@ export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
     const path = url.pathname;
+
+    // Canonical-host redirect: www -> apex. Both hostnames are bound to this
+    // worker via wrangler.toml, so without this they'd both serve 200 with the
+    // same body (duplicate content, split share of any inbound link credit,
+    // weaker HSTS preload posture). 301 (permanent) so browsers and crawlers
+    // remember the canonical for the apex domain.
+    if (url.hostname === "www.weareone-link.org") {
+      url.hostname = "weareone-link.org";
+      // Build the response manually rather than Response.redirect() so we can
+      // overwrite Cloudflare's auto-injected NEL/Report-To telemetry headers
+      // on the redirect itself (privacy-by-construction also covers redirects).
+      return new Response(null, {
+        status: 301,
+        headers: {
+          Location: url.toString(),
+          "Cache-Control": "public, max-age=31536000",
+          ...NEL_OPT_OUT_HEADERS,
+        },
+      });
+    }
 
     if (path === "/api/health") return health(env);
     if (path === "/api/capabilities") return capabilities(env);
