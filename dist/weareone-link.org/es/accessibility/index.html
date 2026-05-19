@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Accesibilidad - One Link</title>
+  <meta name="description" content="Declaración de accesibilidad de One Link. Objetivo WCAG 2.1 AA, primero el teclado, probado con lectores de pantalla, alto contraste y movimiento reducido respetados.">
+  <link rel="canonical" href="https://weareone-link.org/es/accessibility/">
+  <link rel="alternate" hreflang="en" href="https://weareone-link.org/accessibility/">
+  <link rel="alternate" hreflang="es" href="https://weareone-link.org/es/accessibility/">
+  <link rel="alternate" hreflang="fr" href="https://weareone-link.org/fr/accessibility/">
+  <link rel="alternate" hreflang="pt" href="https://weareone-link.org/pt/accessibility/">
+  <link rel="alternate" hreflang="de" href="https://weareone-link.org/de/accessibility/">
+  <link rel="alternate" hreflang="it" href="https://weareone-link.org/it/accessibility/">
+  <link rel="alternate" hreflang="x-default" href="https://weareone-link.org/accessibility/">
+  <meta name="theme-color" content="#04060b" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#f0f4f8" media="(prefers-color-scheme: light)">
+  <meta name="color-scheme" content="dark">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="One Link">
+  <meta property="og:locale" content="es_ES">
+  <meta property="og:title" content="Accesibilidad - One Link">
+  <meta property="og:description" content="Declaración de accesibilidad de One Link. WCAG 2.1 AA, primero el teclado, probado con lectores de pantalla.">
+  <meta property="og:url" content="https://weareone-link.org/es/accessibility/">
+  <meta property="og:image" content="https://weareone-link.org/og/one-link.png">
+  <link rel="icon" type="image/x-icon" href="/images/favicon.ico"><link rel="icon" type="image/png" sizes="128x128" href="/images/logo-128.png"><link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+  <link rel="manifest" href="/app.webmanifest">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="One Link">
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="modulepreload" href="/live/bridge.js">
+  <link rel="stylesheet" href="/css/one-link.css">
+  <link rel="stylesheet" href="/css/immersive.css">
+</head>
+<body>
+<a href="#main" class="skip-link">Saltar al contenido</a>
+<canvas class="ol-field-canvas" aria-hidden="true" hidden></canvas>
+<header class="site-header" role="banner">
+  <div class="container">
+    <a href="/es/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
+    <button type="button" id="nav-toggle" class="nav-toggle" aria-label="Abrir navegación" aria-expanded="false" aria-controls="primary-nav">&#9776;</button>
+    <nav class="site-nav" id="primary-nav" aria-label="Principal">
+      <a href="/how-it-works/" hreflang="en">Cómo funciona</a>
+      <a href="/features/" hreflang="en">Funciones</a>
+      <a href="/security/" hreflang="en">Seguridad</a>
+      <a href="/share/" hreflang="en">Compartir</a>
+      <a href="/download/" hreflang="en" class="cta-get">Obtener One Link</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <section class="hero">
+    <div class="container">
+      <span class="we-are-one">Accesibilidad</span>
+      <h1>One Link es para <span class="grad">cada cuerpo.</span></h1>
+      <p class="lede">Una red para todos debe llegar a todos. Esta página es una declaración actualizada continuamente sobre cómo estamos construyendo para eso, qué probamos, qué sabemos que todavía no es perfecto y cómo decirnos cuando fallamos.</p>
+    </div>
+  </section>
+
+  <section class="section-tight">
+    <div class="container">
+      <span class="kicker">Estándar al que apuntamos</span>
+      <h2>WCAG 2.1 <span class="grad">AA</span>.</h2>
+      <p class="lede">Apuntamos a la plena conformidad con las Pautas de Accesibilidad para el Contenido Web 2.1 Nivel AA en cada página de este sitio. El mismo estándar que referencian la Ley Europea de Accesibilidad de 2025, la Ley de Igualdad del Reino Unido y la Sección 508 de EE. UU.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Qué significa esto en la práctica</span>
+      <h2>Promesas que este sitio cumple.</h2>
+      <div class="ol-grid ol-grid-2">
+        <article class="ol-tile">
+          <h3>Navegación primero por teclado</h3>
+          <p>Cada elemento interactivo se alcanza con Tab. Cada elemento enfocado tiene un anillo visible de 2px en nuestro cian de marca. Un enlace «Saltar al contenido» es el primer elemento enfocable en cada página. Escape cierra cualquier menú o diálogo abierto.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Semántica para lectores de pantalla</h3>
+          <p>Jerarquía real de encabezados (h1 a h3, sin saltos). Botones reales para botones, enlaces reales para enlaces. aria-current marca la página en la que estás en la navegación. aria-live anuncia el código SAS, la detección de SO y otros estados dinámicos.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Color y contraste</h3>
+          <p>4.5:1 mínimo en cada par texto-sobre-fondo, incluidas las filas de metadatos atenuadas. Las llamadas a la acción con gradiente tienen un respaldo sólido. La información nunca se transmite solo por el color.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Movimiento respetado</h3>
+          <p>prefers-reduced-motion: reduce desactiva el fondo de campo de coherencia, las animaciones del cursor parpadeante y los tiempos de demostración auto-cíclicos. El sitio permanece totalmente utilizable sin movimiento.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Alto contraste compatible</h3>
+          <p>forced-colors: active (Modo de alto contraste de Windows) mapea los gradientes a tokens del sistema para que los botones de llamada a la acción sigan legibles. prefers-contrast: more eleva aún más los tokens de texto y borde.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Táctil y puntero</h3>
+          <p>Cada objetivo tocable es de 44 por 44 píxeles como mínimo, igualando los pisos de Apple Human Interface y Material Design. touch-action: manipulation elimina el retraso de toque de 300ms en navegadores móviles antiguos.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Lo que aún tenemos que arreglar</span>
+      <h2>Lista honesta.</h2>
+      <p class="lede">Ningún sitio es totalmente accesible. Aquí está lo que sabemos que es imperfecto hoy, en qué estamos trabajando y qué es intencional.</p>
+      <div class="ol-grid ol-grid-2">
+        <article class="ol-tile">
+          <h3>Campo de coherencia WebGPU</h3>
+          <p>El sombreador de fondo es decorativo y está totalmente controlado por prefers-reduced-motion más una comprobación de puntero-fino de escritorio + sin saveData. No transmite ninguna información. Omitirlo no cambia nada.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Escaneo QR</h3>
+          <p>La demostración en vivo de emparejamiento por QR usa un código QR visual. Estamos trabajando en un flujo paralelo de copiar-pegar con un toque para que los usuarios que no usan cámara puedan completar el mismo emparejamiento.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Señales de audio</h3>
+          <p>Nuestro modo de audio ambiental es solo opcional. Cada demostración interactiva es totalmente utilizable sin audio. No usamos audio para transmitir estado.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Cómo probamos</span>
+      <h2>Continuo, no de una sola vez.</h2>
+      <p class="lede">La accesibilidad se verifica en cada cambio, no en una sola auditoría. CI ejecuta pa11y en cada página. Recorridos reales solo con teclado y con lector de pantalla acompañan los lanzamientos importantes. La fuente del sitio es abierta, así que cualquiera puede confirmarlo.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Avísanos cuando fallemos</span>
+      <h2>Háznoslo saber.</h2>
+      <p class="lede">Si algo en este sitio o en One Link no te es accesible, queremos saberlo. Escribe a <a class="ol-cyan-text" href="mailto:weareone@oneunity.earth">weareone@oneunity.earth</a> con la página y lo que se rompió. Nuestro objetivo es acusar recibo en cinco días y arreglar tan rápido como podamos.</p>
+      <p class="lede">Última actualización 2026-05-17.</p>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer" role="contentinfo">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a href="/es/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
+        <p class="footer-tag">Una red libre y privada para mensajes, archivos y dispositivos. De nadie. De todos.</p>
+        <p class="ol-mt-md ol-soft-text ol-mono">
+          <strong>Leer en:</strong>
+        </p>
+      </div>
+      <div><h3>Red</h3><ul><li><a href="/how-it-works/" hreflang="en">Cómo funciona</a></li><li><a href="/features/" hreflang="en">Funciones</a></li><li><a href="/mesh/" hreflang="en">Malla en vivo</a></li></ul></div>
+      <div><h3>Para ti</h3><ul><li><a href="/download/" hreflang="en">Obtener One Link</a></li><li><a href="/security/" hreflang="en">Seguridad</a></li><li><a href="/es/accessibility/" hreflang="es">Accesibilidad</a></li><li><a href="/transparency/" hreflang="en">Transparencia</a></li><li><a href="/audits/" hreflang="en">Auditorías</a></li></ul></div>
+      <div><h3>Para constructores</h3><ul><li><a href="/builders/" hreflang="en">Protocolo y fuente</a></li><li><a href="/changelog/" hreflang="en">Registro de cambios</a></li><li><a href="/releases/" hreflang="en">Versiones</a></li><li><a href="/mirror/" hreflang="en">Replicar este sitio</a></li><li><a href="/download/source" hreflang="en" rel="noopener">Archivo de fuente</a></li><li><a href="https://github.com/IamOneYouAreOneWeAreOne/one-link" rel="noopener external">GitHub</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <span class="built-by">&copy; 2026 contribuidores de One Link. <a href="/es/terms/" hreflang="es">AGPL-3.0</a>. <a href="/security/" hreflang="en">Sin rastreo.</a> <a href="mailto:weareone@oneunity.earth">weareone@oneunity.earth</a></span>
+      <span class="built-by">somos uno</span>
+    </div>
+  </div>
+</footer>
+
+<script type="module" src="/live/bridge.js"></script>
+</body>
+</html>

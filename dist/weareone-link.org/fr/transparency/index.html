@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Transparence - One Link</title>
+  <meta name="description" content="Warrant canary, journal des requêtes gouvernementales et posture de divulgation de One Link. Public, daté et vérifiable.">
+  <link rel="canonical" href="https://weareone-link.org/fr/transparency/">
+  <link rel="alternate" hreflang="en" href="https://weareone-link.org/transparency/">
+  <link rel="alternate" hreflang="es" href="https://weareone-link.org/es/transparency/">
+  <link rel="alternate" hreflang="fr" href="https://weareone-link.org/fr/transparency/">
+  <link rel="alternate" hreflang="pt" href="https://weareone-link.org/pt/transparency/">
+  <link rel="alternate" hreflang="de" href="https://weareone-link.org/de/transparency/">
+  <link rel="alternate" hreflang="it" href="https://weareone-link.org/it/transparency/">
+  <link rel="alternate" hreflang="x-default" href="https://weareone-link.org/transparency/">
+  <meta name="theme-color" content="#04060b" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#f0f4f8" media="(prefers-color-scheme: light)">
+  <meta name="color-scheme" content="dark">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="One Link">
+  <meta property="og:locale" content="fr_FR">
+  <meta property="og:title" content="Transparence - One Link">
+  <meta property="og:description" content="Warrant canary et posture de divulgation de One Link. Public, daté et vérifiable.">
+  <meta property="og:url" content="https://weareone-link.org/fr/transparency/">
+  <meta property="og:image" content="https://weareone-link.org/og/one-link.png">
+  <link rel="icon" type="image/x-icon" href="/images/favicon.ico"><link rel="icon" type="image/png" sizes="128x128" href="/images/logo-128.png"><link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+  <link rel="manifest" href="/app.webmanifest">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="One Link">
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="modulepreload" href="/live/bridge.js">
+  <link rel="stylesheet" href="/css/one-link.css">
+  <link rel="stylesheet" href="/css/immersive.css">
+</head>
+<body>
+<a href="#main" class="skip-link">Aller au contenu</a>
+<canvas class="ol-field-canvas" aria-hidden="true" hidden></canvas>
+<header class="site-header" role="banner">
+  <div class="container">
+    <a href="/fr/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
+    <button type="button" id="nav-toggle" class="nav-toggle" aria-label="Ouvrir la navigation" aria-expanded="false" aria-controls="primary-nav">&#9776;</button>
+    <nav class="site-nav" id="primary-nav" aria-label="Principale">
+      <a href="/how-it-works/" hreflang="en">Comment ça marche</a>
+      <a href="/features/" hreflang="en">Fonctionnalités</a>
+      <a href="/security/" hreflang="en">Sécurité</a>
+      <a href="/share/" hreflang="en">Partager</a>
+      <a href="/download/" hreflang="en" class="cta-get">Obtenir One Link</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <section class="hero">
+    <div class="container">
+      <span class="we-are-one">Transparence</span>
+      <h1>Ce que nous savons. <span class="grad">Ce que nous ne savons pas.</span></h1>
+      <p class="lede">One Link est un logiciel que vous exécutez. L'architecture a été conçue pour que la plus petite quantité d'informations possible passe par tout ce que nous exploitons. Cette page est le journal public et daté de ce que cela signifie.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Warrant canary</span>
+      <h2>Dernière vérification <span class="grad">2026-05-17</span>.</h2>
+      <div class="ol-grid ol-grid-2 ol-items-start">
+        <div>
+          <p>À la date indiquée, les contributeurs de One Link ont reçu zéro requête gouvernementale de quelque nature que ce soit liée à ce projet, à ses dépôts de source, à son infrastructure de relais ou à son site web. Nous avons reçu zéro Lettre de Sécurité Nationale ou ordre de bâillon équivalent, parce qu'aucun tel instrument n'a été émis.</p>
+          <p>Cette page est mise à jour à une cadence mensuelle. La disparition ou l'expiration de cette déclaration est elle-même le signal.</p>
+          <p>La déclaration est signée et engagée dans le dépôt public de source à chaque rafraîchissement, donc les attestations historiques sont infalsifiables via git log.</p>
+        </div>
+        <div>
+          <pre class="ol-code"><span class="d">// déclaration canary, en clair</span>
+<span class="c">date</span>:                  2026-05-17
+<span class="c">requetes_recues</span>:       0
+<span class="c">ordres_de_baillon</span>:     0
+<span class="c">citations_recues</span>:      0
+<span class="c">NSL_recues</span>:            0
+<span class="c">prochain_rafraichis</span>:   2026-06-17
+
+<span class="d">// signé dans l'historique des commits</span></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Ce que l'architecture laisse hors de notre portée</span>
+      <h2>La plus petite surface <span class="grad">possible.</span></h2>
+      <div class="ol-grid ol-grid-3">
+        <article class="ol-tile">
+          <h3>Contenu des messages</h3>
+          <p>Chiffré de bout en bout avec des clés hybrides post-quantiques. Le texte en clair n'atteint jamais un relais, jamais un serveur, jamais nous. Il n'y a pas de texte clair que toute partie autre que les pairs puisse remettre.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Identifiants de compte</h3>
+          <p>One Link utilise des identifiants de pair opaques et rotatifs. Il n'y a pas de base de données d'e-mails, de numéros de téléphone ou de noms d'utilisateur à assigner. La reconnaissance se fait d'appareil à appareil par appairage.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Graphe social</h3>
+          <p>Les appairages sont stockés sur les appareils qui les détiennent, pas sur un serveur. Le graphe agrégé « qui connaît qui » que les messageries retiennent généralement n'existe nulle part où nous opérons.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Journaux de relais</h3>
+          <p>Les relais sont conçus pour être des transitaires sans état. Ils acheminent des enveloppes scellées par topologie, pas par identité. Ils ne conservent pas de journaux d'accès entre redémarrages. N'importe qui peut en exécuter un.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Emplacement</h3>
+          <p>La page de maillage en direct ne montre qu'une région continentale approximative, dérivée de la topologie des relais. Aucun emplacement précis d'un pair n'est conservé là où nous contrôlons.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Registres de paiement</h3>
+          <p>One Link est gratuit. Il n'y a pas d'abonnement, pas d'historique d'achat, pas d'adresse de facturation. Il n'y a rien à contraindre.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Ce que ce site nous fait traiter</span>
+      <h2>La liste honnête.</h2>
+      <p class="lede">Pour une visibilité totale, voici exactement ce que la surface du site web (ce domaine, pas le daemon One Link) traite :</p>
+      <div class="ol-grid ol-grid-2">
+        <article class="ol-tile">
+          <h3>Cloudflare comme hébergeur</h3>
+          <p>weareone-link.org fonctionne sur Cloudflare Workers. Cloudflare voit l'IP de chaque requête, comme tout CDN. Nous avons configuré le worker pour remplacer les en-têtes de télémétrie de rapport d'erreurs par défaut de Cloudflare afin qu'aucune balise NEL ne se déclenche depuis votre navigateur.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Couche de présence anonyme</h3>
+          <p>La pastille « N ici en ce moment » utilise un Cloudflare Durable Object qui ne conserve qu'un identifiant aléatoire par session pendant la durée de vie de votre onglet. L'identifiant tourne à chaque visite. Aucune donnée identifiante n'est stockée.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Tampon de partage chiffré</h3>
+          <p>/share/ n'accepte que du texte chiffré. La clé vit dans le fragment d'URL et n'atteint jamais le serveur. Le texte chiffré est supprimé au premier téléchargement ou après 24 heures, selon ce qui arrive en premier.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Pas de pistage, pas d'analytique</h3>
+          <p>Zéro cookie. Zéro analytique. Zéro script tiers. Zéro réseau publicitaire. Zéro pixel de pistage. Cela est appliqué par la Content-Security-Policy livrée avec chaque page.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Et si ce site disparaît</span>
+      <h2>Le réseau ne <span class="grad">dépend pas de ce site.</span></h2>
+      <p class="lede">Ce site web fonctionne sur Cloudflare. Un acteur étatique, une plainte de droit d'auteur, un changement de politique ou un problème de facturation pourraient le mettre hors ligne demain. Ce résultat serait gênant. Il n'arrêterait pas One Link.</p>
+      <div class="ol-grid ol-grid-2">
+        <article class="ol-tile">
+          <h3>Le daemon n'a pas besoin de ce site.</h3>
+          <p>Les clients One Link s'appairent d'appareil à appareil par QR. Une fois appairés, ils discutent de pair à pair (ou via des relais bénévoles que n'importe qui peut exécuter). Aucun client n'appelle weareone-link.org pour fonctionner. Si ce site disparaît aujourd'hui, chaque One Link installé continue de fonctionner.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Les relais n'ont pas besoin de ce site.</h3>
+          <p>Le réseau de relais est géré par la communauté. N'importe qui peut en exécuter un. Il n'y a pas d'annuaire central que nous contrôlons. Les relais se chuchotent entre eux pour se trouver. Supprimer notre domaine ne supprime pas un seul relais.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Ce site est réplicable par conception.</h3>
+          <p>Chaque octet de ce site vit dans un dépôt public AGPL-3.0. N'importe qui peut le cloner, l'auditer et l'héberger. Voir <a class="ol-cyan-text" href="/mirror/" hreflang="en">/mirror/</a> pour la commande d'auto-hébergement de trois lignes, un guide de service onion Tor et un manifeste de pin IPFS. Si nous sommes bannis, vous pouvez être le prochain hôte en cinq minutes.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>La source est sur GitHub aujourd'hui.</h3>
+          <p>Et sur plusieurs miroirs que des gens maintiennent indépendamment. La clé de signature pour les versions est tenue hors ligne. La compilation est reproductible. Même si chaque serveur que nous avons touché disparaissait, le code, le protocole et les mathématiques survivent dans n'importe quel clone.</p>
+        </article>
+      </div>
+      <p class="ol-mt-md ol-prose">Ceci n'est pas de la bravade, c'est l'architecture. Le but entier de « pas de serveurs au milieu » est que le protocole fonctionne sans nous. Héberger ce site est une commodité pour les visiteurs de première fois, pas une dépendance portante du réseau.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Cadence</span>
+      <h2>Rafraîchi mensuellement. <span class="grad">Toujours.</span></h2>
+      <p class="lede">Si cette page prend du retard, c'est en soi un signal. Abonnez-vous au dépôt de source pour des notifications atomiques lorsque ce fichier change.</p>
+      <p class="lede">Source : <a class="ol-cyan-text" href="https://github.com/IamOneYouAreOneWeAreOne/one-link-website/commits/master/dist/weareone-link.org/transparency/index.html" rel="noopener">historique des commits pour cette page</a>.</p>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer" role="contentinfo">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a href="/fr/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
+        <p class="footer-tag">Un réseau libre et privé pour les messages, les fichiers et les appareils. À personne. À tout le monde.</p>
+        <p class="ol-mt-md ol-soft-text ol-mono">
+          <strong>Lire en :</strong>
+        </p>
+      </div>
+      <div><h3>Réseau</h3><ul><li><a href="/how-it-works/" hreflang="en">Comment ça marche</a></li><li><a href="/features/" hreflang="en">Fonctionnalités</a></li><li><a href="/mesh/" hreflang="en">Maillage en direct</a></li></ul></div>
+      <div><h3>Pour vous</h3><ul><li><a href="/download/" hreflang="en">Obtenir One Link</a></li><li><a href="/security/" hreflang="en">Sécurité</a></li><li><a href="/fr/accessibility/" hreflang="fr">Accessibilité</a></li><li><a href="/fr/transparency/" hreflang="fr">Transparence</a></li><li><a href="/audits/" hreflang="en">Audits</a></li></ul></div>
+      <div><h3>Pour les bâtisseurs</h3><ul><li><a href="/builders/" hreflang="en">Protocole et source</a></li><li><a href="/changelog/" hreflang="en">Journal des modifications</a></li><li><a href="/releases/" hreflang="en">Versions</a></li><li><a href="/mirror/" hreflang="en">Mettre en miroir ce site</a></li><li><a href="/download/source" hreflang="en" rel="noopener">Archive source</a></li><li><a href="https://github.com/IamOneYouAreOneWeAreOne/one-link" rel="noopener external">GitHub</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <span class="built-by">&copy; 2026 contributeurs de One Link. <a href="/fr/terms/" hreflang="fr">AGPL-3.0</a>. <a href="/fr/privacy/" hreflang="fr">Pas de pistage.</a> <a href="mailto:weareone@oneunity.earth">weareone@oneunity.earth</a></span>
+      <span class="built-by">nous sommes un</span>
+    </div>
+  </div>
+</footer>
+
+<script type="module" src="/live/bridge.js"></script>
+</body>
+</html>

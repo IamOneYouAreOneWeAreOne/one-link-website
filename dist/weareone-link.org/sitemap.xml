@@ -17,11 +17,12 @@
   <url><loc>https://weareone-link.org/changelog/</loc><changefreq>weekly</changefreq><priority>0.50</priority></url>
   <url><loc>https://weareone-link.org/releases/</loc><changefreq>weekly</changefreq><priority>0.60</priority></url>
   <url><loc>https://weareone-link.org/audits/</loc><changefreq>monthly</changefreq><priority>0.65</priority></url>
-  <url><loc>https://weareone-link.org/mirror/</loc><changefreq>monthly</changefreq><priority>0.60</priority></url>  <!-- i18n-begin -->
+  <url><loc>https://weareone-link.org/mirror/</loc><changefreq>monthly</changefreq><priority>0.60</priority></url>
+  <!-- i18n-begin -->
   <url>
     <loc>https://weareone-link.org/es/</loc>
     <changefreq>weekly</changefreq>
-    <priority>0.95</priority>
+    <priority>0.7</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://weareone-link.org/"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://weareone-link.org/es/"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://weareone-link.org/fr/"/>
@@ -33,7 +34,7 @@
   <url>
     <loc>https://weareone-link.org/fr/</loc>
     <changefreq>weekly</changefreq>
-    <priority>0.95</priority>
+    <priority>0.7</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://weareone-link.org/"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://weareone-link.org/es/"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://weareone-link.org/fr/"/>
@@ -45,7 +46,7 @@
   <url>
     <loc>https://weareone-link.org/pt/</loc>
     <changefreq>weekly</changefreq>
-    <priority>0.95</priority>
+    <priority>0.7</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://weareone-link.org/"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://weareone-link.org/es/"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://weareone-link.org/fr/"/>
@@ -57,7 +58,7 @@
   <url>
     <loc>https://weareone-link.org/de/</loc>
     <changefreq>weekly</changefreq>
-    <priority>0.95</priority>
+    <priority>0.7</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://weareone-link.org/"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://weareone-link.org/es/"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://weareone-link.org/fr/"/>
@@ -69,7 +70,7 @@
   <url>
     <loc>https://weareone-link.org/it/</loc>
     <changefreq>weekly</changefreq>
-    <priority>0.95</priority>
+    <priority>0.7</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://weareone-link.org/"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://weareone-link.org/es/"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://weareone-link.org/fr/"/>
@@ -77,6 +78,246 @@
     <xhtml:link rel="alternate" hreflang="de" href="https://weareone-link.org/de/"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://weareone-link.org/it/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://weareone-link.org/"/>
+  </url>
+  <url>
+    <loc>https://weareone-link.org/es/transparency/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://weareone-link.org/transparency/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://weareone-link.org/es/transparency/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://weareone-link.org/fr/transparency/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://weareone-link.org/pt/transparency/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://weareone-link.org/de/transparency/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://weareone-link.org/it/transparency/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://weareone-link.org/transparency/"/>
+  </url>
+  <url>
+    <loc>https://weareone-link.org/fr/transparency/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://weareone-link.org/transparency/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://weareone-link.org/es/transparency/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://weareone-link.org/fr/transparency/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://weareone-link.org/pt/transparency/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://weareone-link.org/de/transparency/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://weareone-link.org/it/transparency/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://weareone-link.org/transparency/"/>
+  </url>
+  <url>
+    <loc>https://weareone-link.org/pt/transparency/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://weareone-link.org/transparency/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://weareone-link.org/es/transparency/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://weareone-link.org/fr/transparency/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://weareone-link.org/pt/transparency/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://weareone-link.org/de/transparency/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://weareone-link.org/it/transparency/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://weareone-link.org/transparency/"/>
+  </url>
+  <url>
+    <loc>https://weareone-link.org/de/transparency/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://weareone-link.org/transparency/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://weareone-link.org/es/transparency/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://weareone-link.org/fr/transparency/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://weareone-link.org/pt/transparency/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://weareone-link.org/de/transparency/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://weareone-link.org/it/transparency/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://weareone-link.org/transparency/"/>
+  </url>
+  <url>
+    <loc>https://weareone-link.org/it/transparency/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://weareone-link.org/transparency/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://weareone-link.org/es/transparency/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://weareone-link.org/fr/transparency/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://weareone-link.org/pt/transparency/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://weareone-link.org/de/transparency/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://weareone-link.org/it/transparency/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://weareone-link.org/transparency/"/>
+  </url>
+  <url>
+    <loc>https://weareone-link.org/es/accessibility/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://weareone-link.org/accessibility/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://weareone-link.org/es/accessibility/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://weareone-link.org/fr/accessibility/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://weareone-link.org/pt/accessibility/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://weareone-link.org/de/accessibility/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://weareone-link.org/it/accessibility/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://weareone-link.org/accessibility/"/>
+  </url>
+  <url>
+    <loc>https://weareone-link.org/fr/accessibility/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://weareone-link.org/accessibility/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://weareone-link.org/es/accessibility/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://weareone-link.org/fr/accessibility/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://weareone-link.org/pt/accessibility/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://weareone-link.org/de/accessibility/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://weareone-link.org/it/accessibility/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://weareone-link.org/accessibility/"/>
+  </url>
+  <url>
+    <loc>https://weareone-link.org/pt/accessibility/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://weareone-link.org/accessibility/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://weareone-link.org/es/accessibility/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://weareone-link.org/fr/accessibility/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://weareone-link.org/pt/accessibility/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://weareone-link.org/de/accessibility/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://weareone-link.org/it/accessibility/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://weareone-link.org/accessibility/"/>
+  </url>
+  <url>
+    <loc>https://weareone-link.org/de/accessibility/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://weareone-link.org/accessibility/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://weareone-link.org/es/accessibility/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://weareone-link.org/fr/accessibility/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://weareone-link.org/pt/accessibility/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://weareone-link.org/de/accessibility/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://weareone-link.org/it/accessibility/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://weareone-link.org/accessibility/"/>
+  </url>
+  <url>
+    <loc>https://weareone-link.org/it/accessibility/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://weareone-link.org/accessibility/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://weareone-link.org/es/accessibility/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://weareone-link.org/fr/accessibility/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://weareone-link.org/pt/accessibility/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://weareone-link.org/de/accessibility/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://weareone-link.org/it/accessibility/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://weareone-link.org/accessibility/"/>
+  </url>
+  <url>
+    <loc>https://weareone-link.org/es/privacy/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://weareone-link.org/privacy/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://weareone-link.org/es/privacy/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://weareone-link.org/fr/privacy/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://weareone-link.org/pt/privacy/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://weareone-link.org/de/privacy/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://weareone-link.org/it/privacy/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://weareone-link.org/privacy/"/>
+  </url>
+  <url>
+    <loc>https://weareone-link.org/fr/privacy/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://weareone-link.org/privacy/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://weareone-link.org/es/privacy/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://weareone-link.org/fr/privacy/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://weareone-link.org/pt/privacy/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://weareone-link.org/de/privacy/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://weareone-link.org/it/privacy/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://weareone-link.org/privacy/"/>
+  </url>
+  <url>
+    <loc>https://weareone-link.org/pt/privacy/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://weareone-link.org/privacy/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://weareone-link.org/es/privacy/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://weareone-link.org/fr/privacy/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://weareone-link.org/pt/privacy/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://weareone-link.org/de/privacy/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://weareone-link.org/it/privacy/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://weareone-link.org/privacy/"/>
+  </url>
+  <url>
+    <loc>https://weareone-link.org/de/privacy/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://weareone-link.org/privacy/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://weareone-link.org/es/privacy/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://weareone-link.org/fr/privacy/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://weareone-link.org/pt/privacy/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://weareone-link.org/de/privacy/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://weareone-link.org/it/privacy/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://weareone-link.org/privacy/"/>
+  </url>
+  <url>
+    <loc>https://weareone-link.org/it/privacy/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://weareone-link.org/privacy/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://weareone-link.org/es/privacy/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://weareone-link.org/fr/privacy/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://weareone-link.org/pt/privacy/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://weareone-link.org/de/privacy/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://weareone-link.org/it/privacy/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://weareone-link.org/privacy/"/>
+  </url>
+  <url>
+    <loc>https://weareone-link.org/es/terms/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://weareone-link.org/terms/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://weareone-link.org/es/terms/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://weareone-link.org/fr/terms/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://weareone-link.org/pt/terms/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://weareone-link.org/de/terms/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://weareone-link.org/it/terms/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://weareone-link.org/terms/"/>
+  </url>
+  <url>
+    <loc>https://weareone-link.org/fr/terms/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://weareone-link.org/terms/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://weareone-link.org/es/terms/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://weareone-link.org/fr/terms/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://weareone-link.org/pt/terms/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://weareone-link.org/de/terms/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://weareone-link.org/it/terms/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://weareone-link.org/terms/"/>
+  </url>
+  <url>
+    <loc>https://weareone-link.org/pt/terms/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://weareone-link.org/terms/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://weareone-link.org/es/terms/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://weareone-link.org/fr/terms/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://weareone-link.org/pt/terms/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://weareone-link.org/de/terms/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://weareone-link.org/it/terms/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://weareone-link.org/terms/"/>
+  </url>
+  <url>
+    <loc>https://weareone-link.org/de/terms/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://weareone-link.org/terms/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://weareone-link.org/es/terms/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://weareone-link.org/fr/terms/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://weareone-link.org/pt/terms/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://weareone-link.org/de/terms/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://weareone-link.org/it/terms/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://weareone-link.org/terms/"/>
+  </url>
+  <url>
+    <loc>https://weareone-link.org/it/terms/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://weareone-link.org/terms/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://weareone-link.org/es/terms/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://weareone-link.org/fr/terms/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://weareone-link.org/pt/terms/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://weareone-link.org/de/terms/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://weareone-link.org/it/terms/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://weareone-link.org/terms/"/>
   </url>
   <!-- i18n-end -->
 </urlset>
