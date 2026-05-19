@@ -150,15 +150,15 @@ function ensureVerifyPanel(btn) {
     backdrop-filter: blur(10px); max-width: 56rem;
   `;
   panel.innerHTML = `
-    <div id="ol-vd-line" style="display: flex; align-items: center; gap: 0.6rem;">
-      <span style="color: var(--ol-cyan);">&#x25cf;</span>
-      <strong style="color: var(--ol-text);">streaming + verifying</strong>
-      <span id="ol-vd-status" style="color: var(--ol-text-dim);">opening connection...</span>
+    <div id="ol-vd-line" class="ol-vd-line">
+      <span class="ol-cyan-text">&#x25cf;</span>
+      <strong class="ol-text-base">streaming + verifying</strong>
+      <span id="ol-vd-status" class="ol-text-dim-color">opening connection...</span>
     </div>
-    <div style="margin-top: 0.7rem; height: 6px; background: rgba(255,255,255,0.06); border-radius: 999px; overflow: hidden;">
-      <div id="ol-vd-bar" style="height: 100%; width: 0%; background: linear-gradient(90deg, var(--ol-cyan), var(--ol-violet)); transition: width 80ms linear;"></div>
+    <div class="ol-vd-track">
+      <div id="ol-vd-bar" class="ol-vd-bar"></div>
     </div>
-    <pre id="ol-vd-detail" class="ol-code" style="margin-top: 0.9rem; display: none;"></pre>
+    <pre id="ol-vd-detail" class="ol-code ol-vd-detail-pre"></pre>
   `;
   btn.parentNode.insertBefore(panel, btn.nextSibling);
   return panel;
@@ -180,7 +180,7 @@ function setVdBar(pct) {
 function showVdDetail(html) {
   const d = $('#ol-vd-detail');
   if (d) {
-    d.style.display = 'block';
+    d.classList.add('is-visible');
     d.innerHTML = html;
   }
 }
@@ -195,7 +195,7 @@ async function runVerifyingDownload(btn, os) {
   const attest = await verifyAttestation(target);
   if (!attest.ok || !attest.sigVerified) {
     setVdStatus('attestation verification failed - aborting', 'var(--ol-rose)');
-    showVdDetail(`<span style="color: var(--ol-rose);">refusing to download: ${escapeHtml(attest.error || 'signature did not verify')}</span>`);
+    showVdDetail(`<span class="ol-rose-text">refusing to download: ${escapeHtml(attest.error || 'signature did not verify')}</span>`);
     return;
   }
   const expectedSha = attest.doc.artifact.sha256;
@@ -1203,7 +1203,7 @@ async function startPairDemo() {
         <dt>response size</dt><dd>${result.responseBytes.length} bytes</dd>
         <dt>confirm size</dt><dd>${result.confirmBytes.length} bytes</dd>
         <dt>chain key</dt><dd>${bytesToHex(result.chainKey).slice(0, 16)}... (32 bytes)</dd>
-        <dt>round trip</dt><dd style="color: var(--ol-green);">verified, sas matched</dd>
+        <dt>round trip</dt><dd class="ol-green-text">verified, sas matched</dd>
       `);
     }
 
@@ -1261,7 +1261,7 @@ function wireTabPairButton() {
     if (!second) {
       if (result) {
         result.hidden = false;
-        result.innerHTML = `<span style="color: var(--ol-rose);">could not open second tab (popup blocked). Try cmd/ctrl-click the link, or allow popups for this site, then click again.</span>`;
+        result.innerHTML = `<span class="ol-rose-text">could not open second tab (popup blocked). Try cmd/ctrl-click the link, or allow popups for this site, then click again.</span>`;
       }
       return;
     }
@@ -1278,14 +1278,14 @@ function wireTabPairButton() {
 async function runTabPairAsInviter(resultEl, secondTab) {
   if (resultEl) {
     resultEl.hidden = false;
-    resultEl.innerHTML = '<span style="color: var(--ol-text-soft);">opening second tab and waiting for handshake...</span>';
+    resultEl.innerHTML = '<span class="ol-soft-text">opening second tab and waiting for handshake...</span>';
   }
   let wasmModule;
   try {
     wasmModule = await import('/live/wasm/ol_pair_qr.js');
     await wasmModule.default({ module_or_path: '/live/wasm/ol_pair_qr_bg.wasm' });
   } catch (e) {
-    if (resultEl) resultEl.innerHTML = `<span style="color: var(--ol-rose);">WASM unavailable: ${escapeHtml(e?.message || String(e))}</span>`;
+    if (resultEl) resultEl.innerHTML = `<span class="ol-rose-text">WASM unavailable: ${escapeHtml(e?.message || String(e))}</span>`;
     if (secondTab && !secondTab.closed) try { secondTab.close(); } catch {}
     return;
   }
@@ -1338,17 +1338,17 @@ async function runTabPairAsInviter(resultEl, secondTab) {
   const sasMatch = sasInviter === ack.sas;
   if (resultEl) {
     resultEl.innerHTML = `
-      <div class="ol-proof" open style="margin-top: 1rem;">
+      <div class="ol-proof ol-proof-mt-md" open>
         <details open>
           <summary>two-tab pair completed in ${dt} ms</summary>
           <div class="ol-proof-body">
             <dl>
               <dt>SAS (inviter)</dt><dd>${escapeHtml(sasInviter)}</dd>
               <dt>SAS (scanner)</dt><dd>${escapeHtml(ack.sas)}</dd>
-              <dt>SAS match</dt><dd style="color: var(--ol-${sasMatch ? 'green' : 'rose'});">${sasMatch ? 'yes' : 'no'}</dd>
+              <dt>SAS match</dt><dd class="${sasMatch ? 'ol-green-text' : 'ol-rose-text'}">${sasMatch ? 'yes' : 'no'}</dd>
               <dt>chain key (inviter)</dt><dd>${bytesToHex(chainKey).slice(0, 16)}...</dd>
               <dt>chain key (scanner)</dt><dd>${bytesToHex(ack.chainKey).slice(0, 16)}...</dd>
-              <dt>keys match</dt><dd style="color: var(--ol-${keysMatch ? 'green' : 'rose'});">${keysMatch ? 'yes' : 'no'}</dd>
+              <dt>keys match</dt><dd class="${keysMatch ? 'ol-green-text' : 'ol-rose-text'}">${keysMatch ? 'yes' : 'no'}</dd>
               <dt>transport</dt><dd>BroadcastChannel (same-origin pipe between tabs)</dd>
               <dt>protocol</dt><dd>ol_pair_qr v${wasmModule.ol_pair_qr_version()}</dd>
             </dl>
@@ -1366,7 +1366,7 @@ async function runTabPairAsScanner() {
     await wasmModule.default({ module_or_path: '/live/wasm/ol_pair_qr_bg.wasm' });
   } catch (e) {
     document.body.insertAdjacentHTML('afterbegin',
-      `<div style="position: fixed; top: 1rem; left: 50%; transform: translateX(-50%); z-index: 100; padding: 1rem; background: rgba(8,12,20,0.9); color: var(--ol-rose); border-radius: 8px; font-family: var(--ol-mono);">scanner: WASM unavailable</div>`);
+      `<div class="ol-scanner-error-toast">scanner: WASM unavailable</div>`);
     return;
   }
 
@@ -1389,17 +1389,16 @@ async function runTabPairAsScanner() {
         const chainKey = scanner.receiveConfirm(msg.confirmBytes);
         const sas = scanner.sas;
         channel.postMessage({ type: 'ack', chainKey, sas });
-        // Surface confirmation in this tab too.
+        // Surface confirmation in this tab too. Uses .ol-tab-pair-toast
+        // because CSP `style-src 'self'` blocks inline style="..." — an
+        // earlier version of this block had inline styles and rendered
+        // as raw unstyled text in the top-left as a result.
         document.body.insertAdjacentHTML('afterbegin', `
-          <div style="position: fixed; top: 1rem; left: 50%; transform: translateX(-50%); z-index: 100;
-                      padding: 1.2rem 1.5rem; background: rgba(8,12,20,0.95);
-                      color: var(--ol-green); border: 1px solid var(--ol-line-bright);
-                      border-radius: var(--ol-radius); font-family: var(--ol-mono);
-                      box-shadow: 0 14px 40px hsla(178, 90%, 70%, 0.35);">
-            <strong style="color: var(--ol-cyan);">paired with the other tab.</strong><br>
+          <div class="ol-tab-pair-toast">
+            <strong>paired with the other tab.</strong><br>
             SAS: ${escapeHtml(sas)}<br>
             chain key: ${bytesToHex(chainKey).slice(0, 16)}...<br>
-            <small style="color: var(--ol-text-dim);">you can close this tab</small>
+            <small>you can close this tab</small>
           </div>
         `);
       } catch (e) {
@@ -1538,7 +1537,7 @@ function wirePqSigDemo() {
     const dt = (performance.now() - t0).toFixed(1);
 
     if (!result.ok) {
-      out.innerHTML = `<span style="color: var(--ol-rose);">ol_pqsig unavailable: ${escapeHtml(result.error || 'unknown')}</span>`;
+      out.innerHTML = `<span class="ol-rose-text">ol_pqsig unavailable: ${escapeHtml(result.error || 'unknown')}</span>`;
     } else {
       const vkHex = bytesToHex(new Uint8Array(result.verifyingKey)).slice(0, 32);
       const sigHex = bytesToHex(new Uint8Array(result.signature)).slice(0, 32);
@@ -1628,7 +1627,7 @@ function wireThresholdDemo() {
     const dt = (performance.now() - t0).toFixed(1);
 
     if (!result.ok) {
-      out.innerHTML = `<span style="color: var(--ol-rose);">ol_threshold_recovery unavailable: ${escapeHtml(result.error || 'unknown')}</span>`;
+      out.innerHTML = `<span class="ol-rose-text">ol_threshold_recovery unavailable: ${escapeHtml(result.error || 'unknown')}</span>`;
     } else {
       const previews = Array.from(result.sharePreviews || []);
       const lines = [
@@ -1715,7 +1714,7 @@ function wireRatchetDemo() {
     const dt = (performance.now() - t0).toFixed(1);
 
     if (!result.ok) {
-      out.innerHTML = `<span style="color: var(--ol-rose);">ol_ratchet unavailable: ${escapeHtml(result.error || 'unknown')}</span>`;
+      out.innerHTML = `<span class="ol-rose-text">ol_ratchet unavailable: ${escapeHtml(result.error || 'unknown')}</span>`;
     } else {
       const keyLines = result.keyPreviews.map((p, i) =>
         `<span class="c">  step ${i}</span>          ${escapeHtml(p)}...`
@@ -1828,7 +1827,7 @@ function wireHwkeyDemo() {
     const dt = (performance.now() - t0).toFixed(1);
 
     if (!result.ok) {
-      out.innerHTML = `<span style="color: var(--ol-rose);">ol_hwkey unavailable: ${escapeHtml(result.error || 'unknown')}</span>`;
+      out.innerHTML = `<span class="ol-rose-text">ol_hwkey unavailable: ${escapeHtml(result.error || 'unknown')}</span>`;
     } else {
       const visitLine = result.firstVisit
         ? `<span class="g">first visit -> minted a fresh device root</span>`
@@ -1998,7 +1997,7 @@ function wireAttestationVerify() {
     const result = await verifyAttestation();
 
     if (!result.ok) {
-      out.innerHTML = `<span style="color: var(--ol-rose);">verify failed: ${escapeHtml(result.error)}</span>`;
+      out.innerHTML = `<span class="ol-rose-text">verify failed: ${escapeHtml(result.error)}</span>`;
     } else {
       const d = result.doc;
       const a = d.artifact || {};
@@ -2121,7 +2120,7 @@ function olOpLogEnsureDom() {
     transition: opacity 0.3s, transform 0.3s;
     opacity: 0;
   `;
-  wrap.innerHTML = `<div id="ol-op-log-inner" style="display: flex; flex-direction: column; gap: 2px; min-height: 1.2em;"></div>`;
+  wrap.innerHTML = `<div id="ol-op-log-inner" class="ol-op-log-inner"></div>`;
   wrap.addEventListener('click', () => {
     __OL_OP_LOG.expanded = !__OL_OP_LOG.expanded;
     olOpLogRender();
@@ -2143,18 +2142,14 @@ function olOpLogRender() {
   const max = __OL_OP_LOG.expanded ? 8 : __OL_OP_LOG.visibleMax;
   const slice = __OL_OP_LOG.entries.slice(-max);
   __OL_OP_LOG.inner.innerHTML = slice.map(e => {
-    const colorMap = {
-      ok: 'var(--ol-cyan, #6ef0f4)',
-      slow: 'var(--ol-violet, #b08cff)',
-      err: 'var(--ol-rose, #ff6e8c)',
-    };
-    const c = colorMap[e.cls] || colorMap.ok;
+    // Dot color comes from CSS via class swap (CSP-safe): is-ok / is-slow / is-err.
+    const cls = (e.cls === 'ok' || e.cls === 'slow' || e.cls === 'err') ? e.cls : 'ok';
     const ms = e.ms < 0.1 ? '<1' : e.ms.toFixed(e.ms < 10 ? 1 : 0);
     return `
-      <div style="display: flex; gap: 0.6rem; align-items: baseline;">
-        <span style="color: ${c}; font-weight: 600;">&#x25cf;</span>
-        <span style="flex: 1; color: var(--ol-text, #e7ecf3);">${e.label}</span>
-        <span style="color: var(--ol-text-dim, #6e7884);">${ms} ms</span>
+      <div class="ol-op-log-entry">
+        <span class="ol-op-dot is-${cls}">&#x25cf;</span>
+        <span class="ol-op-label">${e.label}</span>
+        <span class="ol-op-ms">${ms} ms</span>
       </div>
     `;
   }).join('');
@@ -2235,7 +2230,7 @@ function wireRebuildFromSource() {
     const t0 = performance.now();
     const attest = await verifyAttestation(SOURCE_ATTESTATION_SHA);
     if (!attest.ok || !attest.sigVerified) {
-      out.innerHTML = `<span style="color: var(--ol-rose);">attestation failed: ${escapeHtml(attest.error || 'signature did not verify')}</span>`;
+      out.innerHTML = `<span class="ol-rose-text">attestation failed: ${escapeHtml(attest.error || 'signature did not verify')}</span>`;
       if (status) status.style.display = 'none';
       btn.disabled = false;
       return;
@@ -2250,13 +2245,13 @@ function wireRebuildFromSource() {
     try {
       res = await fetch('/downloads/one-link-source.tar.gz');
     } catch (e) {
-      out.innerHTML = `<span style="color: var(--ol-rose);">download failed: ${escapeHtml(e?.message || e)}</span>`;
+      out.innerHTML = `<span class="ol-rose-text">download failed: ${escapeHtml(e?.message || e)}</span>`;
       if (status) status.style.display = 'none';
       btn.disabled = false;
       return;
     }
     if (!res.ok) {
-      out.innerHTML = `<span style="color: var(--ol-rose);">download returned ${res.status}</span>`;
+      out.innerHTML = `<span class="ol-rose-text">download returned ${res.status}</span>`;
       if (status) status.style.display = 'none';
       btn.disabled = false;
       return;
@@ -2348,7 +2343,7 @@ function wirePrivateRouteDemo() {
     const dt = (performance.now() - t0).toFixed(1);
 
     if (!result.ok) {
-      out.innerHTML = `<span style="color: var(--ol-rose);">ol_onion unavailable: ${escapeHtml(result.error || 'unknown')}</span>`;
+      out.innerHTML = `<span class="ol-rose-text">ol_onion unavailable: ${escapeHtml(result.error || 'unknown')}</span>`;
     } else {
       const lines = [
         `<span class="d">// real Sphinx wrap + 3 peels, ${dt} ms in your tab</span>`,
@@ -3033,8 +3028,8 @@ async function startChatWith(peerId) {
     note.className = 'ol-chat-instruction';
     note.style.cssText = 'color: var(--ol-text-soft); font-family: var(--ol-mono); font-size: 0.82rem; padding: 0.7rem 0.2rem; line-height: 1.5;';
     note.innerHTML =
-      'request sent. they will see a <strong style="color: var(--ol-cyan);">someone wants to talk</strong> toast in their top-right corner.' +
-      '<br><br>they click <strong style="color: var(--ol-cyan);">say hi</strong> &rarr; both panels flip to <strong style="color: var(--ol-green);">live</strong> &rarr; typing is enabled.';
+      'request sent. they will see a <strong class="ol-cyan-text">someone wants to talk</strong> toast in their top-right corner.' +
+      '<br><br>they click <strong class="ol-cyan-text">say hi</strong> &rarr; both panels flip to <strong class="ol-green-text">live</strong> &rarr; typing is enabled.';
     els.log.appendChild(note);
   }
 }
@@ -3642,7 +3637,7 @@ function renderTelemetry() {
 
   el.innerHTML = rows.map(([k, v]) => {
     if (k === '__SECTION__') {
-      return `</dl><div class="ol-tel-section"><strong style="color: var(--ol-text); font-weight: 600;">${escapeHtml(v)}</strong></div><dl>`;
+      return `</dl><div class="ol-tel-section"><strong class="ol-text-base ol-text-bold">${escapeHtml(v)}</strong></div><dl>`;
     }
     return `<dt>${escapeHtml(k)}</dt><dd>${typeof v === 'string' && v.startsWith('<') ? v : escapeHtml(String(v))}</dd>`;
   }).join('');
@@ -3729,16 +3724,16 @@ async function startCapAdvertSync() {
     det.style.cssText = 'padding-top: 0;';
     const issued = data.issued_at?.split('.')[0]?.replace('T', ' ') || 'unknown';
     det.innerHTML = `
-      <div class="container" style="max-width: 880px;">
-        <details style="background: rgba(8, 12, 20, 0.5); border: 1px solid var(--ol-line); border-radius: var(--ol-radius); padding: 0.8rem 1.2rem; font-family: var(--ol-mono); font-size: 0.85rem; color: var(--ol-text-soft);">
-          <summary style="cursor: pointer; color: var(--ol-text);">
-            <span style="color: var(--ol-cyan);">&#x25cf;</span>
+      <div class="container ol-tel-container">
+        <details class="ol-tel-details">
+          <summary class="ol-tel-summary">
+            <span class="ol-cyan-text">&#x25cf;</span>
             raw capability advert
-            <span style="color: var(--ol-text-dim); margin-left: 0.5rem;">${data.capabilities.length} caps &middot; signed=${data.signed ? 'yes' : 'no'} &middot; ${issued} UTC</span>
+            <span class="ol-tel-summary-meta">${data.capabilities.length} caps &middot; signed=${data.signed ? 'yes' : 'no'} &middot; ${issued} UTC</span>
           </summary>
-          <div style="margin-top: 0.7rem; display: flex; flex-wrap: wrap; gap: 0.35rem;">
+          <div class="ol-tel-caps">
             ${data.capabilities.map(c => `
-              <span style="padding: 0.18rem 0.5rem; background: rgba(110, 240, 244, 0.06); border: 1px solid rgba(110, 240, 244, 0.18); border-radius: 999px; color: var(--ol-cyan); font-size: 0.72rem;">${escapeHtml(c)}</span>
+              <span class="ol-tel-cap-chip">${escapeHtml(c)}</span>
             `).join('')}
           </div>
         </details>
