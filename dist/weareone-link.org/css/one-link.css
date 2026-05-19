@@ -380,9 +380,13 @@ main { position: relative; z-index: 1; }
 
 /* When the lede sits inside a text-centered container, also center the
    block itself (the `.section .lede` rule sets margin: 0 0 2.5rem which
-   pins it flush-left; this restores the symmetric auto side-margins). */
+   pins it flush-left; this restores the symmetric auto side-margins).
+   Same story for h2: `.section h2` sets `margin: 0 0 1rem` which beats
+   `.ol-mx-auto` on specificity, leaving any narrow (max-width-constrained)
+   heading visually pinned to the left of its centered container. */
 .ol-text-center .lede,
-.ol-text-center p.lede {
+.ol-text-center p.lede,
+.ol-text-center h2 {
   margin-left: auto;
   margin-right: auto;
 }
