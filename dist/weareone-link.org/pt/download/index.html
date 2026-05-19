@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Obter One Link - para qualquer dispositivo, grátis, assinado, verificável</title>
+  <meta name="description" content="Um ficheiro. Um toque. Funciona em Windows, macOS, Linux, Android, iOS. Cada binário é assinado e construído de forma reproduzível. A prova está na página.">
+  <link rel="canonical" href="https://weareone-link.org/pt/download/">
+  <link rel="alternate" hreflang="en" href="https://weareone-link.org/download/">
+  <link rel="alternate" hreflang="es" href="https://weareone-link.org/es/download/">
+  <link rel="alternate" hreflang="fr" href="https://weareone-link.org/fr/download/">
+  <link rel="alternate" hreflang="pt" href="https://weareone-link.org/pt/download/">
+  <link rel="alternate" hreflang="de" href="https://weareone-link.org/de/download/">
+  <link rel="alternate" hreflang="it" href="https://weareone-link.org/it/download/">
+  <link rel="alternate" hreflang="x-default" href="https://weareone-link.org/download/">
+  <meta name="theme-color" content="#04060b" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#f0f4f8" media="(prefers-color-scheme: light)">
+  <meta name="color-scheme" content="dark">
+
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="pt_PT">
+  <meta property="og:site_name" content="One Link">
+  <meta property="og:title" content="Obter One Link">
+  <meta property="og:description" content="Grátis. Assinado. Construído de forma reproduzível. Seu.">
+  <meta property="og:url" content="https://weareone-link.org/pt/download/">
+  <meta property="og:image" content="https://weareone-link.org/og/download.png">
+
+  <link rel="icon" type="image/x-icon" href="/images/favicon.ico"><link rel="icon" type="image/png" sizes="128x128" href="/images/logo-128.png"><link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+  <link rel="manifest" href="/app.webmanifest">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="One Link">
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="modulepreload" href="/live/bridge.js">
+  <link rel="stylesheet" href="/css/one-link.css">
+  <link rel="stylesheet" href="/css/immersive.css">
+</head>
+<body>
+<a href="#main" class="skip-link">Saltar para o conteúdo</a>
+<canvas class="ol-field-canvas" aria-hidden="true" hidden></canvas>
+
+<header class="site-header" role="banner">
+  <div class="container">
+    <a href="/pt/" class="site-logo" aria-label="Início de One Link">
+      <span class="logo-mark" aria-hidden="true"></span>
+      <span>One Link</span>
+    </a>
+    <input type="checkbox" id="nav-toggle" class="nav-toggle-input" aria-hidden="true">
+    <label for="nav-toggle" class="nav-toggle" aria-label="Abrir navegação" role="button" tabindex="0">&#9776;</label>
+    <nav class="site-nav" id="primary-nav" aria-label="Principal">
+      <a href="/how-it-works/" hreflang="en">Como funciona</a>
+      <a href="/features/" hreflang="en">Funcionalidades</a>
+      <a href="/security/" hreflang="en">Segurança</a>
+      <a href="/share/" hreflang="en">Partilhar</a>
+      <a href="/download/" hreflang="en" aria-current="page" class="cta-get">Obter One Link</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="hero ol-pb-sm">
+    <div class="container">
+      <span class="we-are-one">Obter One Link</span>
+      <h1>Um toque. <span class="grad">Pronto no momento em que abre.</span></h1>
+      <p class="lede">
+        Detetámos o seu dispositivo e preparámos a versão certa. Assinada, construída de forma reproduzível e descarregada pela própria rede em vez de um pedido HTTP normal. A prova está logo abaixo do botão.
+      </p>
+    </div>
+  </section>
+
+  <section class="section-tight">
+    <div class="container">
+      <div class="ol-download" id="ol-download">
+        <div class="primary">
+          <div class="os-line" id="ol-detected-os">A detetar o seu dispositivo...</div>
+          <a href="/download/macos" id="ol-download-button" class="btn btn-primary btn-large" download>
+            Descarregar para macOS
+            <span class="arr" aria-hidden="true">&darr;</span>
+          </a>
+          <p class="ol-soft-text ol-mw-52ch">
+            A descarga abre uma sessão real de One Link com o relé de versões, transmite o binário bloco a bloco, e verifica a assinatura no seu navegador à medida que chega. Se a sua rede bloquear algo estranho, recorre em silêncio a uma descarga assinada simples.
+          </p>
+        </div>
+
+        <div class="alts ol-tag-grid" aria-label="Outros dispositivos">
+          <a href="/download/windows" class="ol-platform-row">Windows <span class="ol-platform-status ready">.exe de 59 MB, hoje</span></a>
+          <a href="/download/macos"   class="ol-platform-row">macOS   <span class="ol-platform-status">a chegar</span></a>
+          <a href="/download/linux"   class="ol-platform-row">Linux   <span class="ol-platform-status ready">.tar.gz de 72 MB, hoje</span></a>
+          <a href="/download/android" class="ol-platform-row">Android <span class="ol-platform-status">a chegar</span></a>
+          <a href="/download/ios"     class="ol-platform-row">iOS     <span class="ol-platform-status">a chegar</span></a>
+          <a href="/download/openbsd" class="ol-platform-row">OpenBSD <span class="ol-platform-status">compilar do código, hoje</span></a>
+          <a href="/download/source"  class="ol-platform-row">Código  <span class="ol-platform-status ready">AGPL, hoje</span></a>
+        </div>
+        <p class="ol-attest-dim">
+          estado honesto: Windows e Linux são entregues hoje, assinados. macOS, Android e iOS vêm a seguir. compilar a partir do código funciona em todas as plataformas neste momento.
+        </p>
+
+        <div class="ol-attest" id="ol-attest">
+          <div class="row"><span class="key">versão</span><span class="val">0.21.0-alpha.0</span></div>
+          <div class="row"><span class="key">plataforma</span><span class="val">windows .exe, 58,7 MB</span></div>
+          <div class="row"><span class="key">sha256</span><span class="val ol-word-break" id="ol-sha">ea4efc8bf92f5ddd911e10f940a46899fda6fa786755ce797429b8fd62c05aed</span></div>
+          <div class="row"><span class="key">blake3</span><span class="val muted ol-word-break">dbd29b475fba238344609089973c49fb7a947e58b187cd3591bb615c46c818f8</span></div>
+          <div class="row"><span class="key">assinatura</span><span class="val">Ed25519 <span class="ol-green-text">ao vivo e verificável</span> &middot; ML-DSA-65 <span class="ol-soft-text">a chegar (na v0.22)</span></span></div>
+          <div class="row"><span class="key">fonte</span><span class="val muted">eb87dd2 (v0.21.0-alpha.0-71-geb87dd2)</span></div>
+          <div class="row"><span class="key">verificar</span><span class="val"><a class="verify" href="/api/attest/ea4efc8bf92f5ddd911e10f940a46899fda6fa786755ce797429b8fd62c05aed">ler a cadeia de atestação</a> &middot; ou use o verificador ao vivo mais abaixo</span></div>
+        </div>
+      </div>
+
+      <p class="ol-caption-centered">
+        Sem conta. Sem e-mail. Sem rastreamento. Grátis para sempre.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Porque a prova importa</span>
+      <h2>Uma verificação que pode <span class="grad">fazer sozinho.</span></h2>
+      <p class="lede">
+        Cada descarga aqui é assinada, hasheada e reproduzível. A matemática está aberta. A prova está no seu separador. Corra o verificador abaixo e veja os bytes a confirmarem-se.
+      </p>
+
+      <div class="ol-grid ol-grid-3">
+        <article class="ol-tile">
+          <span class="ol-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L4 6v6c0 5 3.5 9 8 10 4.5-1 8-5 8-10V6l-8-4z"/></svg>
+          </span>
+          <h3>Assinado e verificável hoje.</h3>
+          <p>Cada versão tem uma assinatura Ed25519 que pode verificar no seu separador agora mesmo (botão mais abaixo). A metade pós-quântica ML-DSA-65 chega quando a máquina de assinatura offline estiver aprovisionada. Ambas as metades exigidas pelo verificador do daemon na v0.22.</p>
+        </article>
+        <article class="ol-tile">
+          <span class="ol-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          </span>
+          <h3>Construído numa sala selada.</h3>
+          <p>O build acontece num ambiente de computação confidencial. O documento de atestação prova o commit exato, o ambiente exato e que mais nada lhe tocou.</p>
+        </article>
+        <article class="ol-tile">
+          <span class="ol-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z"/><path d="M4 12h16"/><path d="M12 4v16"/></svg>
+          </span>
+          <h3>Reproduzível.</h3>
+          <p>Qualquer pessoa pode compilar a mesma fonte e obter o mesmo binário byte a byte. Se você e nós chegarmos ao mesmo hash, nenhum humano tocou no resultado.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="ol-grid ol-grid-2 ol-gap-3 ol-items-center">
+        <div>
+          <span class="kicker">A própria descarga</span>
+          <h2>Já é <span class="grad">One Link.</span></h2>
+          <p>O botão em que toca não vai buscar um ficheiro por HTTP. Abre uma sessão real de One Link entre o seu navegador e o relé de versões, negoceia uma chave híbrida, e depois transmite o binário bloco a bloco pelo mesmo protocolo que o seu telefone usará amanhã.</p>
+          <p>Pode observar cada passo. Ou ignorar tudo isto e o ficheiro aparece na sua pasta de transferências. Qualquer das opções está bem.</p>
+        </div>
+        <div>
+          <pre class="ol-code"><span class="d">// cada descarga, todas as vezes</span>
+<span class="c">1.</span> abrir sessão  <span class="d">navegador &rarr; relé</span>
+<span class="c">2.</span> chave híbrida <span class="g">X25519 + ML-KEM-768</span>
+<span class="c">3.</span> pedido        <span class="a">one-link-&lt;o-seu-so&gt;.bin</span>
+<span class="c">4.</span> stream blocos <span class="g">AEAD por bloco, rotação a cada N</span>
+<span class="c">5.</span> verificar sha <span class="g">coincide com o hash anunciado</span>
+<span class="c">6.</span> verificar sig <span class="g">Ed25519 + ML-DSA-65 ambas ok</span>
+<span class="c">7.</span> atestar       <span class="g">ol_confidential fresco, testemunha ok</span>
+
+<span class="c">pronto</span>  <span class="g">ficheiro escrito em disco</span></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Privado por defeito</span>
+      <h2>Também pode descarregar <span class="grad">anonimamente.</span></h2>
+      <p class="lede">
+        Toque no interruptor e o binário toma uma rota de três saltos por relés voluntários no caminho até si. Ninguém, nem nós, sabe quem o trouxe. Mesmo ficheiro, mesmo hash, um pouco mais lento.
+      </p>
+      <p class="ol-soft-text ol-mw-56ch">
+        A sua visita vive no seu separador. O pedido vive entre si e o relé. O relé vive entre si e o ficheiro. Nada da descarga é registado em qualquer sítio de onde possa ser recuperado depois. A arquitetura, por si só, mantém-no assim.
+      </p>
+
+      <div class="ol-private-demo ol-mt-lg">
+        <button type="button" id="ol-private-route-btn" class="btn btn-primary">
+          Correr uma rota Sphinx real, aqui mesmo
+          <span class="arr" aria-hidden="true">&rarr;</span>
+        </button>
+        <span class="ol-status ol-status-inline" id="ol-private-route-status">
+          <span class="dot"></span>
+          <span>a calcular</span>
+        </span>
+        <pre class="ol-code ol-output-pre" id="ol-private-route-out"></pre>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Recibo criptográfico</span>
+      <h2>Verifique o binário <span class="grad">antes de o correr.</span></h2>
+      <p class="lede ol-mw-64ch">
+        Cada versão é entregue ao lado de um documento de atestação assinado. O botão abaixo vai buscar essa atestação, recalcula os bytes canónicos localmente e verifica a assinatura Ed25519 contra a chave pública de assinatura de versão fixada no seu navegador. Um sinal verde significa que os bytes que está prestes a receber são bit a bit aquilo que quem mantém o projeto assinou. A prova está aqui mesmo, todas as vezes.
+      </p>
+
+      <div class="ol-private-demo ol-mt">
+        <button type="button" id="ol-attest-btn" class="btn btn-primary">
+          Verificar a última atestação Windows neste separador
+          <span class="arr" aria-hidden="true">&rarr;</span>
+        </button>
+        <span class="ol-status ol-status-inline" id="ol-attest-status">
+          <span class="dot"></span>
+          <span>a obter e a verificar</span>
+        </span>
+        <pre class="ol-code ol-output-pre" id="ol-attest-out"></pre>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Ou compile-o você</span>
+      <h2>Está tudo <span class="grad">à vista.</span></h2>
+      <p class="lede">
+        AGPL-3.0. Cada linha do daemon, cada crate do protocolo, cada shader, cada palavra deste site. Clone-o. Leia-o. Faça fork. Mantenha o seu próprio relé.
+      </p>
+      <div class="cta-row">
+        <a href="https://github.com/IamOneYouAreOneWeAreOne/one-link" class="btn btn-ghost btn-large" rel="noopener external">
+          Ver o código no GitHub
+        </a>
+        <a href="/builders/" hreflang="en" class="btn btn-ghost btn-large">
+          Ler o protocolo
+        </a>
+        <a href="/download/source" hreflang="en" class="btn btn-ghost btn-large" rel="noopener">
+          Descarregar o arquivo de código
+        </a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer" role="contentinfo">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a href="/pt/" class="site-logo" aria-label="Início de One Link">
+          <span class="logo-mark" aria-hidden="true"></span>
+          <span>One Link</span>
+        </a>
+        <p class="footer-tag">Uma rede livre e privada para mensagens, ficheiros e dispositivos. De ninguém. De todos.</p>
+        <p class="ol-mt-md ol-soft-text ol-mono">
+          <strong>Ler em:</strong>
+        </p>
+      </div>
+      <div><h3>Rede</h3><ul><li><a href="/how-it-works/" hreflang="en">Como funciona</a></li><li><a href="/features/" hreflang="en">Funcionalidades</a></li><li><a href="/mesh/" hreflang="en">Malha ao vivo</a></li></ul></div>
+      <div><h3>Para si</h3><ul><li><a href="/download/" hreflang="en">Obter One Link</a></li><li><a href="/security/" hreflang="en">Segurança</a></li><li><a href="/accessibility/" hreflang="en">Acessibilidade</a></li><li><a href="/transparency/" hreflang="en">Transparência</a></li><li><a href="/audits/" hreflang="en">Auditorias</a></li></ul></div>
+      <div><h3>Para construtores</h3><ul><li><a href="/builders/" hreflang="en">Protocolo e código</a></li><li><a href="/changelog/" hreflang="en">Registo de alterações</a></li><li><a href="/releases/" hreflang="en">Versões</a></li><li><a href="/mirror/" hreflang="en">Espelhar este site</a></li><li><a href="/download/source" hreflang="en" rel="noopener">Arquivo de código</a></li><li><a href="https://github.com/IamOneYouAreOneWeAreOne/one-link" rel="noopener external">GitHub</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <span class="built-by">&copy; 2026 contribuidores de One Link. <a href="/pt/terms/" hreflang="pt">AGPL-3.0</a>. <a href="/pt/privacy/" hreflang="pt">Sem rastreamento.</a> <a href="mailto:weareone@oneunity.earth">weareone@oneunity.earth</a></span>
+      <span class="built-by">somos um</span>
+    </div>
+  </div>
+</footer>
+
+<script type="module" src="/live/bridge.js"></script>
+</body>
+</html>

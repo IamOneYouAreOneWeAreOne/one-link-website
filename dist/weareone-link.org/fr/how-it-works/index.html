@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Comment fonctionne One Link - en mots simples</title>
+  <meta name="description" content="Appairez des appareils en cinq secondes. Envoyez n'importe quoi à n'importe qui. Pas de serveurs au milieu. Au choix, routez par trois sauts pour un anonymat complet. Les maths sont ici si vous voulez les lire.">
+  <link rel="canonical" href="https://weareone-link.org/fr/how-it-works/">
+  <link rel="alternate" hreflang="en" href="https://weareone-link.org/how-it-works/">
+  <link rel="alternate" hreflang="es" href="https://weareone-link.org/es/how-it-works/">
+  <link rel="alternate" hreflang="fr" href="https://weareone-link.org/fr/how-it-works/">
+  <link rel="alternate" hreflang="pt" href="https://weareone-link.org/pt/how-it-works/">
+  <link rel="alternate" hreflang="de" href="https://weareone-link.org/de/how-it-works/">
+  <link rel="alternate" hreflang="it" href="https://weareone-link.org/it/how-it-works/">
+  <link rel="alternate" hreflang="x-default" href="https://weareone-link.org/how-it-works/">
+  <meta name="theme-color" content="#04060b" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#f0f4f8" media="(prefers-color-scheme: light)">
+  <meta name="color-scheme" content="dark">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="fr_FR">
+  <meta property="og:site_name" content="One Link">
+  <meta property="og:title" content="Comment fonctionne One Link - en mots simples">
+  <meta property="og:description" content="Appairez des appareils en cinq secondes. Envoyez n'importe quoi à n'importe qui. Pas de serveurs au milieu. Au choix, routez par trois sauts pour un anonymat complet. Les maths sont ici si vous voulez les lire.">
+  <meta property="og:url" content="https://weareone-link.org/fr/how-it-works/">
+  <meta property="og:image" content="https://weareone-link.org/og/one-link.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Comment fonctionne One Link - en mots simples">
+  <meta name="twitter:description" content="Appairez des appareils en cinq secondes. Envoyez n'importe quoi à n'importe qui. Pas de serveurs au milieu. Au choix, routez par trois sauts pour un anonymat complet. Les maths sont ici si vous voulez les lire.">
+  <meta name="twitter:image" content="https://weareone-link.org/og/one-link.png">
+  <link rel="icon" type="image/x-icon" href="/images/favicon.ico"><link rel="icon" type="image/png" sizes="128x128" href="/images/logo-128.png"><link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+  <link rel="manifest" href="/app.webmanifest">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="One Link">
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="modulepreload" href="/live/bridge.js">
+  <link rel="stylesheet" href="/css/one-link.css">
+  <link rel="stylesheet" href="/css/immersive.css">
+</head>
+<body>
+<a href="#main" class="skip-link">Aller au contenu</a>
+<canvas class="ol-field-canvas" aria-hidden="true" hidden></canvas>
+
+<header class="site-header" role="banner">
+  <div class="container">
+    <a href="/fr/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
+    <button type="button" id="nav-toggle" class="nav-toggle" aria-label="Ouvrir la navigation" aria-expanded="false" aria-controls="primary-nav">&#9776;</button>
+    <nav class="site-nav" id="primary-nav" aria-label="Principale">
+      <a href="/how-it-works/" hreflang="en" aria-current="page">Comment ça marche</a>
+      <a href="/features/" hreflang="en">Fonctionnalités</a>
+      <a href="/security/" hreflang="en">Sécurité</a>
+      <a href="/share/" hreflang="en">Partager</a>
+      <a href="/download/" hreflang="en" class="cta-get">Obtenir One Link</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="hero ol-pb-sm">
+    <div class="container">
+      <span class="we-are-one">Comment ça marche</span>
+      <h1>One Link en <span class="grad">quatre étapes.</span></h1>
+      <p class="lede">Pas d'assistant de configuration. Pas de questionnaire. Les quatre étapes ci-dessous ont déjà eu lieu à l'instant où vous avez ouvert l'app pour la première fois. Vous n'avez rien vu de tout cela.</p>
+    </div>
+  </section>
+
+  <section class="section-tight">
+    <div class="container">
+      <div class="ol-grid ol-grid-2">
+
+        <article class="ol-tile">
+          <span class="ol-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></span>
+          <h3>1. Ouvrez l'app.</h3>
+          <p>C'est toute l'inscription. Pas d'e-mail. Pas de téléphone. Pas de mot de passe. Votre appareil génère une clé la première fois. La clé est votre identité. Elle ne quitte jamais l'appareil.</p>
+        </article>
+
+        <article class="ol-tile">
+          <span class="ol-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M14 14h7v7h-7z"/></svg></span>
+          <h3>2. Appairez avec quelqu'un.</h3>
+          <p>Vous lui montrez un QR. Cette personne le scanne. Vous voyez tous les deux les mêmes cinq mots. Vous dites tous les deux « oui ». Vous êtes connectés. Tout cela prend cinq secondes. Les cinq mots veulent dire que les maths étaient d'accord.</p>
+        </article>
+
+        <article class="ol-tile">
+          <span class="ol-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 4l8 8-8 8"/></svg></span>
+          <h3>3. Envoyez quelque chose.</h3>
+          <p>Glissez un fichier. Tapez un message. Déposez un dossier. Cela va directement de votre appareil au sien. Chiffré avant de partir. Vérifié à l'arrivée. Rien au milieu.</p>
+        </article>
+
+        <article class="ol-tile">
+          <span class="ol-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
+          <h3>4. Terminé.</h3>
+          <p>C'était tout. Pas de « synchronisation ». Pas de « téléversé sur votre compte ». Pas de « nous vous enverrons un lien par e-mail ». C'est arrivé. C'est sur leur appareil. Ce n'est nulle part ailleurs.</p>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">S'il est hors ligne</span>
+      <h2>Le réseau <span class="grad">attend.</span></h2>
+      <p class="lede">Si la personne à qui vous envoyez dort ou est hors ligne, un relais bénévole conserve votre paquet chiffré jusqu'à son retour. Le relais ne peut pas le lire. Le relais ne sait pas qui l'a envoyé. Le relais l'oublie une fois livré.</p>
+
+      <div class="ol-grid ol-grid-3">
+        <article class="ol-tile">
+          <h3>Chiffré avant de partir.</h3>
+          <p>Le relais voit une boîte scellée et un identifiant de destinataire. Rien d'autre. Le contenu est illisible sans la clé du destinataire.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Conservé brièvement.</h3>
+          <p>Jusqu'à sept jours. Après, parti. La plupart des messages et fichiers passent en quelques secondes parce que les deux appareils sont généralement éveillés.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Beaucoup de relais, jamais un seul.</h3>
+          <p>N'importe qui peut faire tourner un relais. Le réseau choisit automatiquement le plus sain près de chaque côté. Si un relais disparaît, le trafic passe à un autre en silence.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Si vous voulez cacher votre piste</span>
+      <h2>Touchez un interrupteur. <span class="grad">Trois sauts.</span></h2>
+      <p class="lede">Le mode privé route votre trafic à travers trois nœuds bénévoles vers le destinataire. Personne, nous y compris, ne peut voir qui a envoyé quoi à qui. Désactivé par défaut pour la rapidité. Activé quand vous en avez besoin.</p>
+
+      <div class="ol-grid ol-grid-2 ol-gap-3 ol-items-center">
+        <div>
+          <p>Chaque saut ne connaît que le saut d'avant et celui d'après. Le premier saut vous voit mais pas le message. Le dernier saut voit la destination mais pas qui vous êtes. Aucun saut au milieu ne voit ni l'un ni l'autre.</p>
+          <p>C'est la même idée que celle utilisée par Tor, avec deux ajouts : il utilise des clés post-quantiques et il lie chaque saut au contexte physique environnant, de sorte qu'une clé de saut volée ne puisse pas être rejouée ailleurs.</p>
+        </div>
+        <pre class="ol-code"><span class="d">// vous touchez « privé »</span>
+<span class="c">choisir</span> trois relais en bonne santé
+<span class="c">envelopper</span> le message dans trois couches
+<span class="c">couche 1</span>  <span class="d">seul le premier relais peut peler</span>
+<span class="c">couche 2</span>  <span class="d">seul le deuxième relais peut peler</span>
+<span class="c">couche 3</span>  <span class="d">seule la destination peut lire</span>
+
+<span class="c">envoyer</span>  <span class="g">aucun saut ne voit les deux extrémités</span></pre>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Les maths si vous les voulez</span>
+      <h2>Tout le reste est <span class="grad">sur cette page.</span></h2>
+      <p class="lede">Si la cryptographie ne vous intéresse pas, arrêtez de lire et allez appairer un appareil. Si elle vous intéresse, chaque primitive utilisée par One Link est nommée ci-dessous avec le crate qui l'implémente. Tout en open source. Tout audité.</p>
+
+      <details class="ol-proof" open>
+        <summary>La pile cryptographique complète</summary>
+        <div class="ol-proof-body">
+          <dl>
+            <dt>identité</dt><dd>Signature hybride Ed25519 + ML-DSA-65. La clé de votre appareil signe tout ce que vous faites.</dd>
+            <dt>clés de session</dt><dd>X25519 aujourd'hui, avec l'emplacement hybride ML-KEM-768 réservé dans le format de fil. Les sauts onion Sphinx utilisent l'hybride en direct ; les poignées de main d'appairage et de canal l'activent en v0.22.</dd>
+            <dt>confidentialité persistante</dt><dd>Double Ratchet (style Signal) sur la racine hybride.</dd>
+            <dt>cryptographie par morceau</dt><dd>AEAD ChaCha20-Poly1305, rotation de clé tous les N morceaux.</dd>
+            <dt>vérification d'appairage</dt><dd>SAS de 5 mots dérivé du secret partagé. Liste de mots auditée par Levenshtein.</dd>
+            <dt>routage onion</dt><dd>Sphinx Coherence (Ristretto255 avec construction à octets de remplissage, aveuglement hybride PQ, témoin de champ).</dd>
+            <dt>agrégation de signatures</dt><dd>Agrégation Schnorr sur Ristretto255 avec batch verify Pippenger MSM.</dd>
+            <dt>build confidentiel</dt><dd>AttestationDoc d'ol_confidential avec hybride PQ, nonce du pair, fraîcheur 30 s.</dd>
+            <dt>récupération à seuil</dt><dd>Multi-signature BN avec valeurs R par signataire, partage k-parmi-n.</dd>
+            <dt>routage</dt><dd>Le champ de cohérence tau_c (solveur Helmholtz dans ol_coherence_field) classe aujourd'hui les détenteurs de morceaux. La livraison multi-saut routée par le champ s'active avec la bascule du maillage de relais en v0.22.</dd>
+            <dt>accès par capabilities</dt><dd>Capabilities à base de macaroons avec vérification en temps constant et porte de solidité à 1M d'itérations.</dd>
+            <dt>stockage</dt><dd>ChunkRatchet en transit. Zeroize au drop. Le chiffrement au repos est optionnel aujourd'hui via le wrap ONE_LINK_PASSPHRASE sur la clé d'identité ; le niveau PWA livre un chiffrement au repos toujours actif en v0.22.</dd>
+          </dl>
+        </div>
+      </details>
+
+      <div class="ol-mt-xl-center">
+        <a href="/download/" hreflang="en" class="btn btn-primary btn-large">
+          Obtenir One Link
+          <span class="arr">&rarr;</span>
+        </a>
+        <a href="/builders/" hreflang="en" class="btn btn-ghost btn-large">
+          Lire le protocole
+        </a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer" role="contentinfo">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a href="/fr/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
+        <p class="footer-tag">Un réseau libre et privé pour les messages, les fichiers et les appareils. À personne. À tout le monde.</p>
+        <p class="ol-mt-md ol-soft-text ol-mono">
+          <strong>Lire en :</strong>
+        </p>
+      </div>
+      <div><h3>Réseau</h3><ul><li><a href="/how-it-works/" hreflang="en">Comment ça marche</a></li><li><a href="/features/" hreflang="en">Fonctionnalités</a></li><li><a href="/mesh/" hreflang="en">Maillage en direct</a></li></ul></div>
+      <div><h3>Pour vous</h3><ul><li><a href="/download/" hreflang="en">Obtenir One Link</a></li><li><a href="/security/" hreflang="en">Sécurité</a></li><li><a href="/accessibility/" hreflang="en">Accessibilité</a></li><li><a href="/transparency/" hreflang="en">Transparence</a></li><li><a href="/audits/" hreflang="en">Audits</a></li></ul></div>
+      <div><h3>Pour les bâtisseurs</h3><ul><li><a href="/builders/" hreflang="en">Protocole et source</a></li><li><a href="/changelog/" hreflang="en">Journal des modifications</a></li><li><a href="/releases/" hreflang="en">Versions</a></li><li><a href="/mirror/" hreflang="en">Mettre en miroir ce site</a></li><li><a href="/download/source" hreflang="en" rel="noopener">Archive source</a></li><li><a href="https://github.com/IamOneYouAreOneWeAreOne/one-link" rel="noopener external">GitHub</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <span class="built-by">&copy; 2026 contributeurs de One Link. <a href="/fr/terms/" hreflang="fr">AGPL-3.0</a>. <a href="/fr/privacy/" hreflang="fr">Aucun pistage.</a> <a href="mailto:weareone@oneunity.earth">weareone@oneunity.earth</a></span>
+      <span class="built-by">nous sommes un</span>
+    </div>
+  </div>
+</footer>
+
+<script type="module" src="/live/bridge.js"></script>
+</body>
+</html>

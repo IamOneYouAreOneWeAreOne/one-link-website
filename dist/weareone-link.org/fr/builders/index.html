@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Bâtisseurs - protocole, source, votre propre relais</title>
+  <meta name="description" content="Lisez le protocole. Lisez le code source. Faites tourner votre propre relais. Forkez tout. AGPL-3.0.">
+  <link rel="canonical" href="https://weareone-link.org/fr/builders/">
+  <link rel="alternate" hreflang="en" href="https://weareone-link.org/builders/">
+  <link rel="alternate" hreflang="es" href="https://weareone-link.org/es/builders/">
+  <link rel="alternate" hreflang="fr" href="https://weareone-link.org/fr/builders/">
+  <link rel="alternate" hreflang="pt" href="https://weareone-link.org/pt/builders/">
+  <link rel="alternate" hreflang="de" href="https://weareone-link.org/de/builders/">
+  <link rel="alternate" hreflang="it" href="https://weareone-link.org/it/builders/">
+  <link rel="alternate" hreflang="x-default" href="https://weareone-link.org/builders/">
+  <meta name="theme-color" content="#04060b" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#f0f4f8" media="(prefers-color-scheme: light)">
+  <meta name="color-scheme" content="dark">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="fr_FR">
+  <meta property="og:site_name" content="One Link">
+  <meta property="og:title" content="Bâtisseurs - protocole, source, votre propre relais">
+  <meta property="og:description" content="Lisez le protocole. Lisez le code source. Faites tourner votre propre relais. Forkez tout. AGPL-3.0.">
+  <meta property="og:url" content="https://weareone-link.org/fr/builders/">
+  <meta property="og:image" content="https://weareone-link.org/og/one-link.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Bâtisseurs - protocole, source, votre propre relais">
+  <meta name="twitter:description" content="Lisez le protocole. Lisez le code source. Faites tourner votre propre relais. Forkez tout. AGPL-3.0.">
+  <meta name="twitter:image" content="https://weareone-link.org/og/one-link.png">
+  <link rel="icon" type="image/x-icon" href="/images/favicon.ico"><link rel="icon" type="image/png" sizes="128x128" href="/images/logo-128.png"><link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+  <link rel="manifest" href="/app.webmanifest">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="One Link">
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="modulepreload" href="/live/bridge.js">
+  <link rel="stylesheet" href="/css/one-link.css">
+  <link rel="stylesheet" href="/css/immersive.css">
+</head>
+<body>
+<a href="#main" class="skip-link">Aller au contenu</a>
+<canvas class="ol-field-canvas" aria-hidden="true" hidden></canvas>
+
+<header class="site-header" role="banner">
+  <div class="container">
+    <a href="/fr/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
+    <button type="button" id="nav-toggle" class="nav-toggle" aria-label="Ouvrir la navigation" aria-expanded="false" aria-controls="primary-nav">&#9776;</button>
+    <nav class="site-nav" id="primary-nav" aria-label="Principale">
+      <a href="/how-it-works/" hreflang="en">Comment ça marche</a>
+      <a href="/features/" hreflang="en">Fonctionnalités</a>
+      <a href="/security/" hreflang="en">Sécurité</a>
+      <a href="/share/" hreflang="en">Partager</a>
+      <a href="/download/" hreflang="en" class="cta-get">Obtenir One Link</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="hero ol-pb-sm">
+    <div class="container">
+      <span class="we-are-one">Bâtisseurs</span>
+      <h1>Tout est <span class="grad">à vous de lire.</span></h1>
+      <p class="lede">Chaque protocole, chaque crate, chaque shader, chaque mot de ce site. AGPL-3.0. Forkez-le, faites tourner le vôtre, proposez des changements, livrez votre propre client. Rien n'est verrouillé derrière un programme partenaire.</p>
+      <div class="cta-row">
+        <a href="https://github.com/IamOneYouAreOneWeAreOne/one-link" class="btn btn-primary" rel="noopener external">Voir sur GitHub <span class="arr">&rarr;</span></a>
+        <a href="/download/source" hreflang="en" class="btn btn-ghost" rel="noopener">Télécharger l'archive source</a>
+      </div>
+      <p class="ol-mt-md ol-mono ol-soft-text"><a class="ol-cyan-text" href="https://github.com/IamOneYouAreOneWeAreOne/one-link" rel="noopener external">github.com/IamOneYouAreOneWeAreOne/one-link</a></p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Les crates</span>
+      <h2>One Link, c'est <span class="grad">37 petits crates.</span></h2>
+      <p class="lede">Chacun fait une chose. Chacun est auditable de façon indépendante. Chacun compile en natif, en WASM, ou les deux. Réunis par le daemon.</p>
+
+      <div class="ol-grid ol-grid-2">
+        <article class="ol-tile">
+          <h3>ol_pair_qr</h3>
+          <p>Poignée de main d'appairage par QR. Invitation Ed25519, clé de chaîne X25519, SAS de 5 mots, liste de mots auditée par Levenshtein. Hybride PQ via mélange ML-KEM.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>ol_onion</h3>
+          <p>Routage Sphinx Coherence. Construction à octets de remplissage en Ristretto255. Aveuglement hybride PQ. Liaison à un témoin de champ. Agrégation Schnorr via MSM Pippenger.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>ol_coherence_field</h3>
+          <p>Solveur de Helmholtz amorti pour le champ de routage tau_c. 10 000 pairs en 1,74 ms sur un seul cœur CPU (bench criterion). Couple à l'homologie et au ratchet. La voie GPU arrive en v0.22.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>ol_transfer</h3>
+          <p>Le pipeline natif de transfert par morceaux. AEAD par morceau, rotation de clé tous les N, repli en codage fontaine pour les liens avec pertes.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>ol_ratchet</h3>
+          <p>Double Ratchet par-dessus la racine hybride post-quantique. Confidentialité persistante sur chaque morceau et chaque message.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>ol_capability</h3>
+          <p>Capacités à base de macaroons. Vérification en temps constant. Porte de solidité à 1M d'itérations. Portée granulaire par ressource.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>ol_threshold_recovery</h3>
+          <p>Partage k-parmi-n avec multi-signature BN, valeurs R par signataire. Survivre à un appareil perdu sans survivre à une fuite.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>ol_confidential</h3>
+          <p>Trait de fournisseur de calcul confidentiel. Base logicielle (ChaCha20-Poly1305 avec Zeroize). Les backends matériels (TPM, Secure Enclave, SGX, SEV-SNP, TrustZone) se branchent.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>ol_routing</h3>
+          <p>Sélection de chemin pilotée par tau_c. Les décisions de routage suivent le gradient du champ, elles ne parcourent pas une table de lookup.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>ol_homology</h3>
+          <p>Détection topologique de partitions. Repère un découpage de réseau en une seule ronde de gossip. 0% de faux positifs sur une porte de fuzz à 5M d'itérations.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>ol_pqsig + ol_pqkem</h3>
+          <p>Signatures hybrides Ed25519 + ML-DSA-65, KEM hybride X25519 + ML-KEM-768. La couche post-quantique.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>ol_duress</h3>
+          <p>Une phrase secrète secondaire ouvre un compte vide crédible. Les maths vous donnent une issue en cas de contrainte.</p>
+        </article>
+      </div>
+
+      <p class="ol-footnote-dim">26 autres crates dans la source. <a class="ol-cyan-text" href="https://github.com/IamOneYouAreOneWeAreOne/one-link/tree/master/native" rel="noopener external">Voyez-les tous sur GitHub</a>.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Reproductible par vous</span>
+      <h2>Reconstruisez ce site <span class="grad">dans votre onglet.</span></h2>
+      <p class="lede ol-mw-64ch">
+        Un clic télécharge l'archive source signée, calcule son SHA-256 localement, et la compare à la chaîne d'attestation. Si vous et nous arrivons au même hash, aucun humain n'a touché le résultat. Chaque version devrait être reproductible par quiconque dispose d'une connexion réseau et d'un navigateur. La voici.
+      </p>
+
+      <div class="ol-private-demo ol-mt">
+        <button type="button" id="ol-rebuild-btn" class="btn btn-primary">
+          Vérifier l'archive source de ce site
+          <span class="arr" aria-hidden="true">&rarr;</span>
+        </button>
+        <span class="ol-status ol-status-inline" id="ol-rebuild-status">
+          <span class="dot"></span>
+          <span>téléchargement et hachage</span>
+        </span>
+        <pre class="ol-code ol-output-pre" id="ol-rebuild-out"></pre>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Faites tourner votre propre relais</span>
+      <h2>Devenez une partie du réseau.</h2>
+      <p class="lede">Un relais est un seul binaire qui détient et transmet des paquets chiffrés. Il ne peut rien lire. Il n'a pas besoin de compte. N'importe qui peut en faire tourner un.</p>
+      <pre class="ol-code"><span class="d"># sur un petit VPS, un Raspberry Pi, ou votre vieux portable</span>
+<span class="c">curl</span> <span class="a">https://weareone-link.org/relay/install.sh</span> | sh
+<span class="c">one-link-relay</span> start
+
+<span class="d"># c'est tout. votre relais apparaît sur le mesh en direct</span>
+<span class="d"># en quelques secondes, et commence à aider le réseau</span></pre>
+      <p class="ol-footnote-soft">Pas d'inscription. Pas de système de réputation que nous contrôlons. Le détecteur de topologie du réseau choisit les relais en bonne santé et contourne automatiquement ceux qui sont malades.</p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer" role="contentinfo">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a href="/fr/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
+        <p class="footer-tag">Un réseau libre et privé pour les messages, les fichiers et les appareils. À personne. À tout le monde.</p>
+        <p class="ol-mt-md ol-soft-text ol-mono">
+          <strong>Lire en :</strong>
+        </p>
+      </div>
+      <div><h3>Réseau</h3><ul><li><a href="/how-it-works/" hreflang="en">Comment ça marche</a></li><li><a href="/features/" hreflang="en">Fonctionnalités</a></li><li><a href="/mesh/" hreflang="en">Maillage en direct</a></li></ul></div>
+      <div><h3>Pour vous</h3><ul><li><a href="/download/" hreflang="en">Obtenir One Link</a></li><li><a href="/security/" hreflang="en">Sécurité</a></li><li><a href="/accessibility/" hreflang="en">Accessibilité</a></li><li><a href="/transparency/" hreflang="en">Transparence</a></li><li><a href="/audits/" hreflang="en">Audits</a></li></ul></div>
+      <div><h3>Pour les bâtisseurs</h3><ul><li><a href="/builders/" hreflang="en">Protocole et source</a></li><li><a href="/changelog/" hreflang="en">Journal des modifications</a></li><li><a href="/releases/" hreflang="en">Versions</a></li><li><a href="/mirror/" hreflang="en">Mettre en miroir ce site</a></li><li><a href="/download/source" hreflang="en" rel="noopener">Archive source</a></li><li><a href="https://github.com/IamOneYouAreOneWeAreOne/one-link" rel="noopener external">GitHub</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <span class="built-by">&copy; 2026 contributeurs de One Link. <a href="/fr/terms/" hreflang="fr">AGPL-3.0</a>. <a href="/fr/privacy/" hreflang="fr">Aucun pistage.</a> <a href="mailto:weareone@oneunity.earth">weareone@oneunity.earth</a></span>
+      <span class="built-by">nous sommes un</span>
+    </div>
+  </div>
+</footer>
+
+<script type="module" src="/live/bridge.js"></script>
+</body>
+</html>

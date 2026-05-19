@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Segurança - o que One Link protege e o que não</title>
+  <meta name="description" content="A matemática sustenta a promessa. Cada garantia está integrada no próprio protocolo, verificável no seu separador. Chaves híbridas PQ, encaminhamento Sphinx, recuperação por limiar, atestações assinadas.">
+  <link rel="canonical" href="https://weareone-link.org/pt/security/">
+  <link rel="alternate" hreflang="en" href="https://weareone-link.org/security/">
+  <link rel="alternate" hreflang="es" href="https://weareone-link.org/es/security/">
+  <link rel="alternate" hreflang="fr" href="https://weareone-link.org/fr/security/">
+  <link rel="alternate" hreflang="pt" href="https://weareone-link.org/pt/security/">
+  <link rel="alternate" hreflang="de" href="https://weareone-link.org/de/security/">
+  <link rel="alternate" hreflang="it" href="https://weareone-link.org/it/security/">
+  <link rel="alternate" hreflang="x-default" href="https://weareone-link.org/security/">
+  <meta name="theme-color" content="#04060b" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#f0f4f8" media="(prefers-color-scheme: light)">
+  <meta name="color-scheme" content="dark">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="pt_PT">
+  <meta property="og:site_name" content="One Link">
+  <meta property="og:title" content="Segurança - o que One Link protege e o que não">
+  <meta property="og:description" content="A matemática sustenta a promessa. Cada garantia está integrada no próprio protocolo, verificável no seu separador. Chaves híbridas PQ, encaminhamento Sphinx, recuperação por limiar, atestações assinadas.">
+  <meta property="og:url" content="https://weareone-link.org/pt/security/">
+  <meta property="og:image" content="https://weareone-link.org/og/one-link.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Segurança - o que One Link protege e o que não">
+  <meta name="twitter:description" content="A matemática sustenta a promessa. Cada garantia está integrada no próprio protocolo, verificável no seu separador. Chaves híbridas PQ, encaminhamento Sphinx, recuperação por limiar, atestações assinadas.">
+  <meta name="twitter:image" content="https://weareone-link.org/og/one-link.png">
+  <link rel="icon" type="image/x-icon" href="/images/favicon.ico"><link rel="icon" type="image/png" sizes="128x128" href="/images/logo-128.png"><link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+  <link rel="manifest" href="/app.webmanifest">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="One Link">
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="modulepreload" href="/live/bridge.js">
+  <link rel="stylesheet" href="/css/one-link.css">
+  <link rel="stylesheet" href="/css/immersive.css">
+</head>
+<body>
+<a href="#main" class="skip-link">Saltar para o conteúdo</a>
+<canvas class="ol-field-canvas" aria-hidden="true" hidden></canvas>
+
+<header class="site-header" role="banner">
+  <div class="container">
+    <a href="/pt/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
+    <button type="button" id="nav-toggle" class="nav-toggle" aria-label="Abrir navegação" aria-expanded="false" aria-controls="primary-nav">&#9776;</button>
+    <nav class="site-nav" id="primary-nav" aria-label="Principal">
+      <a href="/how-it-works/" hreflang="en">Como funciona</a>
+      <a href="/features/" hreflang="en">Funcionalidades</a>
+      <a href="/security/" hreflang="en" aria-current="page">Segurança</a>
+      <a href="/share/" hreflang="en">Partilhar</a>
+      <a href="/download/" hreflang="en" class="cta-get">Obter One Link</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="hero ol-pb-sm">
+    <div class="container">
+      <span class="we-are-one">Segurança</span>
+      <h1>A matemática <span class="grad">sustenta a promessa.</span></h1>
+      <p class="lede">Uma promessa só é tão forte quanto aquilo em que se apoia. A nossa apoia-se na arquitetura: cada garantia desta página está integrada no próprio protocolo, é verificável no seu separador e não pode ser retirada sem reconstruir o produto. Confie na matemática, depois confie em nós.</p>
+    </div>
+  </section>
+
+  <section class="section-tight">
+    <div class="container">
+      <h2 class="ol-mt-0">O que recolhemos</h2>
+      <p class="lede ol-mb-sm">Nada.</p>
+      <p class="ol-soft-text ol-mw-56ch">Sem e-mail. Sem telefone. Sem analítica. Sem píxeis de rastreamento. Sem impressão digital. Sem cookies. Sem registos de pedido que o contenham. Este site tem zero pedidos a terceiros. O Cloudflare Worker não escreve uma única coisa sobre quem visitou ou o que descarregou.</p>
+      <p class="ol-soft-text ol-mw-56ch">Se um governo nos perguntasse amanhã quem descarregou One Link, quem se emparelhou com quem ou o que foi enviado pela rede, a resposta honesta é "não sabemos e não há forma de descobrir". É por construção.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Defende contra</span>
+      <h2>Os ataques que <span class="grad">paramos à porta.</span></h2>
+      <div class="ol-grid ol-grid-2">
+        <article class="ol-tile">
+          <h3>Escuta passiva.</h3>
+          <p>Quem observa o fio só vê texto cifrado. As assinaturas são híbridas PQ hoje (Ed25519 + ML-DSA-65). A metade de troca de chaves ML-KEM-768 está ativa nos saltos Sphinx; os handshakes de emparelhamento e canal ativam-na na v0.22. O formato de fio já reserva o slot, por isso um computador quântico a colher tráfego de hoje enfrentaria um alvo em movimento.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Falsificação ativa.</h3>
+          <p>O emparelhamento usa um SAS de 5 palavras derivado do segredo partilhado. Se alguém tentasse meter-se no meio, as palavras nos dois dispositivos não coincidiriam. A matemática concordou só porque ninguém estava entre vocês.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Compromisso do servidor.</h3>
+          <p>Não há servidor que guarde as suas mensagens ou ficheiros. Um relé comprometido vê caixas seladas endereçadas a destinatários que não consegue identificar. Não há arquivo para roubar.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Análise de tráfego <span class="ol-tile-badge">(a chegar, na v0.22)</span></h3>
+          <p>O modo privado Sphinx de três saltos está implementado de ponta a ponta como primitiva verificável em WASM (veja a demo ao vivo em /download/). A ligação do interruptor na camada de transporte do daemon chega na v0.22. Até lá, os bytes seguem um caminho direto.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Dispositivo perdido.</h3>
+          <p>A recuperação por limiar divide a sua identidade entre pessoas próximas. Recupere com k-de-n. A matemática faz com que um share fugido seja inútil sem os outros. Experimente a demo Shamir 3-de-5 abaixo para ver os bytes.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Desbloqueio sob coação <span class="ol-tile-badge">(a chegar, na v0.22)</span></h3>
+          <p>O modo sob coação abre uma conta vazia credível com uma segunda frase-passe. A primitiva criptográfica é entregue hoje no crate ol_duress; a ligação ao nível do daemon (para que a segunda frase desbloqueie um cofre alternativo) chega na v0.22.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Onde a confiança é sua</span>
+      <h2>Onde a matemática <span class="grad">lhe passa o testemunho.</span></h2>
+      <p class="lede">Honestos sobre onde acaba o protocolo e começa o seu juízo.</p>
+      <div class="ol-grid ol-grid-2">
+        <article class="ol-tile">
+          <h3>O espaço físico à sua volta.</h3>
+          <p>O protocolo protege o que viaja pelo fio. O ecrã que tem à frente é da sua guarda, tal como em qualquer conversa em qualquer sala.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>O dispositivo nas suas mãos.</h3>
+          <p>Assinamos cada binário e entregamos o código para que possa verificar o que executa. O sistema operativo está por baixo de nós; escolher um em que confia é a escolha que dá sentido ao resto.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>As pessoas com quem escolhe partilhar.</h3>
+          <p>A cifragem de ponta a ponta mantém o canal apenas entre vocês. O que acontece depois de receberem a sua mensagem é a mesma confiança humana em que se apoia qualquer relação.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Os mais amplos observadores de rede.</h3>
+          <p>O encaminhamento privado por três saltos esconde a rota a quem vê um pedaço da internet. Para um observador que veja toda a internet ao mesmo tempo, o enchimento temporal eleva drasticamente o custo; a resistência perfeita é o alvo do próximo empurrão de investigação.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Provas e auditorias</span>
+      <h2>Os recibos.</h2>
+      <div class="ol-grid ol-grid-2">
+        <article class="ol-tile">
+          <h3>Verificação formal</h3>
+          <p>As peças críticas do protocolo (handshake de emparelhamento, recuperação por limiar, encaminhamento onion) têm especificações TLA+ com invariantes verificadas.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Cripto a tempo constante</h3>
+          <p>A verificação de macaroons e os caminhos de assinatura são testados a tempo constante com uma porta de solidez de 1M de iterações. Variância temporal abaixo de 2%.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Testes de fuzz</h3>
+          <p>Fuzz noturno em 42 binários. 5 milhões de iterações por versão. A biblioteca de vetores adversariais cresce a cada conclusão do red-team.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Versões reproduzíveis</h3>
+          <p>Cada versão é construída num ambiente de computação confidencial. O documento de atestação é publicado ao lado do binário. Qualquer pessoa pode recompilar a partir do código e verificar a igualdade byte a byte.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Prove os bytes que está a ler</span>
+      <h2>Verifique este site, <span class="grad">no seu separador.</span></h2>
+      <p class="lede ol-mw-64ch">
+        Um clique verifica a assinatura Ed25519 do manifesto de ativos que acabou de descarregar com esta página, depois volta a pedir cada ativo listado no manifesto e recalcula o seu SHA-256 contra o hash registado. Se ambas as verificações passarem, os bytes que está a ler correspondem ao que a chave de versão offline assinou. Sem afirmação do lado do servidor, a criptografia é feita pelo seu navegador. O mesmo algoritmo que o Service Worker corre antes de servir qualquer página em cache.
+      </p>
+
+      <div class="ol-private-demo ol-mt">
+        <button type="button" id="ol-verify-site-btn" class="btn btn-primary">
+          Verificar este site agora
+          <span class="arr" aria-hidden="true">&rarr;</span>
+        </button>
+        <div id="ol-verify-site-out" class="ol-mt"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Prove-o</span>
+      <h2>Crie uma identidade híbrida, <span class="grad">aqui mesmo no seu separador.</span></h2>
+      <p class="lede ol-mw-64ch">
+        Um clique executa o crate real <code class="ol-inline-code">ol_pqsig</code> (compilado para WASM) dentro do seu navegador. Gera um par de chaves híbrido Ed25519 + ML-DSA-65 novo, assina uma mensagem curta, verifica a assinatura, depois inverte um bit e mostra-lhe as duas metades a recusarem-se a verificar. Sem chamada de rede. Sem confiança no lado do servidor. O mesmo caminho de código que o daemon usa para os commits de capacidades.
+      </p>
+
+      <div class="ol-private-demo ol-mt">
+        <button type="button" id="ol-pqsig-btn" class="btn btn-primary">
+          Assinar uma mensagem com Ed25519 + ML-DSA-65
+          <span class="arr" aria-hidden="true">&rarr;</span>
+        </button>
+        <span class="ol-status ol-status-inline" id="ol-pqsig-status">
+          <span class="dot"></span>
+          <span>a calcular</span>
+        </span>
+        <pre class="ol-code ol-output-pre" id="ol-pqsig-out"></pre>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Recuperação por limiar</span>
+      <h2>Divida um segredo entre cinco mãos. <span class="grad">Recupere com quaisquer três.</span></h2>
+      <p class="lede ol-mw-64ch">
+        Um clique executa <code class="ol-inline-code">ol_threshold_recovery</code> (partilha de segredo de Shamir sobre GF(2^8), o mesmo crate que o daemon usa). O seu navegador divide um segredo de 32 bytes em 5 shares, depois recupera-o a partir de três quaisquer, e prova que com dois não é possível. Os shares parecem aleatórios porque são aleatórios. O segredo só existe quando 3 deles se juntam.
+      </p>
+
+      <div class="ol-private-demo ol-mt">
+        <button type="button" id="ol-threshold-btn" class="btn btn-primary">
+          Dividir e recuperar um segredo com Shamir 3-de-5
+          <span class="arr" aria-hidden="true">&rarr;</span>
+        </button>
+        <span class="ol-status ol-status-inline" id="ol-threshold-status">
+          <span class="dot"></span>
+          <span>a calcular</span>
+        </span>
+        <pre class="ol-code ol-output-pre" id="ol-threshold-out"></pre>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Sigilo para a frente</span>
+      <h2>Cada mensagem recebe uma chave nova. <span class="grad">Comprometer uma não diz nada da seguinte.</span></h2>
+      <p class="lede ol-mw-64ch">
+        Um clique executa <code class="ol-inline-code">ol_ratchet</code> (cadeia KDF de sigilo para a frente por bloco, derivada com BLAKE3). O seu navegador gera uma chave de cadeia nova, deriva seis chaves de mensagem sequenciais e mostra que são distintas entre si e que o ratchet recusa-se a recuar. Quem capture a chave do bloco 3 não consegue reconstruir a chave do bloco 4 porque o passo de cadeia é um hash unidirecional.
+      </p>
+
+      <div class="ol-private-demo ol-mt">
+        <button type="button" id="ol-ratchet-btn" class="btn btn-primary">
+          Caminhar o ratchet seis passos
+          <span class="arr" aria-hidden="true">&rarr;</span>
+        </button>
+        <span class="ol-status ol-status-inline" id="ol-ratchet-status">
+          <span class="dot"></span>
+          <span>a calcular</span>
+        </span>
+        <pre class="ol-code ol-output-pre" id="ol-ratchet-out"></pre>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Confiança no primeiro uso</span>
+      <h2>O seu dispositivo é reconhecido <span class="grad">sem que saibamos quem é.</span></h2>
+      <p class="lede ol-mw-64ch">
+        Um clique executa <code class="ol-inline-code">ol_hwkey</code> (recurso TOFU por software, a mesma superfície de trait que o daemon usa com Secure Enclave, StrongBox ou TPM em hardware real). O seu navegador cria uma raiz de dispositivo de 32 bytes na primeira visita e guarda-a localmente. O botão deriva uma impressão de dispositivo determinística a partir dessa raiz, depois simula uma tentativa de falsificação com uma chave aleatória e mostra o armazém TOFU a rejeitá-la a tempo constante. Nenhum identificador é enviado para qualquer servidor.
+      </p>
+
+      <div class="ol-private-demo ol-mt">
+        <button type="button" id="ol-hwkey-btn" class="btn btn-primary">
+          Criar ou reconhecer este dispositivo
+          <span class="arr" aria-hidden="true">&rarr;</span>
+        </button>
+        <span class="ol-status ol-status-inline" id="ol-hwkey-status">
+          <span class="dot"></span>
+          <span>a calcular</span>
+        </span>
+        <pre class="ol-code ol-output-pre" id="ol-hwkey-out"></pre>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Encontrou uma falha</span>
+      <h2>A divulgação <span class="grad">é bem-vinda.</span></h2>
+      <p class="lede">Se encontrar uma vulnerabilidade no daemon, no protocolo, neste site, no Service Worker, no Cloudflare Worker ou em qualquer demo WASM, por favor diga-nos. Honramos a divulgação coordenada. Atribuição pública se a quiser.</p>
+      <div class="ol-grid ol-grid-2">
+        <article class="ol-tile">
+          <h3>Como nos contactar</h3>
+          <p>E-mail para <a class="ol-cyan-text" href="mailto:weareone@oneunity.earth">weareone@oneunity.earth</a> com o assunto "security report". Cifre o corpo via <a class="ol-cyan-text" href="/share/" hreflang="en">/share/</a> de One Link se tiver a app, ou envie em texto puro se não tiver. Contacto completo RFC 9116 em <a class="ol-cyan-text" href="/.well-known/security.txt">/.well-known/security.txt</a>.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Tempo de resposta</h3>
+          <p>Acusamos a receção em 72 horas. Partilhamos uma triagem inicial em 7 dias. Coordenamos uma data de divulgação pública que funcione para ambos os lados, tipicamente entre 30 e 90 dias consoante a gravidade.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Intenção de bug bounty</h3>
+          <p>Hoje não há programa de bug bounty financiado porque o projeto ainda não tem uma entidade que possa desembolsar pagamentos. Em vez disso oferecemos reconhecimento público (com o seu consentimento), atribuição de CVE via MITRE para conclusões que se qualifiquem e um crédito permanente na mensagem de commit. Um programa financiado abrirá assim que a entidade legal estiver de pé.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Níveis de gravidade</h3>
+          <p>Crítico: decifragem silenciosa de qualquer pacote selado, recuperação da chave de identidade ou bypass universal do emparelhamento. Alto: ataques dirigidos a um par específico, compromisso da cadeia de fornecimento de versões, quebra do ratchet. Médio: canais laterais temporais, negação de serviço, fugas de metadados além daquilo que /transparency/ documenta. Baixo: oportunidades de endurecimento, lacunas de defesa em profundidade.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Porto seguro</h3>
+          <p>A investigação de boa-fé que siga esta política não resultará em ações legais, pedidos de remoção ou ameaças DMCA da nossa parte. Teste nos seus próprios dispositivos e contas. Não exfiltre, modifique ou destrua dados de outras pessoas. Não degrade o serviço para os outros. Se ficar dentro destes limites, é bem-vindo aqui.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Histórico</h3>
+          <p>Cada conclusão fechada vive em <a class="ol-cyan-text" href="/audits/" hreflang="en">/audits/</a> com a data, o nível de gravidade e o commit que a fechou. As novas divulgações aparecem aí quando chega a data coordenada.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="cta-row">
+        <a href="/download/" hreflang="en" class="btn btn-primary btn-large">Obter One Link <span class="arr">&rarr;</span></a>
+        <a href="/builders/" hreflang="en" class="btn btn-ghost btn-large">Ler o código</a>
+        <a href="/audits/" hreflang="en" class="btn btn-ghost btn-large">Registo de auditorias</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer" role="contentinfo">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a href="/pt/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
+        <p class="footer-tag">Uma rede livre e privada para mensagens, ficheiros e dispositivos. De ninguém. De todos.</p>
+        <p class="ol-mt-md ol-soft-text ol-mono">
+          <strong>Ler em:</strong>
+        </p>
+      </div>
+      <div><h3>Rede</h3><ul><li><a href="/how-it-works/" hreflang="en">Como funciona</a></li><li><a href="/features/" hreflang="en">Funcionalidades</a></li><li><a href="/mesh/" hreflang="en">Malha ao vivo</a></li></ul></div>
+      <div><h3>Para si</h3><ul><li><a href="/download/" hreflang="en">Obter One Link</a></li><li><a href="/security/" hreflang="en">Segurança</a></li><li><a href="/accessibility/" hreflang="en">Acessibilidade</a></li><li><a href="/transparency/" hreflang="en">Transparência</a></li><li><a href="/audits/" hreflang="en">Auditorias</a></li></ul></div>
+      <div><h3>Para construtores</h3><ul><li><a href="/builders/" hreflang="en">Protocolo e código</a></li><li><a href="/changelog/" hreflang="en">Registo de alterações</a></li><li><a href="/releases/" hreflang="en">Versões</a></li><li><a href="/mirror/" hreflang="en">Espelhar este site</a></li><li><a href="/download/source" hreflang="en" rel="noopener">Arquivo de código</a></li><li><a href="https://github.com/IamOneYouAreOneWeAreOne/one-link" rel="noopener external">GitHub</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <span class="built-by">&copy; 2026 contribuidores de One Link. <a href="/pt/terms/" hreflang="pt">AGPL-3.0</a>. <a href="/pt/privacy/" hreflang="pt">Sem rastreamento.</a> <a href="mailto:weareone@oneunity.earth">weareone@oneunity.earth</a></span>
+      <span class="built-by">somos um</span>
+    </div>
+  </div>
+</footer>
+
+<script type="module" src="/live/bridge.js"></script>
+</body>
+</html>

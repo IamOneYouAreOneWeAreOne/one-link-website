@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Replica este sitio - aloja tu propia copia, en cualquier red, a cualquier alcance</title>
+  <meta name="description" content="One Link no depende de un anfitrión central. Clona el sitio, levántalo en una Pi, en un VPS, en un pin de IPFS, en un servicio onion de Tor. Cinco minutos. AGPL-3.0.">
+  <link rel="canonical" href="https://weareone-link.org/es/mirror/">
+  <link rel="alternate" hreflang="en" href="https://weareone-link.org/mirror/">
+  <link rel="alternate" hreflang="es" href="https://weareone-link.org/es/mirror/">
+  <link rel="alternate" hreflang="fr" href="https://weareone-link.org/fr/mirror/">
+  <link rel="alternate" hreflang="pt" href="https://weareone-link.org/pt/mirror/">
+  <link rel="alternate" hreflang="de" href="https://weareone-link.org/de/mirror/">
+  <link rel="alternate" hreflang="it" href="https://weareone-link.org/it/mirror/">
+  <link rel="alternate" hreflang="x-default" href="https://weareone-link.org/mirror/">
+  <meta name="theme-color" content="#04060b" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#f0f4f8" media="(prefers-color-scheme: light)">
+  <meta name="color-scheme" content="dark">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="es_ES">
+  <meta property="og:site_name" content="One Link">
+  <meta property="og:title" content="Replica este sitio - aloja tu propia copia">
+  <meta property="og:description" content="One Link no depende de un anfitrión central. Clona el sitio, levántalo en una Pi, en un VPS, en un pin de IPFS, en un servicio onion de Tor.">
+  <meta property="og:url" content="https://weareone-link.org/es/mirror/">
+  <meta property="og:image" content="https://weareone-link.org/og/one-link.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Replica este sitio - aloja tu propia copia">
+  <meta name="twitter:description" content="One Link no depende de un anfitrión central. Clona el sitio, levántalo en una Pi, en un VPS, en un pin de IPFS, en un servicio onion de Tor.">
+  <meta name="twitter:image" content="https://weareone-link.org/og/one-link.png">
+  <link rel="icon" type="image/x-icon" href="/images/favicon.ico"><link rel="icon" type="image/png" sizes="128x128" href="/images/logo-128.png"><link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+  <link rel="manifest" href="/app.webmanifest">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="One Link">
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="modulepreload" href="/live/bridge.js">
+  <link rel="stylesheet" href="/css/one-link.css">
+  <link rel="stylesheet" href="/css/immersive.css">
+</head>
+<body>
+<a href="#main" class="skip-link">Saltar al contenido</a>
+<canvas class="ol-field-canvas" aria-hidden="true" hidden></canvas>
+<header class="site-header" role="banner">
+  <div class="container">
+    <a href="/es/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
+    <button type="button" id="nav-toggle" class="nav-toggle" aria-label="Abrir navegación" aria-expanded="false" aria-controls="primary-nav">&#9776;</button>
+    <nav class="site-nav" id="primary-nav" aria-label="Principal">
+      <a href="/how-it-works/" hreflang="en">Cómo funciona</a>
+      <a href="/features/" hreflang="en">Funciones</a>
+      <a href="/security/" hreflang="en">Seguridad</a>
+      <a href="/share/" hreflang="en">Compartir</a>
+      <a href="/download/" hreflang="en" class="cta-get">Obtener One Link</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <section class="hero">
+    <div class="container">
+      <span class="we-are-one">Réplica</span>
+      <h1>Aloja tu propia copia. <span class="grad">En cinco minutos.</span></h1>
+      <p class="lede">Este sitio web es un bundle estático. No hay base de datos, ni servidor de aplicación, ni paso de compilación propietario. Cada byte vive en un repositorio público AGPL-3.0. Si no te fías de nuestro anfitrión, levanta el tuyo.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Por qué replicar</span>
+      <h2>La arquitectura <span class="grad">lo espera de ti.</span></h2>
+      <p class="lede">La resiliencia no es una función que añadimos encima. Es el estado por defecto. Una red que depende de un solo sitio web para funcionar no es una red. Una red que depende de un solo sitio web para que se la pueda descubrir es un problema distinto, y esta página es la respuesta.</p>
+      <div class="ol-grid ol-grid-2">
+        <article class="ol-tile">
+          <h3>Resistencia a la censura.</h3>
+          <p>Los actores estatales bloquean dominios. Los registradores los confiscan. Las CDN despachan unilateralmente. Los alojadores terminan cuentas. Cada eslabón de la cadena que trae esta página a tu navegador es un único punto de fallo. Replicar lo elimina.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Verificación de confianza.</h3>
+          <p>Si puedes servir los mismos bytes que servimos, firmados con la misma clave de versión guardada sin conexión, tienes prueba de que no modificamos el contenido específicamente para tu visitante. La reproducibilidad es una defensa frente a ataques dirigidos.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Latencia y localidad.</h3>
+          <p>Las comunidades con enlaces lentos, en regiones donde los nodos de Cloudflare son escasos, o en redes donde el HTTPS saliente está filtrado, pueden alojar los bytes localmente. Estático, brotli de unos 58 KB, sin runtime en servidor.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Es tuyo, en todos los sentidos.</h3>
+          <p>AGPL-3.0 te otorga el derecho. El sitio declara la intención. La arquitectura te invita a ello. Si nos retiráramos mañana, la red sigue funcionando sobre los relés que tú y otros ya operáis, y el sitio sigue viviendo en los espejos que tú y otros ya alojáis.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Un comando</span>
+      <h2>El camino más rápido. <span class="grad">Clonar, verificar, servir, en un paso.</span></h2>
+      <p class="lede">Revisable, idempotente, autoverificable. Comprueba el manifiesto firmado en Ed25519 antes de hacer nada. No modifica ningún archivo del sistema. No requiere root. Se queda en el directorio actual.</p>
+<pre class="ol-code"><span class="d"># revisa el script primero (recomendado para un espejo de una herramienta de privacidad)</span>
+curl -sSLO https://weareone-link.org/mirror.sh
+less mirror.sh
+bash mirror.sh
+
+<span class="d"># o, para quien no quiera esperar</span>
+bash &lt;(curl -sSL https://weareone-link.org/mirror.sh)</pre>
+      <p>El script clona el repositorio en <code class="ol-inline-code">./one-link-website/</code>, verifica el manifiesto firmado y luego arranca un servidor local en <a class="ol-cyan-text" href="http://localhost:8080" rel="noopener external">http://localhost:8080</a>. Pulsa Ctrl+C para detenerlo. El clon se queda para alojarlo después (Caddy, nginx, Tor) según las secciones de abajo.</p>
+      <p class="ol-soft-text">Fuente del script: <a class="ol-cyan-text" href="/mirror.sh">/mirror.sh</a>. Servido desde este mismo dominio, firmado con la misma clave de versión Ed25519 que cualquier otro activo del sitio, verificado por el Service Worker antes de entregarlo. Alojar tu propio espejo invierte la relación de confianza: una vez tienes un clon con manifiesto verificado, no necesitas este sitio ni nuestro anfitrión para seguir adelante.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Tres minutos, a mano</span>
+      <h2>Levanta una copia local manualmente.</h2>
+      <p class="lede">Si no quieres ejecutar un script escrito por nosotros, los mismos tres pasos que hace, hechos a mano. Solo Python 3, sin más dependencias.</p>
+<pre class="ol-code">git clone https://github.com/IamOneYouAreOneWeAreOne/one-link-website
+cd one-link-website
+python3 scripts/verify-manifest.py
+cd dist/weareone-link.org
+python3 -m http.server 8080</pre>
+      <p>Abre <code class="ol-inline-code">http://localhost:8080</code>. El sitio está en marcha en tu máquina. El widget de la malla no encontrará pares (depende del Durable Object original) pero cada página estática se renderiza igual y todas las demos WASM corren íntegramente en tu navegador.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Cinco minutos</span>
+      <h2>Levanta un espejo público.</h2>
+      <p class="lede">Para tu comunidad. Detrás de un dominio que sea tuyo, en un VPS, una Raspberry Pi o un servidor casero. Caddy hace de proxy inverso y te saca un certificado de Let's Encrypt automáticamente.</p>
+<pre class="ol-code">sudo apt install caddy
+git clone https://github.com/IamOneYouAreOneWeAreOne/one-link-website /var/www/one-link
+
+cat &gt; /etc/caddy/Caddyfile &lt;&lt; 'EOF'
+your-mirror-domain.example {
+    root * /var/www/one-link/dist/weareone-link.org
+    file_server
+    encode br gzip
+
+    header /css/*    Cache-Control "public, max-age=31536000, immutable"
+    header /live/*   Cache-Control "public, max-age=31536000, immutable"
+    header /images/* Cache-Control "public, max-age=31536000, immutable"
+    header /*.html   Cache-Control "public, max-age=0, must-revalidate"
+
+    header Content-Security-Policy "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; media-src 'self' blob:; object-src 'none'; frame-ancestors 'none'; frame-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests"
+    header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+    header X-Content-Type-Options nosniff
+    header Referrer-Policy "no-referrer"
+    header Cross-Origin-Embedder-Policy "require-corp"
+    header Cross-Origin-Opener-Policy "same-origin"
+    header Cross-Origin-Resource-Policy "same-origin"
+    header Permissions-Policy "interest-cohort=(), browsing-topics=()"
+}
+EOF
+
+sudo systemctl reload caddy</pre>
+      <p>Caddy obtiene el certificado automáticamente. Tu espejo queda en línea con las mismas cabeceras de seguridad que el sitio canónico. Apunta tus registros DNS A/AAAA al VPS, espera al certificado, y estás en marcha.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Diez minutos</span>
+      <h2>Servicio onion en Tor.</h2>
+      <p class="lede">Para visitantes detrás de redes hostiles, en Tor, o bajo presión de vigilancia. Los bytes son idénticos. La dirección .onion es permanente y enrutable globalmente sin DNS ni autoridades certificadoras.</p>
+<pre class="ol-code">sudo apt install tor
+
+cat &gt;&gt; /etc/tor/torrc &lt;&lt; 'EOF'
+HiddenServiceDir /var/lib/tor/one_link_mirror/
+HiddenServiceVersion 3
+HiddenServicePort 80 127.0.0.1:8080
+EOF
+
+sudo systemctl reload tor
+sudo cat /var/lib/tor/one_link_mirror/hostname</pre>
+      <p>Ese último comando imprime tu dirección <code class="ol-inline-code">.onion</code> (56 caracteres, termina en <code class="ol-inline-code">.onion</code>). Cualquiera con Tor Browser puede llegar a tu espejo en esa dirección. Sin registrador, sin DNS, sin CA, sin exposición de IP. La dirección es la clave pública.</p>
+      <p>Luego ejecuta un pequeño servidor local en <code class="ol-inline-code">127.0.0.1:8080</code> sirviendo el bundle estático (el mismo <code class="ol-inline-code">python3 -m http.server 8080</code> de arriba, como servicio de systemd para que sobreviva a reinicios).</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Rutas de alojamiento gratuito</span>
+      <h2>Si no tienes <span class="grad">infraestructura.</span></h2>
+      <p class="lede">Estas rutas requieren una cuenta en un proveedor de alojamiento, pero ningún pago.</p>
+      <div class="ol-grid ol-grid-2">
+        <article class="ol-tile">
+          <h3>Cloudflare Pages.</h3>
+          <p>Haz fork del repositorio en GitHub. En tu panel de Cloudflare, crea un proyecto de Pages que apunte a tu fork. Comando de build: vacío. Directorio de salida: <code class="ol-inline-code">dist/weareone-link.org</code>. Despliega. Tu espejo está en vivo en <code class="ol-inline-code">&lt;proyecto&gt;.pages.dev</code> en dos minutos.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>GitHub Pages.</h3>
+          <p>Haz fork del repositorio. En Settings de repo &rarr; Pages, elige fuente &ldquo;rama <code class="ol-inline-code">main</code> / carpeta <code class="ol-inline-code">dist/weareone-link.org</code>&rdquo;. La lógica del Worker no corre en Pages, así que los endpoints dinámicos (<code class="ol-inline-code">/api/topology</code>, <code class="ol-inline-code">/download/&lt;so&gt;</code>) devuelven 404, pero cada página estática, incluidas las demos WASM, funciona por completo.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Netlify.</h3>
+          <p>Haz fork del repositorio. Conecta Netlify al fork. Directorio de publicación: <code class="ol-inline-code">dist/weareone-link.org</code>. Comando de build: vacío. Misma observación que GitHub Pages sobre endpoints dinámicos. Las páginas estáticas y las demos WASM funcionan.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Vercel.</h3>
+          <p>Misma idea. Fork, conecta, pon Output Directory en <code class="ol-inline-code">dist/weareone-link.org</code>. Framework Preset en &ldquo;Other&rdquo;. Build Command vacío. Misma observación sobre endpoints dinámicos.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Alojamiento descentralizado</span>
+      <h2>Pin de IPFS.</h2>
+      <p class="lede">Para alojamiento direccionado por contenido que no depende de ningún dominio ni proveedor único. Cualquiera con el CID puede traerse el bundle desde cualquier gateway de IPFS. Los bytes son idénticos a los que servimos.</p>
+<pre class="ol-code">ipfs add -r dist/weareone-link.org</pre>
+      <p>La última línea de salida es el CID. Compártelo como <code class="ol-inline-code">ipfs://&lt;CID&gt;</code> o vía cualquier gateway HTTPS como <code class="ol-inline-code">https://&lt;CID&gt;.ipfs.dweb.link</code>. Fíjalo en un servicio como Pinata, Web3.Storage o Filebase, o fíjalo en tu propio nodo de IPFS, y el contenido sigue disponible aunque desaparezca cada anfitrión centralizado.</p>
+      <p>Si quieres un nombre estable, apunta un registro IPNS o un registro DNSLink TXT al CID y actualízalo cuando cambie el contenido. El manifiesto firmado del bundle es la prueba de integridad; el CID es la prueba de direccionamiento.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Verifica antes de servir</span>
+      <h2>Asegúrate de que los bytes <span class="grad">son reales.</span></h2>
+      <p class="lede">El sitio se entrega con un manifiesto firmado en <code class="ol-inline-code">/manifest.json</code>. Cada hash de activo está firmado con la clave de versión guardada sin conexión. Ejecuta esto una vez tras clonar para confirmar que el bundle no se ha manipulado.</p>
+<pre class="ol-code">cd one-link-website
+python3 scripts/verify-manifest.py
+
+# salida esperada:
+#   manifest signature: OK (Ed25519 sobre bytes canónicos)
+#   asset count:        32 ficheros
+#   per-asset SHA-256:  32/32 coinciden
+#   verdict:            integridad del bundle verificada</pre>
+      <p>Si la verificación falla, no alojes el bundle. Abre una incidencia y pide un clon nuevo. El script de verificación está él mismo en el repositorio y es él mismo verificable.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Que lo sepa el mundo</span>
+      <h2>Tu espejo, en la lista.</h2>
+      <p class="lede">Si levantas un espejo público y aceptas que aparezca listado, añádelo por pull request a <code class="ol-inline-code">docs/MIRRORS.md</code> en el repositorio del sitio. El README listará los espejos por región. No respaldamos ningún espejo en particular; solo publicamos el registro.</p>
+      <p>También eres libre de replicar sin listarlo. El objetivo no es centralizar la lista de espejos; es que existan espejos.</p>
+      <div class="cta-row">
+        <a href="https://github.com/IamOneYouAreOneWeAreOne/one-link-website" class="btn btn-primary" rel="noopener external">Hacer fork del repositorio <span class="arr">&rarr;</span></a>
+        <a href="https://github.com/IamOneYouAreOneWeAreOne/one-link-website/blob/master/docs/MIRRORS.md" class="btn btn-ghost" rel="noopener external">Registro de espejos</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer" role="contentinfo">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a href="/es/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
+        <p class="footer-tag">Una red libre y privada para mensajes, archivos y dispositivos. De nadie. De todos.</p>
+        <p class="ol-mt-md ol-soft-text ol-mono">
+          <strong>Leer en:</strong>
+        </p>
+      </div>
+      <div><h3>Red</h3><ul><li><a href="/how-it-works/" hreflang="en">Cómo funciona</a></li><li><a href="/features/" hreflang="en">Funciones</a></li><li><a href="/mesh/" hreflang="en">Malla en vivo</a></li></ul></div>
+      <div><h3>Para ti</h3><ul><li><a href="/download/" hreflang="en">Obtener One Link</a></li><li><a href="/security/" hreflang="en">Seguridad</a></li><li><a href="/accessibility/" hreflang="en">Accesibilidad</a></li><li><a href="/transparency/" hreflang="en">Transparencia</a></li><li><a href="/audits/" hreflang="en">Auditorías</a></li></ul></div>
+      <div><h3>Para constructores</h3><ul><li><a href="/builders/" hreflang="en">Protocolo y fuente</a></li><li><a href="/changelog/" hreflang="en">Registro de cambios</a></li><li><a href="/releases/" hreflang="en">Versiones</a></li><li><a href="/mirror/" hreflang="en">Replicar este sitio</a></li><li><a href="/download/source" hreflang="en" rel="noopener">Archivo de fuente</a></li><li><a href="https://github.com/IamOneYouAreOneWeAreOne/one-link" rel="noopener external">GitHub</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <span class="built-by">&copy; 2026 contribuidores de One Link. <a href="/es/terms/" hreflang="es">AGPL-3.0</a>. <a href="/es/privacy/" hreflang="es">Sin seguimiento.</a> <a href="mailto:weareone@oneunity.earth">weareone@oneunity.earth</a></span>
+      <span class="built-by">somos uno</span>
+    </div>
+  </div>
+</footer>
+
+<script type="module" src="/live/bridge.js"></script>
+</body>
+</html>

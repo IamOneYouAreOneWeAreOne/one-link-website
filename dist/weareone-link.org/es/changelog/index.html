@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Registro de cambios - One Link</title>
+  <meta name="description" content="Cada cambio entregado de One Link y de este sitio. Público, fechado, firmado.">
+  <link rel="canonical" href="https://weareone-link.org/es/changelog/">
+  <link rel="alternate" hreflang="en" href="https://weareone-link.org/changelog/">
+  <link rel="alternate" hreflang="es" href="https://weareone-link.org/es/changelog/">
+  <link rel="alternate" hreflang="fr" href="https://weareone-link.org/fr/changelog/">
+  <link rel="alternate" hreflang="pt" href="https://weareone-link.org/pt/changelog/">
+  <link rel="alternate" hreflang="de" href="https://weareone-link.org/de/changelog/">
+  <link rel="alternate" hreflang="it" href="https://weareone-link.org/it/changelog/">
+  <link rel="alternate" hreflang="x-default" href="https://weareone-link.org/changelog/">
+  <meta name="theme-color" content="#04060b" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#f0f4f8" media="(prefers-color-scheme: light)">
+  <meta name="color-scheme" content="dark">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="es_ES">
+  <meta property="og:site_name" content="One Link">
+  <meta property="og:title" content="Registro de cambios - One Link">
+  <meta property="og:description" content="Cada cambio entregado de One Link y de este sitio. Público, fechado, firmado.">
+  <meta property="og:url" content="https://weareone-link.org/es/changelog/">
+  <meta property="og:image" content="https://weareone-link.org/og/one-link.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Registro de cambios - One Link">
+  <meta name="twitter:description" content="Cada cambio entregado de One Link y de este sitio. Público, fechado, firmado.">
+  <meta name="twitter:image" content="https://weareone-link.org/og/one-link.png">
+  <link rel="icon" type="image/x-icon" href="/images/favicon.ico"><link rel="icon" type="image/png" sizes="128x128" href="/images/logo-128.png"><link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+  <link rel="manifest" href="/app.webmanifest">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="One Link">
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="modulepreload" href="/live/bridge.js">
+  <link rel="stylesheet" href="/css/one-link.css">
+  <link rel="stylesheet" href="/css/immersive.css">
+</head>
+<body>
+<a href="#main" class="skip-link">Saltar al contenido</a>
+<canvas class="ol-field-canvas" aria-hidden="true" hidden></canvas>
+<header class="site-header" role="banner">
+  <div class="container">
+    <a href="/es/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
+    <button type="button" id="nav-toggle" class="nav-toggle" aria-label="Abrir navegación" aria-expanded="false" aria-controls="primary-nav">&#9776;</button>
+    <nav class="site-nav" id="primary-nav" aria-label="Principal">
+      <a href="/how-it-works/" hreflang="en">Cómo funciona</a>
+      <a href="/features/" hreflang="en">Funciones</a>
+      <a href="/security/" hreflang="en">Seguridad</a>
+      <a href="/share/" hreflang="en">Compartir</a>
+      <a href="/download/" hreflang="en" class="cta-get">Obtener One Link</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <section class="hero">
+    <div class="container">
+      <span class="we-are-one">Registro de cambios</span>
+      <h1>Cada cambio <span class="grad">entregado.</span></h1>
+      <p class="lede">Cada versión de One Link, cada push a este sitio, en orden cronológico inverso. La historia de git es la fuente de verdad; esta página es su vista legible para personas.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">2026-05-18</span>
+      <h2><span class="grad">sitio</span> v0.21.0-alpha.0+r48 - cierre de auditoría</h2>
+      <ul>
+        <li>Pase de accesibilidad WCAG 2.1 AA: anillos de foco reales en cada elemento interactivo; nav móvil cambiada de label-para-checkbox a un button real con aria-expanded; jerarquía de cabeceras del pie corregida de h4 a h3; suelo de área táctil de 44 por 44; contraste del texto atenuado elevado a 4,5:1; consultas de medios forced-colors y prefers-contrast.</li>
+        <li>Móvil y responsive: 100svh para la barra de URL de iOS Safari; env(safe-area-inset) para muesca y horizontal; punto de quiebre tableta 761-1024px; overflow-scroll de tabla comparativa con sombra en el borde bajo 720px; shader WebGPU restringido a escritorio sin saveData.</li>
+        <li>Rendimiento: el cache-control de HTML gana s-maxage=300 y stale-while-revalidate=86400; modulepreload para bridge.js en todo el sitio; cortocircuito por document.hidden en ambos bucles de renderizado.</li>
+        <li>SEO y URL canónicas en el worker: 301 canónico en minúsculas (/Features/ a /features/); 301 con barra final para directorios de contenido (antes era 307 de assets); 301 /favicon.ico a /images/favicon.ico; HEAD en /download/source honrado; doble theme-color (claro y oscuro vía media); título/desc/imagen de Twitter Card en todas las páginas OG; /404.html diseñado y conectado vía not_found_handling.</li>
+        <li>Páginas de confianza añadidas: /accessibility/, /transparency/ (warrant canary y registro de solicitudes gubernamentales), /changelog/.</li>
+        <li>.well-known/security.txt (RFC 9116) con política de divulgación y SLA.</li>
+        <li>Privacidad: eliminada la cabecera Access-Control-Allow-Origin: * de las respuestas HTML; eliminado dist/_headers (el worker es la fuente de verdad; se quitó la engañosa cabecera X-No-Tracking que llevaba).</li>
+        <li>Redirección 301 de www a apex en la capa del worker (cierra el problema del 200 duplicado; NEL/Report-To eliminadas en la propia redirección).</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">2026-05-16 .. 2026-05-17</span>
+      <h2><span class="grad">sitio</span> v0.21.0-alpha.0+r34 .. r47 - vista previa pública</h2>
+      <ul>
+        <li>Barrido de mensaje positivo en todas las páginas: cero copy de "lo que no hacemos", "cinco empresas" o "lo que no podemos arreglar".</li>
+        <li>Atestaciones de versión reales firmadas con Ed25519 para Windows, Linux y archivo de fuente.</li>
+        <li>Cloudflare Durable Object MeshPresence en vivo: etiqueta real de "N aquí ahora mismo" (sustituye al contador codificado a mano).</li>
+        <li>Detección de SO en el CTA del hero de inicio y en los CTAs de la página /download/.</li>
+        <li>Service Worker con verificación contra manifiesto firmado antes de servir; los desajustes de integridad cacheados se desalojan y se vuelven a pedir.</li>
+        <li>Repositorios migrados a la organización IamOneYouAreOneWeAreOne con identificadores personales totalmente eliminados.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">2026-05-14</span>
+      <h2><span class="grad">daemon</span> ol_onion Sphinx T1.5 - agregación por lotes Schnorr</h2>
+      <ul>
+        <li>Firma y verificación Ristretto255 con batch_verify por MSM Pippenger; aceleración 2,6x a N=64 sobre la verificación secuencial.</li>
+        <li>271 pruebas ol_onion, incluyendo 9 proptests a 1M de iteraciones, 12 vectores adversarios y 7 vectores KAT.</li>
+        <li>Cierra el último punto Tier-1 aplazado de Sphinx.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">2026-05-13</span>
+      <h2><span class="grad">daemon</span> Fila 10 cómputo confidencial, Fase 1</h2>
+      <ul>
+        <li>Crate ol_confidential: trait ConfidentialProvider y SoftwareProvider (sellado ChaCha20-Poly1305 con Zeroize).</li>
+        <li>AttestationDoc: híbrido postcuántico con nonce de par, frescura de 30s y vinculación a testigo de campo.</li>
+        <li>Especificación TLA+, 46 pruebas / 0 fallos, lib clippy -D warnings limpio.</li>
+        <li>Coherence Mesh: 10 de 10 filas ahora entregadas (Fase 1 de la Fila 10).</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">2026-05-11</span>
+      <h2><span class="grad">daemon</span> Fase E - sustrato del campo de coherencia</h2>
+      <ul>
+        <li>Crate ol_coherence_field: porta la pila S_One (reacción-difusión a Helmholtz, función de Green, BE-RAR y anclaje de horizonte aparente).</li>
+        <li>Tres acoplamientos: homología a campo, campo a precarga, campo a ratchet.</li>
+        <li>Superficie pyo3 del daemon en vivo; 12/13 puertas del plan en estado Cumplido con evidencia numérica.</li>
+        <li>Bench: 10k pares en 1,74ms en un solo núcleo de CPU.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Historia anterior</span>
+      <h2>Cada commit desde v0.1.0.</h2>
+      <p class="lede">La historia completa está en el repositorio público de git, firmada y fechada:</p>
+      <div class="cta-row">
+        <a href="https://github.com/IamOneYouAreOneWeAreOne/one-link/commits/master" class="btn btn-primary" rel="noopener">Historia git del daemon <span class="arr">&rarr;</span></a>
+        <a href="https://github.com/IamOneYouAreOneWeAreOne/one-link-website/commits/master" class="btn btn-ghost" rel="noopener">Historia git del sitio</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer" role="contentinfo">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a href="/es/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
+        <p class="footer-tag">Una red libre y privada para mensajes, archivos y dispositivos. De nadie. De todos.</p>
+        <p class="ol-mt-md ol-soft-text ol-mono">
+          <strong>Leer en:</strong>
+        </p>
+      </div>
+      <div><h3>Red</h3><ul><li><a href="/how-it-works/" hreflang="en">Cómo funciona</a></li><li><a href="/features/" hreflang="en">Funciones</a></li><li><a href="/mesh/" hreflang="en">Malla en vivo</a></li></ul></div>
+      <div><h3>Para ti</h3><ul><li><a href="/download/" hreflang="en">Obtener One Link</a></li><li><a href="/security/" hreflang="en">Seguridad</a></li><li><a href="/accessibility/" hreflang="en">Accesibilidad</a></li><li><a href="/transparency/" hreflang="en">Transparencia</a></li><li><a href="/audits/" hreflang="en">Auditorías</a></li></ul></div>
+      <div><h3>Para constructores</h3><ul><li><a href="/builders/" hreflang="en">Protocolo y fuente</a></li><li><a href="/changelog/" hreflang="en">Registro de cambios</a></li><li><a href="/releases/" hreflang="en">Versiones</a></li><li><a href="/mirror/" hreflang="en">Replicar este sitio</a></li><li><a href="/download/source" hreflang="en" rel="noopener">Archivo de fuente</a></li><li><a href="https://github.com/IamOneYouAreOneWeAreOne/one-link" rel="noopener external">GitHub</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <span class="built-by">&copy; 2026 contribuidores de One Link. <a href="/es/terms/" hreflang="es">AGPL-3.0</a>. <a href="/es/privacy/" hreflang="es">Sin seguimiento.</a> <a href="mailto:weareone@oneunity.earth">weareone@oneunity.earth</a></span>
+      <span class="built-by">somos uno</span>
+    </div>
+  </div>
+</footer>
+
+<script type="module" src="/live/bridge.js"></script>
+</body>
+</html>

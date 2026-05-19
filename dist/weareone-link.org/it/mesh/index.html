@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Il mesh - ogni nodo One Link, dal vivo</title>
+  <meta name="description" content="La mappa globale del mesh dal vivo. Ogni nodo attivo, ogni relay, il campo di routing che decide come i pacchetti si trovano. Mai dati identificativi.">
+  <link rel="canonical" href="https://weareone-link.org/it/mesh/">
+  <link rel="alternate" hreflang="en" href="https://weareone-link.org/mesh/">
+  <link rel="alternate" hreflang="es" href="https://weareone-link.org/es/mesh/">
+  <link rel="alternate" hreflang="fr" href="https://weareone-link.org/fr/mesh/">
+  <link rel="alternate" hreflang="pt" href="https://weareone-link.org/pt/mesh/">
+  <link rel="alternate" hreflang="de" href="https://weareone-link.org/de/mesh/">
+  <link rel="alternate" hreflang="it" href="https://weareone-link.org/it/mesh/">
+  <link rel="alternate" hreflang="x-default" href="https://weareone-link.org/mesh/">
+  <meta name="theme-color" content="#04060b" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#f0f4f8" media="(prefers-color-scheme: light)">
+  <meta name="color-scheme" content="dark">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="it_IT">
+  <meta property="og:site_name" content="One Link">
+  <meta property="og:title" content="Il mesh - ogni nodo One Link, dal vivo">
+  <meta property="og:description" content="La mappa globale del mesh dal vivo. Ogni nodo attivo, ogni relay, il campo di routing che decide come i pacchetti si trovano. Mai dati identificativi.">
+  <meta property="og:url" content="https://weareone-link.org/it/mesh/">
+  <meta property="og:image" content="https://weareone-link.org/og/one-link.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Il mesh - ogni nodo One Link, dal vivo">
+  <meta name="twitter:description" content="La mappa globale del mesh dal vivo. Ogni nodo attivo, ogni relay, il campo di routing che decide come i pacchetti si trovano. Mai dati identificativi.">
+  <meta name="twitter:image" content="https://weareone-link.org/og/one-link.png">
+  <link rel="icon" type="image/x-icon" href="/images/favicon.ico"><link rel="icon" type="image/png" sizes="128x128" href="/images/logo-128.png"><link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+  <link rel="manifest" href="/app.webmanifest">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="One Link">
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="modulepreload" href="/live/bridge.js">
+  <link rel="stylesheet" href="/css/one-link.css">
+  <link rel="stylesheet" href="/css/immersive.css">
+</head>
+<body class="ol-mesh-page">
+<a href="#main" class="skip-link">Salta al contenuto</a>
+<canvas class="ol-field-canvas" aria-hidden="true" hidden></canvas>
+
+<header class="site-header" role="banner">
+  <div class="container">
+    <a href="/it/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
+    <button type="button" id="nav-toggle" class="nav-toggle" aria-label="Apri navigazione" aria-expanded="false" aria-controls="primary-nav">&#9776;</button>
+    <nav class="site-nav" id="primary-nav" aria-label="Principale">
+      <a href="/how-it-works/" hreflang="en">Come funziona</a>
+      <a href="/features/" hreflang="en">Funzionalità</a>
+      <a href="/security/" hreflang="en">Sicurezza</a>
+      <a href="/share/" hreflang="en">Condividi</a>
+      <a href="/download/" hreflang="en" class="cta-get">Ottieni One Link</a>
+    </nav>
+  </div>
+</header>
+
+<div class="ol-presence-bar" id="ol-presence-bar" aria-live="polite">
+  <span class="ol-presence-bar-dot"></span>
+  <span class="ol-presence-bar-text">
+    <span id="ol-presence-count">connessione</span>
+    <span class="ol-presence-bar-suffix">qui adesso</span>
+  </span>
+</div>
+<div class="ol-peer-overlay" id="ol-peer-overlay" aria-label="Altre persone che stanno guardando ora"></div>
+<div class="ol-peer-hint" id="ol-peer-hint" hidden>
+  <span>tocca un punto luminoso per avviare una chat anonima</span>
+</div>
+<div class="ol-ping-toast" id="ol-ping-toast" aria-live="polite" hidden>
+  <span class="ol-ping-glyph" aria-hidden="true">&#9883;</span>
+  <span class="ol-ping-text">qualcuno ha detto ciao</span>
+</div>
+<div class="ol-chat-panel" id="ol-chat-panel" hidden role="dialog" aria-label="Chat anonima con uno sconosciuto">
+  <div class="ol-chat-head">
+    <span class="ol-chat-dot" id="ol-chat-dot"></span>
+    <span class="ol-chat-title" id="ol-chat-title">sconosciuto</span>
+    <span class="ol-chat-state" id="ol-chat-state">connessione</span>
+    <a href="#" class="ol-chat-on-mesh-link" id="ol-chat-on-mesh-link" aria-label="Apri questa chat nella pagina del mesh dal vivo">vedi sul mesh &rarr;</a>
+    <button type="button" class="ol-chat-close" id="ol-chat-close" aria-label="Chiudi chat">&times;</button>
+  </div>
+  <div class="ol-chat-log" id="ol-chat-log" aria-live="polite"></div>
+  <form class="ol-chat-form" id="ol-chat-form">
+    <input type="text" id="ol-chat-input" maxlength="280" placeholder="dì qualcosa di gentile..." autocomplete="off" aria-label="Messaggio">
+    <button type="submit" class="ol-chat-send" aria-label="Invia">&rarr;</button>
+  </form>
+  <div class="ol-chat-foot">effimero &middot; anonimo &middot; cifrato end-to-end</div>
+</div>
+<div class="ol-chat-request-toast" id="ol-chat-request-toast" hidden role="alert">
+  <div class="ol-chat-request-dot" id="ol-chat-request-dot"></div>
+  <div class="ol-chat-request-body">
+    <strong>qualcuno vuole parlare</strong>
+    <div class="ol-chat-request-detail">sconosciuto da <span id="ol-chat-request-where">qualche parte</span></div>
+  </div>
+  <div class="ol-chat-request-actions">
+    <button type="button" class="ol-chat-decline" id="ol-chat-decline">ignora</button>
+    <button type="button" class="ol-chat-accept" id="ol-chat-accept">saluta</button>
+  </div>
+</div>
+
+<main id="main">
+
+  <section class="hero ol-pb-sm">
+    <div class="container">
+      <span class="we-are-one">Mesh dal vivo</span>
+      <h1>Sei uno di <span class="grad" id="ol-hero-count">0</span>.</h1>
+      <p class="lede">Ogni punto è un vero nodo One Link online in questo momento. I colori sono il campo di coerenza che decide come i pacchetti si trovano. Tocca un punto qualsiasi per aprire una chat anonima cifrata end-to-end. Ogni messaggio che invii viaggerà come un pacchetto visibile attraverso il mesh. Niente IP. Niente nomi utente. Nessuna posizione oltre la regione approssimativa.</p>
+    </div>
+  </section>
+
+  <section class="section-tight">
+    <div class="container">
+      <div class="ol-mesh-wrap ol-mesh-aspect-cinema">
+        <canvas class="ol-mesh-canvas" id="ol-mesh-canvas" aria-label="Visualizzazione globale del mesh dal vivo"></canvas>
+        <div class="ol-mesh-overlay">
+          <div class="row"><span class="key">nodi</span><span class="val" id="ol-mesh-nodes">0</span></div>
+          <div class="row"><span class="key">relay</span><span class="val" id="ol-mesh-relays">0</span></div>
+          <div class="row"><span class="key">campo</span><span class="val">routing &tau;_c</span></div>
+          <div class="row"><span class="key">sweep</span><span class="val">60 Hz</span></div>
+          <div class="row"><span class="key">tu</span><span class="val" id="ol-mesh-you">connessione...</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Cosa stai guardando</span>
+      <h2>Il campo di coerenza <span class="grad">tau_c.</span></h2>
+      <div class="ol-grid ol-grid-2 ol-gap-3 ol-items-start">
+        <div>
+          <p>One Link non usa una tabella di routing. Usa un campo continuo. La vista locale del campo per ogni peer è una piccola onda in un oscillatore di Helmholtz smorzato. Le richieste di blocco seguono il gradiente del campo verso il detentore più sano, allo stesso modo in cui l'acqua trova il punto più basso di una collina. La consegna multi-hop instradata dal campo si attiva con il passaggio al mesh dei relay nella v0.22.</p>
+          <p>Quando un relay sparisce, il campo si ristabilizza in un singolo giro. Quando entrano nuovi peer, le loro onde si integrano nel campo. La matematica è la stessa che descrive la coerenza quantistica e le membrane biologiche. Abbiamo preso in prestito l'idea dalla fisica.</p>
+          <p>La mappa di colori del canvas sopra è lo stato energetico del campo, campionato a 60 Hz, addolcito per l'occhio. I punti sono peer. Più il campo locale brilla, più traffico scorre in quella regione.</p>
+        </div>
+        <div>
+          <pre class="ol-code"><span class="d">// solver, un passo temporale</span>
+<span class="c">campo</span> = <span class="a">helmholtz_step</span>(
+  prev = campo,
+  peer = nodi_attivi,
+  dt = 1 / 60,
+  gamma = smorzamento,
+  k = freq_coerenza
+)
+
+<span class="c">rotte</span> = <span class="a">discesa_gradiente</span>(
+  campo,
+  origini = peer,
+  destinazioni = peer
+)
+
+<span class="d">// 10.000 peer in 1,74 ms (CPU; percorso GPU in v0.22)</span></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Cosa la mappa custodisce per te</span>
+      <h2>La forma, non la <span class="grad">firma.</span></h2>
+      <div class="ol-grid ol-grid-3">
+        <article class="ol-tile">
+          <h3>Solo presenza.</h3>
+          <p>La mappa mostra che tu e altri siete qui. I relay portano buste sigillate tra peer; gli identificatori restano sui dispositivi che li custodiscono.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>ID peer opachi.</h3>
+          <p>I punti sono ID peer anonimi che ruotano. Niente nomi utente, niente profili. Il riconoscimento, quando avviene, avviene tramite abbinamento, mai tramite la mappa.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Forma continentale.</h3>
+          <p>I punti si raggruppano per regione continentale approssimata derivata dalla topologia dei relay. La forma della rete, non la posizione precisa di una persona.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Unisciti al mesh</span>
+      <h2>Accendi un <span class="grad">nuovo punto.</span></h2>
+      <p class="lede">Installa One Link e il tuo dispositivo diventa parte del campo. Ogni nuovo nodo rafforza il routing per tutti gli altri.</p>
+      <div class="cta-row">
+        <a href="/download/" hreflang="en" class="btn btn-primary">Ottieni One Link <span class="arr">&rarr;</span></a>
+        <a href="/builders/" hreflang="en" class="btn btn-ghost">Fai girare un relay</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer" role="contentinfo">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a href="/it/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
+        <p class="footer-tag">Una rete libera e privata per messaggi, file e dispositivi. Di nessuno. Di tutti.</p>
+        <p class="ol-mt-md ol-soft-text ol-mono">
+          <strong>Leggi in:</strong>
+        </p>
+      </div>
+      <div><h3>Rete</h3><ul><li><a href="/how-it-works/" hreflang="en">Come funziona</a></li><li><a href="/features/" hreflang="en">Funzionalità</a></li><li><a href="/mesh/" hreflang="en">Mesh dal vivo</a></li></ul></div>
+      <div><h3>Per te</h3><ul><li><a href="/download/" hreflang="en">Ottieni One Link</a></li><li><a href="/security/" hreflang="en">Sicurezza</a></li><li><a href="/accessibility/" hreflang="en">Accessibilità</a></li><li><a href="/transparency/" hreflang="en">Trasparenza</a></li><li><a href="/audits/" hreflang="en">Audit</a></li></ul></div>
+      <div><h3>Per i costruttori</h3><ul><li><a href="/builders/" hreflang="en">Protocollo e sorgente</a></li><li><a href="/changelog/" hreflang="en">Registro modifiche</a></li><li><a href="/releases/" hreflang="en">Versioni</a></li><li><a href="/mirror/" hreflang="en">Replica questo sito</a></li><li><a href="/download/source" hreflang="en" rel="noopener">Archivio sorgente</a></li><li><a href="https://github.com/IamOneYouAreOneWeAreOne/one-link" rel="noopener external">GitHub</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <span class="built-by">&copy; 2026 contributori di One Link. <a href="/it/terms/" hreflang="it">AGPL-3.0</a>. <a href="/it/privacy/" hreflang="it">Nessun tracciamento.</a> <a href="mailto:weareone@oneunity.earth">weareone@oneunity.earth</a></span>
+      <span class="built-by">siamo uno</span>
+    </div>
+  </div>
+</footer>
+
+<script type="module" src="/live/bridge.js"></script>
+</body>
+</html>
