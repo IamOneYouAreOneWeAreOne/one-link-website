@@ -27,9 +27,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r77">
-  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r77">
-  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r77">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r78">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r78">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r78">
 </head>
 <body>
 <a href="#main" class="skip-link">Skip to content</a>
@@ -243,9 +243,44 @@
 
   <section class="section">
     <div class="container">
+      <span class="kicker">Found a flaw</span>
+      <h2>Disclosure <span class="grad">is welcome.</span></h2>
+      <p class="lede">If you find a vulnerability in the daemon, the protocol, this website, the Service Worker, the Cloudflare Worker, or any WASM demo, please tell us. Coordinated disclosure is honored. Public attribution if you want it.</p>
+      <div class="ol-grid ol-grid-2">
+        <article class="ol-tile">
+          <h3>How to reach us</h3>
+          <p>Email <a class="ol-cyan-text" href="mailto:weareone@oneunity.earth">weareone@oneunity.earth</a> with subject "security report." Encrypt the body via One Link's <a class="ol-cyan-text" href="/share/">/share/</a> if you have the app, or send plaintext if you do not. Full RFC 9116 contact at <a class="ol-cyan-text" href="/.well-known/security.txt">/.well-known/security.txt</a>.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Response time</h3>
+          <p>We acknowledge within 72 hours. We share an initial triage within 7 days. We coordinate a public disclosure date that works for both sides, typically 30 to 90 days depending on severity.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Bug-bounty intent</h3>
+          <p>Today there is no funded bug-bounty program because the project does not yet hold an entity that can disburse payments. We instead offer public acknowledgment (with your consent), a CVE assignment via MITRE for qualifying findings, and a permanent commit-message credit. A funded bounty program will open once the legal entity is stood up.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Severity tiers</h3>
+          <p>Critical: silent decryption of any sealed payload, identity-key recovery, or universal pairing bypass. High: targeted attacks on a specific peer, supply-chain compromise of releases, ratchet break. Medium: timing side-channels, denial-of-service, metadata leaks beyond what /transparency/ documents. Low: hardening opportunities, defense-in-depth gaps.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Safe harbor</h3>
+          <p>Good-faith research that follows this policy will not result in legal action, takedown demands, or DMCA threats from us. Test on your own devices and accounts. Do not exfiltrate, modify, or destroy other people's data. Do not degrade service for others. If you stay within those lines, you are welcome here.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Track record</h3>
+          <p>Every closed finding lives on <a class="ol-cyan-text" href="/audits/">/audits/</a> with the date, the severity tier, and the commit that closed it. New disclosures appear there once the coordinated date arrives.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
       <div class="cta-row">
         <a href="/download/" class="btn btn-primary btn-large">Get One Link <span class="arr">&rarr;</span></a>
         <a href="/builders/" class="btn btn-ghost btn-large">Read the source</a>
+        <a href="/audits/" class="btn btn-ghost btn-large">Audit register</a>
       </div>
     </div>
   </section>
@@ -270,6 +305,6 @@
   </div>
 </footer>
 
-<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r77"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r78"></script>
 </body>
 </html>

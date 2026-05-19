@@ -121,10 +121,35 @@ const PRIVACY_HEADERS = {
 // Content directories that serve an index.html. Used to issue 301 on the
 // no-trailing-slash form (the assets binding would otherwise 307).
 const CONTENT_DIRS = new Set([
-  "/about", "/builders", "/download", "/features", "/how-it-works",
-  "/mesh", "/one", "/privacy", "/security", "/share", "/terms",
-  "/accessibility", "/transparency", "/changelog",
+  "/about", "/audits", "/builders", "/download", "/features", "/how-it-works",
+  "/mesh", "/mirror", "/one", "/privacy", "/security", "/share", "/terms",
+  "/accessibility", "/transparency", "/changelog", "/releases",
 ]);
+
+// Tor Onion-Location header.
+//
+// When a Tor Browser visitor hits weareone-link.org, this header tells
+// the browser "the same content is also reachable at <ONION_URL>", and
+// Tor Browser will surface a one-click prompt to migrate to the onion
+// route. Onion services do not depend on DNS, do not require a CA, and
+// do not expose the user's IP to the destination. They are the right
+// fit for a privacy-tool marketing site.
+//
+// We only emit this header when ONION_HOSTNAME is set on the Worker
+// environment AND the request was NOT itself made over Tor (otherwise
+// we would tell Tor Browser to redirect to itself in a loop). The
+// .onion hostname is set up out-of-band once the v3 hidden service
+// is deployed; until then this is a noop. Reference:
+//   https://community.torproject.org/onion-services/advanced/onion-location/
+function onionLocationHeader(request, env) {
+  const onionHostname = env?.ONION_HOSTNAME;
+  if (!onionHostname || typeof onionHostname !== "string") return null;
+  if (!onionHostname.endsWith(".onion")) return null;
+  // Build the matching onion URL preserving the request path + query.
+  const url = new URL(request.url);
+  const target = `http://${onionHostname}${url.pathname}${url.search}`;
+  return target;
+}
 
 // Permanent redirect helper that strips Cloudflare auto-injected telemetry
 // headers from the response. Used everywhere we 301 in this worker.
@@ -144,8 +169,15 @@ const NEL_OPT_OUT_HEADERS = {
   "Report-To": '{"group":"","max_age":0,"endpoints":[]}',
 };
 
-function applyHeaders(response) {
+function applyHeaders(response, request, env) {
   const headers = new Headers(response.headers);
+  // Onion-Location for Tor Browser visitors (no-op when ONION_HOSTNAME
+  // is unset, which is the current state until the v3 hidden service
+  // is deployed under the project's legal entity).
+  if (request && env) {
+    const onion = onionLocationHeader(request, env);
+    if (onion) headers.set("Onion-Location", onion);
+  }
   for (const [k, v] of Object.entries(PRIVACY_HEADERS)) {
     if (!headers.has(k)) headers.set(k, v);
   }
@@ -737,7 +769,7 @@ export default {
       rewriteUrl.pathname = "/share/index.html";
       const rewritten = new Request(rewriteUrl.toString(), request);
       const res = await env.ASSETS.fetch(rewritten);
-      return applyHeaders(res);
+      return applyHeaders(res, request, env);
     }
 
     // Live presence WebSocket: all sessions share a single Durable Object
@@ -756,7 +788,7 @@ export default {
 
     // Everything else: static assets
     const assetResponse = await env.ASSETS.fetch(request);
-    const finalized = applyHeaders(assetResponse);
+    const finalized = applyHeaders(assetResponse, request, env);
     // Long-cache the asset paths the HTML cache-busts via `?v=N`. Any change
     // to the file bumps the version query, forcing a fresh URL; until then
     // `immutable` lets the browser skip even a conditional revalidate.

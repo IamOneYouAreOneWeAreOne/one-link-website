@@ -1,20 +1,84 @@
-# One Link security contact (RFC 9116)
-# https://www.rfc-editor.org/rfc/rfc9116
+# One Link security contact
+# Format: RFC 9116  (https://www.rfc-editor.org/rfc/rfc9116)
+# Companion page: https://weareone-link.org/security/
+# Audit register: https://weareone-link.org/audits/
 
 Contact: mailto:weareone@oneunity.earth
-Expires: 2027-05-17T00:00:00.000Z
+Expires: 2027-05-19T00:00:00.000Z
 Preferred-Languages: en
 Canonical: https://weareone-link.org/.well-known/security.txt
 Policy: https://weareone-link.org/security/
-Acknowledgments: https://weareone-link.org/security/
+Acknowledgments: https://weareone-link.org/audits/
 
-# Reporting
-# Please report vulnerabilities to weareone@oneunity.earth.
-# Encrypt sensitive reports with the One Link pair-by-QR flow
-# at https://weareone-link.org/share/ if you have One Link installed.
-# Responsible disclosure: we will respond within 5 days and
-# coordinate a fix and public attestation if you wish.
+# ----------------------------------------------------------------------
+# Reporting path
+# ----------------------------------------------------------------------
+# 1. Email weareone@oneunity.earth with subject line "security report".
+# 2. If you can encrypt with One Link's pair-by-QR (you have the app):
+#    encrypt the report via /share/  -  https://weareone-link.org/share/
+#    and paste the URL into the email body.
+#    Otherwise plaintext email is acceptable. We have not yet stood up
+#    a project PGP key (the legal entity that would own it is pending).
+#    A PGP key will be published here once it exists; until then,
+#    encrypted email is best-effort using whatever key you have for us.
+# 3. We acknowledge within 72 hours.
+# 4. We share an initial triage within 7 calendar days.
+# 5. We coordinate a public disclosure date that works for both sides;
+#    typical window is 30 to 90 days depending on severity tier.
 
-# Source
-# https://github.com/IamOneYouAreOneWeAreOne/one-link
-# https://github.com/IamOneYouAreOneWeAreOne/one-link-website
+# ----------------------------------------------------------------------
+# Severity tiers
+# ----------------------------------------------------------------------
+# CRITICAL  silent decryption of any sealed payload, identity-key
+#           recovery, universal pairing bypass, manifest-signing-key
+#           compromise enabling targeted updates to specific visitors.
+#
+# HIGH      targeted attack on a specific paired peer; supply-chain
+#           compromise of a release artifact; ratchet break enabling
+#           retroactive decryption of one channel; CRDT folder rollback
+#           that survives reconciliation.
+#
+# MEDIUM    timing side channels exceeding 5% variance on a hot crypto
+#           path; denial of service against the daemon or relay layer;
+#           metadata leaks beyond what /transparency/ documents.
+#
+# LOW       hardening opportunities; defense-in-depth gaps; clear-text
+#           on-disk surfaces above what /security/ already discloses;
+#           privacy-policy drift versus deployed code.
+
+# ----------------------------------------------------------------------
+# CVE-numbering authority
+# ----------------------------------------------------------------------
+# One Link is not its own CNA. For qualifying findings we will request
+# a CVE via MITRE's public form (https://cveform.mitre.org/) and
+# coordinate the published advisory with the reporter.
+
+# ----------------------------------------------------------------------
+# Bug bounty intent
+# ----------------------------------------------------------------------
+# There is no funded bug-bounty program today. The project does not
+# hold a legal entity that can disburse payments. We offer instead:
+#   - Public acknowledgment on /audits/ with your consent
+#   - CVE assignment for qualifying findings
+#   - Permanent commit-message credit (Reported-By trailer)
+# A funded bounty program will open once the legal entity is stood
+# up. This section will be updated and the change will be tamper-
+# evident via the public git log on the website repository.
+
+# ----------------------------------------------------------------------
+# Safe harbor
+# ----------------------------------------------------------------------
+# Good-faith research that follows this policy will not result in
+# legal action, takedown demands, or DMCA threats from us.
+# Acceptable: testing on your own devices and accounts, fuzzing
+# released binaries, network observation of your own traffic,
+# academic publication of findings on coordinated dates.
+# Not acceptable: exfiltrating, modifying, or destroying other
+# people's data; degrading service for other users; testing on
+# infrastructure we do not own without permission.
+
+# ----------------------------------------------------------------------
+# Sources
+# ----------------------------------------------------------------------
+# Daemon:  https://github.com/IamOneYouAreOneWeAreOne/one-link
+# Website: https://github.com/IamOneYouAreOneWeAreOne/one-link-website
