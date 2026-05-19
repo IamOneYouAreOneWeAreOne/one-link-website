@@ -27,9 +27,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r80">
-  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r80">
-  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r80">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r81">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r81">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r81">
 </head>
 <body>
 <a href="#main" class="skip-link">Skip to content</a>
@@ -79,67 +79,22 @@
 
         <article class="ol-tile">
           <h3>Files of any size</h3>
-          <p>Drag a folder. Drag a movie. Drag a hard drive's worth. It goes peer to peer, resumes on reconnect, never copies to a server.</p>
+          <p>Drag a folder, a movie, a hard drive's worth. Peer-to-peer with per-chunk AEAD and fountain-coded loss recovery. Resumes on reconnect. Never copies to a server. 10 GB verified in the torture simulator.</p>
         </article>
 
         <article class="ol-tile">
           <h3>Voice and video calls</h3>
-          <p>End to end encrypted. Direct peer to peer when possible, relayed only if needed. No mystery server in the path.</p>
+          <p>End-to-end encrypted. Direct peer-to-peer when possible, relayed only when not. No mystery server in the path.</p>
         </article>
 
         <article class="ol-tile">
           <h3>Shared folders</h3>
-          <p>Drop a file in, it appears on the other side. Versioned, conflict-free, stored on your devices.</p>
-        </article>
-
-        <article class="ol-tile">
-          <h3>Pair a device in five seconds</h3>
-          <p>QR plus five words. The five words mean the math agreed. That is the whole pairing flow.</p>
+          <p>Drop a file in, it appears on the other side. Versioned, conflict-free CRDT, stored on your devices. Works on LAN and across air-gapped networks (mDNS + Bluetooth aware).</p>
         </article>
 
         <article class="ol-tile">
           <h3>Your devices act as one</h3>
-          <p>Phone, laptop, tablet, second laptop. Pair once. They share everything, end to end, between every device.</p>
-        </article>
-
-      </div>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="container">
-      <span class="kicker">For privacy</span>
-      <h2>Things only One Link does.</h2>
-      <div class="ol-grid ol-grid-3">
-
-        <article class="ol-tile">
-          <h3>Three-hop private routing <span class="ol-tile-badge">(in flight, lands v0.22)</span></h3>
-          <p>One toggle. Sphinx-routed through volunteer relays. Post-quantum blinded at every hop. No one knows who sent what to whom. The crates are shipped today; the daemon toggle wires in v0.22.</p>
-        </article>
-
-        <article class="ol-tile">
-          <h3>Hardware key recognition</h3>
-          <p>Your device recognizes itself when you return, without you signing in, without us storing a single thing about you.</p>
-        </article>
-
-        <article class="ol-tile">
-          <h3>Threshold recovery</h3>
-          <p>Split a secret across friends. Recover it from any threshold. Your account survives a lost phone without surviving a leak.</p>
-        </article>
-
-        <article class="ol-tile">
-          <h3>Field-bound binding</h3>
-          <p>Each session is bound to the physical environment. A stolen key cannot be replayed on a different network without detection.</p>
-        </article>
-
-        <article class="ol-tile">
-          <h3>Duress mode <span class="ol-tile-badge">(in flight, lands v0.22)</span></h3>
-          <p>A second passphrase that opens a believable empty account. The math gives you a way out. Primitive crate shipped; daemon wiring lands in v0.22.</p>
-        </article>
-
-        <article class="ol-tile">
-          <h3>Confidential builds</h3>
-          <p>Every release is built in a sealed environment with attestation. You can verify the binary matches the attested build.</p>
+          <p>Phone, laptop, tablet, second laptop. Pair once with QR + five words. Every device sees the same conversations, end-to-end between every pair.</p>
         </article>
 
       </div>
@@ -149,60 +104,79 @@
   <section class="section">
     <div class="container">
       <span class="kicker">The promises, kept by the architecture</span>
-      <h2>What One Link <span class="grad">guarantees.</span></h2>
-      <p class="lede">Each line is a property the math itself enforces, not a policy someone could change later. The crate or proof behind each one is named, linkable, and audit-ready.</p>
+      <h2>What the math <span class="grad">guarantees.</span></h2>
+      <p class="lede">Each line is a property the architecture enforces, not a policy someone could change later. The crate or proof behind each one is named and audit-ready.</p>
 
       <div class="ol-grid ol-grid-2">
+
         <article class="ol-tile">
           <h3>No account, no email, no phone number.</h3>
-          <p>Identity is a keypair on your device. There is no user database anywhere. <span class="ol-soft-text">Crate: <code class="ol-inline-code">ol_pair_qr</code>. Identifier rotation built into the protocol.</span></p>
+          <p>Identity is a keypair on your device. There is no user database anywhere we could be subpoenaed for. <span class="ol-soft-text">Crate: <code class="ol-inline-code">ol_pair_qr</code>. QR + 5-word SAS pairing.</span></p>
         </article>
+
         <article class="ol-tile">
           <h3>End-to-end encrypted by default.</h3>
-          <p>The cleartext never leaves your device. Every chunk, every message. <span class="ol-soft-text">Crates: <code class="ol-inline-code">ol_ratchet</code>, <code class="ol-inline-code">ol_transfer</code>. Per-message forward secrecy active today; per-chunk activation lands with the chunk-store cutover in v0.22.</span></p>
+          <p>Cleartext never leaves your device. Every message, every chunk. Per-message forward secrecy active today; per-chunk activation with the chunk-store cutover in v0.22. <span class="ol-soft-text">Crates: <code class="ol-inline-code">ol_ratchet</code>, <code class="ol-inline-code">ol_transfer</code>.</span></p>
         </article>
+
         <article class="ol-tile">
           <h3>No central server in the path.</h3>
-          <p>Direct peer-to-peer when possible, encrypted-relay forwarding when not. The relays we operate are just nodes; the network keeps running if every one of them goes away. <span class="ol-soft-text">Anyone can run a relay.</span></p>
+          <p>Direct peer-to-peer when possible, encrypted-relay forwarding when not. Relays we run are just nodes; the network keeps running if every one of ours disappears. Anyone can run a relay.</p>
         </article>
+
         <article class="ol-tile">
-          <h3>Post-quantum hybrid signatures live everywhere.</h3>
-          <p>Ed25519 + ML-DSA-65 hybrid for every signature today. X25519 + ML-KEM-768 hybrid keys live on Sphinx onion hops today; the pair handshake and channel root activate the ML-KEM half in v0.22 (the wire format already reserves the slot). If either half of the hybrid breaks, the other still holds. <span class="ol-soft-text">Crates: <code class="ol-inline-code">ol_pqkem</code>, <code class="ol-inline-code">ol_pqsig</code>, <code class="ol-inline-code">ol_onion</code>.</span></p>
+          <h3>Post-quantum hybrid keys + signatures.</h3>
+          <p>Ed25519 + ML-DSA-65 hybrid signatures live everywhere today. X25519 + ML-KEM-768 hybrid keys live on Sphinx onion hops today; the pair handshake and channel root activate the ML-KEM half in v0.22 (the wire format already reserves the slot). If either half breaks, the other still holds. <span class="ol-soft-text">Crates: <code class="ol-inline-code">ol_pqkem</code>, <code class="ol-inline-code">ol_pqsig</code>, <code class="ol-inline-code">ol_onion</code>.</span></p>
         </article>
+
         <article class="ol-tile">
-          <h3>Reproducible signed builds.</h3>
-          <p>Every release is built in a sealed environment with an attestation document. Anyone can rebuild from source and verify byte equality. <span class="ol-soft-text">Verify in your tab on the download page.</span></p>
+          <h3>Reproducible signed builds + attestation.</h3>
+          <p>Every release built in a sealed environment with an Ed25519-signed attestation document. Anyone can rebuild from source and verify byte equality. Verify in your tab on the <a href="/download/" class="ol-cyan-text">download page</a>. <span class="ol-soft-text">Crate: <code class="ol-inline-code">ol_confidential</code>. Software baseline today, Windows TPM in flight, SE / SGX / SEV-SNP / TrustZone via the same trait.</span></p>
         </article>
+
         <article class="ol-tile">
-          <h3>Send anything peer-to-peer, no size cap.</h3>
-          <p>Native chunked transfer with per-chunk AEAD and fountain-coded loss recovery. 10 GB transfers verified in the torture simulator. <span class="ol-soft-text">Crate: <code class="ol-inline-code">ol_transfer</code>.</span></p>
+          <h3>Threshold recovery.</h3>
+          <p>Split your identity across k of n trusted shares. Survive a lost device without surviving a leak. <span class="ol-soft-text">Crate: <code class="ol-inline-code">ol_threshold_recovery</code>. BN multi-sig with per-signer R values.</span></p>
         </article>
+
         <article class="ol-tile">
-          <h3>Works on LAN or offline.</h3>
-          <p>The protocol is mDNS- and Bluetooth-aware. Pair across a room, send across an air-gapped network, sync when you reconnect.</p>
+          <h3>Free forever, no business model.</h3>
+          <p>No tier. No subscription. No "pro". No upsell. The network is community-run, the project is community-run, the cost to use it is zero forever.</p>
         </article>
+
         <article class="ol-tile">
           <h3>Source open and verifiable.</h3>
-          <p>AGPL-3.0. Every crate, every shader, every word of this site. <a href="https://github.com/IamOneYouAreOneWeAreOne/one-link" rel="noopener" class="ol-cyan-text">github.com/IamOneYouAreOneWeAreOne/one-link</a></p>
+          <p>AGPL-3.0. Every crate, every shader, every word of this site. <a href="https://github.com/IamOneYouAreOneWeAreOne/one-link" rel="noopener external" class="ol-cyan-text">github.com/IamOneYouAreOneWeAreOne/one-link</a>.</p>
         </article>
-        <article class="ol-tile">
-          <h3>Pair devices in five seconds.</h3>
-          <p>QR plus a five-word short-authentication-string. The words mean the math agreed. <span class="ol-soft-text">Crate: <code class="ol-inline-code">ol_pair_qr</code>. Levenshtein-audited wordlist.</span></p>
-        </article>
-        <article class="ol-tile">
-          <h3>Free forever, no tier, no upsell.</h3>
-          <p>No business model. No subscription. No "pro" anything. The network is community-run, and so is the project.</p>
-        </article>
-        <article class="ol-tile">
-          <h3>Threshold key recovery.</h3>
-          <p>Split your account across k of n trusted shares. Survive a lost device without surviving a leak. <span class="ol-soft-text">Crate: <code class="ol-inline-code">ol_threshold_recovery</code>. BN multi-sig with per-signer R values.</span></p>
-        </article>
-        <article class="ol-tile">
-          <h3>Confidential-compute attestation.</h3>
-          <p>The build proves where it ran and what it ran. <span class="ol-soft-text">Crate: <code class="ol-inline-code">ol_confidential</code>. Software baseline live today. Windows TPM provider in flight. The trait surface admits macOS Secure Enclave, Linux SGX/SEV-SNP, and Android TrustZone providers in future cycles.</span></p>
-        </article>
+
       </div>
-      <p class="ol-right-foot">Last reviewed 2026-05-17.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Coming next</span>
+      <h2>What lands in <span class="grad">v0.22.</span></h2>
+      <p class="lede">The crates ship today as WASM-verifiable primitives. The daemon-level toggles wire in v0.22.</p>
+      <div class="ol-grid ol-grid-3">
+
+        <article class="ol-tile">
+          <h3>Three-hop private routing</h3>
+          <p>One toggle. Sphinx-routed through volunteer relays. Post-quantum blinded at every hop. No one (including us) sees who sent what to whom.</p>
+        </article>
+
+        <article class="ol-tile">
+          <h3>Duress mode</h3>
+          <p>A second passphrase opens a believable empty account. The math gives you a way out under coercion. Primitive crate shipped; daemon wiring in v0.22.</p>
+        </article>
+
+        <article class="ol-tile">
+          <h3>GPU coherence field</h3>
+          <p>The τ_c routing field already solves at 10k peers in 1.74ms on a single CPU core. The GPU path moves it to handheld real-time at million-peer scale.</p>
+        </article>
+
+      </div>
+      <p class="ol-right-foot">Last reviewed 2026-05-19.</p>
     </div>
   </section>
 
@@ -235,6 +209,6 @@
   </div>
 </footer>
 
-<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r80"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r81"></script>
 </body>
 </html>
