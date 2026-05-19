@@ -15,4 +15,6 @@
   <url><loc>https://weareone-link.org/transparency/</loc><changefreq>monthly</changefreq><priority>0.55</priority></url>
   <url><loc>https://weareone-link.org/changelog/</loc><changefreq>weekly</changefreq><priority>0.50</priority></url>
   <url><loc>https://weareone-link.org/releases/</loc><changefreq>weekly</changefreq><priority>0.60</priority></url>
+  <url><loc>https://weareone-link.org/audits/</loc><changefreq>monthly</changefreq><priority>0.65</priority></url>
+  <url><loc>https://weareone-link.org/mirror/</loc><changefreq>monthly</changefreq><priority>0.60</priority></url>
 </urlset>

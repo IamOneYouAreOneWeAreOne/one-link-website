@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Audits - what has been reviewed, by whom, with what findings</title>
+  <meta name="description" content="The audit register for One Link. Every external review, every internal red-team, every finding open or closed. Public, dated, signed.">
+  <link rel="canonical" href="https://weareone-link.org/audits/">
+  <meta name="theme-color" content="#04060b" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#f0f4f8" media="(prefers-color-scheme: light)">
+  <meta name="color-scheme" content="dark">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="One Link">
+  <meta property="og:title" content="Audits - what has been reviewed, by whom, with what findings">
+  <meta property="og:description" content="The audit register for One Link. Every external review, every internal red-team, every finding open or closed.">
+  <meta property="og:url" content="https://weareone-link.org/audits/">
+  <meta property="og:image" content="https://weareone-link.org/og/one-link.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Audits - what has been reviewed, by whom, with what findings">
+  <meta name="twitter:description" content="The audit register for One Link. Every external review, every internal red-team, every finding open or closed.">
+  <meta name="twitter:image" content="https://weareone-link.org/og/one-link.png">
+  <link rel="icon" type="image/x-icon" href="/images/favicon.ico"><link rel="icon" type="image/png" sizes="128x128" href="/images/logo-128.png"><link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+  <link rel="manifest" href="/app.webmanifest">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="One Link">
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r76">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r76">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r76">
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to content</a>
+<canvas class="ol-field-canvas" aria-hidden="true" hidden></canvas>
+<header class="site-header" role="banner">
+  <div class="container">
+    <a href="/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
+    <button type="button" id="nav-toggle" class="nav-toggle" aria-label="Open navigation" aria-expanded="false" aria-controls="primary-nav">&#9776;</button>
+    <nav class="site-nav" id="primary-nav" aria-label="Main">
+      <a href="/how-it-works/">How it works</a>
+      <a href="/features/">Features</a>
+      <a href="/security/">Security</a>
+      <a href="/share/">Share</a>
+      <a href="/download/" class="cta-get">Get One Link</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <section class="hero">
+    <div class="container">
+      <span class="we-are-one">Audits</span>
+      <h1>Every review, <span class="grad">on the record.</span></h1>
+      <p class="lede">The audit register for One Link. We list every external review, every internal red-team, every finding (open or closed), every commit that closed it. If the page is bare, that is the truth. If it grows, that is also the truth.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">External audits</span>
+      <h2>None yet. <span class="grad">This is honest, not bravado.</span></h2>
+      <p class="lede">One Link is currently in v0.21.0-alpha. No external firm has performed a published audit of the daemon, the protocol, or this website. We have not commissioned a paid audit and the project does not yet have the legal entity required to commission one under standard engagement terms.</p>
+      <p>What that means for you, the reader, in plain language:</p>
+      <ul class="ol-list-prose">
+        <li>You should not trust this project at the same level as a multi-year, multi-audit project like Signal or Tor.</li>
+        <li>You should trust the math you can verify in your own browser tab.</li>
+        <li>You should trust the source you can read on GitHub.</li>
+        <li>You should distrust any claim on this site that is not backed by code or by a finding closed in commit history.</li>
+      </ul>
+      <p class="ol-mt-md">When an external audit lands, the firm name, the engagement scope, the findings count by severity, the report PDF, and the commits that closed each finding will all appear on this page. The audit register is signed and committed alongside the rest of the site so its history is tamper-evident via the public git log.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">What an audit would cover</span>
+      <h2>The scope, named in advance.</h2>
+      <p class="lede">Pre-registering the scope is itself an honesty mechanism. When an audit happens, the comparison between this list and the final scope-of-work will be visible.</p>
+      <div class="ol-grid ol-grid-2">
+        <article class="ol-tile">
+          <h3>Cryptographic primitives</h3>
+          <p>Ed25519 + ML-DSA-65 hybrid signatures (<code class="ol-inline-code">ol_pqsig</code>). X25519 + ML-KEM-768 hybrid KEM (<code class="ol-inline-code">ol_pqkem</code>). BLAKE3 per-chunk ratchet (<code class="ol-inline-code">ol_ratchet</code>). Shamir secret sharing (<code class="ol-inline-code">ol_threshold_recovery</code>). Macaroon attenuation (<code class="ol-inline-code">ol_capability</code>). Constant-time properties, side-channel resistance, KAT vector conformance, fuzz coverage.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Pairing handshake</h3>
+          <p><code class="ol-inline-code">ol_pair_qr</code> Ed25519 invite + transcript-bound response + 5-word SAS + Levenshtein-audited wordlist. Replay resistance, cross-invite substitution, transcript swap, MITM detection, downgrade attacks.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Onion routing</h3>
+          <p><code class="ol-inline-code">ol_onion</code> Sphinx Coherence stack: Ristretto255 blinding, ML-KEM-768 PQ-hybrid mix-in at entry hop, field-witness binding, Schnorr aggregation via Pippenger MSM. Per-hop confidentiality + integrity, traffic analysis resistance, replay protection.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Capability + folder model</h3>
+          <p>Macaroon-chained capability attenuation soundness (1M-iteration gate). OR-set + LWW CRDT folder semantics (1M-iteration lattice-laws gate). Deny-by-default policy. Capability revocation atomicity.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Build + release supply chain</h3>
+          <p>Reproducible-build determinism. Signed manifest verification by the Service Worker before serving cached assets. Release key custody. Build environment attestation. SBOM accuracy. Dependency audit (<code class="ol-inline-code">pip-audit</code> + <code class="ol-inline-code">cargo audit</code>).</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Daemon attack surface</h3>
+          <p>Python daemon entry points. WebRTC signaling channels. WebTransport surfaces. iOS .mobileconfig trust chain. File transfer chunking + AEAD path. Cap advertisement + acceptance. Memory safety boundaries between Python and Rust native bindings.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Website surface</h3>
+          <p>This site itself: CSP enforcement, Service Worker manifest verification, the live WASM demos, the cross-tab pair-by-QR flow, the encrypted /share/ buffer, the MeshPresence Durable Object. Worker code, Durable Object code, R2 retention policy.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Privacy posture vs claims</h3>
+          <p>Audit of every claim on the website against the code that backs it. Audit of every header the worker emits against the privacy promises. Audit of every byte the visitor's browser sends back to any server we operate.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Internal red-team activity</span>
+      <h2>What we have done <span class="grad">to ourselves.</span></h2>
+      <p class="lede">In place of external audit, we publish every internal red-team finding and the commit that closed it. This is not a substitute for a real audit. It is what we can do today, honestly.</p>
+      <div class="ol-grid ol-grid-2">
+        <article class="ol-tile">
+          <h3>v0.21.0-alpha audit-honesty pass (2026-05-19)</h3>
+          <p>Multi-agent cross-check of every claim on this website against the daemon code. Five overstatements rephrased with explicit hedges: ML-KEM-768 wire-format reserved vs active, per-chunk ratchet ready vs wired, ChunkRatchet at-rest scope, hardware-backend list, tau_c routing metaphor. <a class="ol-cyan-text" href="https://github.com/IamOneYouAreOneWeAreOne/one-link-website/commits/master" rel="noopener external">Commit history</a>.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>v0.20.7 channel ratchet activation (2026-05-08)</h3>
+          <p>Discovered that the Double Ratchet capability was implemented end-to-end in v0.7.2 but the daemon filtered it out of advertised CAPS, leaving channels on static AEAD. SECURITY.md T3 forward-secrecy commitment was unmet. Closed by re-adding the cap to LOCAL_CAPABILITIES advertisement.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>v0.20.6 iOS trust profile (2026-05-08)</h3>
+          <p>iOS Safari blocked HTTPS pair flow against self-signed daemon certs. Closed by shipping a Configuration Profile (.mobileconfig) endpoint that delivers the daemon's self-signed cert as a trusted root.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>v0.20.5 multi-agent security audit (2026-05-09)</h3>
+          <p>Internal 5-CRITICAL / 21-HIGH / 24-MED audit covering DTLS-Ed25519 binding, Service Worker pin trust, default-allow-all reversal, Double Ratchet activation, at-rest encryption gap. Material findings closed in v0.20.7. Lower-severity findings tracked in the issue list.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>F1 fuzz gate (continuous)</h3>
+          <p>Five-million-iteration fuzz across 42 binaries, zero crashes, zero false positives. Twenty-four new v2 adversarial vectors added since v0.20.5. Reproducible from <code class="ol-inline-code">cargo fuzz</code>.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Capability + CRDT soundness gates (continuous)</h3>
+          <p>One-million-iteration macaroon attenuation gate (5.94s, 0 violations). One-million-iteration OR-set + LWW lattice-laws gate (7.46s, 0 violations). Two-thousand-iteration native-mirror divergence soak (zero divergence target before authoritative cutover).</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Where to look</span>
+      <h2>Every claim, <span class="grad">tied to a commit.</span></h2>
+      <p class="lede">If you read a statement on this site and want to verify it, here is exactly where the evidence lives.</p>
+      <div class="ol-grid ol-grid-2">
+        <article class="ol-tile">
+          <h3>Daemon source</h3>
+          <p><a class="ol-cyan-text" href="https://github.com/IamOneYouAreOneWeAreOne/one-link" rel="noopener external">github.com/IamOneYouAreOneWeAreOne/one-link</a>. Python daemon at <code class="ol-inline-code">src/one_link/</code>. Rust native crates at <code class="ol-inline-code">native/</code>. Tests at <code class="ol-inline-code">tests/</code> and per-crate <code class="ol-inline-code">tests.rs</code>. ADR records at <code class="ol-inline-code">docs/adr/</code>.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Website source</h3>
+          <p><a class="ol-cyan-text" href="https://github.com/IamOneYouAreOneWeAreOne/one-link-website" rel="noopener external">github.com/IamOneYouAreOneWeAreOne/one-link-website</a>. Static HTML at <code class="ol-inline-code">dist/weareone-link.org/</code>. Cloudflare Worker at <code class="ol-inline-code">src/worker.js</code>. Signed manifest signer at <code class="ol-inline-code">scripts/sign-manifest.py</code>.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>CI integrity gates</h3>
+          <p>Every push runs em-dash detection, personal-identifier detection, local-path detection, placeholder-token detection, timeline-language detection, manifest-freshness verification, and link-rot detection. See <code class="ol-inline-code">.github/workflows/ci.yml</code>.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Benchmarks</h3>
+          <p>Daemon: <code class="ol-inline-code">native/ol_coherence_field/BENCHMARKS.md</code>. Onion: <code class="ol-inline-code">native/ol_onion/benches/</code>. Capability: <code class="ol-inline-code">native/ol_capability/tests/</code>. Reproducible via <code class="ol-inline-code">cargo bench -p &lt;crate&gt;</code>.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">If you want to audit</span>
+      <h2>Contact <span class="grad">welcome.</span></h2>
+      <p class="lede">If you or your firm wants to audit any part of One Link, contact <a class="ol-cyan-text" href="mailto:weareone@oneunity.earth">weareone@oneunity.earth</a> with subject "audit inquiry." We will publish the engagement on this page once it begins. We do not impose NDAs that would prevent publication of findings.</p>
+      <p>If you are an individual researcher and want to report a specific vulnerability, follow the disclosure path in <a class="ol-cyan-text" href="/.well-known/security.txt">/.well-known/security.txt</a>. Coordinated disclosure is honored. Bug bounty intent is documented on the <a class="ol-cyan-text" href="/security/">/security/</a> page.</p>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer" role="contentinfo">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a href="/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
+        <p class="footer-tag">A free, private network for messages, files, and devices. Owned by no one. Belongs to everyone.</p>
+      </div>
+      <div><h3>Network</h3><ul><li><a href="/how-it-works/">How it works</a></li><li><a href="/features/">Features</a></li><li><a href="/mesh/">Live mesh</a></li></ul></div>
+      <div><h3>For you</h3><ul><li><a href="/download/">Get One Link</a></li><li><a href="/security/">Security</a></li><li><a href="/accessibility/">Accessibility</a></li><li><a href="/transparency/">Transparency</a></li><li><a href="/audits/">Audits</a></li></ul></div>
+      <div><h3>For builders</h3><ul><li><a href="/builders/">Protocol &amp; source</a></li><li><a href="/changelog/">Changelog</a></li><li><a href="/releases/">Releases</a></li><li><a href="/mirror/">Mirror this site</a></li><li><a href="/download/source" rel="noopener">Source archive</a></li><li><a href="https://github.com/IamOneYouAreOneWeAreOne/one-link" rel="noopener external">GitHub</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <span class="built-by">&copy; 2026 One Link contributors. <a href="/terms/">AGPL-3.0</a>. <a href="/security/">No tracking.</a> <a href="mailto:weareone@oneunity.earth">weareone@oneunity.earth</a></span>
+      <span class="built-by">we are one</span>
+    </div>
+  </div>
+</footer>
+
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r76"></script>
+</body>
+</html>

@@ -25,9 +25,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r75">
-  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r75">
-  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r75">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r76">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r76">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r76">
 </head>
 <body>
 <a href="#main" class="skip-link">Skip to content</a>
@@ -41,7 +41,6 @@
       <a href="/features/">Features</a>
       <a href="/security/">Security</a>
       <a href="/share/">Share</a>
-      <a href="/one/">One</a>
       <a href="/download/" class="cta-get">Get One Link</a>
     </nav>
   </div>
@@ -142,6 +141,33 @@
 
   <section class="section">
     <div class="container">
+      <span class="kicker">What if this site goes away</span>
+      <h2>The network does not <span class="grad">depend on this site.</span></h2>
+      <p class="lede">This website runs on Cloudflare. A state actor, a copyright complaint, a policy change, or a billing problem could take it offline tomorrow. That outcome would be inconvenient. It would not stop One Link.</p>
+      <div class="ol-grid ol-grid-2">
+        <article class="ol-tile">
+          <h3>The daemon does not need this site.</h3>
+          <p>One Link clients pair device-to-device by QR. Once paired, they talk peer-to-peer (or via volunteer relays that anyone can run). No client ever calls weareone-link.org to function. If this site disappears today, every installed One Link keeps working.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>The relays do not need this site.</h3>
+          <p>The relay network is community-run. Anyone can run one. There is no central directory we control. The relays gossip among themselves to find each other. Removing our domain does not remove a single relay.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>This site is mirror-able by design.</h3>
+          <p>Every byte of this site lives in a public AGPL-3.0 repository. Anyone can clone, audit, and host it. See <a class="ol-cyan-text" href="/mirror/">/mirror/</a> for the three-line self-host command, a Tor onion-service guide, and an IPFS pin manifest. If we get banned, you can be the next host within five minutes.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>The source is on GitHub today.</h3>
+          <p>And on multiple mirrors people maintain independently. The signing key for releases is offline-held. The build is reproducible. Even if every server we touched vanished, the code, the protocol, and the math survive in any clone.</p>
+        </article>
+      </div>
+      <p class="ol-mt-md ol-prose">This is not bravado, it is the architecture. The whole point of "no servers in the middle" is that the protocol works without us. Hosting this site is a convenience for first-time visitors, not a load-bearing dependency of the network.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
       <span class="kicker">Cadence</span>
       <h2>Refreshed monthly. <span class="grad">Always.</span></h2>
       <p class="lede">If this page falls behind, that is itself a signal. Subscribe to the source repository for atomic notifications when this file changes.</p>
@@ -158,8 +184,8 @@
         <p class="footer-tag">A free, private network for messages, files, and devices. Owned by no one. Belongs to everyone.</p>
       </div>
       <div><h3>Network</h3><ul><li><a href="/how-it-works/">How it works</a></li><li><a href="/features/">Features</a></li><li><a href="/mesh/">Live mesh</a></li></ul></div>
-      <div><h3>For you</h3><ul><li><a href="/download/">Get One Link</a></li><li><a href="/security/">Security</a></li><li><a href="/accessibility/">Accessibility</a></li><li><a href="/transparency/">Transparency</a></li></ul></div>
-      <div><h3>For builders</h3><ul><li><a href="/builders/">Protocol &amp; source</a></li><li><a href="/changelog/">Changelog</a></li><li><a href="/releases/">Releases</a></li><li><a href="/download/source" rel="noopener">Source archive</a></li><li><a href="https://github.com/IamOneYouAreOneWeAreOne/one-link" rel="noopener external">GitHub</a></li></ul></div>
+      <div><h3>For you</h3><ul><li><a href="/download/">Get One Link</a></li><li><a href="/security/">Security</a></li><li><a href="/accessibility/">Accessibility</a></li><li><a href="/transparency/">Transparency</a></li><li><a href="/audits/">Audits</a></li></ul></div>
+      <div><h3>For builders</h3><ul><li><a href="/builders/">Protocol &amp; source</a></li><li><a href="/changelog/">Changelog</a></li><li><a href="/releases/">Releases</a></li><li><a href="/mirror/">Mirror this site</a></li><li><a href="/download/source" rel="noopener">Source archive</a></li><li><a href="https://github.com/IamOneYouAreOneWeAreOne/one-link" rel="noopener external">GitHub</a></li></ul></div>
     </div>
     <div class="footer-bottom">
       <span class="built-by">&copy; 2026 One Link contributors. <a href="/terms/">AGPL-3.0</a>. <a href="/security/">No tracking.</a> <a href="mailto:weareone@oneunity.earth">weareone@oneunity.earth</a></span>
@@ -168,6 +194,6 @@
   </div>
 </footer>
 
-<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r75"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r76"></script>
 </body>
 </html>
