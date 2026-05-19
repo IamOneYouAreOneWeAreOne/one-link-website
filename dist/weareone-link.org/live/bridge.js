@@ -301,18 +301,33 @@ async function runVerifyingDownload(btn, os) {
 async function startCoherenceField() {
   const canvas = $('.ol-field-canvas');
   if (!canvas) return;
-  if (prefersReducedMotion) return; // honor user; CSS fallback stays in.
 
-  // Gate the shader on desktop + non-data-saver. The Helmholtz solver pegs
-  // a single CPU core on mid-range phones for the JS fallback path, and even
-  // the WebGPU path is meaningful battery on a phone in your pocket. Phones
-  // and bandwidth-conscious users get the CSS gradient backdrop instead.
+  // Always reveal the canvas element so the CSS aurora background
+  // becomes visible on every device, even when neither the WebGPU
+  // shader nor the heavy Canvas2D fallback can run. The CSS aurora is
+  // GPU-composited (radial-gradient + background-position keyframe
+  // animation) and costs zero CPU, so it stays on mobile and low-power
+  // browsers where the real field would peg a core.
+  canvas.hidden = false;
+
+  if (prefersReducedMotion) {
+    // Honor reduced-motion: keep the canvas revealed so the static
+    // gradient color still tints the background, but never run any
+    // animation or compute. The CSS animation is also suppressed by
+    // the prefers-reduced-motion media query in one-link.css.
+    return;
+  }
+
+  // Gate the heavy real-physics paths on desktop + non-data-saver. The
+  // Helmholtz solver pegs a single CPU core on mid-range phones for the
+  // JS fallback path, and even the WebGPU path is meaningful battery on
+  // a phone in your pocket. Phones and bandwidth-conscious visitors get
+  // the CSS aurora backdrop instead (still alive, still tinted, no CPU).
   const isCapable = window.matchMedia &&
     window.matchMedia('(min-width: 720px) and (pointer: fine)').matches;
   const saveData = navigator.connection && navigator.connection.saveData;
   if (!isCapable || saveData) return;
 
-  canvas.hidden = false;
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
   const resize = () => {
     canvas.width = Math.floor(window.innerWidth * dpr);
@@ -321,7 +336,10 @@ async function startCoherenceField() {
   resize();
   window.addEventListener('resize', resize);
 
-  // Try WebGPU first.
+  // Try WebGPU first. When it runs, the canvas's compositor-layer
+  // background is occluded by the real shader output (drawingBufferStorage
+  // is opaque to whatever the GPU writes), so the CSS aurora seamlessly
+  // gets replaced by the live damped-Helmholtz field.
   if ('gpu' in navigator) {
     try {
       await startCoherenceFieldWebGPU(canvas);
