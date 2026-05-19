@@ -2056,6 +2056,200 @@ function wireAttestationVerify() {
   });
 }
 
+// ---------------------------------------------------------------------------
+// /security/  "Verify this site" — browser-side full bundle verification.
+//
+// Runs the same logic as scripts/verify-manifest.py except in your tab,
+// against the bytes the browser actually just received:
+//
+//   1. Fetch /manifest.json (the SAME copy the Service Worker checks
+//      every cached asset against).
+//   2. Verify the Ed25519 signature on the canonical {version, assets}
+//      subset using Web Crypto's Ed25519 (Chrome 113+, Firefox 130+,
+//      Safari 17+). Pinned pubkey is whatever signed_by declares;
+//      mismatch with the SW's hardcoded pin would show up there too.
+//   3. For every asset in the manifest, fetch it from the SAME origin
+//      and recompute SHA-256 via crypto.subtle.digest. Compare against
+//      the recorded hash. Any mismatch fails the bundle.
+//
+// The output renders as a live log: each step appears as it completes
+// with OK/FAIL color cues. Total payload is a couple MB so on a fast
+// network this finishes in 1-2 seconds.
+//
+// Reuses the same canonical-signing payload format as
+// scripts/verify-manifest.py and scripts/sign-manifest.py, so anyone
+// who wants to cross-check from a terminal sees identical bytes signed.
+// ---------------------------------------------------------------------------
+
+// Canonical JSON serializer matching Python's
+//   json.dumps(obj, sort_keys=True, separators=(",",":"))
+// byte-for-byte. Recursive: sorts every nested object's keys, drops all
+// whitespace between separators. Required so the Ed25519 signature this
+// browser computes covers the same payload that sign-manifest.py signed.
+function canonicalJSON(v) {
+  if (v === null) return "null";
+  if (typeof v === "boolean") return v ? "true" : "false";
+  if (typeof v === "number") return JSON.stringify(v);
+  if (typeof v === "string") return JSON.stringify(v);
+  if (Array.isArray(v)) return "[" + v.map(canonicalJSON).join(",") + "]";
+  if (typeof v === "object") {
+    const keys = Object.keys(v).sort();
+    return "{" + keys.map((k) => JSON.stringify(k) + ":" + canonicalJSON(v[k])).join(",") + "}";
+  }
+  throw new Error("non-canonicalizable value: " + typeof v);
+}
+
+function canonicalManifestSignedPayload(manifest) {
+  return canonicalJSON({
+    version: manifest.version || "",
+    assets: manifest.assets || {},
+  });
+}
+
+function hexToBytes(hex) {
+  const out = new Uint8Array(hex.length / 2);
+  for (let i = 0; i < out.length; i++) out[i] = parseInt(hex.substr(i * 2, 2), 16);
+  return out;
+}
+
+async function bytesToSha256Hex(bytes) {
+  const buf = await crypto.subtle.digest("SHA-256", bytes);
+  const arr = new Uint8Array(buf);
+  let hex = "";
+  for (let i = 0; i < arr.length; i++) hex += arr[i].toString(16).padStart(2, "0");
+  return hex;
+}
+
+async function runVerifyThisSite() {
+  const out = $("#ol-verify-site-out");
+  const btn = $("#ol-verify-site-btn");
+  if (!out || !btn) return;
+  btn.disabled = true;
+  const log = [];
+  const render = () => {
+    out.innerHTML =
+      '<pre class="ol-code">' +
+      log.join("\n") +
+      '</pre>';
+  };
+
+  const ok    = (msg) => { log.push(`<span class="g">OK   </span> ${escapeHtml(msg)}`); render(); };
+  const fail  = (msg) => { log.push(`<span class="ol-rose-text">FAIL </span> ${escapeHtml(msg)}`); render(); };
+  const info  = (msg) => { log.push(`<span class="d">--   </span> ${escapeHtml(msg)}`); render(); };
+  const head  = (msg) => { log.push(`<span class="c">${escapeHtml(msg)}</span>`); render(); };
+
+  try {
+    head("phase 1: fetch + parse signed manifest");
+    const manifestRes = await fetch("/manifest.json", { cache: "no-store" });
+    if (!manifestRes.ok) {
+      fail(`/manifest.json returned HTTP ${manifestRes.status}`);
+      btn.disabled = false; return;
+    }
+    const manifest = await manifestRes.json();
+    info(`version: ${manifest.version || "(unset)"}`);
+    info(`assets:  ${Object.keys(manifest.assets || {}).length} entries`);
+
+    const signedBy = (manifest.signed_by || "").replace(/^ed25519-pub-/, "");
+    const signature = (manifest.signature || "").replace(/^ed25519-/, "");
+    if (!signedBy || !signature) {
+      fail("manifest is missing signed_by or signature field");
+      btn.disabled = false; return;
+    }
+    info(`signer:    ed25519 pub ${signedBy.slice(0, 16)}...`);
+    info(`signature: ${signature.slice(0, 16)}...`);
+
+    head("phase 2: Ed25519 signature verify");
+
+    if (!("subtle" in crypto)) {
+      fail("Web Crypto subtle API unavailable in this browser");
+      btn.disabled = false; return;
+    }
+
+    let key;
+    try {
+      key = await crypto.subtle.importKey(
+        "raw",
+        hexToBytes(signedBy),
+        { name: "Ed25519" },
+        false,
+        ["verify"]
+      );
+    } catch (e) {
+      fail(`browser does not support Ed25519 in Web Crypto: ${e?.message || e}`);
+      info("(Chrome 113+, Firefox 130+, Safari 17+ supported; older browsers use the same script from scripts/verify-manifest.py)");
+      btn.disabled = false; return;
+    }
+
+    const payloadStr = canonicalManifestSignedPayload(manifest);
+    const payload = new TextEncoder().encode(payloadStr);
+    const sigBytes = hexToBytes(signature);
+    const sigOk = await crypto.subtle.verify(
+      { name: "Ed25519" },
+      key,
+      sigBytes,
+      payload
+    );
+
+    const payloadSha = await bytesToSha256Hex(payload);
+    info(`signed payload sha256: ${payloadSha.slice(0, 16)}...`);
+
+    if (sigOk) {
+      ok("manifest signature verifies against pinned pubkey");
+    } else {
+      fail("manifest signature did NOT verify");
+      btn.disabled = false; return;
+    }
+
+    head(`phase 3: per-asset SHA-256 verify (${Object.keys(manifest.assets).length} assets)`);
+
+    const assetEntries = Object.entries(manifest.assets);
+    let matched = 0, mismatched = 0;
+
+    for (const [relPath, recorded] of assetEntries) {
+      const expected = recorded.replace(/^sha256-/, "");
+      try {
+        const r = await fetch(relPath, { cache: "no-store" });
+        if (!r.ok) { fail(`${relPath}  fetch ${r.status}`); mismatched++; continue; }
+        const buf = new Uint8Array(await r.arrayBuffer());
+        const actual = await bytesToSha256Hex(buf);
+        if (actual === expected) {
+          matched++;
+        } else {
+          fail(`${relPath}`);
+          info(`  expected ${expected}`);
+          info(`  actual   ${actual}`);
+          mismatched++;
+        }
+      } catch (e) {
+        fail(`${relPath}  ${e?.message || e}`);
+        mismatched++;
+      }
+    }
+
+    if (mismatched === 0) {
+      ok(`all ${matched} assets match the signed manifest`);
+      log.push("");
+      log.push('<span class="g">verdict: bundle integrity verified</span>');
+      render();
+      olFieldPulse?.(700);
+    } else {
+      log.push("");
+      log.push(`<span class="ol-rose-text">verdict: ${matched}/${assetEntries.length} verified, ${mismatched} mismatched. Do not trust this bundle.</span>`);
+      render();
+    }
+  } catch (e) {
+    fail(`unexpected error: ${e?.message || e}`);
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+function wireVerifyThisSite() {
+  const btn = $("#ol-verify-site-btn");
+  if (!btn) return;
+  btn.addEventListener("click", runVerifyThisSite);
+}
+
 // MOUSE-REACTIVE COHERENCE FIELD - REMOVED.
 // An earlier iteration spawned faint cursor pings on every pointermove.
 // Pulled out to keep the site clean + confident, not literal-reactive.
@@ -3813,6 +4007,7 @@ function wireNavToggle() {
   wireRatchetDemo();           // /security/ forward-secret ratchet demo
   wireHwkeyDemo();             // /security/ TOFU device-fingerprint demo
   wireAttestationVerify();     // /download/ "verify this binary's attestation"
+  wireVerifyThisSite();        // /security/ "verify this site, in your tab"
   wireRebuildFromSource();     // /builders/ "rebuild this site in your tab"
   startMeshSolverColoring();   // /mesh/ peer-dot coloring via real solver
   wireTelemetry();             // ?-key system-telemetry overlay

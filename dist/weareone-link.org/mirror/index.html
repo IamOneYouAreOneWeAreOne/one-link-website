@@ -25,9 +25,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r81">
-  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r81">
-  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r81">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r82">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r82">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r82">
 </head>
 <body>
 <a href="#main" class="skip-link">Skip to content</a>
@@ -83,11 +83,30 @@
 
   <section class="section">
     <div class="container">
-      <span class="kicker">Three minutes</span>
-      <h2>Run a local copy.</h2>
-      <p class="lede">For your own use. Zero internet exposure. Python 3 only, no other dependencies.</p>
+      <span class="kicker">One command</span>
+      <h2>The fastest path. <span class="grad">Clone, verify, serve, in one step.</span></h2>
+      <p class="lede">Reviewable, idempotent, self-verifying. Checks the signed Ed25519 manifest before doing anything. Does not modify any system file. Does not require root. Stays in the current directory.</p>
+<pre class="ol-code"><span class="d"># review the script first (recommended for a privacy-tool mirror)</span>
+curl -sSLO https://weareone-link.org/mirror.sh
+less mirror.sh
+bash mirror.sh
+
+<span class="d"># or, for the impatient</span>
+bash &lt;(curl -sSL https://weareone-link.org/mirror.sh)</pre>
+      <p>The script clones the repo into <code class="ol-inline-code">./one-link-website/</code>, verifies the signed manifest, then starts a local server at <a class="ol-cyan-text" href="http://localhost:8080" rel="noopener external">http://localhost:8080</a>. Press Ctrl+C to stop. The clone stays around for further hosting (Caddy, nginx, Tor) per the sections below.</p>
+      <p class="ol-soft-text">Source of the script: <a class="ol-cyan-text" href="/mirror.sh">/mirror.sh</a>. Served from this same domain, signed by the same Ed25519 release key as every other asset on this site, verified by the Service Worker before delivery. Hosting your own mirror inverts the trust relationship: once you have a clone with a verified manifest, you do not need this site or our host to keep going.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Three minutes, by hand</span>
+      <h2>Run a local copy manually.</h2>
+      <p class="lede">If you do not want to run a script written by us, the same three steps it does, executed by hand. Python 3 only, no other dependencies.</p>
 <pre class="ol-code">git clone https://github.com/IamOneYouAreOneWeAreOne/one-link-website
-cd one-link-website/dist/weareone-link.org
+cd one-link-website
+python3 scripts/verify-manifest.py
+cd dist/weareone-link.org
 python3 -m http.server 8080</pre>
       <p>Open <code class="ol-inline-code">http://localhost:8080</code>. The site is now live on your machine. The mesh widget will not find peers (it relies on the upstream Durable Object) but every static page renders identically, and the WASM demos all run fully in your browser.</p>
     </div>
@@ -234,6 +253,6 @@ python3 scripts/verify-manifest.py
   </div>
 </footer>
 
-<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r81"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r82"></script>
 </body>
 </html>

@@ -27,9 +27,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r81">
-  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r81">
-  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r81">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r82">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r82">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r82">
 </head>
 <body>
 <a href="#main" class="skip-link">Skip to content</a>
@@ -149,6 +149,24 @@
           <h3>Reproducible releases</h3>
           <p>Every release is built in a confidential-compute environment. Attestation document published alongside the binary. Anyone can rebuild from source and verify byte equality.</p>
         </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Prove the bytes you're reading</span>
+      <h2>Verify this site, <span class="grad">in your tab.</span></h2>
+      <p class="lede ol-mw-64ch">
+        One click verifies the Ed25519 signature on the asset manifest you just downloaded with this page, then re-fetches every asset listed in the manifest and recomputes its SHA-256 against the recorded hash. If both checks pass, the bytes you are reading match what the offline release key signed. No server-side claim, your browser does the cryptography. Same algorithm the Service Worker runs before serving any cached page.
+      </p>
+
+      <div class="ol-private-demo ol-mt">
+        <button type="button" id="ol-verify-site-btn" class="btn btn-primary">
+          Verify this site now
+          <span class="arr" aria-hidden="true">&rarr;</span>
+        </button>
+        <div id="ol-verify-site-out" class="ol-mt"></div>
       </div>
     </div>
   </section>
@@ -305,6 +323,6 @@
   </div>
 </footer>
 
-<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r81"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r82"></script>
 </body>
 </html>
