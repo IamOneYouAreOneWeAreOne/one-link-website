@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>One Link - somos um</title>
+  <meta name="description" content="Envie qualquer coisa. Para qualquer pessoa. De qualquer dispositivo. Sem contas. Sem servidores. Sem intermediários. Apenas você e eles podem ler. Gratuito para sempre.">
+  <link rel="canonical" href="https://weareone-link.org/pt/">
+  <link rel="alternate" hreflang="en" href="https://weareone-link.org/">
+  <link rel="alternate" hreflang="es" href="https://weareone-link.org/es/">
+  <link rel="alternate" hreflang="fr" href="https://weareone-link.org/fr/">
+  <link rel="alternate" hreflang="pt" href="https://weareone-link.org/pt/">
+  <link rel="alternate" hreflang="de" href="https://weareone-link.org/de/">
+  <link rel="alternate" hreflang="it" href="https://weareone-link.org/it/">
+  <link rel="alternate" hreflang="x-default" href="https://weareone-link.org/">
+  <meta name="theme-color" content="#04060b" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#f0f4f8" media="(prefers-color-scheme: light)">
+  <meta name="color-scheme" content="dark">
+  <meta name="robots" content="index, follow">
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="One Link">
+  <meta property="og:locale" content="pt_BR">
+  <meta property="og:locale:alternate" content="en_US">
+  <meta property="og:title" content="One Link">
+  <meta property="og:description" content="Envie qualquer coisa. Para qualquer pessoa. Apenas você e eles podem ler.">
+  <meta property="og:url" content="https://weareone-link.org/pt/">
+  <meta property="og:image" content="https://weareone-link.org/og/one-link.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="One Link">
+  <meta name="twitter:description" content="Envie qualquer coisa. Para qualquer pessoa. Apenas você e eles podem ler.">
+  <meta name="twitter:image" content="https://weareone-link.org/og/one-link.png">
+
+  <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="128x128" href="/images/logo-128.png">
+  <link rel="icon" type="image/png" sizes="256x256" href="/images/logo-256.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="/images/logo-512.png">
+  <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+  <link rel="manifest" href="/app.webmanifest">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="One Link">
+  <meta name="mobile-web-app-capable" content="yes">
+
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r80">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r80">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r80">
+
+  <script type="application/ld+json">{
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "One Link",
+    "inLanguage": "pt",
+    "operatingSystem": "Windows, macOS, Linux, Android, iOS",
+    "applicationCategory": "CommunicationApplication",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "url": "https://weareone-link.org/pt/",
+    "license": "https://www.gnu.org/licenses/agpl-3.0.html"
+  }</script>
+</head>
+<body class="ol-immersive">
+<a href="#main" class="skip-link">Pular para o conteúdo</a>
+
+<canvas class="ol-field-canvas" aria-hidden="true" hidden></canvas>
+<div class="ol-peer-overlay" id="ol-peer-overlay" aria-label="Outras pessoas vendo agora"></div>
+<div class="ol-peer-hint" id="ol-peer-hint" hidden>
+  <span>toque em qualquer ponto brilhante para iniciar uma conversa anônima</span>
+</div>
+<div class="ol-ping-toast" id="ol-ping-toast" aria-live="polite" hidden>
+  <span class="ol-ping-glyph" aria-hidden="true">&#9883;</span>
+  <span class="ol-ping-text">alguém disse olá</span>
+</div>
+<div class="ol-chat-panel" id="ol-chat-panel" hidden role="dialog" aria-label="Conversa anônima com um desconhecido">
+  <div class="ol-chat-head">
+    <span class="ol-chat-dot" id="ol-chat-dot"></span>
+    <span class="ol-chat-title" id="ol-chat-title">desconhecido</span>
+    <span class="ol-chat-state" id="ol-chat-state">conectando</span>
+    <a href="#" class="ol-chat-on-mesh-link" id="ol-chat-on-mesh-link" aria-label="Abrir esta conversa na página da malha ao vivo">ver na malha &rarr;</a>
+    <button type="button" class="ol-chat-close" id="ol-chat-close" aria-label="Fechar conversa">&times;</button>
+  </div>
+  <div class="ol-chat-log" id="ol-chat-log" aria-live="polite"></div>
+  <form class="ol-chat-form" id="ol-chat-form">
+    <input type="text" id="ol-chat-input" maxlength="280" placeholder="diga algo gentil..." autocomplete="off" aria-label="Mensagem">
+    <button type="submit" class="ol-chat-send" aria-label="Enviar">&rarr;</button>
+  </form>
+  <div class="ol-chat-foot">
+    efêmero &middot; anônimo &middot; criptografado de ponta a ponta
+  </div>
+</div>
+<div class="ol-chat-request-toast" id="ol-chat-request-toast" hidden role="alert">
+  <div class="ol-chat-request-dot" id="ol-chat-request-dot"></div>
+  <div class="ol-chat-request-body">
+    <strong>alguém quer conversar</strong>
+    <div class="ol-chat-request-detail">desconhecido de <span id="ol-chat-request-where">algum lugar</span></div>
+  </div>
+  <div class="ol-chat-request-actions">
+    <button type="button" class="ol-chat-decline" id="ol-chat-decline">ignorar</button>
+    <button type="button" class="ol-chat-accept" id="ol-chat-accept">dizer olá</button>
+  </div>
+</div>
+
+<header class="site-header ol-header-immersive" role="banner">
+  <div class="container">
+    <a href="/pt/" class="site-logo" aria-label="Início One Link">
+      <span class="logo-mark" aria-hidden="true"></span>
+      <span>One Link</span>
+    </a>
+    <input type="checkbox" id="nav-toggle" class="nav-toggle-input" aria-hidden="true">
+    <label for="nav-toggle" class="nav-toggle" aria-label="Abrir navegação" role="button" tabindex="0">&#9776;</label>
+    <nav class="site-nav" id="primary-nav" aria-label="Principal">
+      <a href="/how-it-works/" hreflang="en">Como funciona</a>
+      <a href="/features/" hreflang="en">Recursos</a>
+      <a href="/security/" hreflang="en">Segurança</a>
+      <a href="/share/" hreflang="en">Compartilhar</a>
+      <a href="/download/" hreflang="en" class="cta-get">Obter One Link</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="ol-immersive-hero" id="ol-hero">
+    <div class="ol-immersive-hero-inner">
+      <p class="ol-immersive-eyebrow">
+        <span class="ol-eyebrow-dot"></span>
+        <span>somos um</span>
+      </p>
+
+      <h1 class="ol-immersive-title" aria-label="Envie qualquer coisa. Para qualquer pessoa. Apenas você e eles podem ler.">
+        <span class="ol-line"><span class="ol-w ol-d-04">Envie</span> <span class="ol-w ol-d-16">qualquer coisa.</span></span>
+        <span class="ol-line"><span class="ol-w ol-d-36">Para</span> <span class="ol-w ol-d-46">qualquer pessoa.</span></span>
+        <span class="ol-line ol-line-grad">
+          <span class="ol-w ol-d-70">Apenas</span>
+          <span class="ol-w ol-d-78">você</span>
+          <span class="ol-w ol-d-86">e</span>
+          <span class="ol-w ol-d-94">eles</span>
+          <span class="ol-w ol-d-102">podem</span>
+          <span class="ol-w ol-d-110">ler.</span>
+        </span>
+      </h1>
+
+      <p class="ol-immersive-lede">
+        Uma rede livre e privada para suas mensagens, arquivos e dispositivos.
+        Sem contas. Sem servidores no meio. Sem limites. Pronto no momento em que você abrir.
+      </p>
+
+      <div class="ol-immersive-cta">
+        <a href="/download/" hreflang="en" id="ol-hero-cta" class="btn btn-primary btn-large ol-cta-primary" download>
+          Obter One Link
+          <span class="arr" aria-hidden="true">&rarr;</span>
+        </a>
+        <a href="/how-it-works/" hreflang="en" class="btn btn-ghost btn-large">Veja como funciona</a>
+      </div>
+      <p id="ol-hero-cta-hint" class="ol-hero-cta-hint" aria-live="polite"></p>
+
+      <div class="ol-immersive-status">
+        <span class="ol-status" id="ol-mesh-here" title="Contagem ao vivo de visitantes neste site agora (anônimo, efêmero, do Durable Object MeshPresence).">
+          <span class="dot"></span>
+          <span class="number" id="ol-node-count">1</span>
+          <span>aqui agora</span>
+        </span>
+        <span class="ol-status" id="ol-site-integrity" title="O Service Worker verifica cada recurso contra o manifesto assinado antes de servi-lo.">
+          <span class="dot ol-swatch-cyan"></span>
+          <span>site verificado</span>
+          <span class="number" id="ol-sw-status">verificando</span>
+        </span>
+        <span class="ol-status" id="ol-pq-status" title="X25519 hoje, com o slot híbrido ML-KEM-768 reservado no formato do fio. Handshake híbrido completo ativa em v0.22. Calculado em sua aba.">
+          <span class="dot ol-swatch-amber"></span>
+          <span>sessão pq</span>
+          <span class="number" id="ol-pq-status-text">derivando</span>
+        </span>
+      </div>
+    </div>
+
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Três promessas</span>
+      <h2>Três promessas, mantidas pela arquitetura.</h2>
+      <p class="lede">
+        Construído para que você nunca precise ler uma política de privacidade. A arquitetura é a promessa.
+      </p>
+      <div class="ol-grid ol-grid-3">
+        <article class="ol-tile">
+          <span class="ol-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v6"/><path d="M12 22v-6"/><path d="M2 12h6"/><path d="M22 12h-6"/><circle cx="12" cy="12" r="3"/></svg>
+          </span>
+          <h3>Sem contas. Nunca.</h3>
+          <p>Sem e-mail. Sem número de telefone. Sem cadastro. Abra o aplicativo e ele funciona. Seu dispositivo é sua identidade. Nada sobre você sai das suas mãos.</p>
+        </article>
+        <article class="ol-tile">
+          <span class="ol-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </span>
+          <h3>Sem servidores no meio.</h3>
+          <p>Mensagens e arquivos vão direto de um dispositivo para o outro. Nada é armazenado em lugar algum. Se desaparecêssemos amanhã, seu One Link continuaria funcionando.</p>
+        </article>
+        <article class="ol-tile">
+          <span class="ol-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2H3v18h18V2z"/><path d="M3 7h18"/><path d="M9 2v5"/></svg>
+          </span>
+          <h3>Gratuito. Para sempre.</h3>
+          <p>Sem níveis. Sem assinatura. Sem plano empresarial. Sem premium. O código-fonte é aberto. Você pode ler cada linha. Você pode rodar o seu.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Experimente agora mesmo</span>
+      <h2>Conecte seu telefone em <span class="grad">cinco segundos.</span></h2>
+      <p class="lede">
+        Escaneie este código com o One Link no seu telefone. Leia as cinco palavras em voz alta. Você está conectado. Ainda sem download, sem cadastro, sem permissões. Apenas um aperto de mão real, bem aqui.
+      </p>
+
+      <div class="ol-pair-card">
+        <div class="ol-qr" id="ol-pair-qr" aria-label="Código QR de emparelhamento">
+          <span class="corner tl" aria-hidden="true"></span>
+          <span class="corner tr" aria-hidden="true"></span>
+          <span class="corner bl" aria-hidden="true"></span>
+        </div>
+        <div>
+          <h3>Verifique se estas cinco palavras correspondem ao que o seu telefone mostra.</h3>
+          <div class="ol-sas" id="ol-pair-sas" aria-label="Verificação de cinco palavras">
+            <span class="word">orbit</span>
+            <span class="word">amber</span>
+            <span class="word">river</span>
+            <span class="word">candle</span>
+            <span class="word">harbor</span>
+          </div>
+          <p>As cinco palavras permanecem em inglês porque a lista é a que o daemon envia. Traduzir a lista quebraria a correspondência entre as duas pontas. Esse é todo o fluxo de emparelhamento. Sem senha. Sem frase de recuperação. As cinco palavras significam que a matemática concordou nas duas pontas. Se alguém tentasse se colocar no meio, as palavras não corresponderiam.</p>
+          <p>
+            <a href="#" class="ol-tab-pair-link" id="ol-tab-pair-link">
+              ou emparelhe com outra aba do navegador agora mesmo &rarr;
+            </a>
+          </p>
+          <div class="ol-tab-pair-result" id="ol-tab-pair-result" hidden></div>
+          <details class="ol-proof">
+            <summary>O que acabou de acontecer, por baixo</summary>
+            <div class="ol-proof-body">
+              <dl>
+                <dt>handshake</dt><dd>X25519 hoje (slot híbrido ML-KEM-768 reservado no formato do fio; híbrido completo chega em v0.22)</dd>
+                <dt>verificação</dt><dd>SAS de 5 palavras derivado do segredo compartilhado</dd>
+                <dt>identidade</dt><dd>assinatura híbrida Ed25519 + ML-DSA-65</dd>
+                <dt>testemunha de campo</dt><dd>testemunha do ambiente misturada para vincular ao contexto físico</dd>
+                <dt>crate</dt><dd>ol_pair_qr (compilado para WASM para o handshake no navegador)</dd>
+              </dl>
+            </div>
+          </details>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Para onde isso vai</span>
+      <h2>
+        Conexão que <span class="grad">pertence a você.</span>
+      </h2>
+      <p class="lede">
+        Cada mensagem, cada arquivo, cada conversa, suas. Guardadas por você, enviadas por você, abertas pelas pessoas que você escolher. One Link é a rede como sempre deveria ser: livre, direta, e construída para nos aproximar.
+      </p>
+      <div class="cta-row">
+        <a href="/download/" hreflang="en" class="btn btn-primary btn-large">
+          Entrar na rede
+          <span class="arr" aria-hidden="true">&rarr;</span>
+        </a>
+        <a href="/about/" hreflang="en" class="btn btn-ghost">Ler o pacto</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer" role="contentinfo">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a href="/pt/" class="site-logo" aria-label="Início One Link">
+          <span class="logo-mark" aria-hidden="true"></span>
+          <span>One Link</span>
+        </a>
+        <p class="footer-tag">
+          Uma rede livre e privada para mensagens, arquivos e dispositivos. De ninguém. De todos.
+        </p>
+        <p class="ol-mt-md ol-soft-text ol-mono">
+          <strong>Ler em:</strong>
+          <a class="ol-cyan-text" hreflang="en" href="/">English</a> &middot;
+          <a class="ol-cyan-text" hreflang="es" href="/es/">Español</a> &middot;
+          <a class="ol-cyan-text" hreflang="fr" href="/fr/">Français</a> &middot;
+          <a class="ol-cyan-text" hreflang="pt" href="/pt/">Português</a> &middot;
+          <a class="ol-cyan-text" hreflang="de" href="/de/">Deutsch</a> &middot;
+          <a class="ol-cyan-text" hreflang="it" href="/it/">Italiano</a>
+        </p>
+        <p class="ol-soft-text">As páginas internas (Como funciona, Recursos, Segurança, Compartilhar, Obter) permanecem em inglês por enquanto. As traduções chegam em ondas conforme falantes nativos as revisam.</p>
+      </div>
+      <div>
+        <h3>Rede</h3>
+        <ul>
+          <li><a href="/how-it-works/" hreflang="en">Como funciona</a></li>
+          <li><a href="/features/" hreflang="en">Recursos</a></li>
+          <li><a href="/mesh/" hreflang="en">Malha ao vivo</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Para você</h3>
+        <ul>
+          <li><a href="/download/" hreflang="en">Obter One Link</a></li>
+          <li><a href="/security/" hreflang="en">Segurança</a></li>
+          <li><a href="/accessibility/" hreflang="en">Acessibilidade</a></li>
+          <li><a href="/transparency/" hreflang="en">Transparência</a></li>
+          <li><a href="/audits/" hreflang="en">Auditorias</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Para construtores</h3>
+        <ul>
+          <li><a href="/builders/" hreflang="en">Protocolo e código</a></li>
+          <li><a href="/changelog/" hreflang="en">Registro de mudanças</a></li>
+          <li><a href="/releases/" hreflang="en">Versões</a></li>
+          <li><a href="/mirror/" hreflang="en">Espelhar este site</a></li>
+          <li><a href="/download/source" hreflang="en" rel="noopener">Arquivo de código</a></li>
+          <li><a href="https://github.com/IamOneYouAreOneWeAreOne/one-link" rel="noopener external">GitHub</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="built-by">
+        &copy; 2026 contribuidores do One Link. <a href="/terms/" hreflang="en">AGPL-3.0</a>. <a href="/security/" hreflang="en">Sem rastreamento.</a> <a href="mailto:weareone@oneunity.earth">weareone@oneunity.earth</a>
+      </span>
+      <span class="built-by">somos um</span>
+    </div>
+  </div>
+</footer>
+
+<button class="ol-audio-toggle" id="ol-audio-toggle" type="button" aria-label="Alternar som ambiente" aria-pressed="false">
+  <span class="ol-audio-icon">&#x1F507;</span>
+  <span class="ol-audio-label">som</span>
+</button>
+
+<aside class="ol-telemetry" id="ol-telemetry" aria-label="Telemetria do sistema">
+  <h4>
+    <span>telemetria do sistema</span>
+    <button type="button" class="ol-tel-close" id="ol-tel-close" aria-label="Fechar">&times;</button>
+  </h4>
+  <dl id="ol-tel-content">
+    <dt>carregando...</dt><dd>&nbsp;</dd>
+  </dl>
+</aside>
+<span class="ol-telemetry-hint" id="ol-telemetry-hint">pressione <kbd>?</kbd> para telemetria do sistema</span>
+
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r80"></script>
+</body>
+</html>
