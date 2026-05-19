@@ -1,8 +1,8 @@
 {
-  "version": "0.21.0-alpha.0+r70",
+  "version": "0.21.0-alpha.0+r71",
   "issued_at": "2026-05-17T00:00:00Z",
   "signed_by": "ed25519-pub-79c4c8da1ed485541a03057a588bfd88cd6530b407d524866842ec004498464c",
-  "signature": "ed25519-33a3c009d041d0e5f3a14b5d27c1ab9905bbf49ff6ed8ce1875134d2020d7076744f86012e5c1e7020dd1ff02eb46801719c0dfa3a3b4db05edd53a65d666305",
+  "signature": "ed25519-3e56c4c927dfb2ba7e556ba9a8434db23f363fd0113f5043457f27d50f8a637cd0947aaf7447e56ff19c78d5c0618aa245f8b563b8b7851d4c60fa11da570809",
   "note": "Real SHA-256 of every live asset. Real ed25519 signature wires in once the offline signer is provisioned. The Service Worker verifies these hashes byte-by-byte before serving any cached asset.",
   "assets": {
     "/css/one-link.css": "sha256-5c480b0a8345a12832aebe24027c3092b69978e9ad8504fc59779e6e4ffb89cd",
@@ -32,12 +32,12 @@
     "/images/logo-512.png": "sha256-3308fbd87251492895ec509586fddd5d330617f491d925c241d3078004de2fe8",
     "/images/apple-touch-icon.png": "sha256-661b99db462d13319db4734d0d8e8d817de109c63d98be6faa19a9165e89ac12",
     "/app.webmanifest": "sha256-5b0405c03006a6e171cf0c90d6be20a501064331e77a0b5068d5c4b5d21f068a",
-    "/sw.js": "sha256-b7b9c01f1aa5b7747ec708d425a4664e29d35e824ed181098b17510a74fe127f",
-    "/index.html": "sha256-4859363abbfb05c9d28711024c6397637677036f307bcd81fd5baf534daf7dfd",
-    "/accessibility/index.html": "sha256-f241721d074cd19c3238903220b38e756e66ab2b58c13558c8f2b8d650a0f6b7",
-    "/transparency/index.html": "sha256-338961dafb0b5b6ff31493a9be03178408b7261ebb3b9cd810f8613645c3e030",
-    "/changelog/index.html": "sha256-b4d6df9052cd77732732558bdf73118ce51070bbad70bb6296a5891c1301f36c"
+    "/sw.js": "sha256-c99f2ba58297d53dfac1f2db717045412d743ef73796968278014ab0335724e7",
+    "/index.html": "sha256-9714e3014396b7d672463b85713344ce3c267bf96e5caddee6ae9dca9526ab18",
+    "/accessibility/index.html": "sha256-139b8f4193db48b9659fb7aa4c25c45b019027d6fe1f9cc305e1ed58d836a925",
+    "/transparency/index.html": "sha256-6d6ac3d5cd0829295b7cb1a5b082e0fe13fc266805af61f973152de182b1fdaa",
+    "/changelog/index.html": "sha256-2e701d98b1c3387e04e170f0d183d8e5cc7782c195c70203372372a44fb58010"
   },
-  "signed_sha256": "sha256-4ed4d08575b471f18053df27df8976613753c34ff9558a4005d06d9d77bdb17c",
+  "signed_sha256": "sha256-7876a659dc0419e2234a28c90ab9128132f48c065b5cedebbfc098ecca8cb2d9",
   "sig_payload_spec": "json({version, assets}) with sorted asset keys, separators (',',':') -> ed25519 sign(raw 32-byte seed) -> 64-byte sig"
 }
