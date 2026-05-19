@@ -65,34 +65,30 @@ jobs:
             exit 1
           fi
 
-      - name: No personal identifiers in public code
+      - name: Author identity check (positive: only "I am One" may commit)
         run: |
-          # The repo is org-owned; personal names should not appear anywhere.
-          # Specifically rule out 'contributor' and the prior 'One Link contributor' typo.
-          if grep -RnE '\b(contributor|One Link contributor)\b' \
-               --include='*.html' \
-               --include='*.js' \
-               --include='*.css' \
-               --include='*.py' \
-               --include='*.rs' \
-               --include='*.toml' \
-               --include='*.cl' \
-               --include='*.md' \
-               . ; then
-            echo "::error::personal identifier detected in public code"
+          # The org repo expects every commit author + committer to be the
+          # collective pseudonym. Any other identity fails the build. This
+          # protects against accidentally pushing under a non-pseudonym
+          # config without naming the forbidden strings in this file.
+          if git log --all --format='%an <%ae>%n%cn <%ce>' \
+               | sort -u \
+               | grep -vE '^I am One <weareone@oneunity\.earth>$'; then
+            echo "::error::non-pseudonym author/committer detected"
             exit 1
           fi
 
-      - name: No local-developer paths in deployed surface
+      - name: No absolute Windows or macOS user-home paths in deployed surface
         run: |
-          # $HOME-style absolute paths should never reach a public file.
-          if grep -RnE 'C:\\\\Users\\\\Alex|$HOME' \
+          # Local-developer paths leak the username via the path segment itself.
+          # The regex is generic: any C:\Users\<name> or /Users/<name>.
+          if grep -RnE '(C:\\\\Users\\\\[A-Za-z0-9_-]+|/Users/[a-z][a-z0-9_-]*)' \
                dist/weareone-link.org/ \
                pipeline/ \
                scripts/ \
                src/ \
                *.md \
-               2>/dev/null ; then
+               2>/dev/null; then
             echo "::error::local developer path detected in shipped surface"
             exit 1
           fi
