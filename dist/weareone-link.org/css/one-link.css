@@ -383,10 +383,13 @@ main { position: relative; z-index: 1; }
    pins it flush-left; this restores the symmetric auto side-margins).
    Same story for h2: `.section h2` sets `margin: 0 0 1rem` which beats
    `.ol-mx-auto` on specificity, leaving any narrow (max-width-constrained)
-   heading visually pinned to the left of its centered container. */
+   heading visually pinned to the left of its centered container.
+   `.container.ol-text-center h2` is (0,2,1) so it beats both `.section h2`
+   (0,1,1) and any later same-specificity rule. */
 .ol-text-center .lede,
 .ol-text-center p.lede,
-.ol-text-center h2 {
+.container.ol-text-center h2,
+.ol-text-center h2.ol-mx-auto {
   margin-left: auto;
   margin-right: auto;
 }
