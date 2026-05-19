@@ -1,0 +1,32 @@
+{
+  "_comment": "Language registry for weareone-link.org. Each entry has the BCP-47 language tag, the language's name in its own script (so the switcher reads naturally to a speaker of that language), the writing direction, and the relative URL prefix. Adding a new language is a single object addition here PLUS the translated HTML files under /<code>/. The hreflang generator + language switcher + worker router all key off this file.",
+  "canonical": "en",
+  "languages": [
+    { "code": "en",    "name": "English",     "dir": "ltr", "prefix": "/",       "available": ["/"] },
+    { "code": "es",    "name": "Español",     "dir": "ltr", "prefix": "/es/",    "available": ["/"] },
+    { "code": "zh-Hans", "name": "中文",       "dir": "ltr", "prefix": "/zh/",    "available": ["/"] },
+    { "code": "hi",    "name": "हिन्दी",        "dir": "ltr", "prefix": "/hi/",    "available": ["/"] },
+    { "code": "ar",    "name": "العربية",      "dir": "rtl", "prefix": "/ar/",    "available": ["/"] },
+    { "code": "fr",    "name": "Français",    "dir": "ltr", "prefix": "/fr/",    "available": ["/"] },
+    { "code": "pt",    "name": "Português",   "dir": "ltr", "prefix": "/pt/",    "available": ["/"] },
+    { "code": "ru",    "name": "Русский",     "dir": "ltr", "prefix": "/ru/",    "available": ["/"] },
+    { "code": "de",    "name": "Deutsch",     "dir": "ltr", "prefix": "/de/",    "available": ["/"] },
+    { "code": "ja",    "name": "日本語",       "dir": "ltr", "prefix": "/ja/",    "available": ["/"] },
+    { "code": "ko",    "name": "한국어",        "dir": "ltr", "prefix": "/ko/",    "available": ["/"] },
+    { "code": "bn",    "name": "বাংলা",        "dir": "ltr", "prefix": "/bn/",    "available": ["/"] },
+    { "code": "ur",    "name": "اردو",         "dir": "rtl", "prefix": "/ur/",    "available": ["/"] },
+    { "code": "id",    "name": "Bahasa Indonesia", "dir": "ltr", "prefix": "/id/", "available": ["/"] },
+    { "code": "vi",    "name": "Tiếng Việt",  "dir": "ltr", "prefix": "/vi/",    "available": ["/"] },
+    { "code": "tr",    "name": "Türkçe",      "dir": "ltr", "prefix": "/tr/",    "available": ["/"] },
+    { "code": "fa",    "name": "فارسی",        "dir": "rtl", "prefix": "/fa/",    "available": ["/"] },
+    { "code": "it",    "name": "Italiano",    "dir": "ltr", "prefix": "/it/",    "available": ["/"] },
+    { "code": "pl",    "name": "Polski",      "dir": "ltr", "prefix": "/pl/",    "available": ["/"] },
+    { "code": "uk",    "name": "Українська",  "dir": "ltr", "prefix": "/uk/",    "available": ["/"] },
+    { "code": "sw",    "name": "Kiswahili",   "dir": "ltr", "prefix": "/sw/",    "available": ["/"] },
+    { "code": "he",    "name": "עברית",        "dir": "rtl", "prefix": "/he/",    "available": ["/"] },
+    { "code": "th",    "name": "ไทย",          "dir": "ltr", "prefix": "/th/",    "available": ["/"] },
+    { "code": "tl",    "name": "Tagalog",     "dir": "ltr", "prefix": "/tl/",    "available": ["/"] },
+    { "code": "nl",    "name": "Nederlands",  "dir": "ltr", "prefix": "/nl/",    "available": ["/"] }
+  ],
+  "note_about_translations": "Each non-English version of a page is produced as a hand-authored or carefully-reviewed translation. Technical terms (Ed25519, X25519, ML-KEM-768, Sphinx, Helmholtz, AGPL-3.0, BLAKE3, etc.) are preserved unchanged because they are proper nouns of the protocol. URLs, GitHub paths, and email addresses are preserved unchanged. The five-word SAS demo retains its English wordlist (the wordlist is what the daemon ships; translation would break the pairing-words match)."
+}

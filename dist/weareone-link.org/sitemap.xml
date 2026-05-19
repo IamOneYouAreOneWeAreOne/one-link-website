@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url><loc>https://weareone-link.org/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
   <url><loc>https://weareone-link.org/download/</loc><changefreq>weekly</changefreq><priority>0.95</priority></url>
   <url><loc>https://weareone-link.org/how-it-works/</loc><changefreq>monthly</changefreq><priority>0.85</priority></url>
@@ -17,4 +18,12 @@
   <url><loc>https://weareone-link.org/releases/</loc><changefreq>weekly</changefreq><priority>0.60</priority></url>
   <url><loc>https://weareone-link.org/audits/</loc><changefreq>monthly</changefreq><priority>0.65</priority></url>
   <url><loc>https://weareone-link.org/mirror/</loc><changefreq>monthly</changefreq><priority>0.60</priority></url>
+  <url>
+    <loc>https://weareone-link.org/es/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://weareone-link.org/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://weareone-link.org/es/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://weareone-link.org/"/>
+  </url>
 </urlset>
