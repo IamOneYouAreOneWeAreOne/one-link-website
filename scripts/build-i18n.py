@@ -61,6 +61,7 @@ TRACKED_PAGES = [
     "changelog/index.html",
     "privacy/index.html",
     "terms/index.html",
+    "404.html",
 ]
 
 
@@ -76,6 +77,9 @@ def english_url(rel: str) -> str:
         return "/"
     if rel.endswith("/index.html"):
         return "/" + rel[: -len("index.html")]
+    # Flat .html (e.g. 404.html) serves without the extension via the Worker.
+    if rel.endswith(".html"):
+        return "/" + rel[: -len(".html")]
     return "/" + rel
 
 
@@ -132,13 +136,13 @@ def build_switcher_links(available: list[dict], rel: str) -> str:
 
 
 HREFLANG_RE = re.compile(
-    rb'(  <link rel="alternate" hreflang="[^"]+" href="[^"]+">\n)+'
+    rb'(  <link rel="alternate" hreflang="[^"]+" href="[^"]+">\r?\n)+'
     rb'  <link rel="alternate" hreflang="x-default" href="https://weareone-link\.org[^"]*">'
 )
 
 # For new pages with no existing hreflang block: insert after the canonical link.
 CANONICAL_RE = re.compile(
-    rb'(  <link rel="canonical" href="[^"]+">\n)'
+    rb'(  <link rel="canonical" href="[^"]+">\r?\n)'
 )
 
 SWITCHER_RE = re.compile(

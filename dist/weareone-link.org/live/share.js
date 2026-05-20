@@ -154,7 +154,7 @@ async function initSender() {
       // Render the success state.
       status.innerHTML = `
         <div class="ol-share-success">
-          <p style="margin: 0 0 0.8rem;"><strong>Share this link with one person.</strong></p>
+          <p class="ol-share-success-headline"><strong>Share this link with one person.</strong></p>
           <div class="ol-share-url-row">
             <input type="text" id="ol-share-url" class="ol-share-url" readonly value="${escapeHtml(shareUrl)}">
             <button type="button" class="btn btn-primary" id="ol-share-copy">Copy</button>

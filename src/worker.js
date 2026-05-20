@@ -119,11 +119,20 @@ const PRIVACY_HEADERS = {
 // ask for it. Override with an empty NEL policy so the browser disables
 // reporting for this origin entirely.
 // Content directories that serve an index.html. Used to issue 301 on the
-// no-trailing-slash form (the assets binding would otherwise 307).
+// no-trailing-slash form (the assets binding would otherwise 307). Also
+// matched under each language prefix (e.g. /es/about, /fr/security).
+const CONTENT_SLUGS = [
+  "about", "audits", "builders", "download", "features", "how-it-works",
+  "mesh", "mirror", "one", "privacy", "security", "share", "terms",
+  "accessibility", "transparency", "changelog", "releases",
+];
+const LANG_PREFIXES = ["es", "fr", "de", "pt", "it"];
 const CONTENT_DIRS = new Set([
-  "/about", "/audits", "/builders", "/download", "/features", "/how-it-works",
-  "/mesh", "/mirror", "/one", "/privacy", "/security", "/share", "/terms",
-  "/accessibility", "/transparency", "/changelog", "/releases",
+  ...CONTENT_SLUGS.map(s => "/" + s),
+  ...CONTENT_SLUGS.flatMap(s =>
+    LANG_PREFIXES.map(l => `/${l}/${s}`)
+  ),
+  ...LANG_PREFIXES.map(l => `/${l}`),
 ]);
 
 // Tor Onion-Location header.
@@ -633,7 +642,7 @@ function downloadComingSoonPage(os) {
   </div>
 </header>
 <main id="main">
-  <section class="hero" style="padding-bottom: 1rem;">
+  <section class="hero ol-pb-sm">
     <div class="container">
       <span class="we-are-one">${b.label}</span>
       <h1>${b.headline}</h1>
@@ -647,17 +656,17 @@ function downloadComingSoonPage(os) {
         </a>
         <a href="/download/" class="btn btn-ghost">Other platforms</a>
       </div>
-      <p style="color: var(--ol-text-soft); max-width: 56ch; margin-top: 1rem; font-size: 0.92rem;">
+      <p class="ol-soft-prose">
         The source archive (19 MB) works on every device including this one.
         Every protocol, every crate, every shader, every word of the daemon.
         AGPL-3.0.
       </p>
-      ${b.note ? `<p style="color: var(--ol-text-soft); max-width: 56ch; margin-top: 1.5rem;">${b.note}</p>` : ""}
+      ${b.note ? `<p class="ol-soft-note">${b.note}</p>` : ""}
     </div>
   </section>
   <section class="section-tight">
     <div class="container">
-      <p style="color: var(--ol-text-dim); font-family: var(--ol-mono); font-size: 0.85rem;">
+      <p class="ol-dim-mono">
         Honest status: no signed binary has been published to the release relay yet.
         This page is what you see when the front door is still being painted.
         The protocol works today. The polish is on the way.
@@ -787,7 +796,34 @@ export default {
     }
 
     // Everything else: static assets
-    const assetResponse = await env.ASSETS.fetch(request);
+    let assetResponse = await env.ASSETS.fetch(request);
+
+    // Language-aware 404: when a request under /es/, /fr/, etc. misses,
+    // serve that language's /<lang>/404.html instead of the English root
+    // /404.html the assets binding falls back to. The HTML page text
+    // matches the visitor's language; the response is still HTTP 404.
+    if (assetResponse.status === 404) {
+      const ct = (assetResponse.headers.get("Content-Type") || "").toLowerCase();
+      if (ct.includes("text/html")) {
+        const langMatch = path.match(/^\/(es|fr|de|pt|it)(?:\/|$)/);
+        if (langMatch) {
+          const lang = langMatch[1];
+          const localizedUrl = new URL(request.url);
+          localizedUrl.pathname = `/${lang}/404.html`;
+          const localized = await env.ASSETS.fetch(
+            new Request(localizedUrl.toString(), request)
+          );
+          if (localized.ok) {
+            assetResponse = new Response(localized.body, {
+              status: 404,
+              statusText: "Not Found",
+              headers: localized.headers,
+            });
+          }
+        }
+      }
+    }
+
     const finalized = applyHeaders(assetResponse, request, env);
     // Long-cache the asset paths the HTML cache-busts via `?v=N`. Any change
     // to the file bumps the version query, forcing a fresh URL; until then

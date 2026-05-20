@@ -1451,6 +1451,23 @@ main { position: relative; z-index: 1; }
 .ol-mt-0  { margin-top: 0; }
 .ol-pb-sm { padding-bottom: 1rem; }
 .ol-pb    { padding-bottom: 2rem; }
+.ol-soft-prose {
+  color: var(--ol-text-soft);
+  max-width: 56ch;
+  margin-top: 1rem;
+  font-size: 0.92rem;
+}
+.ol-soft-note {
+  color: var(--ol-text-soft);
+  max-width: 56ch;
+  margin-top: 1.5rem;
+}
+.ol-dim-mono {
+  color: var(--ol-text-dim);
+  font-family: var(--ol-mono);
+  font-size: 0.85rem;
+}
+.ol-share-success-headline { margin: 0 0 0.8rem; }
 .ol-ml-xs { margin-left: 0.7rem; }
 .ol-mx-auto { margin-left: auto; margin-right: auto; }
 
