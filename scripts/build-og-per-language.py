@@ -20,7 +20,8 @@ is available — generating only the SVG ships a card that Facebook + LinkedIn
 will refuse to scrape, which is worse than the current English fallback.
 
 Runtime dependency: ONE of
-  - `pip install cairosvg`     (preferred, pure-Python)
+  - `pip install resvg-py`     (preferred; Rust resvg, no native cairo dep)
+  - `pip install cairosvg`     (needs system libcairo)
   - `inkscape` on PATH         (Linux/macOS package, Windows installer)
 
 Usage:  python scripts/build-og-per-language.py
@@ -80,6 +81,21 @@ SOURCE_LINE3 = "Only you can read it."
 
 def rasterize(svg_path: Path, png_path: Path) -> bool:
     """Best-effort SVG -> PNG conversion. Returns True if a renderer ran."""
+    # 1. resvg-py: pure-Rust renderer wheel, no native cairo needed.
+    try:
+        import resvg_py  # type: ignore
+        svg = svg_path.read_text(encoding="utf-8")
+        png_bytes = resvg_py.svg_to_bytes(
+            svg_string=svg, width=1200, height=630
+        )
+        png_path.write_bytes(bytes(png_bytes))
+        return True
+    except ImportError:
+        pass
+    except Exception as e:
+        print(f"   resvg-py failed on {svg_path.name}: {e}")
+
+    # 2. cairosvg: pure-Python with a libcairo shared-lib dep.
     try:
         import cairosvg  # type: ignore
         cairosvg.svg2png(
@@ -89,9 +105,10 @@ def rasterize(svg_path: Path, png_path: Path) -> bool:
             output_height=630,
         )
         return True
-    except ImportError:
+    except (ImportError, OSError):
         pass
 
+    # 3. Inkscape CLI fallback.
     if shutil.which("inkscape"):
         subprocess.run(
             ["inkscape", str(svg_path),

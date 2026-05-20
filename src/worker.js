@@ -544,83 +544,152 @@ async function download(env, os, request) {
     );
   }
 
-  return downloadComingSoonPage(os);
+  return downloadComingSoonPage(os, detectLanguage(request));
 }
 
 // -----------------------------------------------------------------------------
-// "Not yet" HTML page (on-brand, OS-specific, honest)
+// Language detection
+//
+// Picks the visitor's preferred language from the Accept-Language header,
+// constrained to languages we ship pages in. Falls back to English when no
+// match — that matches the rest of the site's behavior (English is the
+// canonical, every other language is an opt-in alias).
+//
+// We do NOT cookie this. Each request is detected independently. That keeps
+// the privacy posture intact (no per-visitor server-side state) and is fine
+// because the only headers it reaches are the few worker-rendered fallback
+// pages — the static i18n pages serve via path prefix anyway.
 // -----------------------------------------------------------------------------
-function downloadComingSoonPage(os) {
-  const repo = "https://github.com/IamOneYouAreOneWeAreOne/one-link";
+const SUPPORTED_LANGS = ["en", "es", "fr", "de", "pt", "it"];
+function detectLanguage(request) {
+  if (!request) return "en";
+  const url = new URL(request.url);
+  // Path prefix wins when present (explicit signal beats header).
+  const pathMatch = url.pathname.match(/^\/(es|fr|de|pt|it)(?:\/|$)/);
+  if (pathMatch) return pathMatch[1];
+  // Accept-Language q-value parsing, picking the first supported tag.
+  const raw = (request.headers.get("Accept-Language") || "").toLowerCase();
+  if (!raw) return "en";
+  const tags = raw.split(",").map(s => {
+    const [tag, q] = s.trim().split(";q=");
+    return { tag: (tag || "").split("-")[0], q: parseFloat(q || "1") };
+  }).filter(t => t.tag).sort((a, b) => b.q - a.q);
+  for (const t of tags) {
+    if (SUPPORTED_LANGS.includes(t.tag)) return t.tag;
+  }
+  return "en";
+}
 
-  // Per-OS honesty. We do NOT claim a binary will be ready by date X.
-  const blocks = {
+// -----------------------------------------------------------------------------
+// "Not yet" HTML page (on-brand, OS-specific, honest, in the visitor's
+// language). The chrome + per-OS body strings are dispatched by detected
+// language; English is the canonical and the fallback.
+// -----------------------------------------------------------------------------
+const COMING_SOON_BLOCKS = {
+  en: {
     ios: {
       label: "iOS",
       headline: "iOS is coming via TestFlight.",
       lede: "iOS apps can only install through the App Store or TestFlight. We are not on either yet. Watch the repo and we will post the TestFlight link the moment it is open.",
-      cta: { label: "Watch on GitHub", href: repo },
+      cta: { kind: "watch" },
       note: "If you want a direct ping the moment TestFlight opens, drop a comment on issue #1 in the repo. No email or signup needed.",
     },
-    android: {
-      label: "Android",
-      headline: "Android build is being packaged.",
-      lede: "We are bundling a signed APK now. Until that lands, the source builds cleanly with the Android NDK. Instructions in the repo.",
-      cta: { label: "Build from source", href: `${repo}#android` },
-      note: null,
-    },
-    macos: {
-      label: "macOS",
-      headline: "macOS signed build is being notarized.",
-      lede: "Apple Developer ID notarization takes a beat. Until the signed .dmg lands, the daemon builds cleanly from source with cargo + Python 3.11+.",
-      cta: { label: "Build from source", href: `${repo}#macos` },
-      note: "macOS will refuse to open an unsigned binary served from a website. We are not going to ask you to bypass Gatekeeper. Either build it yourself or wait for the signed build.",
-    },
-    windows: {
-      label: "Windows",
-      headline: "Windows signed installer is being packaged.",
-      lede: "We are getting the Authenticode signing cert in place so SmartScreen does not yell at you. Until that lands, the daemon builds cleanly from source.",
-      cta: { label: "Build from source", href: `${repo}#windows` },
-      note: null,
-    },
-    linux: {
-      label: "Linux",
-      headline: "Linux build is being packaged.",
-      lede: "AppImage + .deb + .rpm coming. For now the daemon builds cleanly from source on any glibc 2.28+ distro.",
-      cta: { label: "Build from source", href: `${repo}#linux` },
-      note: null,
-    },
-    openbsd: {
-      label: "OpenBSD",
-      headline: "OpenBSD port pending.",
-      lede: "If you are on OpenBSD you can probably build from source faster than we can write a port. Patches welcome.",
-      cta: { label: "Source on GitHub", href: repo },
-      note: null,
-    },
-    freebsd: {
-      label: "FreeBSD",
-      headline: "FreeBSD port pending.",
-      lede: "Same story as OpenBSD. Build from source today.",
-      cta: { label: "Source on GitHub", href: repo },
-      note: null,
-    },
-    source: {
-      label: "Source",
-      headline: "Building from source today.",
-      lede: "AGPL-3.0. Every line of the daemon, every protocol crate, every shader. Clone, read, fork, run your own.",
-      cta: { label: "Clone on GitHub", href: repo },
-      note: "Requires Rust 1.95+, Python 3.11+, and an internet connection long enough to pull the workspace. Build instructions are in the repo README.",
-    },
-  };
+    android: { label: "Android", headline: "Android build is being packaged.", lede: "We are bundling a signed APK now. Until that lands, the source builds cleanly with the Android NDK. Instructions in the repo.", cta: { kind: "build", anchor: "#android" }, note: null },
+    macos:   { label: "macOS",   headline: "macOS signed build is being notarized.", lede: "Apple Developer ID notarization takes a beat. Until the signed .dmg lands, the daemon builds cleanly from source with cargo + Python 3.11+.", cta: { kind: "build", anchor: "#macos" }, note: "macOS will refuse to open an unsigned binary served from a website. We are not going to ask you to bypass Gatekeeper. Either build it yourself or wait for the signed build." },
+    windows: { label: "Windows", headline: "Windows signed installer is being packaged.", lede: "We are getting the Authenticode signing cert in place so SmartScreen does not yell at you. Until that lands, the daemon builds cleanly from source.", cta: { kind: "build", anchor: "#windows" }, note: null },
+    linux:   { label: "Linux",   headline: "Linux build is being packaged.", lede: "AppImage + .deb + .rpm coming. For now the daemon builds cleanly from source on any glibc 2.28+ distro.", cta: { kind: "build", anchor: "#linux" }, note: null },
+    openbsd: { label: "OpenBSD", headline: "OpenBSD port pending.", lede: "If you are on OpenBSD you can probably build from source faster than we can write a port. Patches welcome.", cta: { kind: "source" }, note: null },
+    freebsd: { label: "FreeBSD", headline: "FreeBSD port pending.", lede: "Same story as OpenBSD. Build from source today.", cta: { kind: "source" }, note: null },
+    source:  { label: "Source",  headline: "Building from source today.", lede: "AGPL-3.0. Every line of the daemon, every protocol crate, every shader. Clone, read, fork, run your own.", cta: { kind: "clone" }, note: "Requires Rust 1.95+, Python 3.11+, and an internet connection long enough to pull the workspace. Build instructions are in the repo README." },
+  },
+  es: {
+    ios:     { label: "iOS",     headline: "iOS llega vía TestFlight.", lede: "Las apps de iOS solo se instalan por App Store o TestFlight. Aún no estamos en ninguno. Sigue el repo y publicaremos el enlace de TestFlight en cuanto se abra.", cta: { kind: "watch" }, note: "Si quieres un aviso directo en el momento que TestFlight abra, comenta en el issue #1 del repo. No hace falta correo ni registro." },
+    android: { label: "Android", headline: "El build de Android está en preparación.", lede: "Estamos empaquetando un APK firmado ahora. Hasta que llegue, la fuente compila sin problemas con el Android NDK. Instrucciones en el repo.", cta: { kind: "build", anchor: "#android" }, note: null },
+    macos:   { label: "macOS",   headline: "El build firmado de macOS está siendo notarizado.", lede: "La notarización con Apple Developer ID lleva su tiempo. Hasta que llegue el .dmg firmado, el daemon compila sin problemas desde la fuente con cargo + Python 3.11+.", cta: { kind: "build", anchor: "#macos" }, note: "macOS no abre un binario sin firmar servido desde un sitio web. No te vamos a pedir que esquives Gatekeeper. O lo compilas tú o esperas al build firmado." },
+    windows: { label: "Windows", headline: "El instalador firmado de Windows está en preparación.", lede: "Estamos poniendo en marcha el certificado Authenticode para que SmartScreen no te chille. Hasta entonces, el daemon compila sin problemas desde la fuente.", cta: { kind: "build", anchor: "#windows" }, note: null },
+    linux:   { label: "Linux",   headline: "El build de Linux está en preparación.", lede: "AppImage + .deb + .rpm en camino. Por ahora el daemon compila sin problemas desde la fuente en cualquier distro con glibc 2.28+.", cta: { kind: "build", anchor: "#linux" }, note: null },
+    openbsd: { label: "OpenBSD", headline: "Port de OpenBSD pendiente.", lede: "Si estás en OpenBSD probablemente puedas compilar desde la fuente más rápido de lo que tardamos en escribir un port. Se aceptan parches.", cta: { kind: "source" }, note: null },
+    freebsd: { label: "FreeBSD", headline: "Port de FreeBSD pendiente.", lede: "La misma historia que OpenBSD. Compila desde la fuente hoy.", cta: { kind: "source" }, note: null },
+    source:  { label: "Fuente",  headline: "Construyendo desde la fuente hoy.", lede: "AGPL-3.0. Cada línea del daemon, cada crate del protocolo, cada shader. Clónalo, léelo, bifúrcalo, opera el tuyo.", cta: { kind: "clone" }, note: "Requiere Rust 1.95+, Python 3.11+ y una conexión a internet lo bastante larga para descargar el workspace. Las instrucciones de compilación están en el README del repo." },
+  },
+  fr: {
+    ios:     { label: "iOS",     headline: "iOS arrive via TestFlight.", lede: "Les apps iOS ne s'installent qu'à travers l'App Store ou TestFlight. Nous ne sommes encore sur aucun. Suivez le dépôt et nous publierons le lien TestFlight dès qu'il sera ouvert.", cta: { kind: "watch" }, note: "Si vous voulez une alerte directe au moment où TestFlight ouvre, commentez le ticket #1 du dépôt. Pas besoin d'e-mail ni d'inscription." },
+    android: { label: "Android", headline: "Le build Android est en préparation.", lede: "Nous empaquetons un APK signé maintenant. En attendant, la source compile sans problème avec le NDK Android. Instructions dans le dépôt.", cta: { kind: "build", anchor: "#android" }, note: null },
+    macos:   { label: "macOS",   headline: "Le build signé macOS est en cours de notarisation.", lede: "La notarisation Apple Developer ID prend du temps. En attendant le .dmg signé, le daemon compile sans problème depuis la source avec cargo + Python 3.11+.", cta: { kind: "build", anchor: "#macos" }, note: "macOS refuse d'ouvrir un binaire non signé servi depuis un site web. Nous n'allons pas vous demander de contourner Gatekeeper. Soit vous compilez vous-même, soit vous attendez le build signé." },
+    windows: { label: "Windows", headline: "L'installeur signé Windows est en préparation.", lede: "Nous mettons en place le certificat Authenticode pour que SmartScreen ne crie pas. En attendant, le daemon compile sans problème depuis la source.", cta: { kind: "build", anchor: "#windows" }, note: null },
+    linux:   { label: "Linux",   headline: "Le build Linux est en préparation.", lede: "AppImage + .deb + .rpm en route. Pour l'instant le daemon compile sans problème depuis la source sur toute distro glibc 2.28+.", cta: { kind: "build", anchor: "#linux" }, note: null },
+    openbsd: { label: "OpenBSD", headline: "Port OpenBSD en attente.", lede: "Si vous êtes sous OpenBSD vous pouvez probablement compiler depuis la source plus vite que nous n'écrivons un port. Les patchs sont les bienvenus.", cta: { kind: "source" }, note: null },
+    freebsd: { label: "FreeBSD", headline: "Port FreeBSD en attente.", lede: "Même histoire qu'OpenBSD. Compilez depuis la source aujourd'hui.", cta: { kind: "source" }, note: null },
+    source:  { label: "Source",  headline: "Compiler depuis la source aujourd'hui.", lede: "AGPL-3.0. Chaque ligne du daemon, chaque crate du protocole, chaque shader. Clonez, lisez, forkez, exploitez le vôtre.", cta: { kind: "clone" }, note: "Nécessite Rust 1.95+, Python 3.11+, et une connexion internet assez longue pour télécharger le workspace. Les instructions de compilation sont dans le README du dépôt." },
+  },
+  de: {
+    ios:     { label: "iOS",     headline: "iOS kommt via TestFlight.", lede: "iOS-Apps lassen sich nur über den App Store oder TestFlight installieren. Wir sind auf keinem davon. Beobachten Sie das Repo, wir posten den TestFlight-Link in dem Moment, in dem er offen ist.", cta: { kind: "watch" }, note: "Wenn Sie einen direkten Hinweis möchten, sobald TestFlight öffnet, kommentieren Sie Issue #1 im Repo. Keine E-Mail, keine Anmeldung nötig." },
+    android: { label: "Android", headline: "Android-Build wird gerade gepackt.", lede: "Wir bauen jetzt ein signiertes APK. Bis das landet, kompiliert der Quelltext sauber mit dem Android NDK. Anleitung im Repo.", cta: { kind: "build", anchor: "#android" }, note: null },
+    macos:   { label: "macOS",   headline: "Signiertes macOS-Build wird notariell beglaubigt.", lede: "Die Apple Developer ID Notarisierung braucht einen Moment. Bis das signierte .dmg landet, baut der Daemon sauber aus dem Quelltext mit cargo + Python 3.11+.", cta: { kind: "build", anchor: "#macos" }, note: "macOS weigert sich, eine unsignierte Binärdatei von einer Website zu öffnen. Wir werden Sie nicht bitten, Gatekeeper zu umgehen. Bauen Sie es selbst oder warten Sie auf den signierten Build." },
+    windows: { label: "Windows", headline: "Signierter Windows-Installer wird gerade gepackt.", lede: "Wir bringen das Authenticode-Signaturzertifikat in Stellung, damit SmartScreen Sie nicht anschreit. Bis dahin baut der Daemon sauber aus dem Quelltext.", cta: { kind: "build", anchor: "#windows" }, note: null },
+    linux:   { label: "Linux",   headline: "Linux-Build wird gerade gepackt.", lede: "AppImage + .deb + .rpm kommen. Vorerst baut der Daemon sauber aus dem Quelltext auf jeder glibc-2.28+-Distro.", cta: { kind: "build", anchor: "#linux" }, note: null },
+    openbsd: { label: "OpenBSD", headline: "OpenBSD-Port ausstehend.", lede: "Wenn Sie unter OpenBSD sind, können Sie wahrscheinlich schneller aus dem Quelltext bauen, als wir einen Port schreiben können. Patches willkommen.", cta: { kind: "source" }, note: null },
+    freebsd: { label: "FreeBSD", headline: "FreeBSD-Port ausstehend.", lede: "Gleiche Geschichte wie OpenBSD. Bauen Sie heute aus dem Quelltext.", cta: { kind: "source" }, note: null },
+    source:  { label: "Quelltext", headline: "Heute aus dem Quelltext bauen.", lede: "AGPL-3.0. Jede Zeile des Daemons, jede Protokoll-Crate, jeder Shader. Klonen, lesen, forken, eigenen betreiben.", cta: { kind: "clone" }, note: "Benötigt Rust 1.95+, Python 3.11+ und eine Internetverbindung, die lange genug ist, um den Workspace zu ziehen. Build-Anweisungen sind in der README des Repos." },
+  },
+  pt: {
+    ios:     { label: "iOS",     headline: "iOS chega via TestFlight.", lede: "As apps iOS só se instalam pela App Store ou TestFlight. Ainda não estamos em nenhuma. Acompanhe o repo e publicaremos o link de TestFlight no momento em que estiver aberto.", cta: { kind: "watch" }, note: "Se quiser um aviso direto no momento em que o TestFlight abrir, comente o issue #1 no repo. Não é preciso e-mail nem registo." },
+    android: { label: "Android", headline: "O build de Android está a ser empacotado.", lede: "Estamos a empacotar um APK assinado agora. Até isso chegar, o código compila bem com o Android NDK. Instruções no repo.", cta: { kind: "build", anchor: "#android" }, note: null },
+    macos:   { label: "macOS",   headline: "O build assinado de macOS está a ser notarizado.", lede: "A notarização Apple Developer ID demora um pouco. Até chegar o .dmg assinado, o daemon compila bem a partir do código com cargo + Python 3.11+.", cta: { kind: "build", anchor: "#macos" }, note: "O macOS recusa abrir um binário sem assinatura servido a partir de um site. Não lhe vamos pedir para contornar o Gatekeeper. Ou compila você ou espera pelo build assinado." },
+    windows: { label: "Windows", headline: "O instalador assinado de Windows está a ser empacotado.", lede: "Estamos a pôr em marcha o certificado Authenticode para que o SmartScreen não lhe grite. Até lá, o daemon compila bem a partir do código.", cta: { kind: "build", anchor: "#windows" }, note: null },
+    linux:   { label: "Linux",   headline: "O build de Linux está a ser empacotado.", lede: "AppImage + .deb + .rpm a caminho. Por agora o daemon compila bem a partir do código em qualquer distro glibc 2.28+.", cta: { kind: "build", anchor: "#linux" }, note: null },
+    openbsd: { label: "OpenBSD", headline: "Port de OpenBSD pendente.", lede: "Se está em OpenBSD provavelmente consegue compilar a partir do código mais rápido do que nós escrevemos um port. Patches bem-vindos.", cta: { kind: "source" }, note: null },
+    freebsd: { label: "FreeBSD", headline: "Port de FreeBSD pendente.", lede: "Mesma história que OpenBSD. Compile a partir do código hoje.", cta: { kind: "source" }, note: null },
+    source:  { label: "Código",  headline: "A compilar a partir do código hoje.", lede: "AGPL-3.0. Cada linha do daemon, cada crate do protocolo, cada shader. Clone, leia, faça fork, opere o seu.", cta: { kind: "clone" }, note: "Requer Rust 1.95+, Python 3.11+ e uma ligação à internet suficientemente longa para puxar o workspace. As instruções de compilação estão no README do repo." },
+  },
+  it: {
+    ios:     { label: "iOS",     headline: "iOS arriva tramite TestFlight.", lede: "Le app iOS si possono installare solo dall'App Store o da TestFlight. Non siamo ancora su nessuno dei due. Segui il repo e pubblicheremo il link TestFlight nel momento in cui sarà aperto.", cta: { kind: "watch" }, note: "Se vuoi un avviso diretto nel momento in cui TestFlight apre, lascia un commento sull'issue #1 nel repo. Niente email, niente registrazione." },
+    android: { label: "Android", headline: "La build per Android è in preparazione.", lede: "Stiamo impacchettando un APK firmato adesso. Finché non arriva, il sorgente compila pulito con l'Android NDK. Istruzioni nel repo.", cta: { kind: "build", anchor: "#android" }, note: null },
+    macos:   { label: "macOS",   headline: "La build firmata per macOS è in notarizzazione.", lede: "La notarizzazione Apple Developer ID richiede un attimo. Finché non arriva il .dmg firmato, il daemon compila pulito dal sorgente con cargo + Python 3.11+.", cta: { kind: "build", anchor: "#macos" }, note: "macOS rifiuta di aprire un binario non firmato servito da un sito web. Non ti chiederemo di aggirare Gatekeeper. O lo compili tu o aspetti la build firmata." },
+    windows: { label: "Windows", headline: "L'installer firmato per Windows è in preparazione.", lede: "Stiamo mettendo in piedi il certificato Authenticode in modo che SmartScreen non ti urli contro. Fino ad allora, il daemon compila pulito dal sorgente.", cta: { kind: "build", anchor: "#windows" }, note: null },
+    linux:   { label: "Linux",   headline: "La build per Linux è in preparazione.", lede: "AppImage + .deb + .rpm in arrivo. Per ora il daemon compila pulito dal sorgente su qualsiasi distro con glibc 2.28+.", cta: { kind: "build", anchor: "#linux" }, note: null },
+    openbsd: { label: "OpenBSD", headline: "Port OpenBSD in sospeso.", lede: "Se sei su OpenBSD probabilmente puoi compilare dal sorgente più velocemente di quanto noi possiamo scrivere un port. Patch benvenute.", cta: { kind: "source" }, note: null },
+    freebsd: { label: "FreeBSD", headline: "Port FreeBSD in sospeso.", lede: "Stessa storia di OpenBSD. Compila dal sorgente oggi.", cta: { kind: "source" }, note: null },
+    source:  { label: "Sorgente", headline: "Compilare dal sorgente oggi.", lede: "AGPL-3.0. Ogni riga del daemon, ogni crate del protocollo, ogni shader. Clonalo, leggilo, forkalo, esegui il tuo.", cta: { kind: "clone" }, note: "Richiede Rust 1.95+, Python 3.11+ e una connessione internet abbastanza lunga da scaricare il workspace. Le istruzioni di build sono nel README del repo." },
+  },
+};
 
-  const b = blocks[os] || blocks.source;
+const COMING_SOON_CHROME = {
+  en: { skipLink: "Skip to content", logoAria: "One Link",   navAria: "Main",       navHowItWorks: "How it works", navFeatures: "Features",       navSecurity: "Security",   navAll: "All downloads", titleSuffix: "not yet",      ctaPrimary: "Download source today", ctaOthers: "Other platforms", ctaBuild: "Build from source",  ctaWatch: "Watch on GitHub", ctaClone: "Clone on GitHub", ctaSource: "Source on GitHub", archiveLine: "The source archive (19 MB) works on every device including this one. Every protocol, every crate, every shader, every word of the daemon. AGPL-3.0.", honestLine: "Honest status: no signed binary has been published to the release relay yet. This page is what you see when the front door is still being painted. The protocol works today. The polish is on the way.", footerBuilt: "Built in the open. AGPL-3.0.",                  footerNoTracking: "No tracking, no analytics, no cookies.", footerMantra: "we are one" },
+  es: { skipLink: "Saltar al contenido",  logoAria: "One Link", navAria: "Principal", navHowItWorks: "Cómo funciona", navFeatures: "Funciones",     navSecurity: "Seguridad",  navAll: "Todas las descargas", titleSuffix: "aún no", ctaPrimary: "Descargar la fuente hoy", ctaOthers: "Otras plataformas", ctaBuild: "Compilar desde la fuente", ctaWatch: "Seguir en GitHub", ctaClone: "Clonar en GitHub", ctaSource: "Fuente en GitHub", archiveLine: "El archivo de la fuente (19 MB) funciona en cada dispositivo incluido este. Cada protocolo, cada crate, cada shader, cada palabra del daemon. AGPL-3.0.", honestLine: "Estado honesto: aún no se ha publicado ningún binario firmado en el relé de versiones. Esta página es lo que ves cuando la puerta de entrada aún se está pintando. El protocolo funciona hoy. El acabado está en camino.", footerBuilt: "Construido en abierto. AGPL-3.0.", footerNoTracking: "Sin rastreo, sin analíticas, sin cookies.", footerMantra: "somos uno" },
+  fr: { skipLink: "Aller au contenu",     logoAria: "One Link", navAria: "Principale", navHowItWorks: "Comment ça marche", navFeatures: "Fonctionnalités", navSecurity: "Sécurité", navAll: "Tous les téléchargements", titleSuffix: "pas encore", ctaPrimary: "Télécharger la source aujourd'hui", ctaOthers: "Autres plateformes", ctaBuild: "Compiler depuis la source", ctaWatch: "Suivre sur GitHub", ctaClone: "Cloner sur GitHub", ctaSource: "Source sur GitHub", archiveLine: "L'archive source (19 Mo) fonctionne sur chaque appareil y compris celui-ci. Chaque protocole, chaque crate, chaque shader, chaque mot du daemon. AGPL-3.0.", honestLine: "Statut honnête : aucun binaire signé n'a encore été publié sur le relais de versions. Cette page est ce que vous voyez quand la porte d'entrée est encore en train d'être peinte. Le protocole fonctionne aujourd'hui. Le poli est en chemin.", footerBuilt: "Construit à découvert. AGPL-3.0.", footerNoTracking: "Pas de pistage, pas d'analytique, pas de cookies.", footerMantra: "nous sommes un" },
+  de: { skipLink: "Zum Inhalt springen", logoAria: "One Link", navAria: "Haupt",      navHowItWorks: "So funktioniert es", navFeatures: "Funktionen",    navSecurity: "Sicherheit", navAll: "Alle Downloads",         titleSuffix: "noch nicht",  ctaPrimary: "Quelltext heute herunterladen", ctaOthers: "Andere Plattformen", ctaBuild: "Aus dem Quelltext bauen", ctaWatch: "Auf GitHub beobachten", ctaClone: "Auf GitHub klonen", ctaSource: "Quelltext auf GitHub", archiveLine: "Das Quelltext-Archiv (19 MB) funktioniert auf jedem Gerät, auch auf diesem. Jedes Protokoll, jede Crate, jeder Shader, jedes Wort des Daemons. AGPL-3.0.", honestLine: "Ehrlicher Status: noch keine signierte Binärdatei wurde am Release-Relay veröffentlicht. Diese Seite ist das, was Sie sehen, während die Eingangstür noch gestrichen wird. Das Protokoll funktioniert heute. Der Schliff ist auf dem Weg.", footerBuilt: "Offen gebaut. AGPL-3.0.", footerNoTracking: "Kein Tracking, keine Analytik, keine Cookies.", footerMantra: "wir sind eins" },
+  pt: { skipLink: "Saltar para o conteúdo", logoAria: "One Link", navAria: "Principal", navHowItWorks: "Como funciona", navFeatures: "Funcionalidades", navSecurity: "Segurança", navAll: "Todas as descargas",        titleSuffix: "ainda não",   ctaPrimary: "Descarregar o código hoje", ctaOthers: "Outras plataformas", ctaBuild: "Compilar a partir do código", ctaWatch: "Acompanhar no GitHub", ctaClone: "Clonar no GitHub", ctaSource: "Código no GitHub", archiveLine: "O arquivo do código (19 MB) funciona em cada dispositivo incluindo este. Cada protocolo, cada crate, cada shader, cada palavra do daemon. AGPL-3.0.", honestLine: "Estado honesto: ainda não foi publicado nenhum binário assinado no relé de versões. Esta página é o que vê quando a porta da frente ainda está a ser pintada. O protocolo funciona hoje. O polimento está a caminho.", footerBuilt: "Construído em aberto. AGPL-3.0.", footerNoTracking: "Sem rastreamento, sem analítica, sem cookies.", footerMantra: "somos um" },
+  it: { skipLink: "Salta al contenuto",   logoAria: "One Link", navAria: "Principale", navHowItWorks: "Come funziona", navFeatures: "Funzionalità",  navSecurity: "Sicurezza",  navAll: "Tutti i download",       titleSuffix: "non ancora",  ctaPrimary: "Scarica il sorgente oggi", ctaOthers: "Altre piattaforme",  ctaBuild: "Compila dal sorgente",  ctaWatch: "Segui su GitHub", ctaClone: "Clona su GitHub", ctaSource: "Sorgente su GitHub", archiveLine: "L'archivio del sorgente (19 MB) funziona su ogni dispositivo, incluso questo. Ogni protocollo, ogni crate, ogni shader, ogni parola del daemon. AGPL-3.0.", honestLine: "Stato onesto: nessun binario firmato è ancora stato pubblicato sul relay di rilascio. Questa pagina è ciò che vedi quando la porta d'ingresso è ancora in fase di verniciatura. Il protocollo funziona oggi. La rifinitura è in arrivo.", footerBuilt: "Costruito allo scoperto. AGPL-3.0.", footerNoTracking: "Nessun tracciamento, nessuna analitica, nessun cookie.", footerMantra: "siamo uno" },
+};
 
+function downloadComingSoonPage(os, lang = "en") {
+  const repo = "https://github.com/IamOneYouAreOneWeAreOne/one-link";
+  const L = COMING_SOON_BLOCKS[lang] || COMING_SOON_BLOCKS.en;
+  const C = COMING_SOON_CHROME[lang] || COMING_SOON_CHROME.en;
+  const b = L[os] || L.source;
+  // Resolve the CTA from its semantic kind so each language uses the right
+  // wording without translators duplicating button text per OS.
+  const ctaLabel = (
+    b.cta.kind === "build"  ? C.ctaBuild  :
+    b.cta.kind === "watch"  ? C.ctaWatch  :
+    b.cta.kind === "clone"  ? C.ctaClone  :
+    b.cta.kind === "source" ? C.ctaSource : C.ctaSource
+  );
+  const ctaHref = (
+    b.cta.kind === "build" ? `${repo}${b.cta.anchor || ""}` : repo
+  );
+  // The site-logo + nav links target the language root + the canonical
+  // English content paths (matches every other translated page in the site
+  // — translated chrome, English content URLs with hreflang="en").
+  const langRoot = lang === "en" ? "/" : `/${lang}/`;
+  const navLangAttr = lang === "en" ? "" : ' hreflang="en"';
   const html = `<!DOCTYPE html>
-<html lang="en">
+<html lang="${lang}">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>One Link for ${b.label} &mdash; not yet</title>
+  <title>One Link ${b.label} &mdash; ${C.titleSuffix}</title>
   <meta name="description" content="${b.headline}">
   <meta name="theme-color" content="#04060b">
   <meta name="color-scheme" content="dark">
@@ -632,12 +701,12 @@ function downloadComingSoonPage(os) {
 <body>
 <header class="site-header" role="banner">
   <div class="container">
-    <a href="/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
-    <nav class="site-nav" aria-label="Main">
-      <a href="/how-it-works/">How it works</a>
-      <a href="/features/">Features</a>
-      <a href="/security/">Security</a>
-      <a href="/download/" class="cta-get">All downloads</a>
+    <a href="${langRoot}" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
+    <nav class="site-nav" aria-label="${C.navAria}">
+      <a href="/how-it-works/"${navLangAttr}>${C.navHowItWorks}</a>
+      <a href="/features/"${navLangAttr}>${C.navFeatures}</a>
+      <a href="/security/"${navLangAttr}>${C.navSecurity}</a>
+      <a href="/download/" class="cta-get"${navLangAttr}>${C.navAll}</a>
     </nav>
   </div>
 </header>
@@ -649,36 +718,28 @@ function downloadComingSoonPage(os) {
       <p class="lede">${b.lede}</p>
       <div class="cta-row">
         <a href="/download/source" class="btn btn-primary btn-large">
-          Download source today <span class="arr">&rarr;</span>
+          ${C.ctaPrimary} <span class="arr">&rarr;</span>
         </a>
-        <a href="${b.cta.href}" class="btn btn-ghost btn-large" rel="noopener">
-          ${b.cta.label}
+        <a href="${ctaHref}" class="btn btn-ghost btn-large" rel="noopener">
+          ${ctaLabel}
         </a>
-        <a href="/download/" class="btn btn-ghost">Other platforms</a>
+        <a href="/download/" class="btn btn-ghost">${C.ctaOthers}</a>
       </div>
-      <p class="ol-soft-prose">
-        The source archive (19 MB) works on every device including this one.
-        Every protocol, every crate, every shader, every word of the daemon.
-        AGPL-3.0.
-      </p>
+      <p class="ol-soft-prose">${C.archiveLine}</p>
       ${b.note ? `<p class="ol-soft-note">${b.note}</p>` : ""}
     </div>
   </section>
   <section class="section-tight">
     <div class="container">
-      <p class="ol-dim-mono">
-        Honest status: no signed binary has been published to the release relay yet.
-        This page is what you see when the front door is still being painted.
-        The protocol works today. The polish is on the way.
-      </p>
+      <p class="ol-dim-mono">${C.honestLine}</p>
     </div>
   </section>
 </main>
 <footer class="site-footer" role="contentinfo">
   <div class="container">
     <div class="footer-bottom">
-      <span class="built-by">Built in the open. AGPL-3.0. <a href="/security/">No tracking, no analytics, no cookies.</a></span>
-      <span class="built-by">we are one</span>
+      <span class="built-by">${C.footerBuilt} <a href="/security/"${navLangAttr}>${C.footerNoTracking}</a></span>
+      <span class="built-by">${C.footerMantra}</span>
     </div>
   </div>
 </footer>
@@ -687,7 +748,9 @@ function downloadComingSoonPage(os) {
 
   const headers = new Headers();
   headers.set("Content-Type", "text/html; charset=utf-8");
+  headers.set("Content-Language", lang);
   headers.set("Cache-Control", "no-store");
+  headers.set("Vary", "Accept-Language");
   for (const [k, v] of Object.entries(PRIVACY_HEADERS)) headers.set(k, v);
   for (const [k, v] of Object.entries(NEL_OPT_OUT_HEADERS)) headers.set(k, v);
   // 200 (not 503): the page IS the response for this URL today; 5xx makes
