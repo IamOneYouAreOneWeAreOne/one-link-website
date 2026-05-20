@@ -148,6 +148,14 @@ SWITCHER_RE = re.compile(
     re.DOTALL,
 )
 
+# For new pages with the "Read in:" label but no anchor chain yet: inject
+# the chain between </strong> and </p>.
+SWITCHER_EMPTY_RE = re.compile(
+    rb'(<p class="ol-mt-md ol-soft-text ol-mono">\s*<strong>[^<]+</strong>)'
+    rb'(\s*</p>)',
+    re.DOTALL,
+)
+
 
 def sync_page(rel: str, langs: list[dict]) -> int:
     """Update hreflang + switcher on every version of one page.
@@ -176,9 +184,24 @@ def sync_page(rel: str, langs: list[dict]) -> int:
                 raw,
                 count=1,
             )
-        new = SWITCHER_RE.sub(
-            lambda m: m.group(1) + switcher_links + m.group(3), new, count=1
-        )
+        if SWITCHER_RE.search(new):
+            new = SWITCHER_RE.sub(
+                lambda m: m.group(1) + switcher_links + m.group(3),
+                new,
+                count=1,
+            )
+        else:
+            # New page with "Read in:" label but no anchors yet.
+            new = SWITCHER_EMPTY_RE.sub(
+                lambda m: (
+                    m.group(1)
+                    + b"\n          "
+                    + switcher_links
+                    + m.group(2)
+                ),
+                new,
+                count=1,
+            )
         if new != raw:
             path.write_bytes(new)
             edited += 1

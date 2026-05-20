@@ -82,14 +82,33 @@ def main() -> int:
             sw_path.write_text(sw_new, encoding="utf-8")
             print(f":: synced SW_VERSION in {sw_path.relative_to(site_root)} -> {new_version}")
 
+    # Auto-discover every .html under dist/ so newly-translated pages get
+    # signed coverage without manual manifest edits. Non-HTML assets stay
+    # explicitly listed (we don't want to silently sign whatever ends up in
+    # the directory).
+    discovered_html = set()
+    for p in dist.rglob("*.html"):
+        rel = "/" + str(p.relative_to(dist)).replace("\\", "/")
+        discovered_html.add(rel)
+
+    tracked = set(manifest.get("assets", {}).keys()) | discovered_html
+
     updated = {}
     missing = []
-    for asset_path in list(manifest.get("assets", {}).keys()):
+    for asset_path in sorted(tracked):
         local = dist / asset_path.lstrip("/")
         if not local.exists():
             missing.append(asset_path)
             continue
         updated[asset_path] = f"sha256-{sha256_hex(local)}"
+
+    new_html = sorted(discovered_html - set(manifest.get("assets", {}).keys()))
+    if new_html:
+        print(f":: discovered {len(new_html)} new HTML pages, adding to manifest")
+        for p in new_html[:5]:
+            print(f"     + {p}")
+        if len(new_html) > 5:
+            print(f"     ... and {len(new_html) - 5} more")
 
     if missing:
         print(f"!! missing assets, dropping from manifest: {missing}")
