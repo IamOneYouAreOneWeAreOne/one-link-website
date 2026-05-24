@@ -124,7 +124,7 @@ const PRIVACY_HEADERS = {
 const CONTENT_SLUGS = [
   "about", "audits", "builders", "download", "features", "how-it-works",
   "mesh", "mirror", "one", "privacy", "security", "share", "terms",
-  "accessibility", "transparency", "changelog", "releases",
+  "accessibility", "transparency", "changelog", "releases", "roadmap",
 ];
 const LANG_PREFIXES = ["es", "fr", "de", "pt", "it"];
 const CONTENT_DIRS = new Set([

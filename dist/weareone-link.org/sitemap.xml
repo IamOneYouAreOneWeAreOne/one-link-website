@@ -1100,6 +1100,66 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://weareone-link.org/terms/"/>
   </url>
   <url>
+    <loc>https://weareone-link.org/es/roadmap/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://weareone-link.org/roadmap/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://weareone-link.org/es/roadmap/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://weareone-link.org/fr/roadmap/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://weareone-link.org/pt/roadmap/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://weareone-link.org/de/roadmap/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://weareone-link.org/it/roadmap/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://weareone-link.org/roadmap/"/>
+  </url>
+  <url>
+    <loc>https://weareone-link.org/fr/roadmap/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://weareone-link.org/roadmap/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://weareone-link.org/es/roadmap/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://weareone-link.org/fr/roadmap/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://weareone-link.org/pt/roadmap/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://weareone-link.org/de/roadmap/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://weareone-link.org/it/roadmap/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://weareone-link.org/roadmap/"/>
+  </url>
+  <url>
+    <loc>https://weareone-link.org/pt/roadmap/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://weareone-link.org/roadmap/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://weareone-link.org/es/roadmap/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://weareone-link.org/fr/roadmap/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://weareone-link.org/pt/roadmap/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://weareone-link.org/de/roadmap/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://weareone-link.org/it/roadmap/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://weareone-link.org/roadmap/"/>
+  </url>
+  <url>
+    <loc>https://weareone-link.org/de/roadmap/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://weareone-link.org/roadmap/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://weareone-link.org/es/roadmap/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://weareone-link.org/fr/roadmap/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://weareone-link.org/pt/roadmap/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://weareone-link.org/de/roadmap/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://weareone-link.org/it/roadmap/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://weareone-link.org/roadmap/"/>
+  </url>
+  <url>
+    <loc>https://weareone-link.org/it/roadmap/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://weareone-link.org/roadmap/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://weareone-link.org/es/roadmap/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://weareone-link.org/fr/roadmap/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://weareone-link.org/pt/roadmap/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://weareone-link.org/de/roadmap/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://weareone-link.org/it/roadmap/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://weareone-link.org/roadmap/"/>
+  </url>
+  <url>
     <loc>https://weareone-link.org/es/404</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>

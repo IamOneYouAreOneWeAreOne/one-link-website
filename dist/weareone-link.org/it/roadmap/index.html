@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Tabella di marcia - One Link</title>
+  <meta name="description" content="Cosa fa One Link oggi, cosa costruiremo dopo e cosa non costruiremo mai. Linguaggio chiaro, senza numeri di versione.">
+  <link rel="canonical" href="https://weareone-link.org/it/roadmap/">
+  <link rel="alternate" hreflang="en" href="https://weareone-link.org/roadmap/">
+  <link rel="alternate" hreflang="es" href="https://weareone-link.org/es/roadmap/">
+  <link rel="alternate" hreflang="fr" href="https://weareone-link.org/fr/roadmap/">
+  <link rel="alternate" hreflang="pt" href="https://weareone-link.org/pt/roadmap/">
+  <link rel="alternate" hreflang="de" href="https://weareone-link.org/de/roadmap/">
+  <link rel="alternate" hreflang="it" href="https://weareone-link.org/it/roadmap/">
+  <link rel="alternate" hreflang="x-default" href="https://weareone-link.org/roadmap/">
+  <meta name="theme-color" content="#04060b" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#f0f4f8" media="(prefers-color-scheme: light)">
+  <meta name="color-scheme" content="dark">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="One Link">
+  <meta property="og:locale" content="it_IT">
+  <meta property="og:title" content="Tabella di marcia - One Link">
+  <meta property="og:description" content="Cosa fa One Link oggi, cosa costruiremo dopo e cosa non costruiremo mai.">
+  <meta property="og:url" content="https://weareone-link.org/it/roadmap/">
+  <meta property="og:image" content="https://weareone-link.org/og/one-link-it.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Tabella di marcia - One Link">
+  <meta name="twitter:description" content="Cosa fa One Link oggi, cosa costruiremo dopo e cosa non costruiremo mai.">
+  <meta name="twitter:image" content="https://weareone-link.org/og/one-link-it.png">
+  <link rel="icon" type="image/x-icon" href="/images/favicon.ico"><link rel="icon" type="image/png" sizes="128x128" href="/images/logo-128.png"><link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+  <link rel="manifest" href="/app.webmanifest">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="One Link">
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r91">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r91">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r91">
+</head>
+<body>
+<a href="#main" class="skip-link">Salta al contenuto</a>
+<canvas class="ol-field-canvas" aria-hidden="true" hidden></canvas>
+<header class="site-header" role="banner">
+  <div class="container">
+    <a href="/it/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
+    <button type="button" id="nav-toggle" class="nav-toggle" aria-label="Apri navigazione" aria-expanded="false" aria-controls="primary-nav">&#9776;</button>
+    <nav class="site-nav" id="primary-nav" aria-label="Principale">
+      <a href="/how-it-works/" hreflang="en">Come funziona</a>
+      <a href="/features/" hreflang="en">Funzionalità</a>
+      <a href="/security/" hreflang="en">Sicurezza</a>
+      <a href="/share/" hreflang="en">Condividi</a>
+      <a href="/download/" hreflang="en" class="cta-get">Ottieni One Link</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <section class="hero">
+    <div class="container">
+      <span class="we-are-one">Tabella di marcia</span>
+      <h1>Cosa stiamo per <span class="grad">costruire dopo.</span></h1>
+      <p class="lede">Linguaggio chiaro. Niente numeri di versione. Quello che c'è in questa pagina è quello che stiamo costruendo affinché One Link funzioni come il nome promette, per tutti, su ogni dispositivo, in ogni situazione.</p>
+    </div>
+  </section>
+
+  <section class="section-tight">
+    <div class="container ol-mw-680">
+      <p class="ol-prose">
+        Ogni decisione di rilascio passa per un cancello a quattro regole (portata, nascondere il motore, asincrono per impostazione predefinita, profondità prima della rifinitura). Gli elementi di questa pagina sono filtrati, ordinati per ciò che sblocca più utilizzo per più persone e tracciati pubblicamente. La versione dettagliata di ingegneria vive in <a class="ol-cyan-text" href="https://github.com/IamOneYouAreOneWeAreOne/one-link/blob/master/docs/ROADMAP.md" rel="noopener external">docs/ROADMAP.md nel codice sorgente</a>.
+      </p>
+      <p class="ol-prose">
+        Per quello che è già stato rilasciato, vedi <a class="ol-cyan-text" href="/changelog/" hreflang="en">/changelog/</a>.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Portata</span>
+      <h2>Chi può usare One Link questa settimana <span class="grad">che non poteva la settimana scorsa.</span></h2>
+      <p class="lede">Ogni rilascio in questa via amplia chi può installarlo, su quale dispositivo, con quanto attrito. L'obiettivo è «tutti, ogni dispositivo, senza installazione quando possibile».</p>
+      <div class="ol-grid ol-grid-2">
+
+        <article class="ol-tile">
+          <h3>Inviare a chiunque, senza installare.</h3>
+          <p>Chi riceve un link di condivisione lo apre in qualsiasi browser, la pagina diventa One Link nella scheda, il file viene decifrato lì. Niente daemon, niente app, niente account, ed entrambi i lati restano cifrati end-to-end. Due modalità: peer-to-peer dal vivo quando il mittente è online, o un percorso di relay con buffer che trattiene il testo cifrato fino a sette giorni. Questo chiude il caso d'uso «sconosciuto una tantum» in stile WeTransfer.</p>
+        </article>
+
+        <article class="ol-tile">
+          <h3>Perdi un dispositivo, mantieni la tua identità.</h3>
+          <p>Scegli da tre a cinque contatti fidati come tuoi guardiani. Il daemon suddivide tra loro un segreto di sblocco; due qualsiasi possono aiutarti a ripristinare la tua identità su un nuovo dispositivo. Niente email, niente recupero via SMS, niente ricorso a custodi. Le parole «frammento» e «soglia» non appaiono mai nell'interfaccia; scegli i guardiani, loro ricevono una richiesta, approvano, e sei tornato.</p>
+        </article>
+
+        <article class="ol-tile">
+          <h3>Chiamate di gruppo e gruppi più grandi.</h3>
+          <p>Chiamate vocali e video per gruppi, con 50 persone in voce e 8 in video come primi obiettivi. L'instradamento via relay di ogni chiamata non vede mai l'audio o il video, solo byte cifrati. Le chiavi mittente di gruppo ruotano per chiamata in modo che una fuga non torni indietro.</p>
+        </article>
+
+        <article class="ol-tile">
+          <h3>One Link sul telefono, senza daemon.</h3>
+          <p>Un'applicazione web progressiva installabile dal browser: chat peer-to-peer puro browser che funziona interamente su un telefono senza daemon. Identità Web Crypto, archiviazione cifrata sul dispositivo, Service Worker in background, sblocco compatibile passkey. I wrapper nativi iOS e Android seguono una volta che la web app è a posto.</p>
+        </article>
+
+        <article class="ol-tile">
+          <h3>Un primo avvio che non ti chiede nulla.</h3>
+          <p>Abbina il tuo primo dispositivo tenendo due fotocamere una di fronte all'altra; il daemon fa il resto. Niente impronte, niente codici di rendezvous, niente pagine di configurazione, niente gergo. Quando vedi una chat, sei già abbinato e pronto a inviare.</p>
+        </article>
+
+        <article class="ol-tile">
+          <h3>App native in ogni store.</h3>
+          <p>Wrapper attorno alla web app per App Store, Google Play e gli store alternativi UE. Stesso codice, stessa sicurezza, ma più facili da trovare e installare per chi preferisce quel percorso.</p>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Funziona sempre</span>
+      <h2>L'altro lato non deve essere online.</h2>
+      <p class="lede">Ogni rilascio in questa via rimuove una precondizione per la consegna. Asincrono prima, presenza richiesta come eccezione.</p>
+      <div class="ol-grid ol-grid-2">
+
+        <article class="ol-tile">
+          <h3>I tuoi dispositivi agiscono come uno solo.</h3>
+          <p>Telefono, portatile, tablet, desktop sono un'unica identità per i tuoi amici, non quattro contatti. I tuoi dispositivi si sincronizzano tra loro; i tuoi amici vedono una sola versione di te. La cache predittiva mette la risposta di domani sul tuo telefono prima che ti svegli, in modo che aprire l'app sembri istantaneo.</p>
+        </article>
+
+        <article class="ol-tile">
+          <h3>Invia ora, consegnato quando possibile.</h3>
+          <p>La posta in uscita smette di essere un ripiego e diventa il comportamento predefinito. Invii un messaggio, parte quando può partire. Non vedrai mai «ancora in tentativo».</p>
+        </article>
+
+        <article class="ol-tile">
+          <h3>I file grandi vanno più veloci del cavo.</h3>
+          <p>I frammenti viaggiano sulla LAN, su internet e sui relay in parallelo. Il percorso più veloce vince per frammento. Il router impara nel tempo; gli errori sono quasi gratuiti perché lo stesso frammento su due percorsi semplicemente si deduplica.</p>
+        </article>
+
+        <article class="ol-tile">
+          <h3>Voce e video partono all'istante.</h3>
+          <p>Frammenti in streaming direttamente all'elemento media mentre arrivano. Bitrate adattivo quando la banda cala. I messaggi vocali inoltrati e i video condivisi partono nel momento in cui tocchi, non dopo che il file intero è atterrato.</p>
+        </article>
+
+        <article class="ol-tile">
+          <h3>Se qualcosa si rompe, si ripara da solo.</h3>
+          <p>Il daemon nota quando il suo stato devia da un peer (lacune nei numeri di messaggio, ratchet fuori sincrono, ripristino da un backup) e recupera silenziosamente la prossima volta che entrambi tornate online. Qualsiasi messaggio che genuinamente non può essere recuperato diventa un singolo segnaposto; la perdita silenziosa è impossibile per progettazione.</p>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Funziona e basta</span>
+      <h2>Le parole che non dovresti aver bisogno di imparare.</h2>
+      <p class="lede">Ogni rilascio in questa via rimuove un concetto tecnico dalla superficie. L'obiettivo è che l'80% degli utenti non veda mai l'80% del motore.</p>
+      <div class="ol-grid ol-grid-2">
+
+        <article class="ol-tile">
+          <h3>Abbinamento che non ti interrompe.</h3>
+          <p>La domanda di sicurezza appare solo quando la risposta cambierebbe davvero qualcosa. Stessa rete, stessa cronologia di chiavi, abbinamenti precedenti: abbina in silenzio. Tutto ciò che cambia genuinamente la decisione di fiducia: pausa e chiedi una volta.</p>
+        </article>
+
+        <article class="ol-tile">
+          <h3>Le impostazioni si ordinano in base a quello che tocchi.</h3>
+          <p>La superficie predefinita sono le impostazioni che la maggior parte usa. I controlli avanzati si rivelano con pressione lunga. La lista impara le tue preferenze; le cose che davvero tocchi emergono, quelle che non tocchi mai vengono riposte.</p>
+        </article>
+
+        <article class="ol-tile">
+          <h3>Forward secrecy su ogni frammento, sempre.</h3>
+          <p>Già in produzione per i messaggi; attivandosi a livello di canale in modo che ogni byte erediti automaticamente la stessa proprietà. Zero nuovi pulsanti.</p>
+        </article>
+
+        <article class="ol-tile">
+          <h3>Le chiavi di gruppo ruotano senza chiedere.</h3>
+          <p>Guidate dall'avanzamento del registro eventi e da soglie di entropia. L'ingresso o l'uscita di membri innesca una rotazione in background. Nessuno decide «devo ruotare adesso?».</p>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Di nessuno</span>
+      <h2>La rete non dipende <span class="grad">da nessuno di noi.</span></h2>
+      <p class="lede">Ogni rilascio in questa via rende la rete più difficile da spegnere, sorvegliare, censurare o distruggere da una singola parte. L'architettura ci porta già la maggior parte del cammino; questi rilasci completano il lavoro.</p>
+      <div class="ol-grid ol-grid-2">
+
+        <article class="ol-tile">
+          <h3>Abbinare da un QR, mai da una URL.</h3>
+          <p>L'handshake di abbinamento resta interamente sui due dispositivi nella stanza. Nessun token URL da far trapelare, nessuna superficie d'attacco per l'abbinamento remoto. Chiavi ibride post-quantistiche; un secondo fattore opzionale per utenti in ambienti ostili.</p>
+        </article>
+
+        <article class="ol-tile">
+          <h3>Routing onion per il traffico tra amici per impostazione predefinita.</h3>
+          <p>Un salto per i contatti abbinati, tre salti per la modalità paranoica. La selezione del percorso segue il campo di coerenza che instrada già la rete. Il mittente sigillato nasconde ai relay che lo trasportano chi sta inviando a chi.</p>
+        </article>
+
+        <article class="ol-tile">
+          <h3>Traffico di copertura perché i tempi non dicano nulla.</h3>
+          <p>Byte di sfondo a tasso costante tra contatti abbinati in modo che un osservatore non possa dire quando si muove un messaggio reale. Sconfigge l'analisi del traffico basata sui tempi. Disattivato per impostazione predefinita, disponibile quando serve.</p>
+        </article>
+
+        <article class="ol-tile">
+          <h3>I byte sul cavo sembrano HTTPS comune.</h3>
+          <p>Un trasporto collegabile che resiste all'ispezione profonda dei pacchetti. La rete continua a funzionare in luoghi che bloccano protocolli cifrati riconoscibili.</p>
+        </article>
+
+        <article class="ol-tile">
+          <h3>Le chiavi di identità vivono nell'hardware quando l'hardware lo consente.</h3>
+          <p>Apple Secure Enclave, Windows TPM, Intel SGX, AMD SEV-SNP, ARM TrustZone. Il malware locale con privilegi di amministratore ancora non può estrarre le chiavi di cui avrebbe bisogno per impersonarti.</p>
+        </article>
+
+        <article class="ol-tile">
+          <h3>Chiunque può gestire un relay in dieci minuti.</h3>
+          <p>Una riga di Docker, un'immagine Raspberry Pi, o un deploy in un clic presso uno dei comuni fornitori cloud. Una directory pubblica di operatori di relay ordinata per uptime e larghezza di banda, opt-in, firmata. La resistenza alla censura è forte solo quanto la diversità di chi gestisce la rete. Stiamo rendendo questa diversità facile.</p>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Occhi esterni</span>
+      <h2>Verificato da persone che non lavorano a questo.</h2>
+      <p class="lede">Il lavoro interno di red team è esaustivo (ogni ritrovamento chiuso, ogni commit firmato, ogni rilascio riproducibile). Perché le affermazioni architetturali reggano davanti a un pubblico ostile, deve esistere almeno un rapporto esterno pubblicato.</p>
+      <div class="ol-grid ol-grid-3">
+        <article class="ol-tile">
+          <h3>Primo pentest esterno, pubblicato.</h3>
+          <p>Una delle firme terze nominate (classe Trail of Bits, NCC Group, Cure53, Quarkslab) che verifica i crate del protocollo, il daemon, il sito web e il verificatore WASM. Rapporto completo pubblicato, ogni ritrovamento critico e alto chiuso prima che il rapporto venga online. Cadenza annuale dopo il primo.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Bug bounty finanziato.</h3>
+          <p>Oggi la pagina dice che intendiamo pagare; questo rilascio fa atterrare il borsellino reale e l'elenco pubblico dei pagamenti. I livelli di gravità corrispondono alla policy pubblicata. Finanziato in modo trasparente dai contributi della comunità.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Build riproducibili in modo indipendente.</h3>
+          <p>Non contributori ricompilano ogni rilascio dal codice sorgente pubblico e pubblicano attestazioni firmate che i byte corrispondono. Un verificatore per piattaforma principale. La catena di attestazioni resta pubblica affinché chiunque possa verificare qualsiasi rilascio storico.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Non costruiremo</span>
+      <h2>Cose che <span class="grad">non faremo.</span></h2>
+      <p class="lede">Ogni scelta architetturale ha cose che rifiuta per progettazione. Queste sono quelle che la gente chiede di più. Le risposte restano durature.</p>
+      <div class="ol-grid ol-grid-2">
+
+        <article class="ol-tile">
+          <h3>Sincronizzazione dei contatti. Sincronizzazione del calendario.</h3>
+          <p>Entrambe sono superfici di metadati ad alto valore (il tuo grafo sociale, i tuoi appuntamenti) che contraddicono l'architettura «nessun database utenti da nessuna parte». Puoi inviare un file dei contatti o un invito di calendario come allegato tramite One Link normale; costruirlo come primitiva creerebbe il database che rifiutiamo di tenere.</p>
+        </article>
+
+        <article class="ol-tile">
+          <h3>Ponte email.</h3>
+          <p>L'email è un protocollo in chiaro con tracce di metadati persistenti a ogni salto. Imbullonare One Link su SMTP erediterebbe le peggiori proprietà di entrambi. La risposta giusta è usare One Link per le cose che appartengono a One Link.</p>
+        </article>
+
+        <article class="ol-tile">
+          <h3>Pagamenti, portafogli, token.</h3>
+          <p>I sistemi di denaro sono un regime di fiducia diverso con superfici regolatorie diverse (custodia, sanzioni, AML). Intrecciarli con lo strato delle comunicazioni creerebbe superfici che lo strato delle comunicazioni è costruito per rifiutare.</p>
+        </article>
+
+        <article class="ol-tile">
+          <h3>Una versione ospitata «for Business».</h3>
+          <p>Un servizio gestito eredita «i nostri server conservano i tuoi dati» e «adempiamo all'intimazione X», che è esattamente ciò che il protocollo esiste per evitare. La risposta federata: ogni organizzazione gestisce il proprio relay. Nessun operatore può leggere ciò che il relay trasporta.</p>
+        </article>
+
+        <article class="ol-tile">
+          <h3>IA lato server nella chat.</h3>
+          <p>Riassunto automatico, suggerimento di risposta, moderazione dei contenuti: se vuoi quello, gira localmente contro il tuo magazzino di messaggi sul tuo dispositivo. Il daemon rifiuta di rilasciare funzionalità che hanno bisogno di leggere testo in chiaro lato server; farlo annullerebbe l'intera architettura.</p>
+        </article>
+
+        <article class="ol-tile">
+          <h3>Telemetria di qualsiasi tipo.</h3>
+          <p>Questa è l'affermazione di privacy portante ed è strutturale, non politica. L'architettura è plasmata affinché l'affermazione regga anche se ogni contributore fosse sostituito domani. Gli unici contatori che esistono sono locali e opt-in.</p>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container ol-mw-680">
+      <p class="ol-prose">
+        Ultimo aggiornamento 2026-05-24. La versione orientata allo sviluppo con nomi dei crate, formati di filo e cancelli di accettazione è in <a class="ol-cyan-text" href="https://github.com/IamOneYouAreOneWeAreOne/one-link/blob/master/docs/ROADMAP.md" rel="noopener external">docs/ROADMAP.md</a>.
+      </p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer" role="contentinfo">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a href="/it/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
+        <p class="footer-tag">Una rete libera e privata per messaggi, file e dispositivi. Di nessuno. Di tutti.</p>
+        <p class="ol-mt-md ol-soft-text ol-mono">
+          <strong>Leggi in:</strong>
+          <a class="ol-cyan-text" hreflang="en" href="/roadmap/">English</a> &middot;
+          <a class="ol-cyan-text" hreflang="es" href="/es/roadmap/">Español</a> &middot;
+          <a class="ol-cyan-text" hreflang="fr" href="/fr/roadmap/">Français</a> &middot;
+          <a class="ol-cyan-text" hreflang="pt" href="/pt/roadmap/">Português</a> &middot;
+          <a class="ol-cyan-text" hreflang="de" href="/de/roadmap/">Deutsch</a> &middot;
+          <a class="ol-cyan-text" hreflang="it" href="/it/roadmap/">Italiano</a>
+        </p>
+      </div>
+      <div><h3>Rete</h3><ul><li><a href="/how-it-works/" hreflang="en">Come funziona</a></li><li><a href="/features/" hreflang="en">Funzionalità</a></li><li><a href="/mesh/" hreflang="en">Mesh dal vivo</a></li></ul></div>
+      <div><h3>Per te</h3><ul><li><a href="/download/" hreflang="en">Ottieni One Link</a></li><li><a href="/security/" hreflang="en">Sicurezza</a></li><li><a href="/it/roadmap/" hreflang="it">Tabella di marcia</a></li><li><a href="/it/accessibility/" hreflang="it">Accessibilità</a></li><li><a href="/it/transparency/" hreflang="it">Trasparenza</a></li><li><a href="/audits/" hreflang="en">Audit</a></li></ul></div>
+      <div><h3>Per i costruttori</h3><ul><li><a href="/builders/" hreflang="en">Protocollo e sorgente</a></li><li><a href="/changelog/" hreflang="en">Registro modifiche</a></li><li><a href="/releases/" hreflang="en">Versioni</a></li><li><a href="/mirror/" hreflang="en">Replica questo sito</a></li><li><a href="/download/source" hreflang="en" rel="noopener">Archivio sorgente</a></li><li><a href="https://github.com/IamOneYouAreOneWeAreOne/one-link" rel="noopener external">GitHub</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <span class="built-by">&copy; 2026 contributori di One Link. <a href="/it/terms/" hreflang="it">AGPL-3.0</a>. <a href="/it/privacy/" hreflang="it">Nessun tracciamento.</a> <a href="mailto:weareone@oneunity.earth">weareone@oneunity.earth</a></span>
+      <span class="built-by">siamo uno</span>
+    </div>
+  </div>
+</footer>
+
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r91"></script>
+</body>
+</html>

@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Roadmap - One Link</title>
+  <meta name="description" content="What One Link does today, what we are building next, and what we will never build. Plain language, no version numbers.">
+  <link rel="canonical" href="https://weareone-link.org/roadmap/">
+  <link rel="alternate" hreflang="en" href="https://weareone-link.org/roadmap/">
+  <link rel="alternate" hreflang="es" href="https://weareone-link.org/es/roadmap/">
+  <link rel="alternate" hreflang="fr" href="https://weareone-link.org/fr/roadmap/">
+  <link rel="alternate" hreflang="pt" href="https://weareone-link.org/pt/roadmap/">
+  <link rel="alternate" hreflang="de" href="https://weareone-link.org/de/roadmap/">
+  <link rel="alternate" hreflang="it" href="https://weareone-link.org/it/roadmap/">
+  <link rel="alternate" hreflang="x-default" href="https://weareone-link.org/roadmap/">
+  <meta name="theme-color" content="#04060b" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#f0f4f8" media="(prefers-color-scheme: light)">
+  <meta name="color-scheme" content="dark">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="One Link">
+  <meta property="og:title" content="Roadmap - One Link">
+  <meta property="og:description" content="What One Link does today, what we are building next, and what we will never build.">
+  <meta property="og:url" content="https://weareone-link.org/roadmap/">
+  <meta property="og:image" content="https://weareone-link.org/og/one-link.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Roadmap - One Link">
+  <meta name="twitter:description" content="What One Link does today, what we are building next, and what we will never build.">
+  <meta name="twitter:image" content="https://weareone-link.org/og/one-link.png">
+  <link rel="icon" type="image/x-icon" href="/images/favicon.ico"><link rel="icon" type="image/png" sizes="128x128" href="/images/logo-128.png"><link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+  <link rel="manifest" href="/app.webmanifest">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="One Link">
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r91">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r91">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r91">
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to content</a>
+<canvas class="ol-field-canvas" aria-hidden="true" hidden></canvas>
+<header class="site-header" role="banner">
+  <div class="container">
+    <a href="/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
+    <button type="button" id="nav-toggle" class="nav-toggle" aria-label="Open navigation" aria-expanded="false" aria-controls="primary-nav">&#9776;</button>
+    <nav class="site-nav" id="primary-nav" aria-label="Main">
+      <a href="/how-it-works/">How it works</a>
+      <a href="/features/">Features</a>
+      <a href="/security/">Security</a>
+      <a href="/share/">Share</a>
+      <a href="/download/" class="cta-get">Get One Link</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <section class="hero">
+    <div class="container">
+      <span class="we-are-one">Roadmap</span>
+      <h1>What we are <span class="grad">building next.</span></h1>
+      <p class="lede">Plain language. No version numbers. What is on this page is what we are building so that One Link works the way the name promises for everyone, on every device, in every situation.</p>
+    </div>
+  </section>
+
+  <section class="section-tight">
+    <div class="container ol-mw-680">
+      <p class="ol-prose">
+        Every shipping decision passes a four-rule gate (reach, hide the engine, async by default, depth before polish). Items on this page are gated, ordered by what unlocks the most use for the most people, and tracked publicly. The detailed engineering version lives at <a class="ol-cyan-text" href="https://github.com/IamOneYouAreOneWeAreOne/one-link/blob/master/docs/ROADMAP.md" rel="noopener external">docs/ROADMAP.md in the source</a>.
+      </p>
+      <p class="ol-prose">
+        For what has already shipped, see <a class="ol-cyan-text" href="/changelog/">/changelog/</a>.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Reach</span>
+      <h2>Who can use One Link this week <span class="grad">who couldn't last week.</span></h2>
+      <p class="lede">Every ship in this track expands who can install it, on what device, with how much friction. The aim is "everyone, every device, no install when possible."</p>
+      <div class="ol-grid ol-grid-2">
+
+        <article class="ol-tile">
+          <h3>Send to anyone, no install needed.</h3>
+          <p>The recipient of a share link opens it in any browser, the page becomes One Link in their tab, the file decrypts there. No daemon, no app, no account, both ends still end-to-end encrypted. Two modes: live peer-to-peer when the sender is online, or a buffered relay path that holds the ciphertext up to seven days. This closes the WeTransfer-style "one-shot stranger" use case.</p>
+        </article>
+
+        <article class="ol-tile">
+          <h3>Lose a device, keep your identity.</h3>
+          <p>Pick three to five trusted contacts as your guardians. The daemon splits an unlock secret to them; any two can help you restore your identity on a new device. No emails, no SMS recovery, no custodial fallback. The words "shard" and "threshold" never appear in the interface; you pick guardians, they get a request, they approve, you are back.</p>
+        </article>
+
+        <article class="ol-tile">
+          <h3>Group calls and bigger groups.</h3>
+          <p>Voice and video calls for groups, with 50-person voice and 8-person video as the first targets. The relay routing each call never sees the audio or video, only encrypted bytes. Group sender keys rotate per call so a leak does not roll backward.</p>
+        </article>
+
+        <article class="ol-tile">
+          <h3>One Link on the phone, no daemon.</h3>
+          <p>A browser-installable progressive web app: pure-browser peer-to-peer chat that runs entirely on a phone with no daemon required. Web Crypto identity, encrypted on-device storage, Service Worker background, passkey-aware unlock. Native iOS and Android wrappers follow once the web app is right.</p>
+        </article>
+
+        <article class="ol-tile">
+          <h3>A first run that asks nothing of you.</h3>
+          <p>Pair your first device by holding two cameras up; the daemon does the rest. No fingerprints, no rendezvous codes, no setup pages, no jargon. By the time you see a chat, you are already paired and ready to send.</p>
+        </article>
+
+        <article class="ol-tile">
+          <h3>Native apps in every store.</h3>
+          <p>Wrappers around the web app for the App Store, Google Play, and the EU alternative app stores. Same code, same security, but easier to find and install for users who prefer that path.</p>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Always works</span>
+      <h2>The other side does not have to be online.</h2>
+      <p class="lede">Every ship in this track removes a precondition for delivery. Async first, presence-required as the exception.</p>
+      <div class="ol-grid ol-grid-2">
+
+        <article class="ol-tile">
+          <h3>Your devices act as one.</h3>
+          <p>Phone, laptop, tablet, desktop are one identity to your friends, not four contacts. Your devices sync among themselves; your friends see one of you. The predictive cache puts tomorrow's reply on your phone before you wake up so opening the app feels instant.</p>
+        </article>
+
+        <article class="ol-tile">
+          <h3>Send it now, delivered when possible.</h3>
+          <p>The outbox stops being a fallback and becomes the default. Send a message, it leaves when it can leave. You never see "still trying."</p>
+        </article>
+
+        <article class="ol-tile">
+          <h3>Large files go faster than the wire.</h3>
+          <p>Chunks travel over the LAN, the internet, and relays in parallel. The fastest path wins per chunk. The router learns over time; mistakes are nearly free because the same chunk on two paths just deduplicates.</p>
+        </article>
+
+        <article class="ol-tile">
+          <h3>Voice and video play instantly.</h3>
+          <p>Streaming chunks straight to the media element as they arrive. Adaptive bitrate when bandwidth dips. Forwarded voice messages and shared video start the moment you tap, not after the whole file lands.</p>
+        </article>
+
+        <article class="ol-tile">
+          <h3>If something breaks, it heals itself.</h3>
+          <p>The daemon notices when its state drifts from a peer (gaps in message numbers, ratchets out of sync, restored from a backup) and quietly catches up the next time you both come online. Any message that genuinely cannot be recovered becomes a single placeholder; silent loss is impossible by design.</p>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Just works</span>
+      <h2>The words you should not need to learn.</h2>
+      <p class="lede">Every ship in this track removes a technical concept from the surface. The goal is 80% of users never see 80% of the engine.</p>
+      <div class="ol-grid ol-grid-2">
+
+        <article class="ol-tile">
+          <h3>Pairing that does not interrupt you.</h3>
+          <p>The safety question only appears when the answer would actually change. Same network, same key history, prior pairings: pair silently. Anything that genuinely changes the trust decision: pause and ask once.</p>
+        </article>
+
+        <article class="ol-tile">
+          <h3>Settings tier themselves by what you touch.</h3>
+          <p>Default surface is the settings most people use. Power-user controls reveal on a long-press. The list learns your preferences; the things you actually touch surface, the things you never touch tuck away.</p>
+        </article>
+
+        <article class="ol-tile">
+          <h3>Forward secrecy on every chunk, always.</h3>
+          <p>Already shipping for messages; activating channel-wide so every byte gets the same property automatically. Zero new buttons.</p>
+        </article>
+
+        <article class="ol-tile">
+          <h3>Group keys rotate without asking.</h3>
+          <p>Driven by event-log advancement and entropy thresholds. Members joining or leaving triggers a rotation in the background. The user never decides "should I rotate now."</p>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Owned by no one</span>
+      <h2>The network depends on <span class="grad">no one of us.</span></h2>
+      <p class="lede">Every ship in this track makes the network harder for any single party to shut down, surveil, censor, or destroy. The architecture already gets us most of the way; these ships finish the job.</p>
+      <div class="ol-grid ol-grid-2">
+
+        <article class="ol-tile">
+          <h3>Pair from a QR, never from a URL.</h3>
+          <p>The pairing handshake stays entirely on the two devices in the room. No URL token to leak, no remote-pair attack surface. Post-quantum hybrid keys; an optional second factor for users in hostile environments.</p>
+        </article>
+
+        <article class="ol-tile">
+          <h3>Onion routing for friend traffic by default.</h3>
+          <p>One hop for paired contacts, three hops for paranoid mode. Path selection follows the coherence field that already routes the network. Sealed sender hides who is sending to whom from the relays carrying it.</p>
+        </article>
+
+        <article class="ol-tile">
+          <h3>Cover traffic so timing tells nothing.</h3>
+          <p>Constant-rate background bytes between paired contacts so an observer cannot tell when a real message moves. Defeats timing-based traffic analysis. Off by default, available when needed.</p>
+        </article>
+
+        <article class="ol-tile">
+          <h3>Bytes on the wire look like ordinary HTTPS.</h3>
+          <p>A pluggable transport that resists deep packet inspection. The network keeps working in places that block recognizable encrypted protocols.</p>
+        </article>
+
+        <article class="ol-tile">
+          <h3>Identity keys live in hardware when hardware allows.</h3>
+          <p>Apple Secure Enclave, Windows TPM, Intel SGX, AMD SEV-SNP, ARM TrustZone. Local malware with administrator privileges still cannot extract the keys it needs to impersonate you.</p>
+        </article>
+
+        <article class="ol-tile">
+          <h3>Anyone can run a relay in ten minutes.</h3>
+          <p>One Docker line, a Raspberry Pi image, or a one-click deploy at any of the common cloud providers. A public directory of relay operators ranked by uptime and bandwidth, opt-in, signed. The censorship-resistance story is only as strong as the diversity of who is running the network. We are making that diversity easy.</p>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">External eyes</span>
+      <h2>Audited by people who do not work on this.</h2>
+      <p class="lede">The internal red-team work is comprehensive (every finding closed, every commit signed, every release reproducible). For the architectural claims to stand up under a hostile audience, at least one published external report has to exist.</p>
+      <div class="ol-grid ol-grid-3">
+        <article class="ol-tile">
+          <h3>First external pentest, published.</h3>
+          <p>One of the named third-party firms (Trail of Bits, NCC Group, Cure53, Quarkslab class) auditing the protocol crates, the daemon, the website, and the WASM verifier. Full report published, every critical and high finding closed before the report goes up. Annual cadence after the first one.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Funded bug bounty.</h3>
+          <p>Today the page says we intend to pay; this ship lands the actual purse and the public list of payouts. Severity tiers match the published policy. Funded transparently from community contributions.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Independently reproducible builds.</h3>
+          <p>Non-contributors rebuild every release from public source and publish signed attestations that the bytes match. One verifier per major platform. The attestation chain stays public so anyone can verify any historical release.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Will not build</span>
+      <h2>Things we are not <span class="grad">going to do.</span></h2>
+      <p class="lede">Every architecture choice has things it refuses by design. These are the ones people ask about most. The answers stay durable.</p>
+      <div class="ol-grid ol-grid-2">
+
+        <article class="ol-tile">
+          <h3>Contacts sync. Calendar sync.</h3>
+          <p>Both are high-value metadata surfaces (your social graph, your meetings) that contradict the "no user database anywhere" architecture. You can send a contacts file or a calendar invitation as an attachment through normal One Link; building it as a primitive would create the database we refuse to hold.</p>
+        </article>
+
+        <article class="ol-tile">
+          <h3>Email bridge.</h3>
+          <p>Email is a clearnet protocol with persistent metadata trails at every hop. Bolting One Link onto SMTP would inherit the worst properties of both. The right answer is to use One Link for the things that belong on One Link.</p>
+        </article>
+
+        <article class="ol-tile">
+          <h3>Payments, wallets, tokens.</h3>
+          <p>Money systems are a different trust regime with different regulatory surfaces (custody, sanctions, AML). Entangling them with the communications layer would create surfaces the communications layer is built to refuse.</p>
+        </article>
+
+        <article class="ol-tile">
+          <h3>A hosted "for Business" version.</h3>
+          <p>A managed service inherits "our servers store your data" and "we comply with subpoena X," which is exactly what the protocol exists to avoid. The federation answer is: each organization runs its own relay. No operator can read what the relay carries.</p>
+        </article>
+
+        <article class="ol-tile">
+          <h3>Server-side AI in the chat.</h3>
+          <p>Auto-summarize, reply-suggest, content moderation: if you want those, they run locally against your own message store on your own device. The daemon refuses to ship features that need to read plaintext server-side; doing so would undo the whole architecture.</p>
+        </article>
+
+        <article class="ol-tile">
+          <h3>Telemetry of any kind.</h3>
+          <p>This is the load-bearing privacy claim and it is structural, not policy. The architecture is shaped so the claim holds even if every contributor were replaced tomorrow. The only counters that exist are local and opt-in.</p>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container ol-mw-680">
+      <p class="ol-prose">
+        Last updated 2026-05-24. The dev-facing version with crate names, wire formats, and acceptance gates is at <a class="ol-cyan-text" href="https://github.com/IamOneYouAreOneWeAreOne/one-link/blob/master/docs/ROADMAP.md" rel="noopener external">docs/ROADMAP.md</a>.
+      </p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer" role="contentinfo">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a href="/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
+        <p class="footer-tag">A free, private network for messages, files, and devices. Owned by no one. Belongs to everyone.</p>
+      </div>
+      <div><h3>Network</h3><ul><li><a href="/how-it-works/">How it works</a></li><li><a href="/features/">Features</a></li><li><a href="/mesh/">Live mesh</a></li></ul></div>
+      <div><h3>For you</h3><ul><li><a href="/download/">Get One Link</a></li><li><a href="/security/">Security</a></li><li><a href="/roadmap/">Roadmap</a></li><li><a href="/accessibility/">Accessibility</a></li><li><a href="/transparency/">Transparency</a></li><li><a href="/audits/">Audits</a></li></ul></div>
+      <div><h3>For builders</h3><ul><li><a href="/builders/">Protocol &amp; source</a></li><li><a href="/changelog/">Changelog</a></li><li><a href="/releases/">Releases</a></li><li><a href="/mirror/">Mirror this site</a></li><li><a href="/download/source" rel="noopener">Source archive</a></li><li><a href="https://github.com/IamOneYouAreOneWeAreOne/one-link" rel="noopener external">GitHub</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <span class="built-by">&copy; 2026 One Link contributors. <a href="/terms/">AGPL-3.0</a>. <a href="/security/">No tracking.</a> <a href="mailto:weareone@oneunity.earth">weareone@oneunity.earth</a></span>
+      <span class="built-by">we are one</span>
+    </div>
+  </div>
+</footer>
+
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r91"></script>
+</body>
+</html>

@@ -32,9 +32,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r90">
-  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r90">
-  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r90">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r91">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r91">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r91">
 </head>
 <body>
 <a href="#main" class="skip-link">Skip to content</a>
@@ -60,6 +60,19 @@
       <span class="we-are-one">Changelog</span>
       <h1>Every shipped <span class="grad">change.</span></h1>
       <p class="lede">Every release of One Link, every push to this site, in reverse chronological order. The git history is the source of truth; this page is the human-readable view of it.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">2026-05-24</span>
+      <h2><span class="grad">site</span> /roadmap/ shipped + daemon ROADMAP.md expanded</h2>
+      <ul>
+        <li>New public page at <a class="ol-cyan-text" href="/roadmap/">/roadmap/</a>: what we are building next, in plain language, no version numbers. Six tracks (Reach, Always works, Just works, Owned by no one, External eyes, Will not build) cover every ship currently in flight or planned, plus an explicit "not in scope" list. Translated into all 5 shipped languages on the same push.</li>
+        <li>Daemon ROADMAP.md (One_link/docs/ROADMAP.md) expanded with 6 named ships covering every gap identified in the "would I personally use this for everything" audit: v1.0.0 PWA share-to-stranger acceptance gate, threshold-recovery user flow ("guardians"), group voice + video + 50-100-person groups via new ol_sfu crate, daemon corruption self-healing via new ol_resync crate, F9 relay-operator onramp (Docker + Pi + cloud-init + public directory), plus a new External Assurance track (first external pentest + funded bug bounty + independent reproducible-build verification). Plus a Scope Decisions section with 8 explicit "not in scope" entries. 478 to 835 lines.</li>
+        <li>Footer "For you" column now carries the Roadmap link site-wide; 20 English pages + 95 translated pages swept idempotently.</li>
+        <li>build-i18n.py TRACKED_PAGES extended with roadmap/index.html; worker CONTENT_SLUGS gains roadmap so the trailing-slash 301 fires on every language path.</li>
+      </ul>
     </div>
   </section>
 
@@ -187,7 +200,7 @@
         <p class="footer-tag">A free, private network for messages, files, and devices. Owned by no one. Belongs to everyone.</p>
       </div>
       <div><h3>Network</h3><ul><li><a href="/how-it-works/">How it works</a></li><li><a href="/features/">Features</a></li><li><a href="/mesh/">Live mesh</a></li></ul></div>
-      <div><h3>For you</h3><ul><li><a href="/download/">Get One Link</a></li><li><a href="/security/">Security</a></li><li><a href="/accessibility/">Accessibility</a></li><li><a href="/transparency/">Transparency</a></li><li><a href="/audits/">Audits</a></li></ul></div>
+      <div><h3>For you</h3><ul><li><a href="/download/">Get One Link</a></li><li><a href="/security/">Security</a></li><li><a href="/roadmap/">Roadmap</a></li><li><a href="/accessibility/">Accessibility</a></li><li><a href="/transparency/">Transparency</a></li><li><a href="/audits/">Audits</a></li></ul></div>
       <div><h3>For builders</h3><ul><li><a href="/builders/">Protocol &amp; source</a></li><li><a href="/changelog/">Changelog</a></li><li><a href="/releases/">Releases</a></li><li><a href="/mirror/">Mirror this site</a></li><li><a href="/download/source" rel="noopener">Source archive</a></li><li><a href="https://github.com/IamOneYouAreOneWeAreOne/one-link" rel="noopener external">GitHub</a></li></ul></div>
     </div>
     <div class="footer-bottom">
@@ -197,6 +210,6 @@
   </div>
 </footer>
 
-<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r90"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r91"></script>
 </body>
 </html>

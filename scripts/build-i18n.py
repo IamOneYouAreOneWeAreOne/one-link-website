@@ -61,6 +61,7 @@ TRACKED_PAGES = [
     "changelog/index.html",
     "privacy/index.html",
     "terms/index.html",
+    "roadmap/index.html",
     "404.html",
 ]
 
