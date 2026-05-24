@@ -32,9 +32,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r89">
-  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r89">
-  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r89">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r90">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r90">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r90">
 </head>
 <body>
 <a href="#main" class="skip-link">Skip to content</a>
@@ -131,12 +131,20 @@
           <p>weareone-link.org runs on Cloudflare Workers. Cloudflare sees the IP of every request, as any CDN does. We have configured the worker to override Cloudflare's default error-reporting telemetry headers so no NEL beacons fire from your browser.</p>
         </article>
         <article class="ol-tile">
-          <h3>Anonymous presence overlay</h3>
+          <h3>MeshPresence Durable Object</h3>
           <p>The "N here right now" pill uses a Cloudflare Durable Object that holds nothing but a per-session random ID for the lifetime of your tab. The ID rotates every visit. No identifying data is stored.</p>
         </article>
         <article class="ol-tile">
-          <h3>Encrypted share buffer</h3>
-          <p>/share/ accepts ciphertext only. The key lives in the URL fragment and never reaches the server. The ciphertext is deleted at first download or after 24 hours, whichever comes first.</p>
+          <h3>NativeSession Durable Object</h3>
+          <p>Per-tab WebTransport session state for the /native handshake demo. Holds the ephemeral X25519 keys and One Link wire-protocol counters in memory only. Garbage collected on idle. No identifiers, no IPs.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>ShareRate Durable Object</h3>
+          <p>Per-subnet token bucket that throttles /api/share uploads (12 burst, 2/min steady). Keyed by the /24 (IPv4) or /48 (IPv6) of the uploader so dial-up NAT pools share a budget. Holds only a token count and a refill timestamp. No IP is stored, only the subnet hash used as the bucket key.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Cloudflare R2 (RELEASES bucket)</h3>
+          <p>Holds two object families: signed release binaries the /download/ flow serves, and /share/ ciphertext (ciphertext only, key never sent, deleted on first GET or after 24h). Cloudflare sees object bytes and access logs; the keys to decrypt anything in the share bucket never leave the sender + recipient browsers.</p>
         </article>
         <article class="ol-tile">
           <h3>No tracking, no analytics</h3>
@@ -201,6 +209,6 @@
   </div>
 </footer>
 
-<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r89"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r90"></script>
 </body>
 </html>

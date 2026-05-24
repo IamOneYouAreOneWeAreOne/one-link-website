@@ -32,9 +32,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r89">
-  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r89">
-  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r89">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r90">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r90">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r90">
 </head>
 <body>
 <a href="#main" class="skip-link">Skip to content</a>
@@ -168,7 +168,7 @@
 <span class="c">3.</span> request       <span class="a">one-link-&lt;your-os&gt;.bin</span>
 <span class="c">4.</span> stream chunks <span class="g">AEAD per chunk, rekey every N</span>
 <span class="c">5.</span> verify sha    <span class="g">matches advertised hash</span>
-<span class="c">6.</span> verify sig    <span class="g">Ed25519 + ML-DSA-65 both ok</span>
+<span class="c">6.</span> verify sig    <span class="g">Ed25519 ok</span> <span class="ol-soft-text">&middot; ML-DSA-65 pending (lands v0.22)</span>
 <span class="c">7.</span> attest        <span class="g">ol_confidential fresh, witness ok</span>
 
 <span class="c">done</span>  <span class="g">file written to disk</span></pre>
@@ -278,6 +278,6 @@
   </div>
 </footer>
 
-<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r89"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r90"></script>
 </body>
 </html>

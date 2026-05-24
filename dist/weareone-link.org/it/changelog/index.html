@@ -33,9 +33,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r89">
-  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r89">
-  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r89">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r90">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r90">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r90">
 </head>
 <body>
 <a href="#main" class="skip-link">Salta al contenuto</a>
@@ -60,6 +60,39 @@
       <span class="we-are-one">Registro modifiche</span>
       <h1>Ogni modifica <span class="grad">rilasciata.</span></h1>
       <p class="lede">Ogni versione di One Link, ogni push su questo sito, in ordine cronologico inverso. La storia di git è la fonte di verità; questa pagina ne è la vista leggibile da una persona.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">2026-05-23</span>
+      <h2><span class="grad">sito</span> v0.21.0-alpha.0+r89 - stretta + i18n + parità delle dichiarazioni</h2>
+      <ul>
+        <li>Sweep di parità delle dichiarazioni del daemon: descrizione di ol_ratchet corretta (catena KDF per blocco, non Double Ratchet), mix-in ML-KEM di ol_pair_qr riclassificato come in attesa per la v0.22, scala della soglia di fuzz di ol_homology, /api/status referenziato (era /api/capabilities, mai esistito), conteggio dei crate da 37 a 41, segretezza in avanti per blocco riclassificata come attiva oggi tra peer capaci.</li>
+        <li>Pagina di trasparenza ampliata con la divulgazione completa dei sub-processori Cloudflare: Durable Objects MeshPresence + NativeSession + ShareRate + bucket R2 RELEASES.</li>
+        <li>17 pagine interne complete tradotte in es, fr, de, pt, it (85 pagine). Catena del selettore di lingua del piè iniettata automaticamente su ogni pagina tradotta.</li>
+        <li>Pagina 404 in 5 lingue con routing del worker consapevole della lingua: le richieste sotto /es/, /fr/, /de/, /pt/, /it/ che falliscono ora servono la 404 localizzata corrispondente.</li>
+        <li>Schede Open Graph per la condivisione: SVG e PNG (1200x630) per lingua in /og/one-link-&lt;codice&gt;.png. og:image e twitter:image passati su 75 pagine tradotte. Generatore: scripts/build-og-per-language.py (renderer resvg-py).</li>
+        <li>Il downloadComingSoonPage del worker viene ora servito nella lingua del visitatore tramite rilevamento Accept-Language; 8 blocchi di OS x 6 lingue = 48 celle localizzate.</li>
+        <li>Il manifest firmato copre ora tutti i 110 file HTML (prima 4); rehash-manifest.py scopre automaticamente le nuove pagine. Build-i18n.py reso tollerante a CRLF e iniettore di selettore per le pagine fresche.</li>
+        <li>Conformità CSP: zero attributi style="..." inline in HTML+JS in dist/. style-src 'self' ora applicabile. Nuove classi di utilità .ol-soft-prose, .ol-soft-note, .ol-dim-mono.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">2026-05-18 .. 2026-05-22</span>
+      <h2><span class="grad">daemon</span> - superficie di identità del dispositivo, bootstrap del telefono, riconnessione automatica con cert</h2>
+      <ul>
+        <li>Barra laterale di identità del dispositivo: l'iPhone abbinato compare nella sezione «La tua identità One» del desktop; il laptop compare con etichette intelligenti; potatura per dispositivo.</li>
+        <li>Bootstrap del telefono (Fase 2-4): caricamento di file a blocchi dal telefono via DataChannel del daemon; CSS mobile-first (a tutto schermo, composer appiccicoso, niente zoom su iOS); scheda Impostazioni (identità, daemon abbinato e disconnetti); rinomina alias per peer e toggle di silenzio sul telefono.</li>
+        <li>Riconnessione automatica del telefono autenticata da cert dopo riavvio del daemon o chiusura della scheda; il relogin da cert vince su un setup_device_invite obsoleto nella query; TTL di 30 min per gli inviti di dispositivo; navigazione a pannello singolo.</li>
+        <li>Polish del flusso di pair: la conferma SAS è ora propagata sul lato telefono via polling di /status; impronta di filo taggata sha256 emessa verso peer.html; cache-bust di peer.html e try-roster al completamento del pair; /device-invite/claim non protetto per il bootstrap del telefono.</li>
+        <li>UI/UX: cache-busting a prova di proiettile via ETag su index.html; contratto CSS [hidden] applicato; controlli avanzati di Impostazioni collegati; icone di nav stabili; copy della shell di chat rinforzata; ripristinati i pulsanti icona del composer.</li>
+        <li>RECEIVE di file sul telefono: bolla di file in linea e download a blocchi (blocchi da 16 KiB, backpressure e riconnessione automatica alla chiusura del DC).</li>
+        <li>ROADMAP.md orientato all'utente aggiunto in One_link/docs/: che aspetto ha «fatto», in linguaggio chiaro.</li>
+      </ul>
     </div>
   </section>
 
@@ -173,6 +206,6 @@
   </div>
 </footer>
 
-<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r89"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r90"></script>
 </body>
 </html>

@@ -34,9 +34,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r89">
-  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r89">
-  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r89">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r90">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r90">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r90">
 </head>
 <body>
 <a href="#main" class="skip-link">Skip to content</a>
@@ -74,13 +74,13 @@
   <section class="section">
     <div class="container">
       <span class="kicker">The crates</span>
-      <h2>One Link is <span class="grad">37 small crates.</span></h2>
+      <h2>One Link is <span class="grad">41 small crates.</span></h2>
       <p class="lede">Each does one thing. Each is independently auditable. Each compiles to native, WASM, or both. Pulled together by the daemon.</p>
 
       <div class="ol-grid ol-grid-2">
         <article class="ol-tile">
           <h3>ol_pair_qr</h3>
-          <p>QR pairing handshake. Ed25519 invite, X25519 chain key, 5-word SAS, Levenshtein-audited word list. PQ-hybrid via ML-KEM mix-in.</p>
+          <p>QR pairing handshake. Ed25519 invite, X25519 chain key, 5-word SAS, Levenshtein-audited word list. ML-KEM-768 mix-in slot lands v0.22.</p>
         </article>
         <article class="ol-tile">
           <h3>ol_onion</h3>
@@ -96,7 +96,7 @@
         </article>
         <article class="ol-tile">
           <h3>ol_ratchet</h3>
-          <p>Double Ratchet over the post-quantum hybrid root. Forward secrecy on every chunk and message.</p>
+          <p>Per-chunk forward-secret KDF chain (BLAKE3 one-way). The per-message Double Ratchet over the hybrid root lives alongside it in the Python daemon.</p>
         </article>
         <article class="ol-tile">
           <h3>ol_capability</h3>
@@ -116,7 +116,7 @@
         </article>
         <article class="ol-tile">
           <h3>ol_homology</h3>
-          <p>Topological partition detection. Spots network splits in one gossip round. 0% false positives across a 5M-iteration fuzz gate.</p>
+          <p>Topological partition detection. Spots network splits in one gossip round. 0% false positives across the 4-regular partition fuzz.</p>
         </article>
         <article class="ol-tile">
           <h3>ol_pqsig + ol_pqkem</h3>
@@ -128,7 +128,7 @@
         </article>
       </div>
 
-      <p class="ol-footnote-dim">26 more crates in the source. <a class="ol-cyan-text" href="https://github.com/IamOneYouAreOneWeAreOne/one-link/tree/master/native" rel="noopener external">See them all on GitHub</a>.</p>
+      <p class="ol-footnote-dim">29 more crates in the source. <a class="ol-cyan-text" href="https://github.com/IamOneYouAreOneWeAreOne/one-link/tree/master/native" rel="noopener external">See them all on GitHub</a>.</p>
     </div>
   </section>
 
@@ -196,6 +196,6 @@
   </div>
 </footer>
 
-<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r89"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r90"></script>
 </body>
 </html>

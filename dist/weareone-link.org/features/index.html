@@ -34,9 +34,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r89">
-  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r89">
-  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r89">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r90">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r90">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r90">
 </head>
 <body>
 <a href="#main" class="skip-link">Skip to content</a>
@@ -63,11 +63,11 @@
     <div class="container">
       <span class="we-are-one">Features</span>
       <h1>Everything One Link can do, <span class="grad">told by One Link.</span></h1>
-      <p class="lede">This page is generated from the live capability advertisement of the One Link daemon at <code class="ol-inline-code-em">/api/capabilities</code>. We cannot lie on this page. If a feature is here, the daemon ships it. If it is not, it does not.</p>
+      <p class="lede">This page is generated from the live capability advertisement of the One Link daemon at <code class="ol-inline-code-em">/api/status</code>. We cannot lie on this page. If a feature is here, the daemon ships it. If it is not, it does not.</p>
       <span class="ol-status">
         <span class="dot"></span>
         <span>live from</span>
-        <span class="number">/api/capabilities</span>
+        <span class="number">/api/status</span>
         <span>updated 2s ago</span>
       </span>
     </div>
@@ -123,7 +123,7 @@
 
         <article class="ol-tile">
           <h3>End-to-end encrypted by default.</h3>
-          <p>Cleartext never leaves your device. Every message, every chunk. Per-message forward secrecy active today; per-chunk activation with the chunk-store cutover in v0.22. <span class="ol-soft-text">Crates: <code class="ol-inline-code">ol_ratchet</code>, <code class="ol-inline-code">ol_transfer</code>.</span></p>
+          <p>Cleartext never leaves your device. Every message, every chunk. Per-message Double Ratchet and per-chunk forward-secret KDF chain both active today between capable peers. <span class="ol-soft-text">Crates: <code class="ol-inline-code">ol_ratchet</code>, <code class="ol-inline-code">ol_transfer</code>.</span></p>
         </article>
 
         <article class="ol-tile">
@@ -216,6 +216,6 @@
   </div>
 </footer>
 
-<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r89"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r90"></script>
 </body>
 </html>

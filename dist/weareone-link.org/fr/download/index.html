@@ -31,9 +31,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r89">
-  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r89">
-  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r89">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r90">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r90">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r90">
 </head>
 <body>
 <a href="#main" class="skip-link">Aller au contenu</a>
@@ -163,7 +163,7 @@
 <span class="c">3.</span> requête         <span class="a">one-link-&lt;votre-os&gt;.bin</span>
 <span class="c">4.</span> streamer        <span class="g">AEAD par morceau, rekey tous les N</span>
 <span class="c">5.</span> vérifier sha    <span class="g">correspond au hash annoncé</span>
-<span class="c">6.</span> vérifier sig    <span class="g">Ed25519 + ML-DSA-65 ok tous deux</span>
+<span class="c">6.</span> vérifier sig    <span class="g">Ed25519 ok</span> <span class="ol-soft-text">&middot; ML-DSA-65 en attente (arrive en v0.22)</span>
 <span class="c">7.</span> attester        <span class="g">ol_confidential frais, témoin ok</span>
 
 <span class="c">terminé</span>  <span class="g">fichier écrit sur disque</span></pre>
@@ -272,6 +272,6 @@
   </div>
 </footer>
 
-<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r89"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r90"></script>
 </body>
 </html>

@@ -33,9 +33,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r89">
-  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r89">
-  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r89">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r90">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r90">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r90">
 </head>
 <body>
 <a href="#main" class="skip-link">Zum Inhalt springen</a>
@@ -61,11 +61,11 @@
     <div class="container">
       <span class="we-are-one">Funktionen</span>
       <h1>Alles, was One Link kann, <span class="grad">erzählt von One Link.</span></h1>
-      <p class="lede">Diese Seite wird live aus der Capability-Ankündigung des One-Link-Daemons unter <code class="ol-inline-code-em">/api/capabilities</code> erzeugt. Wir können auf dieser Seite nicht lügen. Wenn eine Funktion hier steht, liefert sie der Daemon. Wenn nicht, dann nicht.</p>
+      <p class="lede">Diese Seite wird live aus der Capability-Ankündigung des One-Link-Daemons unter <code class="ol-inline-code-em">/api/status</code> erzeugt. Wir können auf dieser Seite nicht lügen. Wenn eine Funktion hier steht, liefert sie der Daemon. Wenn nicht, dann nicht.</p>
       <span class="ol-status">
         <span class="dot"></span>
         <span>live von</span>
-        <span class="number">/api/capabilities</span>
+        <span class="number">/api/status</span>
         <span>vor 2 s aktualisiert</span>
       </span>
     </div>
@@ -121,7 +121,7 @@
 
         <article class="ol-tile">
           <h3>Standardmäßig Ende-zu-Ende-verschlüsselt.</h3>
-          <p>Klartext verlässt nie Ihr Gerät. Jede Nachricht, jeder Chunk. Forward Secrecy pro Nachricht heute aktiv; Aktivierung pro Chunk mit dem Chunk-Store-Cutover in v0.22. <span class="ol-soft-text">Crates: <code class="ol-inline-code">ol_ratchet</code>, <code class="ol-inline-code">ol_transfer</code>.</span></p>
+          <p>Klartext verlässt nie Ihr Gerät. Jede Nachricht, jeder Chunk. Double Ratchet pro Nachricht und Forward-Secret-KDF-Kette pro Chunk sind heute beide zwischen fähigen Peers aktiv. <span class="ol-soft-text">Crates: <code class="ol-inline-code">ol_ratchet</code>, <code class="ol-inline-code">ol_transfer</code>.</span></p>
         </article>
 
         <article class="ol-tile">
@@ -223,6 +223,6 @@
   </div>
 </footer>
 
-<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r89"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r90"></script>
 </body>
 </html>

@@ -29,9 +29,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r89">
-  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r89">
-  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r89">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r90">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r90">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r90">
 </head>
 <body>
 <a href="#main" class="skip-link">Aller au contenu</a>
@@ -128,12 +128,20 @@
           <p>weareone-link.org fonctionne sur Cloudflare Workers. Cloudflare voit l'IP de chaque requête, comme tout CDN. Nous avons configuré le worker pour remplacer les en-têtes de télémétrie de rapport d'erreurs par défaut de Cloudflare afin qu'aucune balise NEL ne se déclenche depuis votre navigateur.</p>
         </article>
         <article class="ol-tile">
-          <h3>Couche de présence anonyme</h3>
+          <h3>Durable Object MeshPresence</h3>
           <p>La pastille « N ici en ce moment » utilise un Cloudflare Durable Object qui ne conserve qu'un identifiant aléatoire par session pendant la durée de vie de votre onglet. L'identifiant tourne à chaque visite. Aucune donnée identifiante n'est stockée.</p>
         </article>
         <article class="ol-tile">
-          <h3>Tampon de partage chiffré</h3>
-          <p>/share/ n'accepte que du texte chiffré. La clé vit dans le fragment d'URL et n'atteint jamais le serveur. Le texte chiffré est supprimé au premier téléchargement ou après 24 heures, selon ce qui arrive en premier.</p>
+          <h3>Durable Object NativeSession</h3>
+          <p>État de session WebTransport par onglet pour la démo de handshake /native. Conserve les clés X25519 éphémères et les compteurs du protocole de fil One Link uniquement en mémoire. Récupéré par le ramasse-miettes en inactivité. Pas d'identifiants, pas d'IP.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Durable Object ShareRate</h3>
+          <p>Seau à jetons par sous-réseau qui limite les téléversements vers /api/share (rafale 12, soutenu 2/min). Indexé par le /24 (IPv4) ou /48 (IPv6) du téléverseur afin que les pools NAT partagent un budget. Conserve seulement un compteur de jetons et un horodatage de remplissage. Aucune IP n'est stockée, seulement le hash du sous-réseau utilisé comme clé du seau.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Cloudflare R2 (bucket RELEASES)</h3>
+          <p>Contient deux familles d'objets : les binaires de version signés que sert le flux /download/ et le texte chiffré de /share/ (texte chiffré seulement, clé jamais envoyée, supprimé au premier GET ou après 24h). Cloudflare voit les octets des objets et les journaux d'accès ; les clés pour déchiffrer quoi que ce soit dans le bucket de partage ne quittent jamais les navigateurs de l'expéditeur et du destinataire.</p>
         </article>
         <article class="ol-tile">
           <h3>Pas de pistage, pas d'analytique</h3>
@@ -207,6 +215,6 @@
   </div>
 </footer>
 
-<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r89"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r90"></script>
 </body>
 </html>

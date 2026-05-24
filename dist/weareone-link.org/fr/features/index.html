@@ -33,9 +33,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r89">
-  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r89">
-  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r89">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r90">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r90">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r90">
 </head>
 <body>
 <a href="#main" class="skip-link">Aller au contenu</a>
@@ -61,11 +61,11 @@
     <div class="container">
       <span class="we-are-one">Fonctionnalités</span>
       <h1>Tout ce que One Link sait faire, <span class="grad">raconté par One Link.</span></h1>
-      <p class="lede">Cette page est générée à partir de l'annonce de capabilities en direct du daemon One Link à <code class="ol-inline-code-em">/api/capabilities</code>. Nous ne pouvons pas mentir sur cette page. Si une fonctionnalité est ici, le daemon la livre. Si elle n'y est pas, il ne la livre pas.</p>
+      <p class="lede">Cette page est générée à partir de l'annonce de capabilities en direct du daemon One Link à <code class="ol-inline-code-em">/api/status</code>. Nous ne pouvons pas mentir sur cette page. Si une fonctionnalité est ici, le daemon la livre. Si elle n'y est pas, il ne la livre pas.</p>
       <span class="ol-status">
         <span class="dot"></span>
         <span>en direct depuis</span>
-        <span class="number">/api/capabilities</span>
+        <span class="number">/api/status</span>
         <span>mis à jour il y a 2 s</span>
       </span>
     </div>
@@ -121,7 +121,7 @@
 
         <article class="ol-tile">
           <h3>Chiffré de bout en bout par défaut.</h3>
-          <p>Le texte en clair ne quitte jamais votre appareil. Chaque message, chaque morceau. Confidentialité persistante par message active aujourd'hui ; activation par morceau avec la bascule du chunk store en v0.22. <span class="ol-soft-text">Crates : <code class="ol-inline-code">ol_ratchet</code>, <code class="ol-inline-code">ol_transfer</code>.</span></p>
+          <p>Le texte en clair ne quitte jamais votre appareil. Chaque message, chaque morceau. Le Double Ratchet par message et la chaîne KDF à confidentialité persistante par morceau sont actifs aujourd'hui entre pairs capables. <span class="ol-soft-text">Crates : <code class="ol-inline-code">ol_ratchet</code>, <code class="ol-inline-code">ol_transfer</code>.</span></p>
         </article>
 
         <article class="ol-tile">
@@ -223,6 +223,6 @@
   </div>
 </footer>
 
-<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r89"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r90"></script>
 </body>
 </html>

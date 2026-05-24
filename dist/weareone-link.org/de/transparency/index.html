@@ -29,9 +29,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r89">
-  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r89">
-  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r89">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r90">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r90">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r90">
 </head>
 <body>
 <a href="#main" class="skip-link">Zum Inhalt springen</a>
@@ -128,12 +128,20 @@
           <p>weareone-link.org läuft auf Cloudflare Workers. Cloudflare sieht die IP jeder Anfrage, wie jedes CDN. Wir haben den Worker so konfiguriert, dass Cloudflares Standard-Fehlerberichts-Telemetrie-Header überschrieben werden, sodass keine NEL-Beacons von Ihrem Browser feuern.</p>
         </article>
         <article class="ol-tile">
-          <h3>Anonyme Präsenzschicht</h3>
+          <h3>MeshPresence Durable Object</h3>
           <p>Die „N gerade hier"-Anzeige verwendet ein Cloudflare Durable Object, das nichts außer einer zufälligen Sitzungs-ID für die Lebensdauer Ihres Tabs speichert. Die ID rotiert bei jedem Besuch. Keine identifizierenden Daten werden gespeichert.</p>
         </article>
         <article class="ol-tile">
-          <h3>Verschlüsselter Share-Puffer</h3>
-          <p>/share/ akzeptiert nur Chiffretext. Der Schlüssel lebt im URL-Fragment und erreicht nie den Server. Der Chiffretext wird beim ersten Download oder nach 24 Stunden gelöscht, je nachdem, was zuerst eintritt.</p>
+          <h3>NativeSession Durable Object</h3>
+          <p>WebTransport-Sitzungszustand pro Tab für die /native-Handshake-Demo. Hält die ephemeren X25519-Schlüssel und die One-Link-Wire-Protokoll-Zähler ausschließlich im Arbeitsspeicher. Wird im Leerlauf vom Garbage Collector entfernt. Keine Identifikatoren, keine IPs.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>ShareRate Durable Object</h3>
+          <p>Token-Bucket pro Subnetz, der /api/share-Uploads drosselt (Burst 12, dauerhaft 2/min). Verschlüsselt nach dem /24 (IPv4) oder /48 (IPv6) des Uploaders, damit Einwahl-NAT-Pools ein gemeinsames Budget teilen. Hält nur einen Token-Zähler und einen Auffüll-Zeitstempel. Keine IP wird gespeichert, nur der Subnetz-Hash, der als Bucket-Schlüssel verwendet wird.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Cloudflare R2 (RELEASES-Bucket)</h3>
+          <p>Enthält zwei Objektfamilien: signierte Release-Binärdateien, die der /download/-Flow ausliefert, und /share/-Chiffretext (nur Chiffretext, Schlüssel wird nie gesendet, gelöscht beim ersten GET oder nach 24h). Cloudflare sieht die Objekt-Bytes und Zugriffslogs; die Schlüssel zum Entschlüsseln von irgendetwas im Share-Bucket verlassen nie die Browser von Sender und Empfänger.</p>
         </article>
         <article class="ol-tile">
           <h3>Kein Tracking, keine Analytik</h3>
@@ -207,6 +215,6 @@
   </div>
 </footer>
 
-<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r89"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r90"></script>
 </body>
 </html>

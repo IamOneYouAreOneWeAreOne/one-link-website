@@ -33,9 +33,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r89">
-  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r89">
-  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r89">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r90">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r90">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r90">
 </head>
 <body>
 <a href="#main" class="skip-link">Aller au contenu</a>
@@ -73,13 +73,13 @@
   <section class="section">
     <div class="container">
       <span class="kicker">Les crates</span>
-      <h2>One Link, c'est <span class="grad">37 petits crates.</span></h2>
+      <h2>One Link, c'est <span class="grad">41 petits crates.</span></h2>
       <p class="lede">Chacun fait une chose. Chacun est auditable de façon indépendante. Chacun compile en natif, en WASM, ou les deux. Réunis par le daemon.</p>
 
       <div class="ol-grid ol-grid-2">
         <article class="ol-tile">
           <h3>ol_pair_qr</h3>
-          <p>Poignée de main d'appairage par QR. Invitation Ed25519, clé de chaîne X25519, SAS de 5 mots, liste de mots auditée par Levenshtein. Hybride PQ via mélange ML-KEM.</p>
+          <p>Poignée de main d'appairage par QR. Invitation Ed25519, clé de chaîne X25519, SAS de 5 mots, liste de mots auditée par Levenshtein. L'emplacement de mélange ML-KEM-768 arrive en v0.22.</p>
         </article>
         <article class="ol-tile">
           <h3>ol_onion</h3>
@@ -95,7 +95,7 @@
         </article>
         <article class="ol-tile">
           <h3>ol_ratchet</h3>
-          <p>Double Ratchet par-dessus la racine hybride post-quantique. Confidentialité persistante sur chaque morceau et chaque message.</p>
+          <p>Chaîne KDF à confidentialité persistante par morceau (BLAKE3 à sens unique). Le Double Ratchet par message au-dessus de la racine hybride vit à ses côtés dans le daemon Python.</p>
         </article>
         <article class="ol-tile">
           <h3>ol_capability</h3>
@@ -115,7 +115,7 @@
         </article>
         <article class="ol-tile">
           <h3>ol_homology</h3>
-          <p>Détection topologique de partitions. Repère un découpage de réseau en une seule ronde de gossip. 0% de faux positifs sur une porte de fuzz à 5M d'itérations.</p>
+          <p>Détection topologique de partitions. Repère un découpage de réseau en une seule ronde de gossip. 0% de faux positifs sur le fuzz de partition 4-régulier.</p>
         </article>
         <article class="ol-tile">
           <h3>ol_pqsig + ol_pqkem</h3>
@@ -127,7 +127,7 @@
         </article>
       </div>
 
-      <p class="ol-footnote-dim">26 autres crates dans la source. <a class="ol-cyan-text" href="https://github.com/IamOneYouAreOneWeAreOne/one-link/tree/master/native" rel="noopener external">Voyez-les tous sur GitHub</a>.</p>
+      <p class="ol-footnote-dim">29 autres crates dans la source. <a class="ol-cyan-text" href="https://github.com/IamOneYouAreOneWeAreOne/one-link/tree/master/native" rel="noopener external">Voyez-les tous sur GitHub</a>.</p>
     </div>
   </section>
 
@@ -197,6 +197,6 @@
   </div>
 </footer>
 
-<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r89"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r90"></script>
 </body>
 </html>

@@ -33,9 +33,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r89">
-  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r89">
-  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r89">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r90">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r90">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r90">
 </head>
 <body>
 <a href="#main" class="skip-link">Saltar para o conteúdo</a>
@@ -60,6 +60,39 @@
       <span class="we-are-one">Registo de alterações</span>
       <h1>Cada alteração <span class="grad">entregue.</span></h1>
       <p class="lede">Cada versão de One Link, cada push para este site, por ordem cronológica inversa. O histórico de git é a fonte de verdade; esta página é a sua vista legível por pessoas.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">2026-05-23</span>
+      <h2><span class="grad">site</span> v0.21.0-alpha.0+r89 - aperto + i18n + paridade de afirmações</h2>
+      <ul>
+        <li>Varredura de paridade de afirmações do daemon: descrição de ol_ratchet corrigida (cadeia KDF por bloco, não Double Ratchet), mistura ML-KEM de ol_pair_qr reclassificada como pendente para v0.22, escala da porta de fuzz de ol_homology, /api/status referenciada (antes /api/capabilities, que nunca existiu), contagem de crates de 37 para 41, sigilo para a frente por bloco reclassificado como ativo hoje entre pares capazes.</li>
+        <li>Página de transparência ampliada com a divulgação completa dos subprocessadores Cloudflare: Durable Objects MeshPresence + NativeSession + ShareRate + bucket R2 RELEASES.</li>
+        <li>17 páginas internas completas traduzidas para es, fr, de, pt, it (85 páginas). Cadeia do seletor de idioma do rodapé injetada automaticamente em cada página traduzida.</li>
+        <li>Página 404 em 5 idiomas com encaminhamento do worker ciente do idioma: pedidos sob /es/, /fr/, /de/, /pt/, /it/ que falham agora servem a 404 localizada correspondente.</li>
+        <li>Cartões de partilha Open Graph: SVG e PNG (1200x630) por idioma em /og/one-link-&lt;código&gt;.png. og:image e twitter:image varridos em 75 páginas traduzidas. Gerador: scripts/build-og-per-language.py (renderizador resvg-py).</li>
+        <li>O downloadComingSoonPage do worker é agora entregue no idioma do visitante via deteção Accept-Language; 8 blocos de SO x 6 idiomas = 48 células localizadas.</li>
+        <li>O manifesto assinado agora cobre os 110 ficheiros HTML (antes 4); rehash-manifest.py descobre automaticamente novas páginas. Build-i18n.py tornado tolerante a CRLF e injetor do seletor para páginas novas.</li>
+        <li>Conformidade CSP: zero atributos style="..." em linha em HTML+JS de dist/. style-src 'self' agora aplicável. Novas classes utilitárias .ol-soft-prose, .ol-soft-note, .ol-dim-mono.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">2026-05-18 .. 2026-05-22</span>
+      <h2><span class="grad">daemon</span> - superfície de identidade de dispositivo, bootstrap de telefone, reconexão automática com cert</h2>
+      <ul>
+        <li>Barra lateral de identidade de dispositivo: o iPhone emparelhado aparece na secção «A sua identidade One» do ambiente de trabalho; o portátil aparece com etiquetas inteligentes; poda por dispositivo.</li>
+        <li>Bootstrap de telefone (Fase 2-4): carregamento de ficheiros por blocos a partir do telefone via o DataChannel do daemon; CSS mobile-first (a sangrar, composer pegajoso, sem zoom no iOS); cartão de Definições (identidade, daemon emparelhado e terminar sessão); renomear alias por par e alternador de silenciar no telefone.</li>
+        <li>Reconexão automática do telefone autenticada por cert após reinício do daemon ou fecho de separador; o relogin por cert vence sobre setup_device_invite obsoleto na query; TTL de 30 min para convites de dispositivo; navegação de painel único.</li>
+        <li>Polimento do fluxo de emparelhamento: a confirmação SAS é agora propagada do lado do telefone via sondagem de /status; impressão digital de cabo com sha256 emitida para peer.html; cache-bust de peer.html e try-roster ao concluir o emparelhamento; /device-invite/claim sem guarda para o bootstrap do telefone.</li>
+        <li>UI/UX: cache-busting à prova de bala via ETag em index.html; contrato CSS [hidden] aplicado; controlos avançados de Definições ligados; ícones de navegação estáveis; copy da shell de chat reforçada; restaurados os botões de ícone do composer.</li>
+        <li>RECEIVE de ficheiro no telefone: balão de ficheiro em linha e descarga por blocos (blocos de 16 KiB, backpressure e reconexão automática ao fechar o DC).</li>
+        <li>ROADMAP.md orientado ao utilizador adicionado em One_link/docs/: como é o «feito», em linguagem clara.</li>
+      </ul>
     </div>
   </section>
 
@@ -173,6 +206,6 @@
   </div>
 </footer>
 
-<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r89"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r90"></script>
 </body>
 </html>

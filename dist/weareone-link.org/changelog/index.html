@@ -32,9 +32,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r89">
-  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r89">
-  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r89">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r90">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r90">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r90">
 </head>
 <body>
 <a href="#main" class="skip-link">Skip to content</a>
@@ -60,6 +60,39 @@
       <span class="we-are-one">Changelog</span>
       <h1>Every shipped <span class="grad">change.</span></h1>
       <p class="lede">Every release of One Link, every push to this site, in reverse chronological order. The git history is the source of truth; this page is the human-readable view of it.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">2026-05-23</span>
+      <h2><span class="grad">site</span> v0.21.0-alpha.0+r89 - tighten + i18n + claim parity</h2>
+      <ul>
+        <li>Daemon claim parity sweep: corrected ol_ratchet description (per-chunk KDF chain, not Double Ratchet), ol_pair_qr ML-KEM mix-in re-classed as v0.22-pending, ol_homology fuzz-gate scale, /api/status referenced (was /api/capabilities, never existed), crate count 37 to 41, per-chunk forward secrecy reclassified as live today between capable peers.</li>
+        <li>Transparency page expanded with full Cloudflare sub-processor disclosure: MeshPresence + NativeSession + ShareRate Durable Objects + RELEASES R2 bucket.</li>
+        <li>Full 17 inner pages translated into es, fr, de, pt, it (85 pages). Footer language switcher chain auto-injected on every translated page.</li>
+        <li>404 page in 5 languages with language-aware worker routing: requests under /es/, /fr/, /de/, /pt/, /it/ that miss now serve the matching localized 404.</li>
+        <li>Open Graph share cards: per-language SVG + PNG (1200x630) at /og/one-link-&lt;code&gt;.png. og:image + twitter:image swept across 75 translated pages. Generator: scripts/build-og-per-language.py (resvg-py renderer).</li>
+        <li>Worker downloadComingSoonPage now ships in the visitor's language via Accept-Language detection; 8 OS blocks x 6 languages = 48 localized cells.</li>
+        <li>Signed manifest now covers all 110 HTML files (was 4); rehash-manifest.py auto-discovers new pages. Build-i18n.py made CRLF-tolerant + switcher-injecting for fresh pages.</li>
+        <li>CSP compliance: zero inline style="..." attrs across HTML+JS in dist/. style-src 'self' now enforceable. New utility classes .ol-soft-prose, .ol-soft-note, .ol-dim-mono.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">2026-05-18 .. 2026-05-22</span>
+      <h2><span class="grad">daemon</span> - device-identity surface, phone bootstrap, cert auto-reconnect</h2>
+      <ul>
+        <li>Device-identity sidebar: paired iPhone surfaces in the desktop "Your One identity" section; laptop appears with smart labels; per-device prune.</li>
+        <li>Phone bootstrap (Phase 2-4): chunked file upload from phone via daemon DataChannel; mobile-first CSS (full-bleed, sticky composer, iOS no-zoom); Settings card (identity + paired daemon + sign out); per-peer alias rename + mute toggle on phone.</li>
+        <li>Cert-authed phone auto-reconnect after daemon restart or tab close; cert-relogin wins over stale setup_device_invite query; 30-min device-invite TTL; single-pane navigation.</li>
+        <li>Pair flow polish: SAS confirm now propagated phone-side via /status poll; sha256-tagged wire fingerprint emitted to peer.html; cache-bust peer.html and try-roster on pair-complete; unguarded /device-invite/claim for phone bootstrap.</li>
+        <li>UI/UX: bullet-proof cache busting via ETag on index.html; [hidden] CSS contract enforced; Settings advanced controls wired; stable nav icons; harden chat shell copy; restored composer icon buttons.</li>
+        <li>Phone file RECEIVE: inline file bubble + chunked download (16 KiB chunks + backpressure + auto-reconnect on DC close).</li>
+        <li>User-facing ROADMAP.md added at One_link/docs/ - what "done" looks like, plain English.</li>
+      </ul>
     </div>
   </section>
 
@@ -164,6 +197,6 @@
   </div>
 </footer>
 
-<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r89"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r90"></script>
 </body>
 </html>
