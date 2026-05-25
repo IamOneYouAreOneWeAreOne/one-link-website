@@ -125,6 +125,7 @@ const CONTENT_SLUGS = [
   "about", "audits", "builders", "download", "features", "how-it-works",
   "mesh", "mirror", "one", "privacy", "security", "share", "terms",
   "accessibility", "transparency", "changelog", "releases", "roadmap",
+  "verify-download",
 ];
 const LANG_PREFIXES = ["es", "fr", "de", "pt", "it"];
 const CONTENT_DIRS = new Set([
@@ -158,6 +159,48 @@ function onionLocationHeader(request, env) {
   const url = new URL(request.url);
   const target = `http://${onionHostname}${url.pathname}${url.search}`;
   return target;
+}
+
+// Attach an X-Artifact-SHA256 header to a download response so the
+// /verify-download/ page (and curl users) can confirm the bytes match
+// what we signed without trusting the network in between.
+//
+// Three sources, in order of preference:
+//   1. R2's auto-computed checksum from upload (obj.checksums.sha256).
+//   2. customMetadata.sha256 we set at upload time.
+//   3. nothing (no SHA known): we still expose the header empty so the
+//      verify page can tell "we don't know" apart from "fetch failed."
+//
+// We CORS-expose the header so a same-origin fetch from /verify-download/
+// can read it. Browsers do not allow custom headers on cross-origin reads
+// without this even for same-origin fetches if the request was a CORS
+// preflight via a Range or auth header; the explicit expose is harmless
+// and future-proofs the page if the verifier ever moves off-origin.
+function attachArtifactHash(headers, obj) {
+  let hex = "";
+  try {
+    const checksumBuf = obj && obj.checksums && obj.checksums.sha256;
+    if (checksumBuf && checksumBuf.byteLength > 0) {
+      const arr = new Uint8Array(checksumBuf);
+      let s = "";
+      for (let i = 0; i < arr.length; i++) s += arr[i].toString(16).padStart(2, "0");
+      hex = s;
+    }
+  } catch { /* fall through */ }
+  if (!hex) {
+    const meta = obj && obj.customMetadata && obj.customMetadata.sha256;
+    if (typeof meta === "string" && /^[a-f0-9]{64}$/i.test(meta)) {
+      hex = meta.toLowerCase();
+    }
+  }
+  if (hex) {
+    headers.set("X-Artifact-SHA256", hex);
+  }
+  // Always expose the header so the verify page can read it on HEAD,
+  // even when the value is absent (it'll fall back to manual compare).
+  const existing = headers.get("Access-Control-Expose-Headers");
+  const next = existing ? `${existing}, X-Artifact-SHA256` : "X-Artifact-SHA256";
+  headers.set("Access-Control-Expose-Headers", next);
 }
 
 // Permanent redirect helper that strips Cloudflare auto-injected telemetry
@@ -473,6 +516,7 @@ async function download(env, os, request) {
         `attachment; filename="${wantsZip ? "one-link-source.zip" : "one-link-source.tar.gz"}"`
       );
       headers.set("Cache-Control", "public, max-age=86400");
+      attachArtifactHash(headers, obj);
       for (const [k, v] of Object.entries(PRIVACY_HEADERS)) headers.set(k, v);
       for (const [k, v] of Object.entries(NEL_OPT_OUT_HEADERS)) headers.set(k, v);
       return new Response(obj.body, { headers });
@@ -495,6 +539,7 @@ async function download(env, os, request) {
       headers.set("Content-Type", "application/octet-stream");
       headers.set("Content-Disposition", 'attachment; filename="one-link.exe"');
       headers.set("Cache-Control", "public, max-age=86400");
+      attachArtifactHash(headers, obj);
       for (const [k, v] of Object.entries(PRIVACY_HEADERS)) headers.set(k, v);
       return new Response(obj.body, { headers });
     }
@@ -510,6 +555,7 @@ async function download(env, os, request) {
       headers.set("Content-Type", "application/gzip");
       headers.set("Content-Disposition", 'attachment; filename="one-link-linux-x86_64.tar.gz"');
       headers.set("Cache-Control", "public, max-age=86400");
+      attachArtifactHash(headers, obj);
       for (const [k, v] of Object.entries(PRIVACY_HEADERS)) headers.set(k, v);
       return new Response(obj.body, { headers });
     }
@@ -524,7 +570,7 @@ async function download(env, os, request) {
       headers.set("Content-Type", "application/octet-stream");
       headers.set("Content-Disposition", `attachment; filename="one-link-${os}.bin"`);
       headers.set("Cache-Control", "public, max-age=86400");
-      headers.set("X-Artifact-SHA256", obj.checksums?.sha256 || "");
+      attachArtifactHash(headers, obj);
       for (const [k, v] of Object.entries(PRIVACY_HEADERS)) headers.set(k, v);
       return new Response(obj.body, { headers });
     }

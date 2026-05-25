@@ -2250,6 +2250,150 @@ function wireVerifyThisSite() {
   btn.addEventListener("click", runVerifyThisSite);
 }
 
+// ---------------------------------------------------------------------------
+// /verify-download/ - drop a downloaded One Link binary, compute SHA-256
+// locally via Web Crypto, fetch the live signed value from the release
+// relay, compare byte-equal. The file never leaves the tab.
+//
+// Hash output format MUST match the worker's X-Artifact-SHA256 header
+// (hex, lowercase, no prefix). The header is opt-in CORS-exposed via
+// Access-Control-Expose-Headers so the fetch below can read it.
+//
+// On mismatch we render a red panel + an explicit "do not run" line.
+// On success we render a green panel + the matching hash + a link to
+// the attestation chain.
+// ---------------------------------------------------------------------------
+function osFromFilename(name) {
+  const n = (name || "").toLowerCase();
+  if (n.endsWith(".exe"))                          return "windows";
+  if (n.endsWith(".dmg") || n.includes("macos"))   return "macos";
+  if (n.endsWith(".apk") || n.includes("android")) return "android";
+  if (n.endsWith(".tar.gz") && n.includes("source")) return "source";
+  if (n.endsWith(".tar.gz") || n.endsWith(".appimage") ||
+      n.endsWith(".deb")    || n.endsWith(".rpm"))     return "linux";
+  return null;
+}
+
+function bytesToHex(buf) {
+  const a = new Uint8Array(buf);
+  let s = "";
+  for (let i = 0; i < a.length; i++) {
+    s += a[i].toString(16).padStart(2, "0");
+  }
+  return s;
+}
+
+async function sha256Hex(file) {
+  // Stream the file through SubtleCrypto. For files large enough that
+  // .arrayBuffer() would OOM we'd want a chunked path, but every One Link
+  // release artifact (<100 MB) fits comfortably in memory.
+  const buf = await file.arrayBuffer();
+  const digest = await crypto.subtle.digest("SHA-256", buf);
+  return bytesToHex(digest);
+}
+
+async function fetchPublishedHash(os) {
+  if (!os) return null;
+  try {
+    const r = await fetch(`/download/${os}`, { method: "HEAD" });
+    if (!r.ok) return null;
+    const h = r.headers.get("X-Artifact-SHA256") || "";
+    // Strip optional "sha256-" or "0x" prefix; normalize to lowercase hex.
+    return h.replace(/^sha256-/i, "").replace(/^0x/i, "").toLowerCase() || null;
+  } catch {
+    return null;
+  }
+}
+
+function renderVerifyResult(state, payload) {
+  const box = $("#ol-verify-result");
+  if (!box) return;
+  box.classList.remove("is-ok", "is-fail", "is-pending");
+  box.classList.add("is-visible", `is-${state}`);
+  box.innerHTML = payload;
+}
+
+async function runVerifyDownload(file) {
+  if (!file) return;
+  renderVerifyResult("pending",
+    `<div><span class="label">file</span> ${file.name} <span class="ol-soft-text">(${(file.size / 1048576).toFixed(2)} MB)</span></div>` +
+    `<div><span class="label">status</span> hashing locally with SHA-256 (no upload)...</div>`
+  );
+
+  let localHex = "";
+  try {
+    localHex = await sha256Hex(file);
+  } catch (e) {
+    renderVerifyResult("fail",
+      `<div><span class="label">file</span> ${file.name}</div>` +
+      `<div><span class="label">status</span> <span class="fail">could not hash file: ${e?.message || e}</span></div>`
+    );
+    return;
+  }
+
+  const os = osFromFilename(file.name);
+  const publishedHex = await fetchPublishedHash(os);
+
+  if (!publishedHex) {
+    renderVerifyResult("pending",
+      `<div><span class="label">file</span> ${file.name} <span class="ol-soft-text">(${(file.size / 1048576).toFixed(2)} MB)</span></div>` +
+      `<div><span class="label">your hash</span> <span class="hash">${localHex}</span></div>` +
+      `<div><span class="label">status</span> we could not auto-fetch the published hash for this filename. Compare your hash against the value on <a class="ol-cyan-text" href="/download/">/download/</a> by hand.</div>`
+    );
+    return;
+  }
+
+  const match = localHex === publishedHex;
+  if (match) {
+    renderVerifyResult("ok",
+      `<div><span class="label">file</span> ${file.name} <span class="ol-soft-text">(${(file.size / 1048576).toFixed(2)} MB)</span></div>` +
+      `<div><span class="label">your hash</span> <span class="hash ok">${localHex}</span></div>` +
+      `<div><span class="label">signed hash</span> <span class="hash ok">${publishedHex}</span></div>` +
+      `<div><span class="label">verdict</span> <span class="ok">MATCH. This is byte-for-byte the binary we signed.</span></div>` +
+      `<div><span class="label">next</span> Read the attestation chain at <a class="ol-cyan-text" href="/api/attest/${localHex}">/api/attest/${localHex}</a> if you want the source-commit + build-environment receipt.</div>`
+    );
+    if (window.olFieldPulse) window.olFieldPulse("verify", 1.0);
+  } else {
+    renderVerifyResult("fail",
+      `<div><span class="label">file</span> ${file.name} <span class="ol-soft-text">(${(file.size / 1048576).toFixed(2)} MB)</span></div>` +
+      `<div><span class="label">your hash</span> <span class="hash fail">${localHex}</span></div>` +
+      `<div><span class="label">signed hash</span> <span class="hash">${publishedHex}</span></div>` +
+      `<div><span class="label">verdict</span> <span class="fail">MISMATCH. Do not run this file.</span></div>` +
+      `<div><span class="label">next</span> Re-download from <a class="ol-cyan-text" href="/download/">/download/</a>, or build from source.</div>`
+    );
+  }
+}
+
+function wireVerifyDownload() {
+  const drop = $("#ol-verify-drop");
+  const input = $("#ol-verify-file");
+  if (!drop || !input) return;
+
+  input.addEventListener("change", (e) => {
+    const f = e.target.files && e.target.files[0];
+    if (f) runVerifyDownload(f);
+  });
+
+  ["dragenter", "dragover"].forEach(evt => {
+    drop.addEventListener(evt, (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      drop.classList.add("is-dragover");
+    });
+  });
+  ["dragleave", "drop"].forEach(evt => {
+    drop.addEventListener(evt, (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      drop.classList.remove("is-dragover");
+    });
+  });
+  drop.addEventListener("drop", (e) => {
+    const f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+    if (f) runVerifyDownload(f);
+  });
+}
+
 // MOUSE-REACTIVE COHERENCE FIELD - REMOVED.
 // An earlier iteration spawned faint cursor pings on every pointermove.
 // Pulled out to keep the site clean + confident, not literal-reactive.
@@ -4008,6 +4152,7 @@ function wireNavToggle() {
   wireHwkeyDemo();             // /security/ TOFU device-fingerprint demo
   wireAttestationVerify();     // /download/ "verify this binary's attestation"
   wireVerifyThisSite();        // /security/ "verify this site, in your tab"
+  wireVerifyDownload();        // /verify-download/ drag-and-drop SHA-256 vs signed
   wireRebuildFromSource();     // /builders/ "rebuild this site in your tab"
   startMeshSolverColoring();   // /mesh/ peer-dot coloring via real solver
   wireTelemetry();             // ?-key system-telemetry overlay

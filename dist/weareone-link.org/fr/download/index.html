@@ -31,9 +31,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r91">
-  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r91">
-  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r91">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r92">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r92">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r92">
 </head>
 <body>
 <a href="#main" class="skip-link">Aller au contenu</a>
@@ -66,6 +66,65 @@
       <p class="lede">
         Nous avons détecté votre appareil et préparé la bonne version. Signée, construite de façon reproductible et téléchargée par le réseau lui-même au lieu d'une requête HTTP classique. La preuve est juste sous le bouton.
       </p>
+    </div>
+  </section>
+
+  <section class="section-tight">
+    <div class="container">
+      <div class="ol-warning-panel" role="region" aria-labelledby="ol-warn-h">
+        <h3 id="ol-warn-h">
+          <span class="ol-warning-icon" aria-hidden="true">!</span>
+          <span>Votre système d'exploitation vous avertira la première fois. Le fichier est sain. Voici comment passer l'avertissement.</span>
+        </h3>
+        <p class="ol-warning-prose">
+          Windows SmartScreen et macOS Gatekeeper signalent tout binaire récemment publié tant que l'éditeur n'a pas accumulé d'historique de téléchargement. Nous mettons en place les certificats de signature ; tant qu'ils n'ont pas atterri et accumulé de la réputation, chaque version récente déclenche un avertissement. Les octets eux-mêmes sont signés, hachés et vérifiables, et vous pouvez le confirmer vous-même dans votre navigateur. Comment passer :
+        </p>
+
+        <h4 class="ol-warning-h4">Comment passer l'avertissement</h4>
+        <div class="ol-warning-grid">
+
+          <div class="ol-warning-tile">
+            <h5><span class="ol-warning-os-tag">Windows</span> Passer en un clic (10 secondes)</h5>
+            <ol>
+              <li>Cliquez sur le bouton de téléchargement ci-dessous.</li>
+              <li>Quand Windows affiche « Windows a protégé votre PC », cliquez sur <strong>« Informations complémentaires »</strong>.</li>
+              <li>Cliquez sur <strong>« Exécuter quand même »</strong>.</li>
+            </ol>
+          </div>
+
+          <div class="ol-warning-tile">
+            <h5><span class="ol-warning-os-tag">macOS</span> Passer en un clic (10 secondes)</h5>
+            <ol>
+              <li>Cliquez sur le bouton de téléchargement ci-dessous.</li>
+              <li>Faites un clic droit sur <code>one-link.dmg</code> dans le Finder et choisissez <strong>Ouvrir</strong>.</li>
+              <li>Cliquez sur <strong>Ouvrir</strong> dans la boîte de dialogue. Ou utilisez <strong>Réglages Système &rarr; Confidentialité et sécurité &rarr; Ouvrir quand même</strong>.</li>
+            </ol>
+          </div>
+
+          <div class="ol-warning-tile">
+            <h5>Vérifier le fichier d'abord (30 secondes)</h5>
+            <ol>
+              <li>Cliquez sur le bouton de téléchargement ci-dessous.</li>
+              <li>Glissez le fichier téléchargé dans <a class="ol-cyan-text" href="/fr/verify-download/" hreflang="fr">/fr/verify-download/</a>.</li>
+              <li>Votre navigateur calcule le SHA-256 localement (le fichier ne quitte jamais votre onglet) et le compare à la valeur signée en direct. Une correspondance signifie que le binaire est octet pour octet ce que nous avons publié.</li>
+            </ol>
+          </div>
+
+          <div class="ol-warning-tile">
+            <h5>Construire depuis les sources à la place</h5>
+            <ol>
+              <li>Cliquez sur la ligne <strong>Source</strong> ci-dessous ou visitez notre <a class="ol-cyan-text" href="https://github.com/IamOneYouAreOneWeAreOne/one-link" rel="noopener external">GitHub</a>.</li>
+              <li>Construisez vous-même le daemon avec cargo et Python 3.11+. Les instructions sont dans le README.</li>
+              <li>Vous pouvez lire chaque ligne avant. Aucun avertissement parce que vous l'avez compilé.</li>
+            </ol>
+          </div>
+
+        </div>
+
+        <p class="ol-warning-foot">
+          Les certificats signés (Authenticode pour Windows, notarisation Developer ID pour macOS) sont sur la <a class="ol-cyan-text" href="/fr/roadmap/" hreflang="fr">/fr/roadmap/</a>. Une fois la réputation accumulée, cet avertissement disparaît automatiquement sans aucun changement de votre côté.
+        </p>
+      </div>
     </div>
   </section>
 
@@ -262,7 +321,7 @@
         </p>
       </div>
       <div><h3>Réseau</h3><ul><li><a href="/how-it-works/" hreflang="en">Comment ça marche</a></li><li><a href="/features/" hreflang="en">Fonctionnalités</a></li><li><a href="/mesh/" hreflang="en">Maillage en direct</a></li></ul></div>
-      <div><h3>Pour vous</h3><ul><li><a href="/download/" hreflang="en">Obtenir One Link</a></li><li><a href="/security/" hreflang="en">Sécurité</a></li><li><a href="/fr/roadmap/" hreflang="fr">Feuille de route</a></li><li><a href="/accessibility/" hreflang="en">Accessibilité</a></li><li><a href="/transparency/" hreflang="en">Transparence</a></li><li><a href="/audits/" hreflang="en">Audits</a></li></ul></div>
+      <div><h3>Pour vous</h3><ul><li><a href="/download/" hreflang="en">Obtenir One Link</a></li><li><a href="/security/" hreflang="en">Sécurité</a></li><li><a href="/fr/verify-download/" hreflang="fr">Vérifier le téléchargement</a></li><li><a href="/fr/roadmap/" hreflang="fr">Feuille de route</a></li><li><a href="/accessibility/" hreflang="en">Accessibilité</a></li><li><a href="/transparency/" hreflang="en">Transparence</a></li><li><a href="/audits/" hreflang="en">Audits</a></li></ul></div>
       <div><h3>Pour les bâtisseurs</h3><ul><li><a href="/builders/" hreflang="en">Protocole et source</a></li><li><a href="/changelog/" hreflang="en">Journal des modifications</a></li><li><a href="/releases/" hreflang="en">Versions</a></li><li><a href="/mirror/" hreflang="en">Mettre en miroir ce site</a></li><li><a href="/download/source" hreflang="en" rel="noopener">Archive source</a></li><li><a href="https://github.com/IamOneYouAreOneWeAreOne/one-link" rel="noopener external">GitHub</a></li></ul></div>
     </div>
     <div class="footer-bottom">
@@ -272,6 +331,6 @@
   </div>
 </footer>
 
-<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r91"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r92"></script>
 </body>
 </html>

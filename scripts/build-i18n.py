@@ -62,6 +62,7 @@ TRACKED_PAGES = [
     "privacy/index.html",
     "terms/index.html",
     "roadmap/index.html",
+    "verify-download/index.html",
     "404.html",
 ]
 

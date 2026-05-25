@@ -1468,6 +1468,157 @@ main { position: relative; z-index: 1; }
   font-size: 0.85rem;
 }
 .ol-share-success-headline { margin: 0 0 0.8rem; }
+
+/* OS-warning callout panel (Windows SmartScreen / macOS Gatekeeper heads-up).
+   Sits above the download button so expectations are set before the click. */
+.ol-warning-panel {
+  border: 1px solid rgba(255, 212, 121, 0.28);
+  background: rgba(255, 212, 121, 0.04);
+  border-radius: 14px;
+  padding: 1.6rem 1.75rem;
+  margin: 0 auto;
+  max-width: 880px;
+}
+.ol-warning-panel h3 {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  font-size: 1.15rem;
+  margin: 0 0 0.6rem;
+  font-weight: 600;
+}
+.ol-warning-icon {
+  display: inline-flex;
+  width: 1.55em;
+  height: 1.55em;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: rgba(255, 212, 121, 0.18);
+  color: var(--ol-amber);
+  font-weight: 700;
+  font-size: 0.85em;
+  flex-shrink: 0;
+}
+.ol-warning-prose {
+  margin: 0 0 1.2rem;
+  color: var(--ol-text-soft);
+  max-width: 70ch;
+}
+.ol-warning-h4 {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--ol-text-dim);
+  margin: 1.2rem 0 0.7rem;
+  font-weight: 600;
+}
+.ol-warning-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 0.9rem;
+}
+.ol-warning-tile {
+  border: 1px solid rgba(150, 175, 200, 0.14);
+  border-radius: 10px;
+  padding: 1rem 1.1rem;
+  background: rgba(255, 255, 255, 0.015);
+}
+.ol-warning-tile h5 {
+  font-size: 0.98rem;
+  margin: 0 0 0.55rem;
+  font-weight: 600;
+}
+.ol-warning-tile ol {
+  margin: 0;
+  padding-left: 1.3rem;
+  color: var(--ol-text-soft);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+.ol-warning-tile ol li + li { margin-top: 0.4rem; }
+.ol-warning-foot {
+  margin: 1.2rem 0 0;
+  color: var(--ol-text-dim);
+  font-size: 0.9rem;
+}
+.ol-warning-os-tag {
+  display: inline-block;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 600;
+  color: var(--ol-amber);
+  background: rgba(255, 212, 121, 0.1);
+  border-radius: 4px;
+  padding: 0.15rem 0.5rem;
+  margin-right: 0.5rem;
+  vertical-align: 2px;
+}
+.ol-num { padding-left: 1.5rem; margin: 0; }
+.ol-num li + li { margin-top: 0.4rem; }
+
+/* Verify-download drop zone */
+.ol-verify-drop {
+  border: 2px dashed rgba(126, 248, 255, 0.32);
+  border-radius: 14px;
+  padding: 2.5rem 1.5rem;
+  text-align: center;
+  background: rgba(126, 248, 255, 0.03);
+  transition: border-color 0.15s, background-color 0.15s;
+  cursor: pointer;
+  display: block;
+}
+.ol-verify-drop.is-dragover {
+  border-color: var(--ol-cyan);
+  background: rgba(126, 248, 255, 0.07);
+}
+.ol-verify-drop input[type=file] {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0);
+  white-space: nowrap; border: 0;
+}
+.ol-verify-drop-headline {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0 0 0.4rem;
+}
+.ol-verify-drop-sub {
+  margin: 0;
+  color: var(--ol-text-soft);
+  font-size: 0.92rem;
+}
+.ol-verify-result {
+  margin-top: 1.5rem;
+  border-radius: 12px;
+  padding: 1.25rem 1.4rem;
+  font-family: var(--ol-mono);
+  font-size: 0.88rem;
+  line-height: 1.7;
+  display: none;
+}
+.ol-verify-result.is-visible { display: block; }
+.ol-verify-result.is-ok {
+  border: 1px solid rgba(126, 234, 160, 0.32);
+  background: rgba(126, 234, 160, 0.05);
+}
+.ol-verify-result.is-fail {
+  border: 1px solid rgba(255, 141, 181, 0.32);
+  background: rgba(255, 141, 181, 0.05);
+}
+.ol-verify-result.is-pending {
+  border: 1px solid rgba(150, 175, 200, 0.14);
+  background: rgba(255, 255, 255, 0.02);
+}
+.ol-verify-result .label { color: var(--ol-text-dim); display: inline-block; width: 11ch; }
+.ol-verify-result .ok    { color: var(--ol-green); }
+.ol-verify-result .fail  { color: var(--ol-rose); }
+.ol-verify-result .hash {
+  word-break: break-all;
+  color: var(--ol-text);
+}
 .ol-ml-xs { margin-left: 0.7rem; }
 .ol-mx-auto { margin-left: auto; margin-right: auto; }
 

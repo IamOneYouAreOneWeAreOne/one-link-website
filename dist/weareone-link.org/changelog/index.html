@@ -32,9 +32,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r91">
-  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r91">
-  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r91">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r92">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r92">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r92">
 </head>
 <body>
 <a href="#main" class="skip-link">Skip to content</a>
@@ -60,6 +60,20 @@
       <span class="we-are-one">Changelog</span>
       <h1>Every shipped <span class="grad">change.</span></h1>
       <p class="lede">Every release of One Link, every push to this site, in reverse chronological order. The git history is the source of truth; this page is the human-readable view of it.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">2026-05-25</span>
+      <h2><span class="grad">site</span> SmartScreen + Gatekeeper friction softened end-to-end</h2>
+      <ul>
+        <li>New heads-up panel above the download button on <a class="ol-cyan-text" href="/download/">/download/</a>: sets expectations before the click. Four tiles cover the two click-through paths (Windows "More info" then "Run anyway"; macOS right-click + Open or System Settings + Open Anyway with the exact localized dialog strings per language), the in-browser verify path, and the build-from-source alternative.</li>
+        <li>New page at <a class="ol-cyan-text" href="/verify-download/">/verify-download/</a>: drop a downloaded binary into the page, the browser computes its SHA-256 locally via Web Crypto (the file never leaves your tab), then fetches the live signed value via HEAD /download/&lt;os&gt; and renders a green match / red mismatch result with the attestation-chain link on success.</li>
+        <li>Worker now publishes X-Artifact-SHA256 on every R2-served download path (Windows, Linux, macOS, source, generic) with Access-Control-Expose-Headers so the verify page can read it. New attachArtifactHash() helper tries R2 auto-checksums first, falls back to customMetadata.sha256.</li>
+        <li>Translated into all 5 shipped languages with native Windows + macOS dialog labels (es "Más información" / "Ejecutar de todas formas", fr "Informations complémentaires" / "Exécuter quand même", de "Weitere Informationen" / "Trotzdem ausführen", pt "Mais informações" / "Executar mesmo assim", it "Ulteriori informazioni" / "Esegui comunque"). 100 translated pages footer-swept to add the Verify-download link.</li>
+        <li>Until the EV Authenticode + Apple Developer ID notarization land (tracked on <a class="ol-cyan-text" href="/roadmap/">/roadmap/</a>), every new user has a 10-second click-through path with full bytes-in-tab verification. The warning becomes a footnote, not a wall.</li>
+      </ul>
     </div>
   </section>
 
@@ -200,7 +214,7 @@
         <p class="footer-tag">A free, private network for messages, files, and devices. Owned by no one. Belongs to everyone.</p>
       </div>
       <div><h3>Network</h3><ul><li><a href="/how-it-works/">How it works</a></li><li><a href="/features/">Features</a></li><li><a href="/mesh/">Live mesh</a></li></ul></div>
-      <div><h3>For you</h3><ul><li><a href="/download/">Get One Link</a></li><li><a href="/security/">Security</a></li><li><a href="/roadmap/">Roadmap</a></li><li><a href="/accessibility/">Accessibility</a></li><li><a href="/transparency/">Transparency</a></li><li><a href="/audits/">Audits</a></li></ul></div>
+      <div><h3>For you</h3><ul><li><a href="/download/">Get One Link</a></li><li><a href="/security/">Security</a></li><li><a href="/verify-download/">Verify download</a></li><li><a href="/roadmap/">Roadmap</a></li><li><a href="/accessibility/">Accessibility</a></li><li><a href="/transparency/">Transparency</a></li><li><a href="/audits/">Audits</a></li></ul></div>
       <div><h3>For builders</h3><ul><li><a href="/builders/">Protocol &amp; source</a></li><li><a href="/changelog/">Changelog</a></li><li><a href="/releases/">Releases</a></li><li><a href="/mirror/">Mirror this site</a></li><li><a href="/download/source" rel="noopener">Source archive</a></li><li><a href="https://github.com/IamOneYouAreOneWeAreOne/one-link" rel="noopener external">GitHub</a></li></ul></div>
     </div>
     <div class="footer-bottom">
@@ -210,6 +224,6 @@
   </div>
 </footer>
 
-<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r91"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r92"></script>
 </body>
 </html>

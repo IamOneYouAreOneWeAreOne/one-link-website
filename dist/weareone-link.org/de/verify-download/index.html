@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Ihren Download verifizieren - One Link</title>
+  <meta name="description" content="Ziehen Sie das heruntergeladene One-Link-Binary in Ihren Tab. Ihr Browser hasht es lokal und vergleicht es mit dem live signierten Wert. Die Datei verlässt Ihr Gerät nie.">
+  <link rel="canonical" href="https://weareone-link.org/de/verify-download/">
+  <link rel="alternate" hreflang="en" href="https://weareone-link.org/verify-download/">
+  <link rel="alternate" hreflang="es" href="https://weareone-link.org/es/verify-download/">
+  <link rel="alternate" hreflang="fr" href="https://weareone-link.org/fr/verify-download/">
+  <link rel="alternate" hreflang="pt" href="https://weareone-link.org/pt/verify-download/">
+  <link rel="alternate" hreflang="de" href="https://weareone-link.org/de/verify-download/">
+  <link rel="alternate" hreflang="it" href="https://weareone-link.org/it/verify-download/">
+  <link rel="alternate" hreflang="x-default" href="https://weareone-link.org/verify-download/">
+  <meta name="theme-color" content="#04060b" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#f0f4f8" media="(prefers-color-scheme: light)">
+  <meta name="color-scheme" content="dark">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="One Link">
+  <meta property="og:locale" content="de_DE">
+  <meta property="og:title" content="Ihren Download verifizieren - One Link">
+  <meta property="og:description" content="Hashen Sie das Binary in Ihrem Browser. Die Datei verlässt Ihren Tab nie.">
+  <meta property="og:url" content="https://weareone-link.org/de/verify-download/">
+  <meta property="og:image" content="https://weareone-link.org/og/one-link-de.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Ihren Download verifizieren - One Link">
+  <meta name="twitter:description" content="Hashen Sie das Binary in Ihrem Browser. Die Datei verlässt Ihren Tab nie.">
+  <meta name="twitter:image" content="https://weareone-link.org/og/one-link-de.png">
+  <link rel="icon" type="image/x-icon" href="/images/favicon.ico"><link rel="icon" type="image/png" sizes="128x128" href="/images/logo-128.png"><link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+  <link rel="manifest" href="/app.webmanifest">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="One Link">
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r92">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r92">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r92">
+</head>
+<body>
+<a href="#main" class="skip-link">Zum Inhalt springen</a>
+<canvas class="ol-field-canvas" aria-hidden="true" hidden></canvas>
+<header class="site-header" role="banner">
+  <div class="container">
+    <a href="/de/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
+    <button type="button" id="nav-toggle" class="nav-toggle" aria-label="Navigation öffnen" aria-expanded="false" aria-controls="primary-nav">&#9776;</button>
+    <nav class="site-nav" id="primary-nav" aria-label="Hauptnavigation">
+      <a href="/how-it-works/" hreflang="en">So funktioniert es</a>
+      <a href="/features/" hreflang="en">Funktionen</a>
+      <a href="/security/" hreflang="en">Sicherheit</a>
+      <a href="/share/" hreflang="en">Teilen</a>
+      <a href="/download/" hreflang="en" class="cta-get">One Link holen</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <section class="hero ol-pb-sm">
+    <div class="container">
+      <span class="we-are-one">Ihren Download verifizieren</span>
+      <h1>Hashen Sie das Binary <span class="grad">in Ihrem Browser.</span></h1>
+      <p class="lede">Ziehen Sie die heruntergeladene One-Link-Datei in das Feld. Ihr Browser berechnet den SHA-256 lokal mit Web Crypto. Die Datei verlässt Ihr Gerät nie. Anschließend holen wir den live signierten Wert vom Versions-Relay und vergleichen. Übereinstimmung bedeutet, das Binary ist byteidentisch mit dem, was wir veröffentlicht haben.</p>
+    </div>
+  </section>
+
+  <section class="section-tight">
+    <div class="container ol-mw-680">
+      <label for="ol-verify-file" class="ol-verify-drop" id="ol-verify-drop">
+        <p class="ol-verify-drop-headline">Legen Sie Ihre Datei hier ab oder klicken Sie zum Auswählen.</p>
+        <p class="ol-verify-drop-sub">Funktioniert mit one-link.exe, one-link.dmg, one-link-linux.tar.gz, one-link-source.tar.gz. Nur browserseitig; nichts wird hochgeladen.</p>
+        <input type="file" id="ol-verify-file" accept="*/*">
+      </label>
+
+      <div class="ol-verify-result" id="ol-verify-result" aria-live="polite"></div>
+
+      <p class="ol-prose-mt">
+        <strong>Was dies tut:</strong> liest die Bytes Ihrer Datei lokal, lässt SHA-256 darüber laufen via <code>crypto.subtle.digest</code> (Web Crypto) und holt dann den live signierten Hash von <code>HEAD /download/&lt;os&gt;</code> auf dem Versions-Relay. Beides geschieht in Ihrem Tab; kein Upload, keine serverseitige Verarbeitung. Die Übereinstimmungsprüfung ist byte-gleich.
+      </p>
+      <p class="ol-prose">
+        <strong>Warum das wichtig ist:</strong> Windows SmartScreen und macOS Gatekeeper warnen Sie, weil das Binary neu ist, nicht weil etwas damit nicht stimmt. Diese Seite beweist, dass die Bytes, die Sie haben, mit den Bytes übereinstimmen, die der Maintainer signiert hat. Wenn die Hashes übereinstimmen, ist die Datei genau das, was wir veröffentlicht haben, selbst wenn Ihr Betriebssystem ihr noch nicht gelernt hat zu vertrauen.
+      </p>
+      <p class="ol-prose">
+        <strong>Wenn die Hashes nicht übereinstimmen:</strong> etwas zwischen Ihnen und uns hat die Datei verändert. Führen Sie sie nicht aus. Versuchen Sie den Download erneut, oder laden Sie das Quellcode-Archiv herunter und bauen Sie es selbst.
+      </p>
+      <p class="ol-prose-mt ol-soft-text">
+        Für die vollständige kryptografische Quittung (Ed25519-Signatur, Build-Umgebungs-Attestierung, Quell-Commit) siehe <a class="ol-cyan-text" href="/security/" hreflang="en">/security/</a> und den Attestierungsketten-Endpunkt unter <code>/api/attest/&lt;sha&gt;</code>.
+      </p>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer" role="contentinfo">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a href="/de/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
+        <p class="footer-tag">Ein freies, privates Netzwerk für Nachrichten, Dateien und Geräte. Niemandem. Allen.</p>
+        <p class="ol-mt-md ol-soft-text ol-mono">
+          <strong>Lesen in:</strong>
+          <a class="ol-cyan-text" hreflang="en" href="/verify-download/">English</a> &middot;
+          <a class="ol-cyan-text" hreflang="es" href="/es/verify-download/">Español</a> &middot;
+          <a class="ol-cyan-text" hreflang="fr" href="/fr/verify-download/">Français</a> &middot;
+          <a class="ol-cyan-text" hreflang="pt" href="/pt/verify-download/">Português</a> &middot;
+          <a class="ol-cyan-text" hreflang="de" href="/de/verify-download/">Deutsch</a> &middot;
+          <a class="ol-cyan-text" hreflang="it" href="/it/verify-download/">Italiano</a>
+        </p>
+      </div>
+      <div><h3>Netzwerk</h3><ul><li><a href="/how-it-works/" hreflang="en">So funktioniert es</a></li><li><a href="/features/" hreflang="en">Funktionen</a></li><li><a href="/mesh/" hreflang="en">Live-Mesh</a></li></ul></div>
+      <div><h3>Für Sie</h3><ul><li><a href="/download/" hreflang="en">One Link holen</a></li><li><a href="/security/" hreflang="en">Sicherheit</a></li><li><a href="/de/verify-download/" hreflang="de">Download verifizieren</a></li><li><a href="/de/roadmap/" hreflang="de">Roadmap</a></li><li><a href="/de/accessibility/" hreflang="de">Barrierefreiheit</a></li><li><a href="/de/transparency/" hreflang="de">Transparenz</a></li><li><a href="/audits/" hreflang="en">Audits</a></li></ul></div>
+      <div><h3>Für Erbauer</h3><ul><li><a href="/builders/" hreflang="en">Protokoll und Quelltext</a></li><li><a href="/changelog/" hreflang="en">Änderungsprotokoll</a></li><li><a href="/releases/" hreflang="en">Versionen</a></li><li><a href="/mirror/" hreflang="en">Diese Seite spiegeln</a></li><li><a href="/download/source" hreflang="en" rel="noopener">Quellarchiv</a></li><li><a href="https://github.com/IamOneYouAreOneWeAreOne/one-link" rel="noopener external">GitHub</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <span class="built-by">&copy; 2026 One Link Mitwirkende. <a href="/de/terms/" hreflang="de">AGPL-3.0</a>. <a href="/de/privacy/" hreflang="de">Kein Tracking.</a> <a href="mailto:weareone@oneunity.earth">weareone@oneunity.earth</a></span>
+      <span class="built-by">wir sind eins</span>
+    </div>
+  </div>
+</footer>
+
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r92"></script>
+</body>
+</html>

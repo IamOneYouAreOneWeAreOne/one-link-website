@@ -32,9 +32,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r91">
-  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r91">
-  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r91">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r92">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r92">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r92">
 </head>
 <body>
 <a href="#main" class="skip-link">Skip to content</a>
@@ -68,6 +68,76 @@
       <p class="lede">
         We detected your device and prepared the right build. Signed, reproducibly built, and downloaded through the network itself instead of a normal HTTP fetch. The proof is right under the button.
       </p>
+    </div>
+  </section>
+
+  <!-- ============================================================ OS-WARNING HEADS-UP -->
+  <!--
+    Windows SmartScreen and macOS Gatekeeper both warn on freshly released
+    binaries that have not yet built reputation with their respective
+    publisher recognition systems. The warnings are expected, not bugs,
+    and the file is fine. Set expectations BEFORE the user clicks so
+    nobody bails on a legitimate download out of fear.
+    The Authenticode (Windows) and Developer ID notarization (macOS)
+    pipelines are on the roadmap; once they accumulate reputation the
+    warnings disappear on their own and this panel can be removed.
+  -->
+  <section class="section-tight">
+    <div class="container">
+      <div class="ol-warning-panel" role="region" aria-labelledby="ol-warn-h">
+        <h3 id="ol-warn-h">
+          <span class="ol-warning-icon" aria-hidden="true">!</span>
+          <span>Your OS will warn you the first time. The file is fine. Here is how to get past it.</span>
+        </h3>
+        <p class="ol-warning-prose">
+          Windows SmartScreen and macOS Gatekeeper both flag any newly released binary until the publisher has built up download history. We are putting the signing certificates in place; until they land and accumulate reputation, every fresh release triggers a warning. The bytes themselves are signed, hashed, and verifiable, and you can confirm that yourself in your browser. Two ways past:
+        </p>
+
+        <h4 class="ol-warning-h4">Two ways past the warning</h4>
+        <div class="ol-warning-grid">
+
+          <div class="ol-warning-tile">
+            <h5><span class="ol-warning-os-tag">Windows</span> Click through (10 seconds)</h5>
+            <ol>
+              <li>Click the download button below.</li>
+              <li>When Windows says "Windows protected your PC," click <strong>"More info"</strong>.</li>
+              <li>Click <strong>"Run anyway"</strong>.</li>
+            </ol>
+          </div>
+
+          <div class="ol-warning-tile">
+            <h5><span class="ol-warning-os-tag">macOS</span> Click through (10 seconds)</h5>
+            <ol>
+              <li>Click the download button below.</li>
+              <li>Right-click <code>one-link.dmg</code> in Finder and choose <strong>Open</strong>.</li>
+              <li>Click <strong>Open</strong> in the dialog. Or use <strong>System Settings &rarr; Privacy &amp; Security &rarr; Open Anyway</strong>.</li>
+            </ol>
+          </div>
+
+          <div class="ol-warning-tile">
+            <h5>Verify the file first (30 seconds)</h5>
+            <ol>
+              <li>Click the download button below.</li>
+              <li>Drag the downloaded file into <a class="ol-cyan-text" href="/verify-download/">/verify-download/</a>.</li>
+              <li>Your browser computes the SHA-256 locally (the file never leaves your tab) and compares it to the live signed value. Match means the binary is byte-for-byte what we shipped.</li>
+            </ol>
+          </div>
+
+          <div class="ol-warning-tile">
+            <h5>Build from source instead</h5>
+            <ol>
+              <li>Click the <strong>Source</strong> row below or visit our <a class="ol-cyan-text" href="https://github.com/IamOneYouAreOneWeAreOne/one-link" rel="noopener external">GitHub</a>.</li>
+              <li>Build the daemon yourself with cargo and Python 3.11+. The instructions are in the README.</li>
+              <li>You can read every line first. No warning because you compiled it.</li>
+            </ol>
+          </div>
+
+        </div>
+
+        <p class="ol-warning-foot">
+          The signed certificates (Authenticode for Windows, Developer ID notarization for macOS) are on the <a class="ol-cyan-text" href="/roadmap/">/roadmap/</a>. Once they accumulate reputation, this warning disappears automatically without any change on your end.
+        </p>
+      </div>
     </div>
   </section>
 
@@ -268,7 +338,7 @@
         <p class="footer-tag">A free, private network for messages, files, and devices. Owned by no one. Belongs to everyone.</p>
       </div>
       <div><h3>Network</h3><ul><li><a href="/how-it-works/">How it works</a></li><li><a href="/features/">Features</a></li><li><a href="/mesh/">Live mesh</a></li></ul></div>
-      <div><h3>For you</h3><ul><li><a href="/download/">Get One Link</a></li><li><a href="/security/">Security</a></li><li><a href="/roadmap/">Roadmap</a></li><li><a href="/accessibility/">Accessibility</a></li><li><a href="/transparency/">Transparency</a></li><li><a href="/audits/">Audits</a></li></ul></div>
+      <div><h3>For you</h3><ul><li><a href="/download/">Get One Link</a></li><li><a href="/security/">Security</a></li><li><a href="/verify-download/">Verify download</a></li><li><a href="/roadmap/">Roadmap</a></li><li><a href="/accessibility/">Accessibility</a></li><li><a href="/transparency/">Transparency</a></li><li><a href="/audits/">Audits</a></li></ul></div>
       <div><h3>For builders</h3><ul><li><a href="/builders/">Protocol &amp; source</a></li><li><a href="/changelog/">Changelog</a></li><li><a href="/releases/">Releases</a></li><li><a href="/mirror/">Mirror this site</a></li><li><a href="/download/source" rel="noopener">Source archive</a></li><li><a href="https://github.com/IamOneYouAreOneWeAreOne/one-link" rel="noopener external">GitHub</a></li></ul></div>
     </div>
     <div class="footer-bottom">
@@ -278,6 +348,6 @@
   </div>
 </footer>
 
-<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r91"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r92"></script>
 </body>
 </html>
