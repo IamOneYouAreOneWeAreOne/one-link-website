@@ -34,9 +34,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r92">
-  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r92">
-  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r92">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r93">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r93">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r93">
 </head>
 <body>
 <a href="#main" class="skip-link">Skip to content</a>
@@ -147,6 +147,16 @@
         </article>
 
         <article class="ol-tile">
+          <h3>Recovery wizard, three paths.</h3>
+          <p>If your device is lost or wiped, walk back in three ways: type your 24-word phrase, restore from a backup bundle, or call in your trusted shares. The wizard ships in Settings &rarr; Recovery and proof-tests every path so you find out it works BEFORE you need it. <span class="ol-soft-text">Use <code class="ol-inline-code">one-link backup test</code> or <code class="ol-inline-code">recovery test-shares</code> from the CLI to verify any backup on disk.</span></p>
+        </article>
+
+        <article class="ol-tile">
+          <h3>Updates that just happen.</h3>
+          <p>When a new One Link release lands, the daemon downloads it, verifies its SHA-256 against the published checksum, and quietly restarts on the new version. No mid-call interruption, no broken transfer, no clicking through dialogs. Your tab reconnects on its own. Off-switch in Settings &rarr; About if you would rather pick when to update. <span class="ol-soft-text">Hard-disable via <code class="ol-inline-code">ONE_LINK_EXPERIMENTAL_AUTOINSTALL=0</code> for locked-down deployments.</span></p>
+        </article>
+
+        <article class="ol-tile">
           <h3>Free forever, no business model.</h3>
           <p>No tier. No subscription. No "pro". No upsell. The network is community-run, the project is community-run, the cost to use it is zero forever.</p>
         </article>
@@ -216,6 +226,6 @@
   </div>
 </footer>
 
-<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r92"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r93"></script>
 </body>
 </html>

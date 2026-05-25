@@ -32,9 +32,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r92">
-  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r92">
-  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r92">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r93">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r93">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r93">
 </head>
 <body>
 <a href="#main" class="skip-link">Skip to content</a>
@@ -60,6 +60,21 @@
       <span class="we-are-one">Changelog</span>
       <h1>Every shipped <span class="grad">change.</span></h1>
       <p class="lede">Every release of One Link, every push to this site, in reverse chronological order. The git history is the source of truth; this page is the human-readable view of it.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">2026-05-25</span>
+      <h2><span class="grad">daemon</span> auto-install ON by default + silent background install</h2>
+      <ul>
+        <li>The daemon now polls GitHub Releases on a 6-hour heartbeat, downloads new builds in the background, verifies SHA-256 against the published checksum, then quietly restarts on the new version. Your browser tab auto-reconnects on its own; you do not lose your place.</li>
+        <li>Guards before any install fires: no active voice / video call, no in-flight file transfer, no install already in flight, mandatory hash match against SHA256SUMS (refuses to install an unverified binary). Any guard failing skips this cycle and tries again next heartbeat.</li>
+        <li>New <strong>Settings &rarr; About &rarr; Updates</strong> toggle: opt out without touching env vars. ON by default; flip it off if you would rather pick when to update yourself.</li>
+        <li>Operator hard-disable preserved: <code class="ol-inline-code">ONE_LINK_EXPERIMENTAL_AUTOINSTALL=0</code> blocks every auto-install regardless of the per-user toggle (for shared / locked-down deployments).</li>
+        <li>WebSocket broadcasts <code class="ol-inline-code">auto_install_starting</code> and <code class="ol-inline-code">auto_install_complete</code> so any open tab can show progress; version-drift handler triggers a soft page reload when the daemon comes back on the new version.</li>
+        <li>Three new CLI proof-tools shipped alongside: <code class="ol-inline-code">one-link verify-this-install</code> (rollup hash of the running daemon for tamper-detection), <code class="ol-inline-code">one-link backup test</code> + <code class="ol-inline-code">backup test-bundle</code> (proof-test a recovery phrase / backup BEFORE you rely on it), <code class="ol-inline-code">one-link recovery test-shares</code> (proof-test social-recovery shares).</li>
+      </ul>
     </div>
   </section>
 
@@ -224,6 +239,6 @@
   </div>
 </footer>
 
-<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r92"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r93"></script>
 </body>
 </html>

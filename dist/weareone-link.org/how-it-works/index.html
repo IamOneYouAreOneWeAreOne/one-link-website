@@ -34,9 +34,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r92">
-  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r92">
-  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r92">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r93">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r93">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r93">
 </head>
 <body>
 <a href="#main" class="skip-link">Skip to content</a>
@@ -124,6 +124,29 @@
 
   <section class="section">
     <div class="container">
+      <span class="kicker">Staying current</span>
+      <h2>One Link <span class="grad">updates itself.</span></h2>
+      <p class="lede">Every few hours the daemon asks GitHub Releases whether a newer build exists. If one does, it downloads the binary, verifies its SHA-256 against the published checksum, and quietly restarts on the new version. No mid-call interruption, no broken transfer: the install only fires when nothing important is in flight. The tab you have open notices the new version and reloads itself.</p>
+
+      <div class="ol-grid ol-grid-3">
+        <article class="ol-tile">
+          <h3>Hash-gated, always.</h3>
+          <p>If the published SHA256SUMS does not list the wheel, the install refuses. If the hash does not match, the install refuses. The path that updates your daemon is the same path that proves the bytes are the ones we signed.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Off-switch lives with you.</h3>
+          <p>Settings &rarr; About &rarr; <strong>Auto-install updates</strong> toggles it off. ON by default for the "just works" path; off when you prefer to pick the moment yourself.</p>
+        </article>
+        <article class="ol-tile">
+          <h3>Operators get a hard override.</h3>
+          <p>Set <code class="ol-inline-code">ONE_LINK_EXPERIMENTAL_AUTOINSTALL=0</code> in the daemon environment and no per-user toggle can re-enable it. For shared or locked-down deployments where the operator picks when to update.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
       <span class="kicker">If you want to hide your trail</span>
       <h2>Tap one toggle. <span class="grad">Three hops.</span></h2>
       <p class="lede">Private mode routes your traffic through three volunteer nodes on the way to the recipient. Nobody, including us, can see who sent what to whom. Off by default for speed. On when you need it.</p>
@@ -203,6 +226,6 @@
   </div>
 </footer>
 
-<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r92"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r93"></script>
 </body>
 </html>

@@ -34,9 +34,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r92">
-  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r92">
-  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r92">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r93">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r93">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r93">
 </head>
 <body>
 <a href="#main" class="skip-link">Skip to content</a>
@@ -155,6 +155,16 @@
         <article class="ol-tile">
           <h3>Reproducible releases</h3>
           <p>Every release is built in a confidential-compute environment. Attestation document published alongside the binary. Anyone can rebuild from source and verify byte equality.</p>
+        </article>
+
+        <article class="ol-tile">
+          <h3>Verified updates, hash-gated</h3>
+          <p>The auto-installer ALWAYS verifies the new binary's SHA-256 against the published SHA256SUMS file BEFORE replacing the running daemon. No hash on file, no install. Hash mismatch, no install. The path that updates your daemon is the same path that proves the bytes are the ones we signed.</p>
+        </article>
+
+        <article class="ol-tile">
+          <h3>Verify the daemon you already have</h3>
+          <p>Run <code class="ol-inline-code">one-link verify-this-install</code> on any machine running the daemon. It computes a rollup hash of the running install and prints a fingerprint anyone can match against a fresh download. <code class="ol-inline-code">--json</code> for scripts. Catches tampering after install, not just before.</p>
         </article>
       </div>
     </div>
@@ -330,6 +340,6 @@
   </div>
 </footer>
 
-<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r92"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r93"></script>
 </body>
 </html>
