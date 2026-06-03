@@ -592,8 +592,6 @@ function chooseAsset(os, arch, format) {
     }
     if (format === "zip") return `one-link-macos-${arch}.zip`;
     return `one-link-macos-${arch}.dmg`;
-  }.zip`;
-    return `one-link-macos-${arch}.dmg`;
   }
   if (os === "linux") {
     if (format === "zip") return `one-link-linux-${arch}.zip`;
