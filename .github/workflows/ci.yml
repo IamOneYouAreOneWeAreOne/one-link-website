@@ -43,6 +43,13 @@ jobs:
           # scheme) or an absolute local path"; ``--root-dir`` is the
           # right CLI flag for "treat ``/`` in a local HTML file as
           # this directory."
+          # Worker-routed paths (/download/<spec>, /api/*, /share/*,
+          # /native, /verify-download/) are served by src/worker.js
+          # at runtime, NOT static files on disk. Lychee resolves
+          # them to file:// URLs and complains they don't exist;
+          # excluding the path patterns tells lychee "the worker
+          # owns these, skip them." The worker has its own
+          # contract tests separately.
           args: >-
             --no-progress
             --max-concurrency 8
@@ -50,6 +57,9 @@ jobs:
             --root-dir ${{ github.workspace }}/dist/weareone-link.org
             --exclude '^https?://(?:localhost|127\.0\.0\.1|0\.0\.0\.0)'
             --exclude 'mailto:'
+            --exclude 'file:///.*/download/[^/]*$'
+            --exclude 'file:///.*/api/'
+            --exclude 'file:///.*/native$'
             dist/weareone-link.org/**/*.html
             README.md
             SPEC.md

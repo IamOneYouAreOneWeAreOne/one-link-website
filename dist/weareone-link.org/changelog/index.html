@@ -150,7 +150,7 @@
         <li>Trust pages added: /accessibility/, /transparency/ (warrant canary + government-request log), /changelog/.</li>
         <li>.well-known/security.txt (RFC 9116) with disclosure policy and SLA.</li>
         <li>Privacy: dropped Access-Control-Allow-Origin: * from HTML responses; deleted dist/_headers (worker is source of truth, removed the X-No-Tracking deception header it carried).</li>
-        <li>www -> apex 301 redirect at the worker layer (closes duplicate-200 problem; NEL/Report-To stripped on the redirect itself).</li>
+        <li>www &rarr; apex 301 redirect at the worker layer (closes duplicate-200 problem; NEL/Report-To stripped on the redirect itself).</li>
       </ul>
     </div>
   </section>
