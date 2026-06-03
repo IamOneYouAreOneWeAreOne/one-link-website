@@ -223,7 +223,7 @@ print(result.stderr, file=sys.stderr)
   # finishing.
   deploy:
     name: Deploy to Cloudflare Workers
-    needs: [link-check, house-rules, manifest, htmlhint, accessibility]
+    needs: [link-check, house-rules, manifest-freshness, html-hint, accessibility]
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/master' && github.event_name == 'push'
     permissions:
