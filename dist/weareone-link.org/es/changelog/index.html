@@ -107,7 +107,7 @@
         <li>SEO y URL canónicas en el worker: 301 canónico en minúsculas (/Features/ a /features/); 301 con barra final para directorios de contenido (antes era 307 de assets); 301 /favicon.ico a /images/favicon.ico; HEAD en /download/source honrado; doble theme-color (claro y oscuro vía media); título/desc/imagen de Twitter Card en todas las páginas OG; /404.html diseñado y conectado vía not_found_handling.</li>
         <li>Páginas de confianza añadidas: /accessibility/, /transparency/ (warrant canary y registro de solicitudes gubernamentales), /changelog/.</li>
         <li>.well-known/security.txt (RFC 9116) con política de divulgación y SLA.</li>
-        <li>Privacidad: eliminada la cabecera Access-Control-Allow-Origin: * de las respuestas HTML; eliminado dist/_headers (el worker es la fuente de verdad; se quitó la engañosa cabecera X-No-Tracking que llevaba).</li>
+        <li>Privacidad: eliminada la cabecera Access-Control-Allow-Origin: * de las respuestas HTML; eliminado <code>dist/_headers</code> (el worker es la fuente de verdad; se quitó la engañosa cabecera X-No-Tracking que llevaba).</li>
         <li>Redirección 301 de www a apex en la capa del worker (cierra el problema del 200 duplicado; NEL/Report-To eliminadas en la propia redirección).</li>
       </ul>
     </div>

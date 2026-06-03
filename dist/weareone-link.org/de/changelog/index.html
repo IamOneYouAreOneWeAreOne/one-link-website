@@ -107,7 +107,7 @@
         <li>SEO und kanonische URLs im Worker: 301 Kleinbuchstaben-Canonical (/Features/ auf /features/); 301 mit Trailing-Slash für Content-Verzeichnisse (zuvor 307 aus Assets); 301 /favicon.ico auf /images/favicon.ico; HEAD auf /download/source respektiert; doppeltes theme-color (hell und dunkel via Media); Twitter-Card Titel/Beschreibung/Bild auf allen OG-Seiten; /404.html gestaltet und via not_found_handling verdrahtet.</li>
         <li>Vertrauensseiten ergänzt: /accessibility/, /transparency/ (warrant canary und Behördenanfragen-Log), /changelog/.</li>
         <li>.well-known/security.txt (RFC 9116) mit Offenlegungs-Richtlinie und SLA.</li>
-        <li>Datenschutz: Access-Control-Allow-Origin: * aus HTML-Antworten entfernt; dist/_headers gelöscht (der Worker ist die Quelle der Wahrheit; den irreführenden X-No-Tracking-Header, den es trug, entfernt).</li>
+        <li>Datenschutz: Access-Control-Allow-Origin: * aus HTML-Antworten entfernt; <code>dist/_headers</code> gelöscht (der Worker ist die Quelle der Wahrheit; den irreführenden X-No-Tracking-Header, den es trug, entfernt).</li>
         <li>www-zu-Apex-301-Redirect auf Worker-Ebene (schließt das doppelte-200-Problem; NEL/Report-To beim Redirect selbst entfernt).</li>
       </ul>
     </div>
