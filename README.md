@@ -17,7 +17,7 @@ Public site for the One Link network. Two domains, one truth:
 
 - **Hosting:** Cloudflare Workers (one Worker per domain).
 - **Site format:** static HTML/CSS + a small ES module for Live Mode. Zero npm runtime deps.
-- **SSG (regenerable path):** forked from [`Coherence_Energy_Labs_Website/pipeline/ssg/`](../Coherence_Energy_Labs_Website/pipeline/ssg/). Lives at [pipeline/ssg/](pipeline/ssg/). Authored in `.cl`. The current `dist/` is hand-written as the canonical surface; the SSG is the future regeneration path.
+- **SSG (regenerable path):** forked from `Coherence_Energy_Labs_Website/pipeline/ssg/` (sibling repo, not always co-checked-out in CI). Lives at [pipeline/ssg/](pipeline/ssg/). Authored in `.cl`. The current `dist/` is hand-written as the canonical surface; the SSG is the future regeneration path.
 - **Live Mode:** WGSL coherence-field background + 2D mesh-viz canvas + session handshake + topology poller. ~500 lines of vanilla JS, no frameworks.
 
 ## Layout

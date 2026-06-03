@@ -149,7 +149,7 @@
         <li>SEO + canonical URLs in worker: 301 lowercase canonical (/Features/ to /features/); 301 trailing-slash for content dirs (was 307 from assets); 301 /favicon.ico to /images/favicon.ico; HEAD on /download/source honored; dual theme-color (light + dark media); Twitter Card title/desc/image on all OG pages; designed /404.html wired via not_found_handling.</li>
         <li>Trust pages added: /accessibility/, /transparency/ (warrant canary + government-request log), /changelog/.</li>
         <li>.well-known/security.txt (RFC 9116) with disclosure policy and SLA.</li>
-        <li>Privacy: dropped Access-Control-Allow-Origin: * from HTML responses; deleted dist/_headers (worker is source of truth, removed the X-No-Tracking deception header it carried).</li>
+        <li>Privacy: dropped Access-Control-Allow-Origin: * from HTML responses; deleted <code>dist/_headers</code> (worker is source of truth, removed the X-No-Tracking deception header it carried).</li>
         <li>www &rarr; apex 301 redirect at the worker layer (closes duplicate-200 problem; NEL/Report-To stripped on the redirect itself).</li>
       </ul>
     </div>
