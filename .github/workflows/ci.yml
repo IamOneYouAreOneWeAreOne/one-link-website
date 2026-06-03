@@ -206,3 +206,56 @@ print(result.stderr, file=sys.stderr)
             echo "::endgroup::"
           done
           kill $SERVER_PID || true
+
+  # ---------------------------------------------------------------------------
+  # 6. Deploy to Cloudflare (opt-in; runs on master only, requires secret)
+  # ---------------------------------------------------------------------------
+  # Wires master → live by running ``wrangler deploy`` against both
+  # the .org and .com Workers after every push. Opt-in via the
+  # ``CLOUDFLARE_API_TOKEN`` repo secret + the account ID. Without those
+  # the step is a no-op so anyone forking can still run the rest of CI.
+  #
+  # Before this job existed, edits to dist/ + src/worker.js sat on
+  # master and ONLY went live when a developer remembered to run
+  # ``wrangler deploy`` from a laptop. That's how /download/ stayed
+  # disconnected from the actual GitHub release for so long. With this
+  # job, every push to master is on the live site within ~30 s of CI
+  # finishing.
+  deploy:
+    name: Deploy to Cloudflare Workers
+    needs: [link-check, house-rules, manifest, htmlhint, accessibility]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+    permissions:
+      contents: read
+      deployments: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Skip when no Cloudflare token configured
+        id: gate
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
+            echo "no CLOUDFLARE_API_TOKEN secret configured — skipping deploy"
+            echo "go=skip" >> "$GITHUB_OUTPUT"
+          else
+            echo "go=ok" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Deploy weareone-link.org Worker
+        if: steps.gate.outputs.go == 'ok'
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy --config wrangler.toml
+
+      - name: Deploy weareone-link.com redirect Worker
+        if: steps.gate.outputs.go == 'ok'
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy --config wrangler.com.toml
