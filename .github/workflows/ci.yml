@@ -36,16 +36,18 @@ jobs:
           # --exclude-mail was deprecated; ``--exclude 'mailto:'``
           # covers the same intent.
           #
-          # --base resolves root-relative links (``/download/``,
+          # --root-dir resolves root-relative links (``/download/``,
           # ``/css/one-link.css``, etc.) against the dist/ root.
-          # Without it lychee returns "Cannot convert path '/...' to
-          # a URI: To resolve root-relative links in local files,
-          # provide a root dir" for every absolute path in every page.
+          # Must be an ABSOLUTE path — lychee's ``--base`` rejects
+          # relative paths with "Base must either be a URL (with
+          # scheme) or an absolute local path"; ``--root-dir`` is the
+          # right CLI flag for "treat ``/`` in a local HTML file as
+          # this directory."
           args: >-
             --no-progress
             --max-concurrency 8
             --accept 200,204,206,301,302,304,307,308
-            --base dist/weareone-link.org
+            --root-dir ${{ github.workspace }}/dist/weareone-link.org
             --exclude '^https?://(?:localhost|127\.0\.0\.1|0\.0\.0\.0)'
             --exclude 'mailto:'
             dist/weareone-link.org/**/*.html
@@ -174,14 +176,15 @@ jobs:
         run: npm install -g htmlhint@1.1.4
       - name: Run htmlhint
         run: |
-          # ``tag-self-close=false`` because HTML5 does NOT require
-          # self-closing slashes on void elements (<meta>, <link>,
-          # <br>, <img>, etc.) — the rule fires on every valid HTML5
-          # page. The previous configuration enabled it, which is
-          # why this job had been silently failing alongside the
-          # YAML-parse breaks since 2026-05-25.
+          # ``tag-self-close`` rule omitted because HTML5 does NOT
+          # require self-closing slashes on void elements (<meta>,
+          # <link>, <br>, <img>, etc.). htmlhint's CLI doesn't
+          # accept ``rule=false`` to disable — the only way to turn a
+          # rule off is to leave it out of the --rules list. Same
+          # for ``inline-style-disabled`` — drop the rule rather
+          # than encode the negation.
           htmlhint \
-            --rules 'doctype-first,attr-lowercase,attr-value-double-quotes,id-unique,src-not-empty,title-require,tag-self-close=false,spec-char-escape,inline-style-disabled=false' \
+            --rules 'doctype-first,attr-lowercase,attr-value-double-quotes,id-unique,src-not-empty,title-require,spec-char-escape' \
             dist/weareone-link.org/**/*.html
 
   # ---------------------------------------------------------------------------
