@@ -65,7 +65,7 @@ jobs:
             exit 1
           fi
 
-      - name: Author identity check (positive: only "I am One" may commit)
+      - name: "Author identity check (positive: only I-am-One may commit)"
         run: |
           # The org repo expects every commit author + committer to be the
           # collective pseudonym. Any other identity fails the build. This
@@ -141,16 +141,16 @@ jobs:
           if [ -f scripts/rehash-manifest.py ]; then
             # Run only the hash stage by isolating the signing step.
             python -c "
-import subprocess, sys
-from pathlib import Path
-# Stub the signing key out so the script does its hashing pass without
-# error, even though the .keys directory is not available in CI.
-result = subprocess.run([sys.executable, 'scripts/rehash-manifest.py'],
+            import subprocess, sys
+            from pathlib import Path
+            # Stub the signing key out so the script does its hashing pass without
+            # error, even though the .keys directory is not available in CI.
+            result = subprocess.run([sys.executable, 'scripts/rehash-manifest.py'],
                         capture_output=True, text=True)
-# Hash-only run is OK; signing failure is expected in CI.
-print(result.stdout)
-print(result.stderr, file=sys.stderr)
-"
+            # Hash-only run is OK; signing failure is expected in CI.
+            print(result.stdout)
+            print(result.stderr, file=sys.stderr)
+            "
             # Now confirm dist/ HTML + sw.js still match the recorded hashes.
             if ! git diff --exit-code dist/weareone-link.org/manifest.json dist/weareone-link.org/sw.js > /dev/null; then
               echo "::warning::manifest.json or sw.js drift detected. Run 'python scripts/rehash-manifest.py' locally + commit the result."
