@@ -1009,7 +1009,7 @@ When the offline signing rig is provisioned: the pubkey gets pinned in `sw.js` a
 
 ## 7.5 Headers
 
-The full pack, served on every response by the Worker plus baked into [_headers](dist/weareone-link.org/_headers) for Cloudflare static asset serving:
+The full pack, served on every response by the Worker plus baked into `_headers` (now removed; the Worker is the single source of truth for response headers) for Cloudflare static asset serving:
 
 ```
 Content-Security-Policy:
