@@ -583,7 +583,16 @@ function chooseAsset(os, arch, format) {
     return `one-link-setup-${arch}.exe`;
   }
   if (os === "macos") {
+    // Intel-Mac .dmg is not currently built (macos-13 runner-pool
+    // starvation — see one-link auto_build.yml). Fall back to the
+    // arm64 .dmg, which Intel Macs run via Rosetta 2. The macOS
+    // .zip is still built per-arch and works directly.
+    if (arch === "x86_64" && format !== "zip") {
+      return "one-link-macos-arm64.dmg";
+    }
     if (format === "zip") return `one-link-macos-${arch}.zip`;
+    return `one-link-macos-${arch}.dmg`;
+  }.zip`;
     return `one-link-macos-${arch}.dmg`;
   }
   if (os === "linux") {
