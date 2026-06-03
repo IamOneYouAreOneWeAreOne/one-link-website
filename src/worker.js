@@ -958,7 +958,7 @@ export default {
     // /download/<spec> where <spec> is windows / macos-arm64 /
     // linux-x86_64-zip / source / etc. Allows lowercase letters,
     // digits, and dashes for the arch + format suffixes.
-    const downloadMatch = path.match(/^\/download\/([a-z][a-z0-9-]*)$/);
+    const downloadMatch = path.match(/^\/download\/([a-z][a-z0-9_-]*)$/);
     if (downloadMatch && (request.method === "GET" || request.method === "HEAD"))
       return download(env, downloadMatch[1], request);
 
