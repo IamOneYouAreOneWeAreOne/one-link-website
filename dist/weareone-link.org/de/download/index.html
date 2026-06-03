@@ -142,17 +142,23 @@
           </p>
         </div>
 
-        <div class="alts ol-tag-grid" aria-label="Andere Geräte">
-          <a href="/download/windows" class="ol-platform-row">Windows <span class="ol-platform-status ready">59 MB .exe, heute</span></a>
-          <a href="/download/macos"   class="ol-platform-row">macOS   <span class="ol-platform-status">in Arbeit</span></a>
-          <a href="/download/linux"   class="ol-platform-row">Linux   <span class="ol-platform-status ready">72 MB .tar.gz, heute</span></a>
-          <a href="/download/android" class="ol-platform-row">Android <span class="ol-platform-status">in Arbeit</span></a>
-          <a href="/download/ios"     class="ol-platform-row">iOS     <span class="ol-platform-status">in Arbeit</span></a>
-          <a href="/download/openbsd" class="ol-platform-row">OpenBSD <span class="ol-platform-status">aus Quelltext bauen, heute</span></a>
-          <a href="/download/source"  class="ol-platform-row">Quelltext  <span class="ol-platform-status ready">AGPL, heute</span></a>
+        <div class="alts ol-tag-grid" aria-label="Other devices">
+          <a href="/download/windows"       class="ol-platform-row">Windows (Intel/AMD) <span class="ol-platform-status ready">.exe installer, heute</span></a>
+          <a href="/download/windows-arm64" class="ol-platform-row">Windows auf ARM      <span class="ol-platform-status ready">.exe installer, heute</span></a>
+          <a href="/download/macos"         class="ol-platform-row">macOS (Apple Silicon)    <span class="ol-platform-status ready">.dmg, heute</span></a>
+          <a href="/download/macos-x86_64"  class="ol-platform-row">macOS (Intel)            <span class="ol-platform-status ready">.dmg, heute</span></a>
+          <a href="/download/linux"         class="ol-platform-row">Linux (Intel/AMD) <span class="ol-platform-status ready">.AppImage, heute</span></a>
+          <a href="/download/linux-arm64"   class="ol-platform-row">Linux auf ARM (Pi) <span class="ol-platform-status ready">.AppImage, heute</span></a>
+          <a href="/download/android"       class="ol-platform-row">Android <span class="ol-platform-status">in Arbeit</span></a>
+          <a href="/download/ios"           class="ol-platform-row">iOS     <span class="ol-platform-status">in Arbeit</span></a>
+          <a href="/download/openbsd"       class="ol-platform-row">OpenBSD <span class="ol-platform-status">aus Quelltext bauen, heute</span></a>
+          <a href="/download/source"        class="ol-platform-row">Quelltext  <span class="ol-platform-status ready">AGPL, heute</span></a>
         </div>
         <p class="ol-attest-dim">
-          ehrlicher Stand: Windows und Linux werden heute signiert ausgeliefert. macOS, Android und iOS folgen. Aus dem Quelltext bauen klappt aktuell auf jeder Plattform.
+          ehrlicher Stand: alle sechs g&auml;ngigen Desktop-Architekturen sind heute verf&uuml;gbar &mdash; Windows + macOS + Linux, jeweils f&uuml;r Intel und ARM. Android + iOS folgen. der Bau aus dem Quelltext funktioniert auf jeder Plattform.
+        </p>
+        <p class="ol-attest-dim">
+          lieber das portable ZIP statt der nativen Installation? h&auml;nge <code>-zip</code> an jede URL oben an (z.&nbsp;B. <code>/download/windows-arm64-zip</code>). gleiches Bin&auml;rprogramm, andere Verpackung.
         </p>
 
         <div class="ol-attest" id="ol-attest">

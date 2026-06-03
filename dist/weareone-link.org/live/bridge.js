@@ -53,18 +53,20 @@ function detectOS() {
 }
 
 // Per-OS download artifact summary shown beneath the homepage CTA.
-// Keeps visitors honest about what they're about to receive on click:
-// platform, file size, and whether the byte-by-byte streaming verify
-// will run (Windows + Linux today; the rest land on a "not yet" page).
+// Keeps visitors honest about what they're about to receive on click.
+// Sizes are intentionally omitted because the continuous build's
+// artifact sizes change with every dep update — pinning a specific
+// MB number would silently go stale within days. The verify-download
+// page reports the live size + hash.
 const HOMEPAGE_CTA_HINT = {
-  windows: '58.7 MB .exe, signed + verified in your tab',
-  linux:   '72 MB .tar.gz, signed + verified in your tab',
-  macos:   'macOS .dmg notarizing - click for source builds today',
-  android: 'Android APK packaging - click for source builds today',
-  ios:     'iOS via TestFlight - click for source builds today',
+  windows: '.exe installer, per-user, no admin prompt',
+  linux:   '.AppImage, single file, runs on every distro',
+  macos:   '.dmg, drag to Applications',
+  android: 'Android: in flight - source build works today',
+  ios:     'iOS: in flight - source build works today',
   openbsd: 'OpenBSD: build from source today',
   freebsd: 'FreeBSD: build from source today',
-  source:  'AGPL source archive, 19 MB tar.gz',
+  source:  'AGPL source archive, signed',
 };
 
 function rewriteDownloadButton() {
@@ -115,11 +117,20 @@ function rewriteDownloadButton() {
 // next to the button). If JS is off or fetch fails, the browser still
 // gets the file via the original anchor href (default navigation).
 // ---------------------------------------------------------------------------
-const VERIFYING_DOWNLOAD_OS = new Set(['windows', 'linux']);
-const VERIFYING_DOWNLOAD_SHA = {
-  windows: 'ea4efc8bf92f5ddd911e10f940a46899fda6fa786755ce797429b8fd62c05aed',
-  linux:   '81265f07413bea8934c2eeaf219c83c50cb778acaae7a29b7a63cdbc55533869',
-};
+// Streaming verifying-download is currently DISABLED because the
+// auto-latest GitHub release is rebuilt on every push to master and
+// its SHA-256 changes per build. The previous design hardcoded a
+// per-OS SHA here, which silently went stale the moment master moved
+// — meaning every click on a "verified" download would either
+// FALSE-MATCH (if the hash drifted) or fail entirely. Until we wire
+// a live manifest fetch from
+// github.com/.../releases/download/auto-latest/manifest.txt, the
+// honest path is to let the browser do the plain download, and steer
+// users to /verify-download/ for in-browser SHA-256 verification
+// against the live manifest. The set being empty disables the
+// click-interception below; nothing else changes.
+const VERIFYING_DOWNLOAD_OS = new Set();
+const VERIFYING_DOWNLOAD_SHA = {};
 
 function wireVerifyingDownloadOn(btn, os) {
   if (!btn || !VERIFYING_DOWNLOAD_OS.has(os)) return;

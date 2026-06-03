@@ -481,26 +481,137 @@ function nativeAdvert(env) {
 }
 
 // -----------------------------------------------------------------------------
-// GET /download/:os
+// GET /download/:platform
 //
-// Default: mesh-routed via daemon-WASM running in the visitor's browser.
-// Fallback: signed binary from R2, plain HTTPS, still signed.
+// :platform is one of:
 //
-// All downloads also publish an attestation entry the page can verify.
+//   ``windows`` / ``macos`` / ``linux``  — OS only, arch auto-detected
+//                                          from User-Agent, format defaults
+//                                          to the native installer (.exe
+//                                          installer / .dmg / .AppImage).
+//
+//   ``<os>-x86_64`` / ``<os>-arm64``    — explicit arch.
+//
+//   ``<os>[-<arch>]-zip``                — request the portable zip
+//                                          instead of the native
+//                                          installer (for users who want
+//                                          to extract a folder + run
+//                                          directly).
+//
+//   ``source``                           — R2-hosted source archive.
+//   ``android`` / ``ios`` / ``openbsd``  — coming-soon page (honest).
+//
+// Resolution: detect OS + arch + format → choose the matching GitHub
+// auto-latest asset name → HTTP 302 redirect to
+// ``github.com/IamOneYouAreOneWeAreOne/one-link/releases/download/auto-latest/<asset>``.
+//
+// Why redirect, not proxy: the auto-latest GitHub release is the single
+// source of truth (continuously rebuilt by the One Link repo's CI on
+// every push). Redirecting keeps the user on the freshest artifact
+// without R2 sync infrastructure, and the URL bar shows github.com so
+// the user sees exactly where the bytes are coming from — privacy-by-
+// transparency. R2 stays available for ``/download/source`` because the
+// source-archive path is the canonical mirror.
 // -----------------------------------------------------------------------------
-async function download(env, os, request) {
-  const known = new Set([
+
+// GitHub release base — the auto-latest tag is rebuilt on every push
+// to the one-link repo's master, so this URL is always the freshest
+// continuous build. Tagged releases live at /releases/tag/v* and are
+// reached via /releases on the website.
+const GITHUB_REPO = "https://github.com/IamOneYouAreOneWeAreOne/one-link";
+const AUTO_LATEST_BASE = `${GITHUB_REPO}/releases/download/auto-latest`;
+
+// Parse a "platform spec" — the path segment after /download/. Accepts:
+//   windows, macos, linux                      — OS only
+//   windows-x86_64, macos-arm64, linux-arm64   — OS + arch
+//   windows-x86_64-zip, macos-arm64-zip, …     — OS + arch + format
+//   windows-zip                                — OS + default arch + portable
+// Plus the legacy plain-OS aliases. Returns null on unparseable input.
+function parsePlatformSpec(spec) {
+  const parts = spec.split("-");
+  const head = parts[0];
+  const KNOWN_OS = new Set([
     "windows", "macos", "linux", "android", "ios",
     "openbsd", "freebsd", "source",
   ]);
-  if (!known.has(os)) {
-    return json({ error: "unknown os", supported: [...known] }, { status: 404 });
+  if (!KNOWN_OS.has(head)) return null;
+  const out = { os: head, arch: null, format: null };
+  for (const p of parts.slice(1)) {
+    if (p === "x86_64" || p === "amd64") out.arch = "x86_64";
+    else if (p === "arm64" || p === "aarch64") out.arch = "arm64";
+    else if (p === "zip" || p === "portable") out.format = "zip";
+    else if (p === "installer") out.format = "installer";
+    else return null;
   }
+  return out;
+}
 
-  // Source download is REAL and AVAILABLE TODAY: served from R2 so the
-  // 38 MB tarball does not have to live in the website git history.
-  // Works on any device, including iOS (downloads as a .tar.gz the user
-  // can email to themselves / open with Files app).
+// Heuristic OS + arch detection from the User-Agent header. Used to
+// pick a default when the user hit /download/windows (etc.) without
+// an explicit arch hint. Apple deliberately hides Mac arch from the
+// UA so the Mac default is ``arm64`` (every Mac shipped since late
+// 2020 is Apple Silicon — Intel users can pick from the download
+// page tile).
+function detectArchFromUA(ua, fallbackOs) {
+  const s = (ua || "").toLowerCase();
+  // Windows ARM identifies itself as "Windows NT 10.0; ARM64" or similar.
+  if (fallbackOs === "windows") {
+    if (s.includes("arm64") || s.includes("arm;")) return "arm64";
+    return "x86_64";
+  }
+  if (fallbackOs === "macos") {
+    // Apple Safari + Chrome both report "Intel Mac OS X" regardless of
+    // actual silicon. The Apple-Silicon-vs-Intel signal isn't in the UA.
+    // Default to arm64 since it's the dominant macOS arch since 2020.
+    // Intel-Mac users see an obvious tile on the download page.
+    return "arm64";
+  }
+  if (fallbackOs === "linux") {
+    if (s.includes("aarch64") || s.includes("arm64")) return "arm64";
+    return "x86_64";
+  }
+  return "x86_64";
+}
+
+// Choose the GitHub auto-latest asset name for an (os, arch, format)
+// tuple. Returns null when there is no asset for that combination
+// (e.g. /download/android — no Android build yet).
+function chooseAsset(os, arch, format) {
+  if (os === "windows") {
+    if (format === "zip") return `one-link-windows-${arch}.zip`;
+    // Default + explicit installer both → the per-user Inno Setup .exe.
+    return `one-link-setup-${arch}.exe`;
+  }
+  if (os === "macos") {
+    if (format === "zip") return `one-link-macos-${arch}.zip`;
+    return `one-link-macos-${arch}.dmg`;
+  }
+  if (os === "linux") {
+    if (format === "zip") return `one-link-linux-${arch}.zip`;
+    return `one-link-linux-${arch}.AppImage`;
+  }
+  return null;
+}
+
+async function download(env, platformSpec, request) {
+  const parsed = parsePlatformSpec(platformSpec);
+  if (!parsed) {
+    return json({
+      error: "unknown platform",
+      supported: [
+        "windows", "windows-x86_64", "windows-arm64", "windows-x86_64-zip",
+        "macos", "macos-arm64", "macos-x86_64",
+        "linux", "linux-x86_64", "linux-arm64",
+        "source", "android", "ios",
+      ],
+    }, { status: 404 });
+  }
+  const os = parsed.os;
+
+  // Source archive: served from R2 (the 38 MB tarball is too large to
+  // live in the website git history). Both .zip + .tar.gz live in the
+  // bucket; UA decides which gets offered as the default — POSIX
+  // users get .tar.gz, everyone else gets .zip.
   if (os === "source" && env.RELEASES) {
     const ua = (request?.headers.get("User-Agent") || "").toLowerCase();
     const wantsZip = /windows|iphone|ipad|ios|android|mac os/.test(ua);
@@ -528,59 +639,41 @@ async function download(env, os, request) {
     );
   }
 
-  // Windows .exe: 59 MB single-file PyInstaller build with
-  // one_link_native bundled (Rust hot paths). Hosted on R2 (>25 MiB
-  // exceeds the Workers static-asset cap). Falls through to the
-  // "not yet" HTML page if R2 isn't reachable.
-  if (os === "windows" && env.RELEASES) {
-    const obj = await env.RELEASES.get("latest/one-link-windows.exe");
-    if (obj) {
-      const headers = new Headers();
-      headers.set("Content-Type", "application/octet-stream");
-      headers.set("Content-Disposition", 'attachment; filename="one-link.exe"');
-      headers.set("Cache-Control", "public, max-age=86400");
-      attachArtifactHash(headers, obj);
-      for (const [k, v] of Object.entries(PRIVACY_HEADERS)) headers.set(k, v);
-      return new Response(obj.body, { headers });
+  // Binary platforms: redirect to the matching GitHub auto-latest
+  // asset. No R2 sync infrastructure to maintain — the One Link CI
+  // continuously rebuilds the auto-latest release on every push to
+  // master, and this redirect picks up whatever is freshest.
+  if (os === "windows" || os === "macos" || os === "linux") {
+    const ua = request?.headers.get("User-Agent") || "";
+    const arch = parsed.arch || detectArchFromUA(ua, os);
+    const format = parsed.format || "installer";
+    const asset = chooseAsset(os, arch, format);
+    if (!asset) {
+      return downloadComingSoonPage(os, detectLanguage(request));
     }
+    const target = `${AUTO_LATEST_BASE}/${asset}`;
+    // Browser navigation → 302 redirect to GitHub. Programmatic clients
+    // that ask for JSON (e.g. ``curl -H 'Accept: application/json'``)
+    // get the resolved URL back as JSON so scripts don't have to
+    // follow redirects + parse Location headers.
+    const accept = (request?.headers.get("Accept") || "").toLowerCase();
+    if (accept.includes("application/json")) {
+      return json({
+        os, arch, format, asset, url: target,
+        note: "redirects to GitHub auto-latest; this is the always-fresh asset URL",
+      });
+    }
+    const headers = new Headers({
+      Location: target,
+      "Cache-Control": "no-cache, no-store, must-revalidate",
+    });
+    for (const [k, v] of Object.entries(PRIVACY_HEADERS)) headers.set(k, v);
+    return new Response(null, { status: 302, headers });
   }
 
-  // Linux x86_64 .tar.gz: PyInstaller onedir bundle, gzipped (~72 MB).
-  // To install: `tar xzf one-link-linux-x86_64.tar.gz && cd one-link &&
-  // ./one-link`. Single-executable AppImage build comes next push.
-  if (os === "linux" && env.RELEASES) {
-    const obj = await env.RELEASES.get("latest/one-link-linux-x86_64.tar.gz");
-    if (obj) {
-      const headers = new Headers();
-      headers.set("Content-Type", "application/gzip");
-      headers.set("Content-Disposition", 'attachment; filename="one-link-linux-x86_64.tar.gz"');
-      headers.set("Cache-Control", "public, max-age=86400");
-      attachArtifactHash(headers, obj);
-      for (const [k, v] of Object.entries(PRIVACY_HEADERS)) headers.set(k, v);
-      return new Response(obj.body, { headers });
-    }
-  }
-
-  // Real signed artifact path: serve directly from R2 when present.
-  if (env.RELEASES) {
-    const key = `latest/one-link-${os}.bin`;
-    const obj = await env.RELEASES.get(key);
-    if (obj) {
-      const headers = new Headers();
-      headers.set("Content-Type", "application/octet-stream");
-      headers.set("Content-Disposition", `attachment; filename="one-link-${os}.bin"`);
-      headers.set("Cache-Control", "public, max-age=86400");
-      attachArtifactHash(headers, obj);
-      for (const [k, v] of Object.entries(PRIVACY_HEADERS)) headers.set(k, v);
-      return new Response(obj.body, { headers });
-    }
-  }
-
-  // No artifact yet. Branch on Accept header:
-  //   browser navigation (Accept: text/html) -> render an on-brand
-  //     HTML "not yet" page with OS-specific honest guidance.
-  //   programmatic clients (curl, fetch with JSON Accept) -> the old
-  //     JSON 503 shape so scripts can detect the state.
+  // Platforms we don't ship a binary for yet (android, ios, openbsd,
+  // freebsd) → coming-soon page. Programmatic clients get JSON 503 so
+  // their state machines see it as "not yet" not "redirect."
   const accept = (request?.headers.get("Accept") || "").toLowerCase();
   if (!accept.includes("text/html")) {
     return json(
@@ -862,7 +955,10 @@ export default {
     const attestMatch = path.match(/^\/api\/attest\/([a-f0-9]+)$/i);
     if (attestMatch) return attestation(env, attestMatch[1], request);
 
-    const downloadMatch = path.match(/^\/download\/([a-z]+)$/);
+    // /download/<spec> where <spec> is windows / macos-arm64 /
+    // linux-x86_64-zip / source / etc. Allows lowercase letters,
+    // digits, and dashes for the arch + format suffixes.
+    const downloadMatch = path.match(/^\/download\/([a-z][a-z0-9-]*)$/);
     if (downloadMatch && (request.method === "GET" || request.method === "HEAD"))
       return download(env, downloadMatch[1], request);
 

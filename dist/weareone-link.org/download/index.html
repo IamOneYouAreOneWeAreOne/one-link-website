@@ -157,26 +157,34 @@
         </div>
 
         <div class="alts ol-tag-grid" aria-label="Other devices">
-          <a href="/download/windows" class="ol-platform-row">Windows <span class="ol-platform-status ready">59 MB .exe, today</span></a>
-          <a href="/download/macos"   class="ol-platform-row">macOS   <span class="ol-platform-status">in flight</span></a>
-          <a href="/download/linux"   class="ol-platform-row">Linux   <span class="ol-platform-status ready">72 MB .tar.gz, today</span></a>
-          <a href="/download/android" class="ol-platform-row">Android <span class="ol-platform-status">in flight</span></a>
-          <a href="/download/ios"     class="ol-platform-row">iOS     <span class="ol-platform-status">in flight</span></a>
-          <a href="/download/openbsd" class="ol-platform-row">OpenBSD <span class="ol-platform-status">source build, today</span></a>
-          <a href="/download/source"  class="ol-platform-row">Source  <span class="ol-platform-status ready">AGPL, today</span></a>
+          <a href="/download/windows"       class="ol-platform-row">Windows (Intel/AMD) <span class="ol-platform-status ready">.exe installer, today</span></a>
+          <a href="/download/windows-arm64" class="ol-platform-row">Windows on ARM      <span class="ol-platform-status ready">.exe installer, today</span></a>
+          <a href="/download/macos"         class="ol-platform-row">macOS (Apple Silicon)    <span class="ol-platform-status ready">.dmg, today</span></a>
+          <a href="/download/macos-x86_64"  class="ol-platform-row">macOS (Intel)            <span class="ol-platform-status ready">.dmg, today</span></a>
+          <a href="/download/linux"         class="ol-platform-row">Linux (Intel/AMD) <span class="ol-platform-status ready">.AppImage, today</span></a>
+          <a href="/download/linux-arm64"   class="ol-platform-row">Linux on ARM (Pi) <span class="ol-platform-status ready">.AppImage, today</span></a>
+          <a href="/download/android"       class="ol-platform-row">Android <span class="ol-platform-status">in flight</span></a>
+          <a href="/download/ios"           class="ol-platform-row">iOS     <span class="ol-platform-status">in flight</span></a>
+          <a href="/download/openbsd"       class="ol-platform-row">OpenBSD <span class="ol-platform-status">source build, today</span></a>
+          <a href="/download/source"        class="ol-platform-row">Source  <span class="ol-platform-status ready">AGPL, today</span></a>
         </div>
         <p class="ol-attest-dim">
-          honest status: Windows + Linux ship today, signed. macOS + Android + iOS are next. building from source works on every platform right now.
+          honest status: all six mainstream desktop architectures ship today &mdash; Windows + macOS + Linux, each in Intel and ARM flavors. Android + iOS are next. building from source works on every platform.
+        </p>
+        <p class="ol-attest-dim">
+          want the portable zip instead of the native installer? append <code>-zip</code> to any URL above (e.g. <code>/download/windows-arm64-zip</code>). same binary, different packaging.
+        </p>
+        <p class="ol-attest-dim">
+          want the portable zip instead of the native installer? append <code>-zip</code> to any URL above (e.g. <code>/download/windows-arm64-zip</code>). same binary, different packaging.
         </p>
 
         <div class="ol-attest" id="ol-attest">
-          <div class="row"><span class="key">version</span><span class="val">0.21.0-alpha.0</span></div>
-          <div class="row"><span class="key">platform</span><span class="val">windows .exe, 58.7 MB</span></div>
-          <div class="row"><span class="key">sha256</span><span class="val ol-word-break" id="ol-sha">ea4efc8bf92f5ddd911e10f940a46899fda6fa786755ce797429b8fd62c05aed</span></div>
-          <div class="row"><span class="key">blake3</span><span class="val muted ol-word-break">dbd29b475fba238344609089973c49fb7a947e58b187cd3591bb615c46c818f8</span></div>
-          <div class="row"><span class="key">signature</span><span class="val">Ed25519 <span class="ol-green-text">live + verifiable</span> &middot; ML-DSA-65 <span class="ol-soft-text">in flight (lands v0.22)</span></span></div>
-          <div class="row"><span class="key">source</span><span class="val muted">eb87dd2 (v0.21.0-alpha.0-71-geb87dd2)</span></div>
-          <div class="row"><span class="key">verify</span><span class="val"><a class="verify" href="/api/attest/ea4efc8bf92f5ddd911e10f940a46899fda6fa786755ce797429b8fd62c05aed">read attestation chain</a> &middot; or use the live verifier below</span></div>
+          <div class="row"><span class="key">version</span><span class="val">v0.21.0-alpha (continuous &mdash; rebuilt on every push to master)</span></div>
+          <div class="row"><span class="key">platform</span><span class="val" id="ol-detected-platform">auto-detected from your User-Agent</span></div>
+          <div class="row"><span class="key">source</span><span class="val muted">tip of <a class="ol-cyan-text" href="https://github.com/IamOneYouAreOneWeAreOne/one-link" rel="noopener external">master</a> &middot; see <a class="ol-cyan-text" href="/changelog/">/changelog/</a></span></div>
+          <div class="row"><span class="key">hash</span><span class="val"><code>manifest.txt</code> in the GitHub release lists the SHA-256 of every artifact &middot; drag your download into <a class="ol-cyan-text" href="/verify-download/">/verify-download/</a> to verify in-browser</span></div>
+          <div class="row"><span class="key">signature</span><span class="val">Ed25519 <span class="ol-green-text">live + verifiable</span> &middot; Authenticode (Windows) + Developer ID + notarization (macOS) <span class="ol-soft-text">in flight &mdash; see <a class="ol-cyan-text" href="/roadmap/">/roadmap/</a></span></span></div>
+          <div class="row"><span class="key">verify</span><span class="val"><a class="verify" href="/verify-download/">verify your download in your browser</a> &middot; SHA-256 computed locally, never uploaded</span></div>
         </div>
       </div>
 
