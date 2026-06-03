@@ -33,11 +33,13 @@ jobs:
       - name: Run lychee
         uses: lycheeverse/lychee-action@v2
         with:
+          # --exclude-mail was deprecated; lychee now uses the
+          # ``--exclude 'mailto:'`` regex (already present below) to
+          # skip mail-style links.
           args: >-
             --no-progress
             --max-concurrency 8
             --accept 200,204,206,301,302,304,307,308
-            --exclude-mail
             --exclude '^https?://(?:localhost|127\.0\.0\.1|0\.0\.0\.0)'
             --exclude 'mailto:'
             dist/weareone-link.org/**/*.html
@@ -139,19 +141,12 @@ jobs:
           # in CI; a diff that touches manifest.json must already be
           # signed by the time it's pushed.
           if [ -f scripts/rehash-manifest.py ]; then
-            # Run only the hash stage by isolating the signing step.
-            python -c "
-            import subprocess, sys
-            from pathlib import Path
-            # Stub the signing key out so the script does its hashing pass without
-            # error, even though the .keys directory is not available in CI.
-            result = subprocess.run([sys.executable, 'scripts/rehash-manifest.py'],
-                        capture_output=True, text=True)
-            # Hash-only run is OK; signing failure is expected in CI.
-            print(result.stdout)
-            print(result.stderr, file=sys.stderr)
-            "
-            # Now confirm dist/ HTML + sw.js still match the recorded hashes.
+            # Run the hash stage; signing failure is expected in CI
+            # because the offline ed25519 key is not on the runner.
+            # ``|| true`` swallows the signing-key error so the
+            # subsequent git-diff sees a real result.
+            python scripts/rehash-manifest.py || true
+            # Confirm dist/ HTML + sw.js still match the recorded hashes.
             if ! git diff --exit-code dist/weareone-link.org/manifest.json dist/weareone-link.org/sw.js > /dev/null; then
               echo "::warning::manifest.json or sw.js drift detected. Run 'python scripts/rehash-manifest.py' locally + commit the result."
               # Non-fatal for now; signing requires the offline key.
