@@ -60,6 +60,7 @@ jobs:
             --exclude 'file:///.*/download/[^/]*$'
             --exclude 'file:///.*/api/'
             --exclude 'file:///.*/native$'
+            --exclude '^https?://(?:www\.)?weareone-link\.(?:org|com)/'
             dist/weareone-link.org/**/*.html
             README.md
             SPEC.md
