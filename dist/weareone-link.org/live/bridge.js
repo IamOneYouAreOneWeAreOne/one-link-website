@@ -2285,22 +2285,14 @@ function osFromFilename(name) {
   return null;
 }
 
-function bytesToHex(buf) {
-  const a = new Uint8Array(buf);
-  let s = "";
-  for (let i = 0; i < a.length; i++) {
-    s += a[i].toString(16).padStart(2, "0");
-  }
-  return s;
-}
-
-async function sha256Hex(file) {
+async function sha256HexFile(file) {
   // Stream the file through SubtleCrypto. For files large enough that
   // .arrayBuffer() would OOM we'd want a chunked path, but every One Link
   // release artifact (<100 MB) fits comfortably in memory.
+  // Delegates to the canonical sha256Hex(bytes) defined upstream so we
+  // share one byte-level digest helper, avoiding identifier collisions.
   const buf = await file.arrayBuffer();
-  const digest = await crypto.subtle.digest("SHA-256", buf);
-  return bytesToHex(digest);
+  return sha256Hex(new Uint8Array(buf));
 }
 
 async function fetchPublishedHash(os) {
@@ -2333,7 +2325,7 @@ async function runVerifyDownload(file) {
 
   let localHex = "";
   try {
-    localHex = await sha256Hex(file);
+    localHex = await sha256HexFile(file);
   } catch (e) {
     renderVerifyResult("fail",
       `<div><span class="label">file</span> ${file.name}</div>` +
