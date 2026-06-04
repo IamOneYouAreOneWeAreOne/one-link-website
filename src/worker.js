@@ -552,6 +552,23 @@ function parsePlatformSpec(spec) {
 // UA so the Mac default is ``arm64`` (every Mac shipped since late
 // 2020 is Apple Silicon — Intel users can pick from the download
 // page tile).
+// Detect the visitor's OS from the User-Agent. Powers the
+// ``/download/auto`` shortcut so the homepage "Download" CTA goes
+// straight to the right installer with one click — no platform
+// picker, no intermediate page. Falls back to ``windows`` for
+// unrecognised UAs (largest install base — least likely to be a
+// terrible default).
+function detectOsFromUA(ua) {
+  const s = (ua || "").toLowerCase();
+  if (/iphone|ipad|ipod/.test(s)) return "ios";
+  if (s.includes("android")) return "android";
+  if (s.includes("mac os") || s.includes("macintosh") || s.includes("darwin")) return "macos";
+  if (s.includes("windows")) return "windows";
+  if (s.includes("linux") || s.includes("ubuntu") || s.includes("debian") || s.includes("fedora")) return "linux";
+  if (/freebsd|openbsd|netbsd/.test(s)) return "openbsd";
+  return "windows";
+}
+
 function detectArchFromUA(ua, fallbackOs) {
   const s = (ua || "").toLowerCase();
   // Windows ARM identifies itself as "Windows NT 10.0; ARM64" or similar.
@@ -601,11 +618,40 @@ function chooseAsset(os, arch, format) {
 }
 
 async function download(env, platformSpec, request) {
+  // ``auto`` — the homepage "Download" CTA target. Detect everything
+  // from the User-Agent and short-circuit straight to the redirect.
+  // No platform picker, no intermediate page, no required JS. One
+  // click → installer bytes in their Downloads folder.
+  if (platformSpec === "auto") {
+    const ua = request?.headers.get("User-Agent") || "";
+    const detectedOs = detectOsFromUA(ua);
+    // Android / iOS / OpenBSD don't have installers yet — route to
+    // the coming-soon page rather than redirecting to a 404 asset.
+    if (detectedOs === "android" || detectedOs === "ios" || detectedOs === "openbsd") {
+      return downloadComingSoonPage(detectedOs, detectLanguage(request));
+    }
+    const detectedArch = detectArchFromUA(ua, detectedOs);
+    const asset = chooseAsset(detectedOs, detectedArch, "installer");
+    if (asset) {
+      const target = `${AUTO_LATEST_BASE}/${asset}`;
+      const headers = new Headers({
+        Location: target,
+        "Cache-Control": "no-cache, no-store, must-revalidate",
+      });
+      for (const [k, v] of Object.entries(PRIVACY_HEADERS)) headers.set(k, v);
+      return new Response(null, { status: 302, headers });
+    }
+    // Unknown platform fall-through → coming-soon page in the visitor's
+    // language so they at least understand what happened.
+    return downloadComingSoonPage(detectedOs, detectLanguage(request));
+  }
+
   const parsed = parsePlatformSpec(platformSpec);
   if (!parsed) {
     return json({
       error: "unknown platform",
       supported: [
+        "auto",
         "windows", "windows-x86_64", "windows-arm64", "windows-x86_64-zip",
         "macos", "macos-arm64", "macos-x86_64",
         "linux", "linux-x86_64", "linux-arm64",
