@@ -63,6 +63,7 @@ jobs:
             --exclude 'file:///.*/api/'
             --exclude 'file:///.*/native$'
             --exclude '^https?://(?:www\.)?weareone-link\.(?:org|com)/'
+            --exclude '^https?://(?:www\.)?gnu\.org/'
             dist/weareone-link.org/**/*.html
             README.md
             SPEC.md
