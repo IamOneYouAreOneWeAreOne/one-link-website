@@ -74,7 +74,12 @@
 // -----------------------------------------------------------------------------
 const CSP = [
   "default-src 'self'",
-  "script-src 'self' 'wasm-unsafe-eval'",
+  // The inline <script type="speculationrules"> block on / is a static
+  // prerender hint, not user-influenced. Whitelisted by its SHA-256 so
+  // Chrome's speculation engine can consume it without loosening CSP to
+  // 'unsafe-inline'. Regenerate via scripts/audit_live.py if the inline
+  // content ever changes.
+  "script-src 'self' 'wasm-unsafe-eval' 'sha256-EtWPdt1tDLTK6jGuLdXS8Woyem6tIRWm7Sl6X3tkWqM='",
   // 'unsafe-inline' was needed for ~159 inline style="" attrs site-wide.
   // The audit P1 sweep migrated all of them to utility classes in
   // one-link.css, so we can now enforce style-src to same-origin only.
