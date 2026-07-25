@@ -223,13 +223,23 @@ jobs:
           http-server dist/weareone-link.org -p 8765 --silent &
           SERVER_PID=$!
           sleep 2
+          # ubuntu-24.04 runners restrict unprivileged user namespaces, so
+          # Chrome's sandbox cannot start; the scan targets our own static
+          # bundle on loopback, so --no-sandbox is safe here.
+          cat > /tmp/pa11y.json <<'EOF'
+          {
+            "chromeLaunchConfig": {
+              "args": ["--no-sandbox", "--disable-setuid-sandbox"]
+            }
+          }
+          EOF
           # Every canonical public route plus every localized share flow.
           for page in / /how-it-works/ /features/ /security/ /share/ /one/ \
                      /download/ /mesh/ /builders/ /about/ \
                      /privacy/ /terms/ /accessibility/ /transparency/ /changelog/ \
                      /es/share/ /fr/share/ /de/share/ /pt/share/ /it/share/; do
             echo "::group::pa11y $page"
-            pa11y --standard WCAG2AA "http://127.0.0.1:8765$page"
+            pa11y --config /tmp/pa11y.json --standard WCAG2AA "http://127.0.0.1:8765$page"
             echo "::endgroup::"
           done
           kill $SERVER_PID || true
