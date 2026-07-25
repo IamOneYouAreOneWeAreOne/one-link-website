@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta name="x-emitted-by" content="coherence-lang/1.0.3 one_link.ssg.build">
-  <!-- Route: /features/ / build: 2026-05-16T00:00:00Z / source: pipeline/ssg/src/one_link_build.cl -->
+  <meta name="x-truth-rendered-by" content="scripts/apply_release_truth.py">
+  <!-- Release-truth copy reviewed 2026-07-22; historical SSG byte provenance is not asserted. -->
+  <meta name="x-truth-rendered-by" content="scripts/apply_release_truth.py">
+  <!-- Release-truth copy reviewed 2026-07-22; historical SSG byte provenance is not asserted. -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>What One Link does - and what it does not</title>
-  <meta name="description" content="Every feature One Link advertises, generated live from the daemon's capability table. No marketing copy invented after the fact. The page is the truth.">
+  <meta name="description" content="A manually reviewed pre-release capability matrix, separating implemented paths, local demonstrations, infrastructure dependencies, and roadmap targets.">
   <link rel="canonical" href="https://weareone-link.org/features/">
   <link rel="alternate" hreflang="en" href="https://weareone-link.org/features/">
   <link rel="alternate" hreflang="es" href="https://weareone-link.org/es/features/">
@@ -21,12 +23,12 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="One Link">
   <meta property="og:title" content="What One Link does - and what it does not">
-  <meta property="og:description" content="Every feature One Link advertises, generated live from the daemon's capability table. No marketing copy invented after the fact. The page is the truth.">
+  <meta property="og:description" content="A manually reviewed pre-release capability matrix, separating implemented paths, local demonstrations, infrastructure dependencies, and roadmap targets.">
   <meta property="og:url" content="https://weareone-link.org/features/">
   <meta property="og:image" content="https://weareone-link.org/og/one-link.png">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="What One Link does - and what it does not">
-  <meta name="twitter:description" content="Every feature One Link advertises, generated live from the daemon's capability table. No marketing copy invented after the fact. The page is the truth.">
+  <meta name="twitter:description" content="A manually reviewed pre-release capability matrix, separating implemented paths, local demonstrations, infrastructure dependencies, and roadmap targets.">
   <meta name="twitter:image" content="https://weareone-link.org/og/one-link.png">
   <link rel="icon" type="image/x-icon" href="/images/favicon.ico"><link rel="icon" type="image/png" sizes="128x128" href="/images/logo-128.png"><link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
   <link rel="manifest" href="/app.webmanifest">
@@ -34,9 +36,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r95">
-  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r95">
-  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r95">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r97">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r97">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r97">
 </head>
 <body>
 <a href="#main" class="skip-link">Skip to content</a>
@@ -62,14 +64,9 @@
   <section class="hero ol-pb-sm">
     <div class="container">
       <span class="we-are-one">Features</span>
-      <h1>Everything One Link can do, <span class="grad">told by One Link.</span></h1>
-      <p class="lede">This page is generated from the live capability advertisement of the One Link daemon at <code class="ol-inline-code-em">/api/status</code>. We cannot lie on this page. If a feature is here, the daemon ships it. If it is not, it does not.</p>
-      <span class="ol-status">
-        <span class="dot"></span>
-        <span>live from</span>
-        <span class="number">/api/status</span>
-        <span>updated 2s ago</span>
-      </span>
+      <h1>Current evidence, demonstrations, and capability requirements.</h1>
+      <p class="lede">This is a manually reviewed static pre-release matrix. The Worker endpoint /api/capabilities is an unsigned, hard-coded website-build advertisement, not a live daemon inventory or independent proof that a feature shipped.</p>
+      <span class="ol-status"><span class="dot"></span><span>manual review &middot; not live daemon telemetry</span></span>
     </div>
   </section>
 
@@ -81,27 +78,27 @@
 
         <article class="ol-tile">
           <h3>Messages</h3>
-          <p>Only you and they can read it. Forward secrecy. Edit, delete, react. Read receipts that you control.</p>
+          <p>The cards below are roadmap targets or primitive demonstrations, not shipped daemon transport behavior unless a current versioned release and acceptance test say otherwise.</p>
         </article>
 
         <article class="ol-tile">
-          <h3>Files of any size</h3>
-          <p>Drag a folder, a movie, a hard drive's worth. Peer-to-peer with per-chunk AEAD and fountain-coded loss recovery. Resumes on reconnect. Never copies to a server. 10 GB verified in the torture simulator.</p>
+          <h3>Large, resumable files</h3>
+          <p>Native clients are designed for chunked, resumable transfers. Direct paths avoid server storage; encrypted relay paths may temporarily hold ciphertext. Size and throughput depend on the client build, filesystem, storage, relay, and network; no unlimited or 10 GB production guarantee is published.</p>
         </article>
 
         <article class="ol-tile">
           <h3>Voice and video calls</h3>
-          <p>End-to-end encrypted. Direct peer-to-peer when possible, relayed only when not. No mystery server in the path.</p>
+          <p>Calls are a pre-release capability. Implemented encrypted paths prefer direct peer transport and may use identified relay or rendezvous services when required; those services can observe connection, timing, and size metadata.</p>
         </article>
 
         <article class="ol-tile">
           <h3>Shared folders</h3>
-          <p>Drop a file in, it appears on the other side. Versioned, conflict-free CRDT, stored on your devices. Works on LAN and across air-gapped networks (mDNS + Bluetooth aware).</p>
+          <p>The cards below are roadmap targets or primitive demonstrations, not shipped daemon transport behavior unless a current versioned release and acceptance test say otherwise.</p>
         </article>
 
         <article class="ol-tile">
           <h3>Your devices act as one</h3>
-          <p>Phone, laptop, tablet, second laptop. Pair once with QR + five words. Every device sees the same conversations, end-to-end between every pair.</p>
+          <p>Two-device pairing and multi-device synchronization require distributed clients, a working transport, and user SAS comparison. The website card runs both primitive roles locally and does not prove phone pairing or cross-device synchronization.</p>
         </article>
 
       </div>
@@ -111,59 +108,53 @@
   <section class="section">
     <div class="container">
       <span class="kicker">The promises, kept by the architecture</span>
-      <h2>What the math <span class="grad">guarantees.</span></h2>
-      <p class="lede">Each line is a property the architecture enforces, not a policy someone could change later. The crate or proof behind each one is named and audit-ready.</p>
+      <h2>Security properties require versioned implementation evidence.</h2>
+      <p class="lede ol-mw-64ch">This is a manually reviewed static pre-release matrix. The Worker endpoint /api/capabilities is an unsigned, hard-coded website-build advertisement, not a live daemon inventory or independent proof that a feature shipped.</p>
 
       <div class="ol-grid ol-grid-2">
 
         <article class="ol-tile">
           <h3>No account, no email, no phone number.</h3>
-          <p>Identity is a keypair on your device. There is no user database anywhere we could be subpoenaed for. <span class="ol-soft-text">Crate: <code class="ol-inline-code">ol_pair_qr</code>. QR + 5-word SAS pairing.</span></p>
+          <p>No hosted One Link account is required today. Endpoints retain local identity state, while Cloudflare, GitHub, relays, and website services process the network or ephemeral state documented on /transparency/; this is not a claim that no database exists anywhere.</p>
         </article>
 
         <article class="ol-tile">
-          <h3>End-to-end encrypted by default.</h3>
-          <p>Cleartext never leaves your device. Every message, every chunk. Per-message Double Ratchet and per-chunk forward-secret KDF chain both active today between capable peers. <span class="ol-soft-text">Crates: <code class="ol-inline-code">ol_ratchet</code>, <code class="ol-inline-code">ol_transfer</code>.</span></p>
+          <h3>End-to-end encryption on supported paths.</h3>
+          <p>Implemented end-to-end-encrypted paths encrypt content before transport. Endpoints decrypt it; relay and website services may process ciphertext plus routing, timing, size, session, and connection metadata. Demo-only and capability-dependent paths are listed separately.</p>
         </article>
 
         <article class="ol-tile">
-          <h3>No central server in the path.</h3>
-          <p>Direct peer-to-peer when possible, encrypted-relay forwarding when not. Relays we run are just nodes; the network keeps running if every one of ours disappears. Anyone can run a relay.</p>
+          <h3>Direct paths preferred; relays when required.</h3>
+          <p>Direct paths are preferred. Encrypted relay, rendezvous, discovery, and availability services are used where required; current dependencies and retention boundaries are documented on /transparency/.</p>
         </article>
 
         <article class="ol-tile">
-          <h3>Post-quantum hybrid keys + signatures.</h3>
-          <p>Ed25519 + ML-DSA-65 hybrid signatures live everywhere today. X25519 + ML-KEM-768 hybrid keys live on Sphinx onion hops today; the pair handshake and channel root activate the ML-KEM half in v0.22 (the wire format already reserves the slot). If either half breaks, the other still holds. <span class="ol-soft-text">Crates: <code class="ol-inline-code">ol_pqkem</code>, <code class="ol-inline-code">ol_pqsig</code>, <code class="ol-inline-code">ol_onion</code>.</span></p>
+          <h3>Post-quantum primitives under integration.</h3>
+          <p>The shipped browser code performs local post-quantum primitive self-tests. /api/session only registers a session and advertises an ephemeral Worker X25519 key; the browser completes neither ECDH nor ML-KEM, and the browser-to-Worker session is not PQ-secured.</p>
         </article>
 
-        <article class="ol-tile">
-          <h3>Reproducible signed builds + attestation.</h3>
-          <p>Every release built in a sealed environment with an Ed25519-signed attestation document. Anyone can rebuild from source and verify byte equality. Verify in your tab on the <a href="/download/" class="ol-cyan-text">download page</a>. <span class="ol-soft-text">Crate: <code class="ol-inline-code">ol_confidential</code>. Software baseline today, Windows TPM in flight, SE / SGX / SEV-SNP / TrustZone via the same trait.</span></p>
-        </article>
+        <article class="ol-tile"><h3>Reproducibility and provenance</h3><p>No byte-for-byte reproducibility result or artifact-bound build attestation is published for the rolling builds.</p></article>
 
         <article class="ol-tile">
           <h3>Threshold recovery.</h3>
-          <p>Split your identity across k of n trusted shares. Survive a lost device without surviving a leak. <span class="ol-soft-text">Crate: <code class="ol-inline-code">ol_threshold_recovery</code>. BN multi-sig with per-signer R values.</span></p>
+          <p>Local browser/WASM demonstration only. It does not prove released daemon integration, real-device recovery, persistent hardware protection, or every message path. Broader behavior remains a capability requirement until a versioned acceptance test is published.</p>
         </article>
 
         <article class="ol-tile">
           <h3>Recovery wizard, three paths.</h3>
-          <p>If your device is lost or wiped, walk back in three ways: type your 24-word phrase, restore from a backup bundle, or call in your trusted shares. The wizard ships in Settings &rarr; Recovery and proof-tests every path so you find out it works BEFORE you need it. <span class="ol-soft-text">Use <code class="ol-inline-code">one-link backup test</code> or <code class="ol-inline-code">recovery test-shares</code> from the CLI to verify any backup on disk.</span></p>
+          <p>Local browser/WASM demonstration only. It does not prove released daemon integration, real-device recovery, persistent hardware protection, or every message path. Broader behavior remains a capability requirement until a versioned acceptance test is published.</p>
         </article>
 
         <article class="ol-tile">
-          <h3>Updates that just happen.</h3>
-          <p>When a new One Link release lands, the daemon downloads it, verifies its SHA-256 against the published checksum, and quietly restarts on the new version. No mid-call interruption, no broken transfer, no clicking through dialogs. Your tab reconnects on its own. Off-switch in Settings &rarr; About if you would rather pick when to update. <span class="ol-soft-text">Hard-disable via <code class="ol-inline-code">ONE_LINK_EXPERIMENTAL_AUTOINSTALL=0</code> for locked-down deployments.</span></p>
+          <h3>Experimental update check; publisher authentication pending.</h3>
+          <p>The update checker can compare bytes with a checksum from the same mutable release channel. That detects some corruption but does not authenticate the publisher. Automatic and in-place installation is unavailable in the current desktop application; replacing a bundle remains an explicit user or operator action.</p>
         </article>
 
-        <article class="ol-tile">
-          <h3>Free forever, no business model.</h3>
-          <p>No tier. No subscription. No "pro". No upsell. The network is community-run, the project is community-run, the cost to use it is zero forever.</p>
-        </article>
+        <article class="ol-tile"><h3>Free to use today; costs and future access are not guaranteed.</h3><p>There is no paid tier today. The AGPL-3.0 source is public and self-hostable. This is not a promise about future pricing, hosting, connectivity, hardware, relay capacity, or operator costs.</p></article>
 
         <article class="ol-tile">
           <h3>Source open and verifiable.</h3>
-          <p>AGPL-3.0. Every crate, every shader, every word of this site. <a href="https://github.com/IamOneYouAreOneWeAreOne/one-link" rel="noopener external" class="ol-cyan-text">github.com/IamOneYouAreOneWeAreOne/one-link</a>.</p>
+          <p>The AGPL-3.0 source is public and forks remain subject to the license. The software is free to use today, but hosting, connectivity, hardware, and relay operation have costs and future service pricing is not guaranteed.</p>
         </article>
 
       </div>
@@ -173,27 +164,27 @@
   <section class="section">
     <div class="container">
       <span class="kicker">Coming next</span>
-      <h2>What lands in <span class="grad">v0.22.</span></h2>
-      <p class="lede">The crates ship today as WASM-verifiable primitives. The daemon-level toggles wire in v0.22.</p>
+      <h2>Proposed capabilities; not current availability.</h2>
+      <p class="lede ol-mw-64ch">The cards below are roadmap targets or primitive demonstrations, not shipped daemon transport behavior unless a current versioned release and acceptance test say otherwise.</p>
       <div class="ol-grid ol-grid-3">
 
         <article class="ol-tile">
           <h3>Three-hop private routing</h3>
-          <p>One toggle. Sphinx-routed through volunteer relays. Post-quantum blinded at every hop. No one (including us) sees who sent what to whom.</p>
+          <p>Three-hop Sphinx routing is a roadmap transport integration. Local WASM can exercise primitives, but current website traffic and the browser-to-Worker session do not use this route. Multi-hop routing can reduce what one relay learns; it does not guarantee anonymity.</p>
         </article>
 
         <article class="ol-tile">
           <h3>Duress mode</h3>
-          <p>A second passphrase opens a believable empty account. The math gives you a way out under coercion. Primitive crate shipped; daemon wiring in v0.22.</p>
+          <p>Local browser/WASM demonstration only. It does not prove released daemon integration, real-device recovery, persistent hardware protection, or every message path. Broader behavior remains a capability requirement until a versioned acceptance test is published.</p>
         </article>
 
         <article class="ol-tile">
           <h3>GPU coherence field</h3>
-          <p>The τ_c routing field already solves at 10k peers in 1.74ms on a single CPU core. The GPU path moves it to handheld real-time at million-peer scale.</p>
+          <p>The cards below are roadmap targets or primitive demonstrations, not shipped daemon transport behavior unless a current versioned release and acceptance test say otherwise.</p>
         </article>
 
       </div>
-      <p class="ol-right-foot">Last reviewed 2026-05-19.</p>
+      <p class="ol-right-foot">Claims reviewed 2026-07-22.</p>
     </div>
   </section>
 
@@ -213,19 +204,19 @@
     <div class="footer-grid">
       <div>
         <a href="/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
-        <p class="footer-tag">A free, private network for messages, files, and devices. Owned by no one. Belongs to everyone.</p>
+        <p class="footer-tag">Open-source pre-release software for private communication. Built toward community ownership; current services still depend on identifiable maintainers, operators, and infrastructure providers.</p>
       </div>
-      <div><h3>Network</h3><ul><li><a href="/how-it-works/">How it works</a></li><li><a href="/features/">Features</a></li><li><a href="/mesh/">Live mesh</a></li></ul></div>
+      <div><h3>Network</h3><ul><li><a href="/how-it-works/">How it works</a></li><li><a href="/features/">Features</a></li><li><a href="/mesh/">Website presence</a></li></ul></div>
       <div><h3>For you</h3><ul><li><a href="/download/">Get One Link</a></li><li><a href="/security/">Security</a></li><li><a href="/verify-download/">Verify download</a></li><li><a href="/roadmap/">Roadmap</a></li><li><a href="/accessibility/">Accessibility</a></li><li><a href="/transparency/">Transparency</a></li><li><a href="/audits/">Audits</a></li></ul></div>
       <div><h3>For builders</h3><ul><li><a href="/builders/">Protocol &amp; source</a></li><li><a href="/changelog/">Changelog</a></li><li><a href="/releases/">Releases</a></li><li><a href="/mirror/">Mirror this site</a></li><li><a href="/download/source" rel="noopener">Source archive</a></li><li><a href="https://github.com/IamOneYouAreOneWeAreOne/one-link" rel="noopener external">GitHub</a></li></ul></div>
     </div>
     <div class="footer-bottom">
-      <span class="built-by">&copy; 2026 One Link contributors. <a href="/terms/">AGPL-3.0</a>. <a href="/security/">No tracking.</a> <a href="mailto:weareone@oneunity.earth">weareone@oneunity.earth</a></span>
+      <span class="built-by">&copy; 2026 One Link contributors. <a href="/terms/">AGPL-3.0</a>. <a href="/security/">No first-party analytics or tracking cookies; infrastructure metadata disclosed.</a> <a href="mailto:weareone@oneunity.earth">weareone@oneunity.earth</a></span>
       <span class="built-by">we are one</span>
     </div>
   </div>
 </footer>
 
-<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r95"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r97"></script>
 </body>
 </html>

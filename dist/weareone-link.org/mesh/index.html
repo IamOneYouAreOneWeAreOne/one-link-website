@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta name="x-emitted-by" content="coherence-lang/1.0.3 one_link.ssg.build">
-  <!-- Route: /mesh/ / build: 2026-05-16T00:00:00Z / source: pipeline/ssg/src/one_link_build.cl -->
+  <meta name="x-truth-rendered-by" content="scripts/apply_release_truth.py">
+  <!-- Release-truth copy reviewed 2026-07-22; historical SSG byte provenance is not asserted. -->
+  <meta name="x-truth-rendered-by" content="scripts/apply_release_truth.py">
+  <!-- Release-truth copy reviewed 2026-07-22; historical SSG byte provenance is not asserted. -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>The mesh - every One Link node, live</title>
-  <meta name="description" content="The live global mesh map. Every active node, every relay, the routing field that decides how packets find each other. No identifying data, ever.">
+  <title>Website presence illustration - One Link</title>
+  <meta name="description" content="A live visualization of website presence sessions, not installed One Link nodes or relays. Visitors see rotating pseudonymous IDs and coarse client-supplied regions; Cloudflare sees connection metadata.">
   <link rel="canonical" href="https://weareone-link.org/mesh/">
   <link rel="alternate" hreflang="en" href="https://weareone-link.org/mesh/">
   <link rel="alternate" hreflang="es" href="https://weareone-link.org/es/mesh/">
@@ -20,13 +22,13 @@
   <meta name="color-scheme" content="dark">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="One Link">
-  <meta property="og:title" content="The mesh - every One Link node, live">
-  <meta property="og:description" content="The live global mesh map. Every active node, every relay, the routing field that decides how packets find each other. No identifying data, ever.">
+  <meta property="og:title" content="Website presence illustration - One Link">
+  <meta property="og:description" content="A live visualization of website presence sessions, not installed One Link nodes or relays. Visitors see rotating pseudonymous IDs and coarse client-supplied regions; Cloudflare sees connection metadata.">
   <meta property="og:url" content="https://weareone-link.org/mesh/">
   <meta property="og:image" content="https://weareone-link.org/og/one-link.png">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="The mesh - every One Link node, live">
-  <meta name="twitter:description" content="The live global mesh map. Every active node, every relay, the routing field that decides how packets find each other. No identifying data, ever.">
+  <meta name="twitter:title" content="Website presence illustration - One Link">
+  <meta name="twitter:description" content="A live visualization of website presence sessions, not installed One Link nodes or relays. Visitors see rotating pseudonymous IDs and coarse client-supplied regions; Cloudflare sees connection metadata.">
   <meta name="twitter:image" content="https://weareone-link.org/og/one-link.png">
   <link rel="icon" type="image/x-icon" href="/images/favicon.ico"><link rel="icon" type="image/png" sizes="128x128" href="/images/logo-128.png"><link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
   <link rel="manifest" href="/app.webmanifest">
@@ -34,9 +36,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r95">
-  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r95">
-  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r95">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r97">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r97">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r97">
 </head>
 <body class="ol-mesh-page">
 <a href="#main" class="skip-link">Skip to content</a>
@@ -65,20 +67,20 @@
     <span class="ol-presence-bar-suffix">here right now</span>
   </span>
 </div>
-<div class="ol-peer-overlay" id="ol-peer-overlay" aria-label="Other people viewing right now"></div>
+<div class="ol-peer-overlay" id="ol-peer-overlay" aria-label="Non-authoritative website sessions visible now"></div>
 <div class="ol-peer-hint" id="ol-peer-hint" hidden>
-  <span>tap any glowing dot to start an anonymous chat</span>
+  <span>tap any glowing dot to start a pseudonymous chat</span>
 </div>
 <div class="ol-ping-toast" id="ol-ping-toast" aria-live="polite" hidden>
   <span class="ol-ping-glyph" aria-hidden="true">&#9883;</span>
   <span class="ol-ping-text">someone said hello</span>
 </div>
-<div class="ol-chat-panel" id="ol-chat-panel" hidden role="dialog" aria-label="Anonymous stranger chat">
+<div class="ol-chat-panel" id="ol-chat-panel" hidden role="dialog" aria-label="Pseudonymous stranger chat">
   <div class="ol-chat-head">
     <span class="ol-chat-dot" id="ol-chat-dot"></span>
     <span class="ol-chat-title" id="ol-chat-title">stranger</span>
     <span class="ol-chat-state" id="ol-chat-state">connecting</span>
-    <a href="#" class="ol-chat-on-mesh-link" id="ol-chat-on-mesh-link" aria-label="Open this chat on the live mesh page">see on the mesh &rarr;</a>
+    <a href="#" class="ol-chat-on-mesh-link" id="ol-chat-on-mesh-link" aria-label="Open this chat on the website presence illustration">see presence view &rarr;</a>
     <button type="button" class="ol-chat-close" id="ol-chat-close" aria-label="Close chat">&times;</button>
   </div>
   <div class="ol-chat-log" id="ol-chat-log" aria-live="polite"></div>
@@ -86,7 +88,7 @@
     <input type="text" id="ol-chat-input" maxlength="280" placeholder="say something kind..." autocomplete="off" aria-label="Message">
     <button type="submit" class="ol-chat-send" aria-label="Send">&rarr;</button>
   </form>
-  <div class="ol-chat-foot">ephemeral &middot; anonymous &middot; end-to-end encrypted</div>
+  <div class="ol-chat-foot">ephemeral &middot; no durable peer identity &middot; typing unlocks only after both sides report comparing all five SAS words over a separate trusted channel &middot; authentication depends on that honest external comparison &middot; Cloudflare relays ciphertext and sees metadata &middot; the peer can retain messages</div>
 </div>
 <div class="ol-chat-request-toast" id="ol-chat-request-toast" hidden role="alert">
   <div class="ol-chat-request-dot" id="ol-chat-request-dot"></div>
@@ -104,20 +106,20 @@
 
   <section class="hero ol-pb-sm">
     <div class="container">
-      <span class="we-are-one">Live mesh</span>
-      <h1>You are one of <span class="grad" id="ol-hero-count">0</span>.</h1>
-      <p class="lede">Every dot is a real One Link node online right now. The colors are the coherence field that decides how packets find each other. Tap any dot to open an anonymous, end-to-end encrypted chat. Each message you send will travel as a visible packet across the mesh. No IPs. No usernames. No locations beyond approximate region.</p>
+      <span class="we-are-one">Website presence</span>
+      <h1>You are one of <span class="grad" id="ol-hero-count">&hellip;</span>.</h1>
+      <p class="lede">Each dot is a validated website-presence session, not proof of an installed One Link node or relay. The field is an illustrative browser visualization, not live routing telemetry. Capable tabs encrypt chat payloads before Cloudflare relays them, and typing remains locked until both sides report comparing all five SAS words over a separate trusted channel. Authentication depends on that honest external comparison; no durable peer identity is created. Cloudflare still sees connection metadata. The UI exposes a rotating ID plus a coarse client-supplied region.</p>
     </div>
   </section>
 
   <section class="section-tight">
     <div class="container">
       <div class="ol-mesh-wrap ol-mesh-aspect-cinema">
-        <canvas class="ol-mesh-canvas" id="ol-mesh-canvas" aria-label="Live global mesh visualization"></canvas>
+        <canvas class="ol-mesh-canvas" id="ol-mesh-canvas" aria-label="Website-presence illustration; not live routing telemetry"></canvas>
         <div class="ol-mesh-overlay">
-          <div class="row"><span class="key">nodes</span><span class="val" id="ol-mesh-nodes">0</span></div>
-          <div class="row"><span class="key">relays</span><span class="val" id="ol-mesh-relays">0</span></div>
-          <div class="row"><span class="key">field</span><span class="val">&tau;_c routing</span></div>
+          <div class="row"><span class="key">nodes</span><span class="val" id="ol-mesh-nodes">&hellip;</span></div>
+          <div class="row"><span class="key">relays</span><span class="val" id="ol-mesh-relays">&mdash;</span></div>
+          <div class="row"><span class="key">field</span><span class="val">illustrative</span></div>
           <div class="row"><span class="key">sweep</span><span class="val">60 Hz</span></div>
           <div class="row"><span class="key">you</span><span class="val" id="ol-mesh-you">connecting...</span></div>
         </div>
@@ -131,27 +133,13 @@
       <h2>The <span class="grad">tau_c</span> coherence field.</h2>
       <div class="ol-grid ol-grid-2 ol-gap-3 ol-items-start">
         <div>
-          <p>One Link does not use a routing table. It uses a continuous field. Each peer's local view of the field is a small ripple in a damped Helmholtz oscillator. Chunk fetches follow the field gradient toward the healthiest holder, the same way water finds the low point of a hill. Full multi-hop field-routed delivery activates with the relay-mesh cutover in v0.22.</p>
-          <p>When a relay disappears, the field re-settles in a single round. When new peers join, their ripples integrate into the field. The math is the same equations that describe quantum coherence and biological membranes. We borrowed the idea from physics.</p>
-          <p>The colormap on the canvas above is the field's energy state, sampled at 60 Hz, smoothed for the eye. The dots are peers. The brighter the local field, the more traffic is flowing through that region.</p>
+          <p>This map shows website-presence sessions only. It is not an inventory of daemon nodes, relays, transport paths, or network capacity.</p>
+          <p>Dots cluster by a coarse client-supplied estimate derived from browser timezone. It is illustrative, can be wrong, and is not measured relay topology or precise geolocation.</p>
+          <p>This map shows website-presence sessions only. It is not an inventory of daemon nodes, relays, transport paths, or network capacity.</p>
         </div>
         <div>
-          <pre class="ol-code"><span class="d">// solver, one timestep</span>
-<span class="c">field</span> = <span class="a">helmholtz_step</span>(
-  prev = field,
-  peers = active_nodes,
-  dt = 1 / 60,
-  gamma = damping,
-  k = coherence_freq
-)
-
-<span class="c">routes</span> = <span class="a">gradient_descent</span>(
-  field,
-  sources = peers,
-  destinations = peers
-)
-
-<span class="d">// 10,000 peers in 1.74 ms (CPU; GPU path lands v0.22)</span></pre>
+          <pre class="ol-code" data-claim-scope="roadmap-topology">// illustrative roadmap pseudocode; not live daemon topology or routing telemetry
+field = proposed_coherence_step(validated_website_presence)</pre>
         </div>
       </div>
     </div>
@@ -164,15 +152,15 @@
       <div class="ol-grid ol-grid-3">
         <article class="ol-tile">
           <h3>Just presence.</h3>
-          <p>The map shows that you and others are here. The relays carry sealed envelopes between peers; identifiers stay on the devices that hold them.</p>
+          <p>This map shows website-presence sessions only. It is not an inventory of daemon nodes, relays, transport paths, or network capacity.</p>
         </article>
         <article class="ol-tile">
           <h3>Opaque peer IDs.</h3>
-          <p>The dots are anonymous, rotating peer IDs. No usernames, no profiles. Recognition, when it happens, happens through pairing, never through the map.</p>
+          <p>Dots use random, rotating per-tab IDs that are pseudonymous to other visitors, not anonymous to infrastructure. Cloudflare receives ordinary connection metadata and the selected peer can retain anything received.</p>
         </article>
         <article class="ol-tile">
           <h3>Continental shape.</h3>
-          <p>Dots cluster by approximate continental region derived from relay topology. The shape of the network, not the precise location of any person.</p>
+          <p>Dots cluster by a coarse client-supplied estimate derived from browser timezone. It is illustrative, can be wrong, and is not measured relay topology or precise geolocation.</p>
         </article>
       </div>
     </div>
@@ -181,8 +169,8 @@
   <section class="section">
     <div class="container">
       <span class="kicker">Join the mesh</span>
-      <h2>Light up a <span class="grad">new dot.</span></h2>
-      <p class="lede">Install One Link and your device becomes part of the field. Every new node strengthens routing for everyone else.</p>
+      <h2>Proposed capabilities; not current availability.</h2>
+      <p class="lede ol-mw-64ch">Opening this page can add a validated website-presence dot. Installing a client does not prove membership in a production relay mesh or strengthen routing; that topology remains a future, version-tested deployment goal.</p>
       <div class="cta-row">
         <a href="/download/" class="btn btn-primary">Get One Link <span class="arr">&rarr;</span></a>
         <a href="/builders/" class="btn btn-ghost">Run a relay</a>
@@ -197,19 +185,19 @@
     <div class="footer-grid">
       <div>
         <a href="/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
-        <p class="footer-tag">A free, private network for messages, files, and devices. Owned by no one. Belongs to everyone.</p>
+        <p class="footer-tag">Open-source pre-release software for private communication. Built toward community ownership; current services still depend on identifiable maintainers, operators, and infrastructure providers.</p>
       </div>
-      <div><h3>Network</h3><ul><li><a href="/how-it-works/">How it works</a></li><li><a href="/features/">Features</a></li><li><a href="/mesh/">Live mesh</a></li></ul></div>
+      <div><h3>Network</h3><ul><li><a href="/how-it-works/">How it works</a></li><li><a href="/features/">Features</a></li><li><a href="/mesh/">Website presence</a></li></ul></div>
       <div><h3>For you</h3><ul><li><a href="/download/">Get One Link</a></li><li><a href="/security/">Security</a></li><li><a href="/verify-download/">Verify download</a></li><li><a href="/roadmap/">Roadmap</a></li><li><a href="/accessibility/">Accessibility</a></li><li><a href="/transparency/">Transparency</a></li><li><a href="/audits/">Audits</a></li></ul></div>
       <div><h3>For builders</h3><ul><li><a href="/builders/">Protocol &amp; source</a></li><li><a href="/changelog/">Changelog</a></li><li><a href="/releases/">Releases</a></li><li><a href="/mirror/">Mirror this site</a></li><li><a href="/download/source" rel="noopener">Source archive</a></li><li><a href="https://github.com/IamOneYouAreOneWeAreOne/one-link" rel="noopener external">GitHub</a></li></ul></div>
     </div>
     <div class="footer-bottom">
-      <span class="built-by">&copy; 2026 One Link contributors. <a href="/terms/">AGPL-3.0</a>. <a href="/security/">No tracking.</a> <a href="mailto:weareone@oneunity.earth">weareone@oneunity.earth</a></span>
+      <span class="built-by">&copy; 2026 One Link contributors. <a href="/terms/">AGPL-3.0</a>. <a href="/security/">No first-party analytics or tracking cookies; infrastructure metadata disclosed.</a> <a href="mailto:weareone@oneunity.earth">weareone@oneunity.earth</a></span>
       <span class="built-by">we are one</span>
     </div>
   </div>
 </footer>
 
-<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r95"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r97"></script>
 </body>
 </html>

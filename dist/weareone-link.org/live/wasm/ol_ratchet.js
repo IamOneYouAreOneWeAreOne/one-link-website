@@ -166,25 +166,6 @@ function debugString(val) {
     // TODO we could test for more things here, like `Set`s and `Map`s.
     return className;
 }
-/**
- * @returns {string}
- */
-export function ol_ratchet_version() {
-    let deferred1_0;
-    let deferred1_1;
-    try {
-        const ret = wasm.ol_ratchet_version();
-        deferred1_0 = ret[0];
-        deferred1_1 = ret[1];
-        return getStringFromWasm0(ret[0], ret[1]);
-    } finally {
-        wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
-    }
-}
-
-export function _init() {
-    wasm._init();
-}
 
 function takeFromExternrefTable0(idx) {
     const value = wasm.__wbindgen_export_2.get(idx);
@@ -205,6 +186,26 @@ export function liveDemoRoundTrip(n_keys) {
         throw takeFromExternrefTable0(ret[1]);
     }
     return takeFromExternrefTable0(ret[0]);
+}
+
+export function _init() {
+    wasm._init();
+}
+
+/**
+ * @returns {string}
+ */
+export function ol_ratchet_version() {
+    let deferred1_0;
+    let deferred1_1;
+    try {
+        const ret = wasm.ol_ratchet_version();
+        deferred1_0 = ret[0];
+        deferred1_1 = ret[1];
+        return getStringFromWasm0(ret[0], ret[1]);
+    } finally {
+        wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
+    }
 }
 
 async function __wbg_load(module, imports) {

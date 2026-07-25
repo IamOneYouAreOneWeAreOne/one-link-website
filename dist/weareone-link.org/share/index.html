@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta name="x-emitted-by" content="coherence-lang/1.0.3 one_link.ssg.build">
+  <meta name="x-truth-rendered-by" content="scripts/apply_release_truth.py">
   <!-- Route: /share/ / source: pipeline/ssg/src/one_link_build.cl -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Share a file - One Link</title>
-  <meta name="description" content="Drop a file. Get a one-shot URL. Only the person you send it to can read it. No accounts, no upload to anyone's cloud, the key never touches our server.">
+  <meta name="description" content="Encrypt a file up to 25 MB in your browser and upload ciphertext to Cloudflare R2. A per-object Durable Object schedules a 24-hour expiry alarm; provider outages can delay physical deletion. The fragment key is not sent in the HTTP request.">
   <link rel="canonical" href="https://weareone-link.org/share/">
   <link rel="alternate" hreflang="en" href="https://weareone-link.org/share/">
   <link rel="alternate" hreflang="es" href="https://weareone-link.org/es/share/">
@@ -21,12 +21,12 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="One Link">
   <meta property="og:title" content="Share a file - One Link">
-  <meta property="og:description" content="Drop a file. Get a one-shot URL. Only the person you send it to can read it. No accounts, no upload to anyone's cloud, the key never touches our server.">
+  <meta property="og:description" content="Encrypt a file up to 25 MB in your browser and upload ciphertext to Cloudflare R2. A per-object Durable Object schedules a 24-hour expiry alarm; provider outages can delay physical deletion. The fragment key is not sent in the HTTP request.">
   <meta property="og:url" content="https://weareone-link.org/share/">
   <meta property="og:image" content="https://weareone-link.org/og/one-link.png">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Share a file - One Link">
-  <meta name="twitter:description" content="Drop a file. Get a one-shot URL. Only the person you send it to can read it. No accounts, no upload to anyone's cloud, the key never touches our server.">
+  <meta name="twitter:description" content="Encrypt a file up to 25 MB in your browser and upload ciphertext to Cloudflare R2. A per-object Durable Object schedules a 24-hour expiry alarm; provider outages can delay physical deletion. The fragment key is not sent in the HTTP request.">
   <meta name="twitter:image" content="https://weareone-link.org/og/one-link.png">
   <meta name="robots" content="noindex">
 
@@ -38,9 +38,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r95">
-  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r95">
-  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r95">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r97">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r97">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r97">
 </head>
 <body>
 <a href="#main" class="skip-link">Skip to content</a>
@@ -65,17 +65,13 @@
   <section class="hero ol-pb-sm" id="ol-share-sender">
     <div class="container">
       <span class="we-are-one">Share a file</span>
-      <h1>Drop a file. Send the link. <span class="grad">Only they can read it.</span></h1>
-      <p class="lede">
-        Drop any file up to 25 MB. Your browser encrypts it before it leaves your machine, hands the ciphertext to our Cloudflare R2 bucket for up to 24 hours, and gives you a link with the decryption key in the URL fragment. The first person to open the link decrypts the file in their browser, then the ciphertext is gone.
-      </p>
-      <p class="ol-soft-text ol-mw-56ch">
-        This page is a convenience: a zero-install, in-browser proof of what AES-GCM-256 + a URL-fragment key buys you. It is not the full One Link protocol. <a class="ol-cyan-text" href="/download/">Get One Link</a> for true peer-to-peer transfers with no size cap, no server retention, and no 24-hour expiry.
-      </p>
+      <h1>Drop a file. Send the complete secret link. Anyone with that link can read it.</h1>
+      <p class="lede">Encrypt a file up to 25 MB in your browser and upload ciphertext to Cloudflare R2. A per-object Durable Object schedules a 24-hour expiry alarm; provider outages can delay physical deletion. The fragment key is not sent in the HTTP request. A per-object Durable Object serializes retrieval claims so only one can win. It buffers the ciphertext, awaits confirmed R2 deletion, and only then returns it. Its expiry alarm removes never-consumed objects and reschedules cleanup failures. Provider logs, metadata, caches, backups, outages, and recipient copies remain outside this one-shot guarantee.</p>
+      <p class="ol-soft-text ol-mw-56ch">This is a convenience demo, not the full One Link protocol. Native pre-release clients prefer direct transfer and may use encrypted relay fallback. Limits and retention vary by transport, release, storage, and network; no unlimited or zero-retention guarantee is published.</p>
 
       <!-- Drop zone -->
       <div class="ol-drop-zone" id="ol-drop-zone" tabindex="0" role="button" aria-label="Drop a file or click to choose">
-        <input type="file" id="ol-share-file" hidden>
+        <input type="file" id="ol-share-file" aria-label="Choose a file to encrypt and share" hidden>
         <div class="ol-drop-icon" aria-hidden="true">
           <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
@@ -107,9 +103,7 @@
     <div class="container">
       <span class="we-are-one">Incoming file</span>
       <h1 id="ol-recv-headline">Someone sent you something.</h1>
-      <p class="lede" id="ol-recv-lede">
-        The file was encrypted in their browser. The key is in your URL, never on our server. Click to decrypt and download. The file deletes itself after this.
-      </p>
+      <p class="lede" id="ol-recv-lede">The decryption key is in the URL fragment, which browsers do not include in the HTTP request. Anyone who obtains the complete link through forwarding, history, screenshots, logs, or compromise can fetch and decrypt the ciphertext. A per-object Durable Object serializes retrieval claims so only one can win. It buffers the ciphertext, awaits confirmed R2 deletion, and only then returns it. Its expiry alarm removes never-consumed objects and reschedules cleanup failures. Provider logs, metadata, caches, backups, outages, and recipient copies remain outside this one-shot guarantee.</p>
       <div class="cta-row">
         <button class="btn btn-primary btn-large" id="ol-recv-download" type="button">
           Download and decrypt <span class="arr">&rarr;</span>
@@ -129,11 +123,11 @@
         </article>
         <article class="ol-tile">
           <h3>The key is in the link.</h3>
-          <p>The URL we give you has the key in the fragment (the bit after #). Browsers never send fragments to servers. Only the person you send the link to can derive it.</p>
+          <p>The decryption key is in the URL fragment, which browsers do not include in the HTTP request. Anyone who obtains the complete link through forwarding, history, screenshots, logs, or compromise can fetch and decrypt the ciphertext.</p>
         </article>
         <article class="ol-tile">
-          <h3>Self-destructs.</h3>
-          <p>The first person to open the link gets the file, then it deletes from our server. If nobody opens it, it deletes in 24 hours anyway. Nothing persists.</p>
+          <h3>Serialized single-consumer retrieval with alarm cleanup.</h3>
+          <p>A per-object Durable Object serializes retrieval claims so only one can win. It buffers the ciphertext, awaits confirmed R2 deletion, and only then returns it. Its expiry alarm removes never-consumed objects and reschedules cleanup failures. Provider logs, metadata, caches, backups, outages, and recipient copies remain outside this one-shot guarantee.</p>
         </article>
       </div>
     </div>
@@ -141,11 +135,7 @@
 
   <section class="section-tight">
     <div class="container">
-      <p class="ol-mw-mono-small">
-        This is what One Link does, made obvious in a browser. Get One Link
-        for the same on every device, without the size limit, without us in
-        the middle at all.
-      </p>
+      <p class="ol-mw-mono-small">This is a convenience demo, not the full One Link protocol. Native pre-release clients prefer direct transfer and may use encrypted relay fallback. Limits and retention vary by transport, release, storage, and network; no unlimited or zero-retention guarantee is published.</p>
       <a href="/download/" class="btn btn-primary btn-large ol-mt-sm">
         Get One Link <span class="arr">&rarr;</span>
       </a>
@@ -159,20 +149,20 @@
     <div class="footer-grid">
       <div>
         <a href="/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
-        <p class="footer-tag">A free, private network for messages, files, and devices. Owned by no one. Belongs to everyone.</p>
+        <p class="footer-tag">Open-source pre-release software for private communication. Built toward community ownership; current services still depend on identifiable maintainers, operators, and infrastructure providers.</p>
       </div>
-      <div><h3>Network</h3><ul><li><a href="/how-it-works/">How it works</a></li><li><a href="/features/">Features</a></li><li><a href="/mesh/">Live mesh</a></li></ul></div>
+      <div><h3>Network</h3><ul><li><a href="/how-it-works/">How it works</a></li><li><a href="/features/">Features</a></li><li><a href="/mesh/">Website presence</a></li></ul></div>
       <div><h3>For you</h3><ul><li><a href="/download/">Get One Link</a></li><li><a href="/security/">Security</a></li><li><a href="/verify-download/">Verify download</a></li><li><a href="/roadmap/">Roadmap</a></li><li><a href="/accessibility/">Accessibility</a></li><li><a href="/transparency/">Transparency</a></li><li><a href="/audits/">Audits</a></li></ul></div>
       <div><h3>For builders</h3><ul><li><a href="/builders/">Protocol &amp; source</a></li><li><a href="/changelog/">Changelog</a></li><li><a href="/releases/">Releases</a></li><li><a href="/mirror/">Mirror this site</a></li><li><a href="/download/source" rel="noopener">Source archive</a></li><li><a href="https://github.com/IamOneYouAreOneWeAreOne/one-link" rel="noopener external">GitHub</a></li></ul></div>
     </div>
     <div class="footer-bottom">
-      <span class="built-by">&copy; 2026 One Link contributors. <a href="/terms/">AGPL-3.0</a>. <a href="/security/">No tracking.</a> <a href="mailto:weareone@oneunity.earth">weareone@oneunity.earth</a></span>
+      <span class="built-by">&copy; 2026 One Link contributors. <a href="/terms/">AGPL-3.0</a>. <a href="/security/">No first-party analytics or tracking cookies; infrastructure metadata disclosed.</a> <a href="mailto:weareone@oneunity.earth">weareone@oneunity.earth</a></span>
       <span class="built-by">we are one</span>
     </div>
   </div>
 </footer>
 
-<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r95"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r97"></script>
 <script type="module" src="/live/share.js"></script>
 </body>
 </html>

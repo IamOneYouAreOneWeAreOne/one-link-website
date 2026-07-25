@@ -959,7 +959,7 @@ main { position: relative; z-index: 1; }
 .ol-qr .corner.tr { top: 14px; right: 14px; border-left: 0; border-bottom: 0; }
 .ol-qr .corner.bl { bottom: 14px; left: 14px; border-right: 0; border-top: 0; }
 
-/* "real handshake" badge that appears once WASM round-trip succeeds */
+/* Local primitive-self-test badge shown after the in-tab WASM round trip. */
 .ol-live-pill {
   position: absolute;
   top: 1rem;

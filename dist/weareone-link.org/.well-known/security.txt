@@ -11,71 +11,63 @@ Policy: https://weareone-link.org/security/
 Acknowledgments: https://weareone-link.org/audits/
 
 # ----------------------------------------------------------------------
-# Reporting path
+# Reporting path and current operating boundary
 # ----------------------------------------------------------------------
 # 1. Email weareone@oneunity.earth with subject line "security report".
-# 2. If you can encrypt with One Link's pair-by-QR (you have the app):
-#    encrypt the report via /share/  -  https://weareone-link.org/share/
-#    and paste the URL into the email body.
-#    Otherwise plaintext email is acceptable. We have not yet stood up
-#    a project PGP key (the legal entity that would own it is pending).
-#    A PGP key will be published here once it exists; until then,
-#    encrypted email is best-effort using whatever key you have for us.
-# 3. We acknowledge within 72 hours.
-# 4. We share an initial triage within 7 calendar days.
-# 5. We coordinate a public disclosure date that works for both sides;
-#    typical window is 30 to 90 days depending on severity tier.
+# 2. This is a contributor-run, best-effort inbox, not a staffed 24/7
+#    security operation. Do not send exploit material or third-party
+#    personal data until scope and a protected exchange method are agreed.
+#    /share/ is a temporary browser-sharing demo, not an authenticated
+#    security-report channel.
+# 3. Response targets are explicitly non-guaranteed and are not an SLA:
+#    acknowledgement within 72 hours, initial triage within 7 calendar
+#    days, and consideration of a mutually coordinated 30-to-90-day
+#    disclosure window. Impact, capacity, dependencies, reporter needs,
+#    and active exploitation can change the sequence or timing.
+# 4. No acknowledgement, triage, remediation, CVE, credit, safe-harbor,
+#    or disclosure deadline is guaranteed.
 
 # ----------------------------------------------------------------------
-# Severity tiers
+# Preliminary severity taxonomy
 # ----------------------------------------------------------------------
-# CRITICAL  silent decryption of any sealed payload, identity-key
-#           recovery, universal pairing bypass, manifest-signing-key
-#           compromise enabling targeted updates to specific visitors.
-#
-# HIGH      targeted attack on a specific paired peer; supply-chain
-#           compromise of a release artifact; ratchet break enabling
-#           retroactive decryption of one channel; CRDT folder rollback
-#           that survives reconciliation.
-#
-# MEDIUM    timing side channels exceeding 5% variance on a hot crypto
-#           path; denial of service against the daemon or relay layer;
-#           metadata leaks beyond what /transparency/ documents.
-#
-# LOW       hardening opportunities; defense-in-depth gaps; clear-text
-#           on-disk surfaces above what /security/ already discloses;
-#           privacy-policy drift versus deployed code.
+# CRITICAL  silent decryption of a sealed payload, identity-key recovery,
+#           universal pairing bypass, or manifest-signing-key compromise.
+# HIGH      targeted peer attack; release supply-chain compromise; ratchet
+#           break enabling retroactive decryption of one channel.
+# MEDIUM    timing side channel; denial of service; metadata leakage beyond
+#           what /transparency/ documents.
+# LOW       hardening opportunity or defense-in-depth gap.
+# These labels guide intake priority only. They create no response SLA,
+# remediation deadline, bounty amount, safe-harbor guarantee, or CVE right.
 
 # ----------------------------------------------------------------------
-# CVE-numbering authority
+# CVE status
 # ----------------------------------------------------------------------
-# One Link is not its own CNA. For qualifying findings we will request
-# a CVE via MITRE's public form (https://cveform.mitre.org/) and
-# coordinate the published advisory with the reporter.
+# One Link does not claim CNA status and cannot assign or guarantee a CVE.
+# For an apparently qualifying finding, contributors may help submit
+# information to an appropriate CNA or CVE Program intake. Assignment and
+# publication remain under those third parties' control.
 
 # ----------------------------------------------------------------------
-# Bug bounty intent
+# Bug-bounty status and target
 # ----------------------------------------------------------------------
-# There is no funded bug-bounty program today. The project does not
-# hold a legal entity that can disburse payments. We offer instead:
-#   - Public acknowledgment on /audits/ with your consent
-#   - CVE assignment for qualifying findings
-#   - Permanent commit-message credit (Reported-By trailer)
-# A funded bounty program will open once the legal entity is stood
-# up. This section will be updated and the change will be tamper-
-# evident via the public git log on the website repository.
+# There is no funded bug-bounty program and no promise of payment, reward,
+# public acknowledgment, or permanent credit. A funded program remains a
+# target contingent on published rules, funding, and legally capable
+# administration; no launch date is promised.
 
 # ----------------------------------------------------------------------
-# Safe harbor
+# Safe-harbor intent and legal boundary
 # ----------------------------------------------------------------------
-# Good-faith research that follows this policy will not result in
-# legal action, takedown demands, or DMCA threats from us.
-# Acceptable: testing on your own devices and accounts, fuzzing
-# released binaries, network observation of your own traffic,
-# academic publication of findings on coordinated dates.
-# Not acceptable: exfiltrating, modifying, or destroying other
-# people's data; degrading service for other users; testing on
-# infrastructure we do not own without permission.
+# Contributors intend to welcome good-faith, authorized, proportionate
+# research on researchers' own devices and accounts and not to initiate
+# claims solely because it is reported responsibly. This intent is
+# not a legal guarantee, legal advice, a contract, authorization to access
+# other people's data or systems, or a waiver of law. Contributors cannot bind
+# hosting providers, users, individual maintainers, rightsholders, law
+# enforcement, or other third parties. Do not exfiltrate, modify, or destroy
+# others' data or degrade service. Request written authorization when scope
+# is uncertain. A formal, versioned, legally reviewed policy is the target.
 
 # ----------------------------------------------------------------------
 # Sources

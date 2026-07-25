@@ -166,47 +166,6 @@ function debugString(val) {
     // TODO we could test for more things here, like `Set`s and `Map`s.
     return className;
 }
-/**
- * Initialize the WASM module. Optional; bridge.js calls it once at boot
- * so we get readable panic messages in the browser console during dev.
- */
-export function _init() {
-    wasm._init();
-}
-
-/**
- * Protocol domain separator (constant, exposed for visibility tools).
- * @returns {string}
- */
-export function ol_pair_qr_domain() {
-    let deferred1_0;
-    let deferred1_1;
-    try {
-        const ret = wasm.ol_pair_qr_domain();
-        deferred1_0 = ret[0];
-        deferred1_1 = ret[1];
-        return getStringFromWasm0(ret[0], ret[1]);
-    } finally {
-        wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
-    }
-}
-
-/**
- * Crate version of the underlying ol_pair_qr binding.
- * @returns {string}
- */
-export function ol_pair_qr_version() {
-    let deferred1_0;
-    let deferred1_1;
-    try {
-        const ret = wasm.ol_pair_qr_version();
-        deferred1_0 = ret[0];
-        deferred1_1 = ret[1];
-        return getStringFromWasm0(ret[0], ret[1]);
-    } finally {
-        wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
-    }
-}
 
 function passArray8ToWasm0(arg, malloc) {
     const ptr = malloc(arg.length * 1, 1) >>> 0;
@@ -249,6 +208,48 @@ export function encodeQrSvg(payload) {
     } finally {
         wasm.__wbindgen_free(deferred3_0, deferred3_1, 1);
     }
+}
+
+/**
+ * Protocol domain separator (constant, exposed for visibility tools).
+ * @returns {string}
+ */
+export function ol_pair_qr_domain() {
+    let deferred1_0;
+    let deferred1_1;
+    try {
+        const ret = wasm.ol_pair_qr_domain();
+        deferred1_0 = ret[0];
+        deferred1_1 = ret[1];
+        return getStringFromWasm0(ret[0], ret[1]);
+    } finally {
+        wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
+    }
+}
+
+/**
+ * Crate version of the underlying ol_pair_qr binding.
+ * @returns {string}
+ */
+export function ol_pair_qr_version() {
+    let deferred1_0;
+    let deferred1_1;
+    try {
+        const ret = wasm.ol_pair_qr_version();
+        deferred1_0 = ret[0];
+        deferred1_1 = ret[1];
+        return getStringFromWasm0(ret[0], ret[1]);
+    } finally {
+        wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
+    }
+}
+
+/**
+ * Initialize the WASM module. Optional; bridge.js calls it once at boot
+ * so we get readable panic messages in the browser console during dev.
+ */
+export function _init() {
+    wasm._init();
 }
 
 /**

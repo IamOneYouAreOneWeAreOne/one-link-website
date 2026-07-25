@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Mettre en miroir ce site - hébergez votre propre copie, sur n'importe quel réseau, à n'importe quelle portée</title>
-  <meta name="description" content="One Link ne dépend pas d'un hôte central. Clonez le site, faites-le tourner sur un Pi, un VPS, un pin IPFS, un service onion Tor. Mise en place en cinq minutes. AGPL-3.0.">
+  <meta name="description" content="Mettez en miroir la documentation statique et les auto-tests locaux de One Link. La présence, le partage, les sessions, la topologie et le routage des téléchargements dynamiques exigent des services compatibles déployés séparément.">
   <link rel="canonical" href="https://weareone-link.org/fr/mirror/">
   <link rel="alternate" hreflang="en" href="https://weareone-link.org/mirror/">
   <link rel="alternate" hreflang="es" href="https://weareone-link.org/es/mirror/">
@@ -20,12 +20,12 @@
   <meta property="og:locale" content="fr_FR">
   <meta property="og:site_name" content="One Link">
   <meta property="og:title" content="Mettre en miroir ce site - hébergez votre propre copie">
-  <meta property="og:description" content="One Link ne dépend pas d'un hôte central. Clonez le site, faites-le tourner sur un Pi, un VPS, un pin IPFS, un service onion Tor.">
+  <meta property="og:description" content="Mettez en miroir la documentation statique et les auto-tests locaux de One Link. La présence, le partage, les sessions, la topologie et le routage des téléchargements dynamiques exigent des services compatibles déployés séparément.">
   <meta property="og:url" content="https://weareone-link.org/fr/mirror/">
   <meta property="og:image" content="https://weareone-link.org/og/one-link-fr.png">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Mettre en miroir ce site - hébergez votre propre copie">
-  <meta name="twitter:description" content="One Link ne dépend pas d'un hôte central. Clonez le site, faites-le tourner sur un Pi, un VPS, un pin IPFS, un service onion Tor.">
+  <meta name="twitter:description" content="Mettez en miroir la documentation statique et les auto-tests locaux de One Link. La présence, le partage, les sessions, la topologie et le routage des téléchargements dynamiques exigent des services compatibles déployés séparément.">
   <meta name="twitter:image" content="https://weareone-link.org/og/one-link-fr.png">
   <link rel="icon" type="image/x-icon" href="/images/favicon.ico"><link rel="icon" type="image/png" sizes="128x128" href="/images/logo-128.png"><link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
   <link rel="manifest" href="/app.webmanifest">
@@ -33,9 +33,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r95">
-  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r95">
-  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r95">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r97">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r97">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r97">
 </head>
 <body>
 <a href="#main" class="skip-link">Aller au contenu</a>
@@ -58,8 +58,8 @@
   <section class="hero">
     <div class="container">
       <span class="we-are-one">Miroir</span>
-      <h1>Hébergez votre propre copie. <span class="grad">En cinq minutes.</span></h1>
-      <p class="lede">Ce site est un bundle statique. Pas de base de données, pas de serveur d'application, pas d'étape de build propriétaire. Chaque octet vit dans un dépôt public AGPL-3.0. Si vous ne faites pas confiance à notre hébergeur, faites tourner le vôtre.</p>
+      <h1>Le miroir statique conserve les pages, pas les services Worker.</h1>
+      <p class="lede">Les pages publiques et auto-tests WASM locaux peuvent être servis comme ensemble statique AGPL-3.0. Le site canonique utilise aussi un Worker Cloudflare, des Durable Objects, R2, les téléchargements GitHub et le DNS ; copier les fichiers ne reproduit pas ces services dynamiques.</p>
     </div>
   </section>
 
@@ -75,15 +75,15 @@
         </article>
         <article class="ol-tile">
           <h3>Vérification de confiance.</h3>
-          <p>Si vous pouvez servir les mêmes octets que nous servons, signés avec la même clé de version conservée hors ligne, vous avez la preuve que nous n'avons pas modifié le contenu spécifiquement pour votre visiteur. La reproductibilité est une défense contre les attaques ciblées.</p>
+          <p data-claim-scope="stale-manifest-fail-closed">Un miroir ne prouve l’égalité que si le manifeste web signé est à jour et si tous les hash correspondent. Le manifeste actuel est périmé ; cette preuve reste indisponible jusqu’à une nouvelle signature hors ligne. Même un contrôle réussi ne prouverait pas la reproductibilité des versions applicatives.</p>
         </article>
         <article class="ol-tile">
           <h3>Latence et localité.</h3>
-          <p>Les communautés derrière des liens lents, dans des régions où les nœuds Cloudflare sont rares, ou sur des réseaux où le HTTPS sortant est filtré peuvent héberger les octets localement. Statique, brotli d'environ 58 Ko, pas de runtime côté serveur.</p>
+          <p>Un miroir local peut réduire la latence des documents et préserver les pages statiques. Sa taille compressée exacte varie, et il ne fournit pas seul le Worker canonique, Durable Object, R2, GitHub, DNS, la présence ou les services de transfert.</p>
         </article>
         <article class="ol-tile">
           <h3>C'est à vous, à tous égards.</h3>
-          <p>AGPL-3.0 vous en donne le droit. Le site en déclare l'intention. L'architecture vous y invite. Si nous nous retirons demain, le réseau continue de tourner sur les relais que vous et d'autres opérez déjà, et le site continue de vivre sur les miroirs que vous et d'autres hébergez déjà.</p>
+          <p>L’AGPL-3.0 autorise copie et modification. Les miroirs statiques préservent les pages publiées tant qu’ils restent accessibles ; ils ne prouvent pas que la découverte du démon, les rendez-vous, relais, mises à jour, téléchargements ou le réseau continuent sans leurs opérateurs actuels.</p>
         </article>
       </div>
     </div>
@@ -102,7 +102,7 @@ bash mirror.sh
 <span class="d"># ou, pour les impatients</span>
 bash &lt;(curl -sSL https://weareone-link.org/mirror.sh)</pre>
       <p>Le script clone le dépôt dans <code class="ol-inline-code">./one-link-website/</code>, vérifie le manifeste signé, puis démarre un serveur local sur <a class="ol-cyan-text" href="http://localhost:8080" rel="noopener external">http://localhost:8080</a>. Ctrl+C pour l'arrêter. Le clone reste pour un hébergement ultérieur (Caddy, nginx, Tor) selon les sections ci-dessous.</p>
-      <p class="ol-soft-text">Source du script : <a class="ol-cyan-text" href="/mirror.sh">/mirror.sh</a>. Servi depuis ce même domaine, signé avec la même clé de version Ed25519 que tout autre asset du site, vérifié par le Service Worker avant livraison. Héberger votre propre miroir inverse la relation de confiance : une fois que vous avez un clone avec un manifeste vérifié, vous n'avez plus besoin de ce site ni de notre hébergeur pour continuer.</p>
+      <p class="ol-soft-text" data-claim-scope="stale-manifest-fail-closed">Source : <a class="ol-cyan-text" href="/mirror.sh">/mirror.sh</a>. Il vérifie la signature et tous les hash du site et doit échouer avec le manifeste périmé actuel. La signature web ne signe ni n’atteste les artefacts applicatifs.</p>
     </div>
   </section>
 
@@ -111,12 +111,7 @@ bash &lt;(curl -sSL https://weareone-link.org/mirror.sh)</pre>
       <span class="kicker">Trois minutes, à la main</span>
       <h2>Lancez une copie locale manuellement.</h2>
       <p class="lede">Si vous ne voulez pas exécuter un script que nous avons écrit, voici les trois mêmes étapes qu'il effectue, à la main. Python 3 uniquement, aucune autre dépendance.</p>
-<pre class="ol-code">git clone https://github.com/IamOneYouAreOneWeAreOne/one-link-website
-cd one-link-website
-python3 scripts/verify-manifest.py
-cd dist/weareone-link.org
-python3 -m http.server 8080</pre>
-      <p>Ouvrez <code class="ol-inline-code">http://localhost:8080</code>. Le site est désormais en vie sur votre machine. Le widget de maillage ne trouvera pas de pairs (il dépend du Durable Object d'origine) mais chaque page statique s'affiche à l'identique, et toutes les démos WASM tournent entièrement dans votre navigateur.</p>
+<p>Les pages statiques et auto-tests de primitives purement locaux s’affichent depuis un serveur simple. La présence, le relais de discussion, le partage, l’enregistrement de session, la topologie et le routage des téléchargements dépendants d’API ne fonctionnent que si le miroir déploie des services compatibles.</p>
     </div>
   </section>
 
@@ -159,18 +154,7 @@ sudo systemctl reload caddy</pre>
     <div class="container">
       <span class="kicker">Dix minutes</span>
       <h2>Service onion sur Tor.</h2>
-      <p class="lede">Pour les visiteurs derrière des réseaux hostiles, sur Tor, ou sous pression de surveillance. Les octets sont identiques. L'adresse .onion est permanente et routable mondialement sans DNS ni CA.</p>
-<pre class="ol-code">sudo apt install tor
-
-cat &gt;&gt; /etc/tor/torrc &lt;&lt; 'EOF'
-HiddenServiceDir /var/lib/tor/one_link_mirror/
-HiddenServiceVersion 3
-HiddenServicePort 80 127.0.0.1:8080
-EOF
-
-sudo systemctl reload tor
-sudo cat /var/lib/tor/one_link_mirror/hostname</pre>
-      <p>Cette dernière commande affiche votre adresse <code class="ol-inline-code">.onion</code> (56 caractères, se termine par <code class="ol-inline-code">.onion</code>). N'importe qui sous Tor Browser peut atteindre votre miroir à cette adresse. Pas de registrar, pas de DNS, pas de CA, pas d'exposition d'IP. L'adresse est la clé publique.</p>
+      <p class="lede">Un service onion n’a besoin ni de DNS public ni d’autorité de certification publique, et les clients ordinaires ne reçoivent pas directement l’adresse d’origine. Tor, les observateurs réseau, la configuration de l’hôte, les journaux du fournisseur ou une compromission peuvent néanmoins exposer des métadonnées.</p>
       <p>Faites ensuite tourner un petit serveur local sur <code class="ol-inline-code">127.0.0.1:8080</code> servant le bundle statique (le même <code class="ol-inline-code">python3 -m http.server 8080</code> que plus haut, lancé comme service systemd pour qu'il survive aux redémarrages).</p>
     </div>
   </section>
@@ -183,19 +167,19 @@ sudo cat /var/lib/tor/one_link_mirror/hostname</pre>
       <div class="ol-grid ol-grid-2">
         <article class="ol-tile">
           <h3>Cloudflare Pages.</h3>
-          <p>Forkez le dépôt sur GitHub. Dans votre dashboard Cloudflare, créez un projet Pages pointant sur votre fork. Commande de build : vide. Répertoire de sortie : <code class="ol-inline-code">dist/weareone-link.org</code>. Déployez. Votre miroir est en ligne sur <code class="ol-inline-code">&lt;project&gt;.pages.dev</code> en deux minutes.</p>
+          <p>Les pages statiques et auto-tests de primitives purement locaux s’affichent depuis un serveur simple. La présence, le relais de discussion, le partage, l’enregistrement de session, la topologie et le routage des téléchargements dépendants d’API ne fonctionnent que si le miroir déploie des services compatibles.</p>
         </article>
         <article class="ol-tile">
           <h3>GitHub Pages.</h3>
-          <p>Forkez le dépôt. Dans Settings du repo &rarr; Pages, choisissez source &ldquo;branche <code class="ol-inline-code">main</code> / dossier <code class="ol-inline-code">dist/weareone-link.org</code>&rdquo;. La logique du Worker ne tourne pas sur Pages, donc les endpoints dynamiques (<code class="ol-inline-code">/api/topology</code>, <code class="ol-inline-code">/download/&lt;os&gt;</code>) renvoient 404, mais chaque page statique, démos WASM comprises, fonctionne entièrement.</p>
+          <p>Les pages statiques et auto-tests de primitives purement locaux s’affichent depuis un serveur simple. La présence, le relais de discussion, le partage, l’enregistrement de session, la topologie et le routage des téléchargements dépendants d’API ne fonctionnent que si le miroir déploie des services compatibles.</p>
         </article>
         <article class="ol-tile">
           <h3>Netlify.</h3>
-          <p>Forkez le dépôt. Connectez Netlify au fork. Répertoire de publication : <code class="ol-inline-code">dist/weareone-link.org</code>. Commande de build : vide. Même remarque que pour GitHub Pages sur les endpoints dynamiques. Pages statiques et démos WASM fonctionnent.</p>
+          <p>Les pages statiques et auto-tests de primitives purement locaux s’affichent depuis un serveur simple. La présence, le relais de discussion, le partage, l’enregistrement de session, la topologie et le routage des téléchargements dépendants d’API ne fonctionnent que si le miroir déploie des services compatibles.</p>
         </article>
         <article class="ol-tile">
           <h3>Vercel.</h3>
-          <p>Même idée. Forkez, connectez, mettez Output Directory à <code class="ol-inline-code">dist/weareone-link.org</code>. Framework Preset à &ldquo;Other&rdquo;. Build Command vide. Même remarque pour les endpoints dynamiques.</p>
+          <p>Les pages statiques et auto-tests de primitives purement locaux s’affichent depuis un serveur simple. La présence, le relais de discussion, le partage, l’enregistrement de session, la topologie et le routage des téléchargements dépendants d’API ne fonctionnent que si le miroir déploie des services compatibles.</p>
         </article>
       </div>
     </div>
@@ -206,8 +190,7 @@ sudo cat /var/lib/tor/one_link_mirror/hostname</pre>
       <span class="kicker">Hébergement décentralisé</span>
       <h2>Pin IPFS.</h2>
       <p class="lede">Pour un hébergement adressé par contenu qui ne dépend d'aucun domaine ni fournisseur unique. Quiconque a le CID peut récupérer le bundle via n'importe quelle passerelle IPFS. Les octets sont identiques à ceux que nous servons.</p>
-<pre class="ol-code">ipfs add -r dist/weareone-link.org</pre>
-      <p>La dernière ligne de sortie est le CID. Partagez-le comme <code class="ol-inline-code">ipfs://&lt;CID&gt;</code> ou via une passerelle HTTPS comme <code class="ol-inline-code">https://&lt;CID&gt;.ipfs.dweb.link</code>. Épinglez le CID sur un service comme Pinata, Web3.Storage ou Filebase, ou épinglez-le sur votre propre nœud IPFS, et le contenu reste disponible même si tout hébergeur centralisé disparaît.</p>
+<p>Le contenu reste disponible seulement si au moins un nœud ou fournisseur accessible l’épingle et si les clients peuvent atteindre une passerelle ou un pair IPFS. Un CID prouve l’adressage par contenu, pas une disponibilité perpétuelle.</p>
       <p>Si vous voulez un nom d'hôte stable, pointez un enregistrement IPNS ou un enregistrement DNSLink TXT vers le CID et mettez-le à jour quand le contenu change. Le manifeste signé du bundle est la preuve d'intégrité ; le CID est la preuve d'adressage.</p>
     </div>
   </section>
@@ -216,15 +199,13 @@ sudo cat /var/lib/tor/one_link_mirror/hostname</pre>
     <div class="container">
       <span class="kicker">Vérifiez avant de servir</span>
       <h2>Assurez-vous que les octets <span class="grad">sont réels.</span></h2>
-      <p class="lede">Le site est livré avec un manifeste signé dans <code class="ol-inline-code">/manifest.json</code>. Chaque hash d'asset est signé sous la clé de version conservée hors ligne. Lancez ceci une fois après le clone pour confirmer que le bundle n'a pas été altéré.</p>
+      <p class="lede" data-claim-scope="stale-manifest-fail-closed">Le <code class="ol-inline-code">/manifest.json</code> inclus conserve une signature historique valide mais ses hash sont périmés. Le vérificateur doit échouer. Ne considérez pas ce bundle comme vérifié avant qu’un nouveau manifeste signé hors ligne corresponde à tous les assets.</p>
 <pre class="ol-code">cd one-link-website
 python3 scripts/verify-manifest.py
 
 # sortie attendue :
-#   manifest signature: OK (Ed25519 sur octets canoniques)
-#   asset count:        32 fichiers
-#   per-asset SHA-256:  32/32 correspondent
-#   verdict:            intégrité du bundle vérifiée</pre>
+#   manifest signature: signature historique valide
+#   verdict actuel :    hash périmés ; échec obligatoire</pre>
       <p>Si la vérification échoue, n'hébergez pas le bundle. Ouvrez une issue et tirez un clone neuf. Le script de vérification est lui-même dans le dépôt et est lui-même vérifiable.</p>
     </div>
   </section>
@@ -248,7 +229,7 @@ python3 scripts/verify-manifest.py
     <div class="footer-grid">
       <div>
         <a href="/fr/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
-        <p class="footer-tag">Un réseau libre et privé pour les messages, les fichiers et les appareils. À personne. À tout le monde.</p>
+        <p class="footer-tag">Logiciel libre en préversion pour la communication privée. Conçu vers une gouvernance communautaire ; les services actuels dépendent encore de mainteneurs, opérateurs et fournisseurs identifiables.</p>
         <p class="ol-mt-md ol-soft-text ol-mono">
           <strong>Lire en :</strong>
           <a class="ol-cyan-text" hreflang="en" href="/mirror/">English</a> &middot;
@@ -259,7 +240,7 @@ python3 scripts/verify-manifest.py
           <a class="ol-cyan-text" hreflang="it" href="/it/mirror/">Italiano</a>
         </p>
       </div>
-      <div><h3>Réseau</h3><ul><li><a href="/how-it-works/" hreflang="en">Comment ça marche</a></li><li><a href="/features/" hreflang="en">Fonctionnalités</a></li><li><a href="/mesh/" hreflang="en">Maillage en direct</a></li></ul></div>
+      <div><h3>Réseau</h3><ul><li><a href="/how-it-works/" hreflang="en">Comment ça marche</a></li><li><a href="/features/" hreflang="en">Fonctionnalités</a></li><li><a href="/mesh/" hreflang="en">Présence web</a></li></ul></div>
       <div><h3>Pour vous</h3><ul><li><a href="/download/" hreflang="en">Obtenir One Link</a></li><li><a href="/security/" hreflang="en">Sécurité</a></li><li><a href="/fr/verify-download/" hreflang="fr">Vérifier le téléchargement</a></li><li><a href="/fr/roadmap/" hreflang="fr">Feuille de route</a></li><li><a href="/accessibility/" hreflang="en">Accessibilité</a></li><li><a href="/transparency/" hreflang="en">Transparence</a></li><li><a href="/audits/" hreflang="en">Audits</a></li></ul></div>
       <div><h3>Pour les bâtisseurs</h3><ul><li><a href="/builders/" hreflang="en">Protocole et source</a></li><li><a href="/changelog/" hreflang="en">Journal des modifications</a></li><li><a href="/releases/" hreflang="en">Versions</a></li><li><a href="/mirror/" hreflang="en">Mettre en miroir ce site</a></li><li><a href="/download/source" hreflang="en" rel="noopener">Archive source</a></li><li><a href="https://github.com/IamOneYouAreOneWeAreOne/one-link" rel="noopener external">GitHub</a></li></ul></div>
     </div>
@@ -270,6 +251,6 @@ python3 scripts/verify-manifest.py
   </div>
 </footer>
 
-<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r95"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r97"></script>
 </body>
 </html>

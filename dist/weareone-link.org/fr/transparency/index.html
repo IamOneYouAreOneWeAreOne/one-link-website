@@ -29,9 +29,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r95">
-  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r95">
-  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r95">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r97">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r97">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r97">
 </head>
 <body>
 <a href="#main" class="skip-link">Aller au contenu</a>
@@ -55,30 +55,24 @@
     <div class="container">
       <span class="we-are-one">Transparence</span>
       <h1>Ce que nous savons. <span class="grad">Ce que nous ne savons pas.</span></h1>
-      <p class="lede">One Link est un logiciel que vous exécutez. L'architecture a été conçue pour que la plus petite quantité d'informations possible passe par tout ce que nous exploitons. Cette page est le journal public et daté de ce que cela signifie.</p>
+      <p class="lede">Le code source est auto-hébergeable et certaines opérations directes ou locales installées peuvent fonctionner sans ce site. Les chemins actuels de découverte, rendez-vous, relais, partage, téléchargement, mise à jour, DNS, GitHub et Cloudflare peuvent encore dépendre de l’infrastructure déployée ; la continuité n’est pas prouvée pour chaque version.</p>
     </div>
   </section>
 
   <section class="section">
     <div class="container">
       <span class="kicker">Warrant canary</span>
-      <h2>Dernière vérification <span class="grad">2026-05-17</span>.</h2>
+      <h2>Frontière d’implémentation vérifiée le 22 juillet 2026.</h2>
       <div class="ol-grid ol-grid-2 ol-items-start">
         <div>
-          <p>À la date indiquée, les contributeurs de One Link ont reçu zéro requête gouvernementale de quelque nature que ce soit liée à ce projet, à ses dépôts de source, à son infrastructure de relais ou à son site web. Nous avons reçu zéro Lettre de Sécurité Nationale ou ordre de bâillon équivalent, parce qu'aucun tel instrument n'a été émis.</p>
-          <p>Cette page est mise à jour à une cadence mensuelle. La disparition ou l'expiration de cette déclaration est elle-même le signal.</p>
-          <p>La déclaration est signée et engagée dans le dépôt public de source à chaque rafraîchissement, donc les attestations historiques sont infalsifiables via git log.</p>
+          <p>Cette page est une divulgation tenue par les contributeurs, pas un rapport de transparence audité indépendamment ou horodaté cryptographiquement. La date du précédent canari a expiré et aucun canari actuel signé séparément n’est publié.</p>
+          <p>L’historique des commits peut montrer les modifications postérieures à la publication, mais son absence ou son obsolescence ne signale pas de façon fiable une injonction de non-divulgation.</p>
+          <p>Considérez les nombres de demandes légales comme non vérifiés jusqu’à la publication d’une déclaration datée, signée séparément, et d’une procédure de conservation documentée.</p>
         </div>
         <div>
-          <pre class="ol-code"><span class="d">// déclaration canary, en clair</span>
-<span class="c">date</span>:                  2026-05-17
-<span class="c">requetes_recues</span>:       0
-<span class="c">ordres_de_baillon</span>:     0
-<span class="c">citations_recues</span>:      0
-<span class="c">NSL_recues</span>:            0
-<span class="c">prochain_rafraichis</span>:   2026-06-17
-
-<span class="d">// signé dans l'historique des commits</span></pre>
+          <pre class="ol-code">status: contributor disclosure
+external_signature: not-published
+previous_canary: expired</pre>
         </div>
       </div>
     </div>
@@ -91,27 +85,27 @@
       <div class="ol-grid ol-grid-3">
         <article class="ol-tile">
           <h3>Contenu des messages</h3>
-          <p>Chiffré de bout en bout avec des clés hybrides post-quantiques. Le texte en clair n'atteint jamais un relais, jamais un serveur, jamais nous. Il n'y a pas de texte clair que toute partie autre que les pairs puisse remettre.</p>
+          <p>Les chemins chiffrés de bout en bout implémentés gardent le texte en clair sur les terminaux. Relais et serveurs peuvent traiter le texte chiffré ainsi que les métadonnées de connexion, routage, durée et taille. /api/session n’est pas protégé contre le quantique aujourd’hui, et un auto-test local de primitive ne prouve pas chaque chemin du démon.</p>
         </article>
         <article class="ol-tile">
           <h3>Identifiants de compte</h3>
-          <p>One Link utilise des identifiants de pair opaques et rotatifs. Il n'y a pas de base de données d'e-mails, de numéros de téléphone ou de noms d'utilisateur à assigner. La reconnaissance se fait d'appareil à appareil par appairage.</p>
+          <p>L’état d’association réside normalement sur les terminaux et aucun produit hébergé de graphe social n’est exploité aujourd’hui. Le site, les relais, les fournisseurs et les systèmes des destinataires traitent néanmoins des métadonnées éphémères de routage, session, livraison et connexion.</p>
         </article>
         <article class="ol-tile">
           <h3>Graphe social</h3>
-          <p>Les appairages sont stockés sur les appareils qui les détiennent, pas sur un serveur. Le graphe agrégé « qui connaît qui » que les messageries retiennent généralement n'existe nulle part où nous opérons.</p>
+          <p>L’état d’association réside normalement sur les terminaux et aucun produit hébergé de graphe social n’est exploité aujourd’hui. Le site, les relais, les fournisseurs et les systèmes des destinataires traitent néanmoins des métadonnées éphémères de routage, session, livraison et connexion.</p>
         </article>
         <article class="ol-tile">
           <h3>Journaux de relais</h3>
-          <p>Les relais sont conçus pour être des transitaires sans état. Ils acheminent des enveloppes scellées par topologie, pas par identité. Ils ne conservent pas de journaux d'accès entre redémarrages. N'importe qui peut en exécuter un.</p>
+          <p>L’exploitation de relais communautaires et la découverte décentralisée sont des objectifs de conception. Disponibilité actuelle en production, opérateurs indépendants, découverte par diffusion et basculement ne sont pas établis par la seule publication d’un code capable de servir de relais.</p>
         </article>
         <article class="ol-tile">
           <h3>Emplacement</h3>
-          <p>La page de maillage en direct ne montre qu'une région continentale approximative, dérivée de la topologie des relais. Aucun emplacement précis d'un pair n'est conservé là où nous contrôlons.</p>
+          <p>Le site ne demande pas la géolocalisation précise du navigateur. Les clients de présence envoient une estimation grossière tirée de leur fuseau horaire, qui peut être erronée ; Cloudflare reçoit toujours l’adresse IP de la requête et les autres métadonnées de connexion ordinaires.</p>
         </article>
         <article class="ol-tile">
           <h3>Registres de paiement</h3>
-          <p>One Link est gratuit. Il n'y a pas d'abonnement, pas d'historique d'achat, pas d'adresse de facturation. Il n'y a rien à contraindre.</p>
+          <p>Il n’existe aucun forfait payant aujourd’hui. Le code source AGPL-3.0 est public et auto-hébergeable. Ce n’est pas une promesse sur les futurs tarifs, l’hébergement, la connectivité, le matériel, la capacité des relais ou les coûts des opérateurs.</p>
         </article>
       </div>
     </div>
@@ -129,23 +123,23 @@
         </article>
         <article class="ol-tile">
           <h3>Durable Object MeshPresence</h3>
-          <p>La pastille « N ici en ce moment » utilise un Cloudflare Durable Object qui ne conserve qu'un identifiant aléatoire par session pendant la durée de vie de votre onglet. L'identifiant tourne à chaque visite. Aucune donnée identifiante n'est stockée.</p>
+          <p>MeshPresence conserve pour la vue en direct du site un identifiant de session aléatoire par onglet, une région approximative fournie par le client et des horodatages d’activité. Les autres visiteurs voient des identifiants pseudonymes ; Cloudflare reçoit les métadonnées de connexion ordinaires hors de l’état du Durable Object.</p>
         </article>
         <article class="ol-tile">
           <h3>Durable Object NativeSession</h3>
-          <p>État de session WebTransport par onglet pour la démo de handshake /native. Conserve les clés X25519 éphémères et les compteurs du protocole de fil One Link uniquement en mémoire. Récupéré par le ramasse-miettes en inactivité. Pas d'identifiants, pas d'IP.</p>
+          <p>/native renvoie actuellement une annonce du protocole, et /api/session enregistre une session avec une clé publique X25519 éphémère du Worker. NativeSession est un bouchon sans rôle fonctionnel ; aucun ECDH du navigateur, ML-KEM, canal WebTransport ou clé de session établie n’est créé.</p>
         </article>
         <article class="ol-tile">
           <h3>Durable Object ShareRate</h3>
-          <p>Seau à jetons par sous-réseau qui limite les téléversements vers /api/share (rafale 12, soutenu 2/min). Indexé par le /24 (IPv4) ou /48 (IPv6) du téléverseur afin que les pools NAT partagent un budget. Conserve seulement un compteur de jetons et un horodatage de remplissage. Aucune IP n'est stockée, seulement le hash du sous-réseau utilisé comme clé du seau.</p>
+          <p>ShareRate associe un seau de jetons à une chaîne de sous-réseau IPv4 /24 ou IPv6 /48 tronquée et conserve le nombre de jetons avec l’heure de recharge. Il ne stocke pas l’adresse complète dans le Durable Object, mais Cloudflare reçoit l’IP de la requête en périphérie du réseau.</p>
         </article>
         <article class="ol-tile">
           <h3>Cloudflare R2 (bucket RELEASES)</h3>
-          <p>Contient deux familles d'objets : les binaires de version signés que sert le flux /download/ et le texte chiffré de /share/ (texte chiffré seulement, clé jamais envoyée, supprimé au premier GET ou après 24h). Cloudflare voit les octets des objets et les journaux d'accès ; les clés pour déchiffrer quoi que ce soit dans le bucket de partage ne quittent jamais les navigateurs de l'expéditeur et du destinataire.</p>
+          <p>Le bucket RELEASES de R2 contient les archives source disponibles ; les routes /download/ redirigent vers GitHub. Le partage reçoit le chiffré, jamais la clé. Un Durable Object ShareObject par élément sérialise la récupération, attend la suppression R2 avant de renvoyer le chiffré et programme une alarme de 24 heures qui réessaie les échecs. Une panne du fournisseur peut retarder la suppression physique.</p>
         </article>
         <article class="ol-tile">
           <h3>Pas de pistage, pas d'analytique</h3>
-          <p>Zéro cookie. Zéro analytique. Zéro script tiers. Zéro réseau publicitaire. Zéro pixel de pistage. Cela est appliqué par la Content-Security-Policy livrée avec chaque page.</p>
+          <p>Le site n’emploie ni inscription applicative, analyse publicitaire, cookie, pixel de suivi, code d’empreinte numérique ni script tiers dans le navigateur. Cela ne signifie pas qu’aucune donnée n’est traitée : les fournisseurs d’hébergement et de transfert reçoivent des requêtes réseau ordinaires. Cloudflare reçoit des métadonnées de requête, dont les adresses IP. MeshPresence conserve un identifiant aléatoire par onglet, une région approximative fournie par le client et l’heure d’activité ; ShareRate applique ses limites au moyen d’un sous-réseau tronqué ; R2 conserve le texte chiffré de /share/ ; GitHub reçoit les téléchargements d’artefacts redirigés.</p>
         </article>
       </div>
     </div>
@@ -154,35 +148,35 @@
   <section class="section">
     <div class="container">
       <span class="kicker">Et si ce site disparaît</span>
-      <h2>Le réseau ne <span class="grad">dépend pas de ce site.</span></h2>
-      <p class="lede">Ce site web fonctionne sur Cloudflare. Un acteur étatique, une plainte de droit d'auteur, un changement de politique ou un problème de facturation pourraient le mettre hors ligne demain. Ce résultat serait gênant. Il n'arrêterait pas One Link.</p>
+      <h2>Dépendances actuelles à l'infrastructure.</h2>
+      <p class="lede">Le code source est auto-hébergeable et certaines opérations directes ou locales installées peuvent fonctionner sans ce site. Les chemins actuels de découverte, rendez-vous, relais, partage, téléchargement, mise à jour, DNS, GitHub et Cloudflare peuvent encore dépendre de l’infrastructure déployée ; la continuité n’est pas prouvée pour chaque version.</p>
       <div class="ol-grid ol-grid-2">
         <article class="ol-tile">
-          <h3>Le daemon n'a pas besoin de ce site.</h3>
-          <p>Les clients One Link s'appairent d'appareil à appareil par QR. Une fois appairés, ils discutent de pair à pair (ou via des relais bénévoles que n'importe qui peut exécuter). Aucun client n'appelle weareone-link.org pour fonctionner. Si ce site disparaît aujourd'hui, chaque One Link installé continue de fonctionner.</p>
+          <h3>Certaines opérations peuvent fonctionner sans le site ; des dépendances restent.</h3>
+          <p>Le code source est auto-hébergeable et certaines opérations directes ou locales installées peuvent fonctionner sans ce site. Les chemins actuels de découverte, rendez-vous, relais, partage, téléchargement, mise à jour, DNS, GitHub et Cloudflare peuvent encore dépendre de l’infrastructure déployée ; la continuité n’est pas prouvée pour chaque version.</p>
         </article>
         <article class="ol-tile">
-          <h3>Les relais n'ont pas besoin de ce site.</h3>
-          <p>Le réseau de relais est géré par la communauté. N'importe qui peut en exécuter un. Il n'y a pas d'annuaire central que nous contrôlons. Les relais se chuchotent entre eux pour se trouver. Supprimer notre domaine ne supprime pas un seul relais.</p>
+          <h3>Relais indépendants et découverte restent des objectifs de déploiement.</h3>
+          <p>L’exploitation de relais communautaires et la découverte décentralisée sont des objectifs de conception. Disponibilité actuelle en production, opérateurs indépendants, découverte par diffusion et basculement ne sont pas établis par la seule publication d’un code capable de servir de relais.</p>
         </article>
         <article class="ol-tile">
-          <h3>Ce site est réplicable par conception.</h3>
-          <p>Chaque octet de ce site vit dans un dépôt public AGPL-3.0. N'importe qui peut le cloner, l'auditer et l'héberger. Voir <a class="ol-cyan-text" href="/mirror/" hreflang="en">/mirror/</a> pour la commande d'auto-hébergement de trois lignes, un guide de service onion Tor et un manifeste de pin IPFS. Si nous sommes bannis, vous pouvez être le prochain hôte en cinq minutes.</p>
+          <h3>Le miroir statique conserve les pages, pas les services Worker.</h3>
+          <p>Le code public et les miroirs statiques réduisent une dépendance d’hébergement. Les miroirs statiques n’assurent pas présence, partage, enregistrement de session, routage des téléchargements ou autres API Worker, sauf si un opérateur déploie des services compatibles.</p>
         </article>
         <article class="ol-tile">
           <h3>La source est sur GitHub aujourd'hui.</h3>
-          <p>Et sur plusieurs miroirs que des gens maintiennent indépendamment. La clé de signature pour les versions est tenue hors ligne. La compilation est reproductible. Même si chaque serveur que nous avons touché disparaissait, le code, le protocole et les mathématiques survivent dans n'importe quel clone.</p>
+          <p>Le code source et le bundle web sont publics et réplicables. La clé du manifeste du site est conservée hors ligne. Les artefacts applicatifs continus ne sont ni signés ni vérifiés reproductibles ; le code et le protocole survivent dans les clones publics.</p>
         </article>
       </div>
-      <p class="ol-mt-md ol-prose">Ceci n'est pas de la bravade, c'est l'architecture. Le but entier de « pas de serveurs au milieu » est que le protocole fonctionne sans nous. Héberger ce site est une commodité pour les visiteurs de première fois, pas une dépendance portante du réseau.</p>
+      <p class="ol-mt-md ol-prose">Le code public et les miroirs statiques réduisent une dépendance d’hébergement. Les miroirs statiques n’assurent pas présence, partage, enregistrement de session, routage des téléchargements ou autres API Worker, sauf si un opérateur déploie des services compatibles.</p>
     </div>
   </section>
 
   <section class="section">
     <div class="container">
       <span class="kicker">Cadence</span>
-      <h2>Rafraîchi mensuellement. <span class="grad">Toujours.</span></h2>
-      <p class="lede">Si cette page prend du retard, c'est en soi un signal. Abonnez-vous au dépôt de source pour des notifications atomiques lorsque ce fichier change.</p>
+      <h2>Actualisations manuelles, sans garantie mensuelle.</h2>
+      <p class="lede">Cette divulgation est revue manuellement et peut devenir obsolète. L’historique montre des modifications, sans être une notification atomique, un horodatage indépendant ni un signal fiable d’exhaustivité.</p>
       <p class="lede">Source : <a class="ol-cyan-text" href="https://github.com/IamOneYouAreOneWeAreOne/one-link-website/commits/master/dist/weareone-link.org/transparency/index.html" rel="noopener">historique des commits pour cette page</a>.</p>
     </div>
   </section>
@@ -193,7 +187,7 @@
     <div class="footer-grid">
       <div>
         <a href="/fr/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
-        <p class="footer-tag">Un réseau libre et privé pour les messages, les fichiers et les appareils. À personne. À tout le monde.</p>
+        <p class="footer-tag">Logiciel libre en préversion pour la communication privée. Conçu vers une gouvernance communautaire ; les services actuels dépendent encore de mainteneurs, opérateurs et fournisseurs identifiables.</p>
         <p class="ol-mt-md ol-soft-text ol-mono">
           <strong>Lire en :</strong>
           <a class="ol-cyan-text" hreflang="en" href="/transparency/">English</a> &middot;
@@ -204,7 +198,7 @@
           <a class="ol-cyan-text" hreflang="it" href="/it/transparency/">Italiano</a>
         </p>
       </div>
-      <div><h3>Réseau</h3><ul><li><a href="/how-it-works/" hreflang="en">Comment ça marche</a></li><li><a href="/features/" hreflang="en">Fonctionnalités</a></li><li><a href="/mesh/" hreflang="en">Maillage en direct</a></li></ul></div>
+      <div><h3>Réseau</h3><ul><li><a href="/how-it-works/" hreflang="en">Comment ça marche</a></li><li><a href="/features/" hreflang="en">Fonctionnalités</a></li><li><a href="/mesh/" hreflang="en">Présence web</a></li></ul></div>
       <div><h3>Pour vous</h3><ul><li><a href="/download/" hreflang="en">Obtenir One Link</a></li><li><a href="/security/" hreflang="en">Sécurité</a></li><li><a href="/fr/verify-download/" hreflang="fr">Vérifier le téléchargement</a></li><li><a href="/fr/roadmap/" hreflang="fr">Feuille de route</a></li><li><a href="/fr/accessibility/" hreflang="fr">Accessibilité</a></li><li><a href="/fr/transparency/" hreflang="fr">Transparence</a></li><li><a href="/audits/" hreflang="en">Audits</a></li></ul></div>
       <div><h3>Pour les bâtisseurs</h3><ul><li><a href="/builders/" hreflang="en">Protocole et source</a></li><li><a href="/changelog/" hreflang="en">Journal des modifications</a></li><li><a href="/releases/" hreflang="en">Versions</a></li><li><a href="/mirror/" hreflang="en">Mettre en miroir ce site</a></li><li><a href="/download/source" hreflang="en" rel="noopener">Archive source</a></li><li><a href="https://github.com/IamOneYouAreOneWeAreOne/one-link" rel="noopener external">GitHub</a></li></ul></div>
     </div>
@@ -215,6 +209,6 @@
   </div>
 </footer>
 
-<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r95"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r97"></script>
 </body>
 </html>

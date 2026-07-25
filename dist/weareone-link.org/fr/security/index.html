@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Sécurité - ce que One Link protège, et ce qu'il ne peut pas</title>
-  <meta name="description" content="Les maths tiennent la promesse. Chaque garantie intégrée dans le protocole lui-même, vérifiable dans votre onglet. Clés hybrides PQ, routage Sphinx, récupération à seuil, attestations signées.">
+  <meta name="description" content="Modèle de sécurité de préversion délimité : ce que protège le chiffrement implémenté, ce que traite encore l’infrastructure et les garanties qui ne sont pas encore publiées.">
   <link rel="canonical" href="https://weareone-link.org/fr/security/">
   <link rel="alternate" hreflang="en" href="https://weareone-link.org/security/">
   <link rel="alternate" hreflang="es" href="https://weareone-link.org/es/security/">
@@ -20,12 +20,12 @@
   <meta property="og:locale" content="fr_FR">
   <meta property="og:site_name" content="One Link">
   <meta property="og:title" content="Sécurité - ce que One Link protège, et ce qu'il ne peut pas">
-  <meta property="og:description" content="Les maths tiennent la promesse. Chaque garantie intégrée dans le protocole lui-même, vérifiable dans votre onglet. Clés hybrides PQ, routage Sphinx, récupération à seuil, attestations signées.">
+  <meta property="og:description" content="Modèle de sécurité de préversion délimité : ce que protège le chiffrement implémenté, ce que traite encore l’infrastructure et les garanties qui ne sont pas encore publiées.">
   <meta property="og:url" content="https://weareone-link.org/fr/security/">
   <meta property="og:image" content="https://weareone-link.org/og/one-link-fr.png">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Sécurité - ce que One Link protège, et ce qu'il ne peut pas">
-  <meta name="twitter:description" content="Les maths tiennent la promesse. Chaque garantie intégrée dans le protocole lui-même, vérifiable dans votre onglet. Clés hybrides PQ, routage Sphinx, récupération à seuil, attestations signées.">
+  <meta name="twitter:description" content="Modèle de sécurité de préversion délimité : ce que protège le chiffrement implémenté, ce que traite encore l’infrastructure et les garanties qui ne sont pas encore publiées.">
   <meta name="twitter:image" content="https://weareone-link.org/og/one-link-fr.png">
   <link rel="icon" type="image/x-icon" href="/images/favicon.ico"><link rel="icon" type="image/png" sizes="128x128" href="/images/logo-128.png"><link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
   <link rel="manifest" href="/app.webmanifest">
@@ -33,9 +33,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r95">
-  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r95">
-  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r95">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r97">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r97">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r97">
 </head>
 <body>
 <a href="#main" class="skip-link">Aller au contenu</a>
@@ -61,47 +61,47 @@
     <div class="container">
       <span class="we-are-one">Sécurité</span>
       <h1>Les mathématiques <span class="grad">tiennent la promesse.</span></h1>
-      <p class="lede">Une promesse n'est solide que ce sur quoi elle repose. La nôtre repose sur l'architecture : chaque garantie de cette page est intégrée dans le protocole lui-même, vérifiable dans votre onglet, et impossible à révoquer sans reconstruire le produit. Faites confiance aux maths, puis faites-nous confiance.</p>
+      <p class="lede">Les déclarations de sécurité de cette page se limitent aux implémentations et preuves nommées. Les auto-tests du navigateur démontrent des primitives, pas chaque chemin du démon, déploiement, terminal ou frontière de fournisseur.</p>
     </div>
   </section>
 
   <section class="section-tight">
     <div class="container">
       <h2 class="ol-mt-0">Ce que nous collectons</h2>
-      <p class="lede ol-mb-sm">Rien.</p>
-      <p class="ol-soft-text ol-mw-56ch">Pas d'e-mail. Pas de téléphone. Pas d'analytique. Pas de pixels de pistage. Pas d'empreinte numérique. Pas de cookies. Pas de logs de requêtes qui vous contiennent. Ce site a zéro requête tierce. Le Cloudflare Worker n'écrit pas un mot sur qui a visité ou ce qui a été téléchargé.</p>
-      <p class="ol-soft-text ol-mw-56ch">Si un gouvernement nous demandait demain qui a téléchargé One Link, qui s'est appairé avec qui, ou ce qui a été envoyé sur le réseau, la réponse honnête est « nous ne le savons pas et il n'y a aucun moyen de le savoir ». C'est par construction.</p>
+      <p class="lede ol-mb-sm">Aucune inscription applicative ni profil publicitaire.</p>
+      <p class="ol-soft-text ol-mw-56ch">Le site évite identifiants de compte, analyse publicitaire, pixels de suivi, code d’empreinte numérique et scripts tiers du navigateur. Cloudflare et GitHub reçoivent néanmoins les métadonnées de requête ordinaires, et les services du site traitent les champs indiqués dans /transparency/.</p>
+      <p class="ol-soft-text ol-mw-56ch">Le projet ne maintient aucune base conventionnelle d’utilisateurs ou de graphe social, mais ne peut affirmer qu’une identification est impossible : fournisseurs d’infrastructure, relais, terminaux, destinataires et observateurs réseau peuvent conserver ou déduire des métadonnées.</p>
     </div>
   </section>
 
   <section class="section">
     <div class="container">
       <span class="kicker">Défend contre</span>
-      <h2>Les attaques que nous tuons <span class="grad">à la porte.</span></h2>
+      <h2>Preuves actuelles, démonstrations et exigences de capacité.</h2>
       <div class="ol-grid ol-grid-2">
         <article class="ol-tile">
           <h3>Écoute passive.</h3>
-          <p>Quiconque regarde le fil ne voit que du chiffré. Les signatures sont hybrides PQ aujourd'hui (Ed25519 + ML-DSA-65). La moitié d'échange de clés ML-KEM-768 est active sur les sauts Sphinx ; les poignées de main d'appairage et de canal l'activent en v0.22. Le format de fil réserve déjà l'emplacement, donc un ordinateur quantique qui moissonnerait le trafic d'aujourd'hui ferait face à une cible mobile.</p>
+          <p>/api/session annonce une clé publique X25519 éphémère du Worker tandis que sa clé publique ML-KEM-768 est nulle et en attente. Il n’effectue ni ECDH client ni échange ML-KEM-768 et n’établit donc aucune session navigateur-Worker sécurisée ou protégée contre le quantique. Les auto-tests locaux ne changent pas cette limite.</p>
         </article>
         <article class="ol-tile">
           <h3>Usurpation active.</h3>
-          <p>L'appairage utilise un SAS de 5 mots dérivé du secret partagé. Si quelqu'un essayait de se mettre au milieu, les mots des deux appareils ne correspondraient pas. Les maths ne se sont accordées que parce que personne ne s'était glissé entre vous.</p>
+          <p>Une comparaison SAS correctement effectuée entre deux appareils peut révéler une substitution active. L’auto-test du site dans un même onglet n’apporte pas cette assurance humaine, caméra, transport ou second appareil.</p>
         </article>
         <article class="ol-tile">
           <h3>Compromission du serveur.</h3>
-          <p>Aucun serveur ne détient vos messages ou fichiers. Un relais compromis voit des boîtes scellées adressées à des destinataires qu'il ne peut pas identifier. Aucune archive à voler.</p>
+          <p>La conception maintient le texte en clair hors des relais correctement implémentés. Les services de relais et /share/ peuvent conserver temporairement du texte chiffré, et une compromission peut exposer les charges chiffrées ainsi que les métadonnées de routage, durée, taille, session et connexion.</p>
         </article>
         <article class="ol-tile">
           <h3>Analyse de trafic <span class="ol-tile-badge">(en cours, arrive en v0.22)</span></h3>
-          <p>Le mode privé Sphinx à trois sauts est implémenté de bout en bout comme primitive vérifiable en WASM (voir la démo en direct sur /download/). Le câblage de l'interrupteur dans la couche de transport du daemon arrive en v0.22. D'ici là, les octets prennent toujours un chemin direct.</p>
+          <p>La logique Sphinx à trois sauts est disponible comme démonstration locale de primitive, mais le câblage du transport du démon et le trafic du site ne fournissent pas actuellement le chemin privé annoncé. Le routage multi-sauts réduit une partie de la visibilité d’un relais unique ; il ne garantit pas l’anonymat.</p>
         </article>
         <article class="ol-tile">
           <h3>Appareil perdu.</h3>
-          <p>La récupération à seuil divise votre identité entre des proches. Récupération avec k parmi n. Les maths font qu'un share fuité est inutile sans les autres. Essayez la démo Shamir 3-parmi-5 plus bas pour voir les octets.</p>
+          <p>Démonstration locale navigateur/WASM uniquement. Elle ne prouve ni intégration du daemon publié, ni récupération réelle, ni protection matérielle persistante, ni chaque chemin de message. Le reste demeure une exigence en attente d’un test d’acceptation versionné.</p>
         </article>
         <article class="ol-tile">
           <h3>Déverrouillage sous contrainte <span class="ol-tile-badge">(en cours, arrive en v0.22)</span></h3>
-          <p>Le mode sous contrainte ouvre un compte vide crédible avec une seconde phrase secrète. La primitive cryptographique est livrée aujourd'hui dans le crate ol_duress ; le câblage au niveau du daemon (pour que la seconde phrase déverrouille un coffre alternatif) arrive en v0.22.</p>
+          <p>Démonstration locale navigateur/WASM uniquement. Elle ne prouve ni intégration du daemon publié, ni récupération réelle, ni protection matérielle persistante, ni chaque chemin de message. Le reste demeure une exigence en attente d’un test d’acceptation versionné.</p>
         </article>
       </div>
     </div>
@@ -117,17 +117,14 @@
           <h3>L'espace physique autour de vous.</h3>
           <p>Le protocole sécurise ce qui voyage sur le fil. L'écran devant vous, c'est à vous de le garder, comme pour n'importe quelle conversation dans n'importe quelle pièce.</p>
         </article>
-        <article class="ol-tile">
-          <h3>L'appareil sous vos mains.</h3>
-          <p>Nous signons chaque binaire et livrons les sources pour que vous puissiez vérifier ce que vous exécutez. Le système d'exploitation lui-même est en dessous de nous ; en choisir un en qui vous avez confiance est le choix qui donne du sens à tout le reste.</p>
-        </article>
+        <article class="ol-tile"><h3>Signature de l'artefact</h3><p>Aucune signature de version One Link, Authenticode Windows ou notarisation Apple Developer ID n'est publiée pour les builds continus.</p></article>
         <article class="ol-tile">
           <h3>Les personnes avec qui vous choisissez de partager.</h3>
-          <p>Le chiffrement de bout en bout garde le canal seulement entre vous deux. Ce qui se passe après qu'elles ont reçu votre message, c'est la même confiance humaine sur laquelle repose toute relation.</p>
+          <p>Les chemins chiffrés de bout en bout implémentés chiffrent le contenu avant le transport. Les terminaux le déchiffrent ; les relais et services du site peuvent traiter le texte chiffré ainsi que les métadonnées de routage, durée, taille, session et connexion. Les chemins de démonstration ou dépendants des capacités sont indiqués séparément. Les points utilisent des identifiants aléatoires renouvelés par onglet, pseudonymes pour les autres visiteurs mais non anonymes pour l’infrastructure. Cloudflare reçoit les métadonnées de connexion ordinaires et le pair choisi peut conserver tout élément reçu.</p>
         </article>
         <article class="ol-tile">
           <h3>Les plus larges observateurs du réseau.</h3>
-          <p>Le routage privé à trois sauts cache la route à quiconque voit un morceau d'internet. Pour un observateur qui voit l'ensemble d'internet d'un coup, le rembourrage de timing fait grimper le coût de façon spectaculaire ; la résistance parfaite est l'objectif de la prochaine poussée de recherche.</p>
+          <p>La logique Sphinx à trois sauts est disponible comme démonstration locale de primitive, mais le câblage du transport du démon et le trafic du site ne fournissent pas actuellement le chemin privé annoncé. Le routage multi-sauts réduit une partie de la visibilité d’un relais unique ; il ne garantit pas l’anonymat.</p>
         </article>
       </div>
     </div>
@@ -136,24 +133,21 @@
   <section class="section">
     <div class="container">
       <span class="kicker">Preuves et audits</span>
-      <h2>Les reçus.</h2>
+      <h2>Pistes de preuve ; pas la preuve de chaque affirmation.</h2>
       <div class="ol-grid ol-grid-2">
         <article class="ol-tile">
           <h3>Vérification formelle</h3>
-          <p>Les pièces critiques du protocole (poignée de main d'appairage, récupération à seuil, routage onion) ont des spécifications TLA+ avec invariants vérifiés.</p>
+          <p>Preuve interne déclarée par les contributeurs uniquement. Aucun audit indépendant, artefact versionné, relevé exact de commande actuelle ni reproduction externe n’est publié ici ; vérification formelle, mesures temporelles et fuzz restent à étayer.</p>
         </article>
         <article class="ol-tile">
           <h3>Crypto à temps constant</h3>
-          <p>Vérification des macaroons et chemins de signature testés à temps constant avec une porte de solidité à 1M d'itérations. Variance observée d'horloge murale 1,01x. La porte échoue au-dessus de 1,20x.</p>
+          <p>Preuve interne déclarée par les contributeurs uniquement. Aucun audit indépendant, artefact versionné, relevé exact de commande actuelle ni reproduction externe n’est publié ici ; vérification formelle, mesures temporelles et fuzz restent à étayer.</p>
         </article>
         <article class="ol-tile">
           <h3>Tests de fuzz</h3>
-          <p>Fuzz nocturne sur 42 binaires. 5 millions d'itérations par version. La bibliothèque de vecteurs adversariaux grandit à chaque trouvaille du red-team.</p>
+          <p>Preuve interne déclarée par les contributeurs uniquement. Aucun audit indépendant, artefact versionné, relevé exact de commande actuelle ni reproduction externe n’est publié ici ; vérification formelle, mesures temporelles et fuzz restent à étayer.</p>
         </article>
-        <article class="ol-tile">
-          <h3>Versions reproductibles</h3>
-          <p>Chaque version est construite dans un environnement de calcul confidentiel. Document d'attestation publié à côté du binaire. N'importe qui peut recompiler depuis les sources et vérifier l'égalité octet par octet.</p>
-        </article>
+        <article class="ol-tile"><h3>Reproductibilité et provenance</h3><p>Aucun résultat reproductible octet par octet ni attestation liée à l'artefact n'est publié pour les builds continus.</p></article>
       </div>
     </div>
   </section>
@@ -162,9 +156,7 @@
     <div class="container">
       <span class="kicker">Prouvez les octets que vous lisez</span>
       <h2>Vérifiez ce site, <span class="grad">dans votre onglet.</span></h2>
-      <p class="lede ol-mw-64ch">
-        Un clic vérifie la signature Ed25519 du manifeste d'assets que vous venez de télécharger avec cette page, puis re-télécharge chaque asset listé dans le manifeste et recalcule son SHA-256 contre le hash enregistré. Si les deux contrôles passent, les octets que vous lisez correspondent à ce que la clé de version hors ligne a signé. Aucune affirmation côté serveur, c'est votre navigateur qui fait la cryptographie. Même algorithme que celui que le Service Worker exécute avant de servir une page cachée.
-      </p>
+      <p class="lede ol-mw-64ch" data-claim-scope="site-manifest-current-status">Le vérificateur authentifie le manifeste web avec la clé hors ligne puis recalcule chaque fichier listé. Le manifeste inclus est périmé après les changements actuels : le contrôle complet échoue et aucun verdict d’intégrité actuel n’est publié. Il n’authentifie pas les installateurs et ne prouve pas un build reproductible.</p>
 
       <div class="ol-private-demo ol-mt">
         <button type="button" id="ol-verify-site-btn" class="btn btn-primary">
@@ -179,10 +171,8 @@
   <section class="section">
     <div class="container">
       <span class="kicker">Prouvez-le</span>
-      <h2>Forgez une identité hybride, <span class="grad">ici même dans votre onglet.</span></h2>
-      <p class="lede ol-mw-64ch">
-        Un clic exécute le vrai crate <code class="ol-inline-code">ol_pqsig</code> (compilé en WASM) dans votre navigateur. Il génère une paire de clés hybride Ed25519 + ML-DSA-65 toute neuve, signe un court message, vérifie la signature, puis retourne un bit et vous montre les deux moitiés refuser de vérifier. Pas d'appel réseau. Pas de confiance côté serveur. Le même chemin de code que le daemon utilise pour les commits de capabilities.
-      </p>
+      <h2>Preuves actuelles, démonstrations et exigences de capacité.</h2>
+      <p class="lede ol-mw-64ch">Démonstration locale navigateur/WASM uniquement. Elle ne prouve ni intégration du daemon publié, ni récupération réelle, ni protection matérielle persistante, ni chaque chemin de message. Le reste demeure une exigence en attente d’un test d’acceptation versionné.</p>
 
       <div class="ol-private-demo ol-mt">
         <button type="button" id="ol-pqsig-btn" class="btn btn-primary">
@@ -223,10 +213,8 @@
   <section class="section">
     <div class="container">
       <span class="kicker">Confidentialité persistante</span>
-      <h2>Chaque message reçoit une clé neuve. <span class="grad">Compromettre l'une ne dit rien de la suivante.</span></h2>
-      <p class="lede ol-mw-64ch">
-        Un clic exécute <code class="ol-inline-code">ol_ratchet</code> (chaîne KDF à confidentialité persistante par morceau, dérivée avec BLAKE3). Votre navigateur génère une clé de chaîne neuve, dérive six clés de message successives, et montre qu'elles sont mutuellement distinctes et que le ratchet refuse de revenir en arrière. Un attaquant qui capture la clé du morceau 3 ne peut pas reconstruire la clé du morceau 4 parce que le pas de chaîne est un hash à sens unique.
-      </p>
+      <h2>Preuves actuelles, démonstrations et exigences de capacité.</h2>
+      <p class="lede ol-mw-64ch">Démonstration locale navigateur/WASM uniquement. Elle ne prouve ni intégration du daemon publié, ni récupération réelle, ni protection matérielle persistante, ni chaque chemin de message. Le reste demeure une exigence en attente d’un test d’acceptation versionné.</p>
 
       <div class="ol-private-demo ol-mt">
         <button type="button" id="ol-ratchet-btn" class="btn btn-primary">
@@ -245,10 +233,8 @@
   <section class="section">
     <div class="container">
       <span class="kicker">Confiance au premier usage</span>
-      <h2>Votre appareil est reconnu <span class="grad">sans que nous sachions qui vous êtes.</span></h2>
-      <p class="lede ol-mw-64ch">
-        Un clic exécute <code class="ol-inline-code">ol_hwkey</code> (repli TOFU logiciel, la même surface de trait que le daemon utilise avec Secure Enclave, StrongBox ou TPM sur du vrai matériel). Votre navigateur forge une racine d'appareil de 32 octets à la première visite et la stocke localement. Le bouton dérive une empreinte d'appareil déterministe à partir de cette racine, puis simule une tentative d'usurpation avec une clé aléatoire et montre le magasin TOFU la rejeter à temps constant. Aucun identifiant n'est envoyé à un serveur.
-      </p>
+      <h2>Preuves actuelles, démonstrations et exigences de capacité.</h2>
+      <p class="lede ol-mw-64ch">Démonstration locale navigateur/WASM uniquement. Elle ne prouve ni intégration du daemon publié, ni récupération réelle, ni protection matérielle persistante, ni chaque chemin de message. Le reste demeure une exigence en attente d’un test d’acceptation versionné.</p>
 
       <div class="ol-private-demo ol-mt">
         <button type="button" id="ol-hwkey-btn" class="btn btn-primary">
@@ -264,36 +250,18 @@
     </div>
   </section>
 
-  <section class="section">
+  <section class="section" data-claim-scope="security-disclosure">
     <div class="container">
-      <span class="kicker">Vous avez trouvé une faille</span>
-      <h2>La divulgation <span class="grad">est bienvenue.</span></h2>
-      <p class="lede">Si vous trouvez une vulnérabilité dans le daemon, le protocole, ce site, le Service Worker, le Cloudflare Worker, ou n'importe quelle démo WASM, dites-le nous. La divulgation coordonnée est honorée. Attribution publique si vous le voulez.</p>
+      <span class="kicker">Divulgation coordonnée des vulnérabilités</span>
+      <h2>Signalez en privé ; lisez littéralement les engagements actuels.</h2>
+      <p class="lede">La boîte de réception tenue par des contributeurs ci-dessous est la voie de signalement publiée. Elle est suivie au mieux des possibilités, pas par une équipe de sécurité disponible 24 h/24 et 7 j/7. Aucun délai de réponse, correction, CVE, crédit, prime, port sûr ou divulgation n’est garanti. Les objectifs ci-dessous préservent le programme que nous voulons construire sans le présenter comme une capacité opérationnelle actuelle.</p>
       <div class="ol-grid ol-grid-2">
-        <article class="ol-tile">
-          <h3>Comment nous joindre</h3>
-          <p>Écrivez à <a class="ol-cyan-text" href="mailto:weareone@oneunity.earth">weareone@oneunity.earth</a> avec pour objet « security report ». Chiffrez le corps via <a class="ol-cyan-text" href="/share/" hreflang="en">/share/</a> de One Link si vous avez l'app, ou envoyez en clair si vous ne l'avez pas. Contact RFC 9116 complet sur <a class="ol-cyan-text" href="/.well-known/security.txt">/.well-known/security.txt</a>.</p>
-        </article>
-        <article class="ol-tile">
-          <h3>Temps de réponse</h3>
-          <p>Nous accusons réception sous 72 heures. Nous partageons un triage initial sous 7 jours. Nous coordonnons une date de divulgation publique qui convient aux deux parties, typiquement 30 à 90 jours selon la gravité.</p>
-        </article>
-        <article class="ol-tile">
-          <h3>Intention de bug bounty</h3>
-          <p>Aujourd'hui, pas de programme de bug bounty financé parce que le projet n'a pas encore d'entité capable de verser des paiements. Nous offrons à la place une reconnaissance publique (avec votre consentement), une attribution de CVE via MITRE pour les trouvailles qualifiantes, et un crédit permanent dans le message de commit. Un programme financé ouvrira une fois l'entité juridique en place.</p>
-        </article>
-        <article class="ol-tile">
-          <h3>Niveaux de gravité</h3>
-          <p>Critique : déchiffrement silencieux d'un paquet scellé, récupération de la clé d'identité, ou contournement universel d'appairage. Haute : attaques ciblées sur un pair spécifique, compromission de la chaîne d'approvisionnement des versions, rupture du ratchet. Moyenne : canaux auxiliaires temporels, déni de service, fuites de métadonnées au-delà de ce que /transparency/ documente. Basse : possibilités de durcissement, lacunes de défense en profondeur.</p>
-        </article>
-        <article class="ol-tile">
-          <h3>Port sûr</h3>
-          <p>La recherche de bonne foi qui suit cette politique n'entraînera ni action en justice, ni demande de retrait, ni menaces DMCA de notre part. Testez sur vos propres appareils et comptes. N'exfiltrez pas, ne modifiez pas, ne détruisez pas les données d'autres personnes. Ne dégradez pas le service pour les autres. Si vous restez dans ces limites, vous êtes bienvenu ici.</p>
-        </article>
-        <article class="ol-tile">
-          <h3>Historique</h3>
-          <p>Chaque trouvaille close vit sur <a class="ol-cyan-text" href="/audits/" hreflang="en">/audits/</a> avec la date, le niveau de gravité, et le commit qui l'a close. Les nouvelles divulgations y apparaissent une fois la date coordonnée atteinte.</p>
-        </article>
+        <article class="ol-tile" data-claim-id="security-contact"><h3>Voie de signalement publiée</h3><p>Écrivez à <a class="ol-cyan-text" href="mailto:weareone@oneunity.earth">weareone@oneunity.earth</a> avec pour objet &quot;security report&quot;. <a class="ol-cyan-text" href="/.well-known/security.txt">/.well-known/security.txt</a> reprend ce contact. N’envoyez ni matériel d’exploitation ni données personnelles de tiers avant d’avoir convenu du périmètre et d’une méthode d’échange protégée. <a class="ol-cyan-text" href="/share/">/share/</a> est une démonstration temporaire de partage dans le navigateur, pas un canal authentifié de signalement de sécurité.</p></article>
+        <article class="ol-tile" data-claim-id="security-response"><h3>Objectifs de réponse ; aucun SLA</h3><p>État actuel : traitement par des contributeurs, sans délai garanti d’accusé de réception, triage, correction ou divulgation. Les objectifs non garantis sont un accusé de réception sous 72 heures, un premier triage sous 7 jours calendaires et l’examen d’une fenêtre de divulgation coordonnée de 30 à 90 jours. L’impact, les capacités, les dépendances, les besoins de la personne qui signale et une exploitation active peuvent modifier l’ordre ou le calendrier.</p></article>
+        <article class="ol-tile" data-claim-id="security-bounty-cve"><h3>Aucune prime financée ni CVE garanti</h3><p>Il n’existe aucun programme de bug bounty financé et aucune promesse de paiement, récompense, reconnaissance publique ou crédit permanent. One Link ne revendique pas le statut de CNA et ne peut ni attribuer ni garantir un CVE. Pour une découverte apparemment admissible, les contributeurs peuvent aider à transmettre des informations à une CNA appropriée ou au point d’entrée du programme CVE ; ces tiers contrôlent l’attribution et la publication. Un programme financé reste un objectif soumis à des règles publiées, un financement et une administration juridiquement capable ; aucune date de lancement n’est promise.</p></article>
+        <article class="ol-tile" data-claim-id="security-severity"><h3>Gravité à l’entrée, pas un droit</h3><p>La taxonomie préliminaire classe comme Critique le déchiffrement silencieux, la récupération de clé d’identité ou le contournement universel d’appairage ; Haute les attaques ciblées, la compromission de la chaîne de versions ou la rupture du ratchet ; Moyenne les canaux temporels, le déni de service ou les fuites au-delà de /transparency/ ; et Basse le durcissement ou la défense en profondeur. Elle guide seulement la priorité et ne crée ni SLA, ni délai de correction, ni montant de prime, ni garantie de port sûr, ni droit à un CVE.</p></article>
+        <article class="ol-tile" data-claim-id="security-safe-harbor"><h3>Intention de port sûr ; aucune garantie juridique</h3><p>Les contributeurs souhaitent accueillir les recherches de bonne foi, autorisées et proportionnées sur vos propres appareils et comptes, et ne pas engager de réclamation au seul motif qu’elles sont signalées de manière responsable. Cette intention n’est ni un conseil juridique, ni un contrat, ni une autorisation d’accéder aux données ou systèmes d’autrui, ni une renonciation à la loi. Les contributeurs ne peuvent engager les hébergeurs, utilisateurs, mainteneurs individuels, titulaires de droits, forces de l’ordre ou autres tiers. N’exfiltrez, ne modifiez ou ne détruisez pas les données d’autrui et ne dégradez pas le service ; demandez une autorisation écrite si le périmètre est incertain. Une politique formelle, versionnée et examinée juridiquement reste l’objectif.</p></article>
+        <article class="ol-tile" data-claim-id="security-track-record"><h3>Preuves et historique</h3><p>Le registre /audits/, tenu par les contributeurs, relie les rapports externes publiés lorsqu’ils existent et consigne certaines notes internes. Son exhaustivité n’est pas garantie et il ne constitue ni audit indépendant, ni attestation de version, ni journal de réponse, ni preuve que chaque signalement a été résolu.</p></article>
       </div>
     </div>
   </section>
@@ -315,7 +283,7 @@
     <div class="footer-grid">
       <div>
         <a href="/fr/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
-        <p class="footer-tag">Un réseau libre et privé pour les messages, les fichiers et les appareils. À personne. À tout le monde.</p>
+        <p class="footer-tag">Logiciel libre en préversion pour la communication privée. Conçu vers une gouvernance communautaire ; les services actuels dépendent encore de mainteneurs, opérateurs et fournisseurs identifiables.</p>
         <p class="ol-mt-md ol-soft-text ol-mono">
           <strong>Lire en :</strong>
           <a class="ol-cyan-text" hreflang="en" href="/security/">English</a> &middot;
@@ -326,7 +294,7 @@
           <a class="ol-cyan-text" hreflang="it" href="/it/security/">Italiano</a>
         </p>
       </div>
-      <div><h3>Réseau</h3><ul><li><a href="/how-it-works/" hreflang="en">Comment ça marche</a></li><li><a href="/features/" hreflang="en">Fonctionnalités</a></li><li><a href="/mesh/" hreflang="en">Maillage en direct</a></li></ul></div>
+      <div><h3>Réseau</h3><ul><li><a href="/how-it-works/" hreflang="en">Comment ça marche</a></li><li><a href="/features/" hreflang="en">Fonctionnalités</a></li><li><a href="/mesh/" hreflang="en">Présence web</a></li></ul></div>
       <div><h3>Pour vous</h3><ul><li><a href="/download/" hreflang="en">Obtenir One Link</a></li><li><a href="/security/" hreflang="en">Sécurité</a></li><li><a href="/fr/verify-download/" hreflang="fr">Vérifier le téléchargement</a></li><li><a href="/fr/roadmap/" hreflang="fr">Feuille de route</a></li><li><a href="/accessibility/" hreflang="en">Accessibilité</a></li><li><a href="/transparency/" hreflang="en">Transparence</a></li><li><a href="/audits/" hreflang="en">Audits</a></li></ul></div>
       <div><h3>Pour les bâtisseurs</h3><ul><li><a href="/builders/" hreflang="en">Protocole et source</a></li><li><a href="/changelog/" hreflang="en">Journal des modifications</a></li><li><a href="/releases/" hreflang="en">Versions</a></li><li><a href="/mirror/" hreflang="en">Mettre en miroir ce site</a></li><li><a href="/download/source" hreflang="en" rel="noopener">Archive source</a></li><li><a href="https://github.com/IamOneYouAreOneWeAreOne/one-link" rel="noopener external">GitHub</a></li></ul></div>
     </div>
@@ -337,6 +305,6 @@
   </div>
 </footer>
 
-<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r95"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r97"></script>
 </body>
 </html>

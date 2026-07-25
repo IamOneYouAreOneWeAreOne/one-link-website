@@ -62,7 +62,7 @@ pub fn solve_steady_helmholtz(
             n
         )));
     }
-    if edges_flat.len() % 2 != 0 {
+    if !edges_flat.len().is_multiple_of(2) {
         return Err(JsError::new("edges_flat length must be even"));
     }
     let n_edges = edges_flat.len() / 2;

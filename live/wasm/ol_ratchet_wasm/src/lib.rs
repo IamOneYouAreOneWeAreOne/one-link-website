@@ -44,7 +44,7 @@ fn random_chain_key() -> ChainKey {
 /// we surface as well.
 #[wasm_bindgen(js_name = liveDemoRoundTrip)]
 pub fn live_demo_round_trip(n_keys: u32) -> Result<JsValue, JsError> {
-    let n = n_keys.min(16).max(2) as usize;
+    let n = n_keys.clamp(2, 16) as usize;
     let root = random_chain_key();
     let root_preview: String = root.iter().take(8).map(|b| format!("{:02x}", b)).collect();
 
@@ -81,16 +81,20 @@ pub fn live_demo_round_trip(n_keys: u32) -> Result<JsValue, JsError> {
     };
 
     let obj = js_sys::Object::new();
-    set(&obj, "nKeys",         &JsValue::from_f64(n as f64))?;
+    set(&obj, "nKeys", &JsValue::from_f64(n as f64))?;
     set(&obj, "messageKeyLen", &JsValue::from_f64(32.0))?;
-    set(&obj, "chainKeyLen",   &JsValue::from_f64(32.0))?;
-    set(&obj, "rootPreview",   &JsValue::from_str(&root_preview))?;
-    set(&obj, "finalStep",     &JsValue::from_f64(final_step as f64))?;
-    set(&obj, "keyPreviews",   &key_previews.into())?;
-    set(&obj, "allDistinct",   &JsValue::from_bool(all_distinct))?;
-    set(&obj, "rewindErr",     &JsValue::from_str(&rewind_err))?;
-    set(&obj, "skipErr",       &JsValue::from_str(&skip_err))?;
-    set(&obj, "maxSkipSteps",  &JsValue::from_f64(ol_ratchet::MAX_SKIP_STEPS as f64))?;
+    set(&obj, "chainKeyLen", &JsValue::from_f64(32.0))?;
+    set(&obj, "rootPreview", &JsValue::from_str(&root_preview))?;
+    set(&obj, "finalStep", &JsValue::from_f64(final_step as f64))?;
+    set(&obj, "keyPreviews", &key_previews.into())?;
+    set(&obj, "allDistinct", &JsValue::from_bool(all_distinct))?;
+    set(&obj, "rewindErr", &JsValue::from_str(&rewind_err))?;
+    set(&obj, "skipErr", &JsValue::from_str(&skip_err))?;
+    set(
+        &obj,
+        "maxSkipSteps",
+        &JsValue::from_f64(ol_ratchet::MAX_SKIP_STEPS as f64),
+    )?;
     Ok(obj.into())
 }
 

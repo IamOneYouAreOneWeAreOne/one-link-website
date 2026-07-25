@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta name="x-emitted-by" content="coherence-lang/1.0.3 one_link.ssg.build">
-  <!-- Route: /builders/ / build: 2026-05-16T00:00:00Z / source: pipeline/ssg/src/one_link_build.cl -->
+  <meta name="x-truth-rendered-by" content="scripts/apply_release_truth.py">
+  <!-- Release-truth copy reviewed 2026-07-22; historical SSG byte provenance is not asserted. -->
+  <meta name="x-truth-rendered-by" content="scripts/apply_release_truth.py">
+  <!-- Release-truth copy reviewed 2026-07-22; historical SSG byte provenance is not asserted. -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Builders - protocol, source, your own relay</title>
@@ -34,9 +36,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r95">
-  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r95">
-  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r95">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r97">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r97">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r97">
 </head>
 <body>
 <a href="#main" class="skip-link">Skip to content</a>
@@ -74,8 +76,8 @@
   <section class="section">
     <div class="container">
       <span class="kicker">The crates</span>
-      <h2>One Link is <span class="grad">41 small crates.</span></h2>
-      <p class="lede">Each does one thing. Each is independently auditable. Each compiles to native, WASM, or both. Pulled together by the daemon.</p>
+      <h2>Evidence pointers; not proof of every claim.</h2>
+      <p class="lede ol-mw-64ch">Contributor-reported internal evidence only. No independent audit, version-pinned artifact, exact current command transcript, or external reproduction is published here; formal-verification, timing, and fuzz assertions remain requirements pending that evidence.</p>
 
       <div class="ol-grid ol-grid-2">
         <article class="ol-tile">
@@ -88,11 +90,11 @@
         </article>
         <article class="ol-tile">
           <h3>ol_coherence_field</h3>
-          <p>Damped Helmholtz solver for the tau_c routing field. 10,000 peers in 1.74 ms on a single CPU core (criterion bench). Couples to homology and ratchet. GPU path lands in v0.22.</p>
+          <p>Contributor-reported internal evidence only. No independent audit, version-pinned artifact, exact current command transcript, or external reproduction is published here; formal-verification, timing, and fuzz assertions remain requirements pending that evidence.</p>
         </article>
         <article class="ol-tile">
           <h3>ol_transfer</h3>
-          <p>The native chunked transfer pipeline. AEAD per chunk, rekey every N, fountain coding fallback for lossy links.</p>
+          <p>Integrated chunk-fetch engine over QUIC: idempotent local reads, bounded batch fetches, Bloom and scoped-Bloom inventory exchange, and optional fountain symbols. It moves already-formed ChunkRecord bytes; chunk AEAD and rekeying belong to other layers. Crate tests do not by themselves prove the complete application transfer path.</p>
         </article>
         <article class="ol-tile">
           <h3>ol_ratchet</h3>
@@ -100,23 +102,23 @@
         </article>
         <article class="ol-tile">
           <h3>ol_capability</h3>
-          <p>Macaroon-based caps. Constant-time verification. 1M-iteration soundness gate. Granular per-resource scoping.</p>
+          <p>Contributor-reported internal evidence only. No independent audit, version-pinned artifact, exact current command transcript, or external reproduction is published here; formal-verification, timing, and fuzz assertions remain requirements pending that evidence.</p>
         </article>
         <article class="ol-tile">
           <h3>ol_threshold_recovery</h3>
-          <p>k-of-n share split with BN multi-sig, per-signer R values. Survive a lost device without surviving a leak.</p>
+          <p>Shamir k-of-n secret sharing over GF(2^8), proactive share refresh, and optional field-witness masking. It does not implement BN multisignatures or per-signer R values. Python bindings expose the primitives; real-device recovery still requires versioned product-integration evidence.</p>
         </article>
         <article class="ol-tile">
           <h3>ol_confidential</h3>
-          <p>Confidential-compute provider trait. Software baseline (ChaCha20-Poly1305 + Zeroize). Hardware backends (TPM, Secure Enclave, SGX, SEV-SNP, TrustZone) plug in.</p>
+          <p>Provider trait and ChaCha20-Poly1305 software-sealing baseline. An opt-in Windows TPM feature adds a TPM-rooted attestation key, while master-key sealing remains software-based. Secure Enclave, SGX, SEV-SNP, and TrustZone backends are not implemented; daemon use and platform guarantees require build and runtime evidence.</p>
         </article>
         <article class="ol-tile">
           <h3>ol_routing</h3>
-          <p>tau_c-driven path selection. Routing decisions are field-gradient followers, not lookup-table walkers.</p>
+          <p>Tau-weighted cost and Dijkstra primitives over empirical RTT, jitter, throughput, and loss, plus claim-corroboration helpers. A Python binding exposes the graph math; this crate is not evidence that released daemon traffic follows a field gradient.</p>
         </article>
         <article class="ol-tile">
           <h3>ol_homology</h3>
-          <p>Topological partition detection. Spots network splits in one gossip round. 0% false positives across the 4-regular partition fuzz.</p>
+          <p>Contributor-reported internal evidence only. No independent audit, version-pinned artifact, exact current command transcript, or external reproduction is published here; formal-verification, timing, and fuzz assertions remain requirements pending that evidence.</p>
         </article>
         <article class="ol-tile">
           <h3>ol_pqsig + ol_pqkem</h3>
@@ -124,7 +126,7 @@
         </article>
         <article class="ol-tile">
           <h3>ol_duress</h3>
-          <p>Secondary passphrase opens a believable empty account. The math gives you a way out under coercion.</p>
+          <p>DuressGate policy primitives classify precomputed real, decoy, and rejected passphrases, derive volume secrets, and emit a covert marker. This is not a filesystem, account UI, or released-daemon integration, and it does not prove that a decoy is believable under coercion.</p>
         </article>
       </div>
 
@@ -134,22 +136,12 @@
 
   <section class="section">
     <div class="container">
-      <span class="kicker">Reproducible by you</span>
-      <h2>Rebuild this site <span class="grad">in your tab.</span></h2>
-      <p class="lede ol-mw-64ch">
-        One click downloads the signed source archive, computes its SHA-256 locally, and compares it against the attestation chain. If you and we both arrive at the same hash, no human has touched the result. Every release should be reproducible by anyone with a network connection and a browser. Here it is.
-      </p>
-
+      <span class="kicker">Release proof unavailable</span>
+      <h2>Source can be inspected, but this release is not attested.</h2>
+      <p class="lede ol-mw-64ch">The current rolling source archive has no published artifact-bound signature or reproducible-build attestation. You can clone and build the source, and you can compute a local hash, but this page will not present either action as release verification.</p>
       <div class="ol-private-demo ol-mt">
-        <button type="button" id="ol-rebuild-btn" class="btn btn-primary">
-          Verify this site's source archive
-          <span class="arr" aria-hidden="true">&rarr;</span>
-        </button>
-        <span class="ol-status ol-status-inline" id="ol-rebuild-status">
-          <span class="dot"></span>
-          <span>downloading + hashing</span>
-        </span>
-        <pre class="ol-code ol-output-pre" id="ol-rebuild-out"></pre>
+        <button type="button" id="ol-rebuild-btn" class="btn btn-primary" data-release-attestation="unavailable" disabled aria-disabled="true">Source attestation not published</button>
+        <pre class="ol-code ol-output-pre" id="ol-rebuild-out">The current rolling source archive has no published artifact-bound signature or reproducible-build attestation. You can clone and build the source, and you can compute a local hash, but this page will not present either action as release verification.</pre>
       </div>
     </div>
   </section>
@@ -158,14 +150,9 @@
     <div class="container">
       <span class="kicker">Run your own relay</span>
       <h2>Become part of the network.</h2>
-      <p class="lede">A relay is a single binary that holds and forwards encrypted bundles. It cannot read anything. It does not need an account. Anyone can run one.</p>
-      <pre class="ol-code"><span class="d"># on a small VPS, raspberry pi, or your old laptop</span>
-<span class="c">curl</span> <span class="a">https://weareone-link.org/relay/install.sh</span> | sh
-<span class="c">one-link-relay</span> start
-
-<span class="d"># that is it. your relay shows up on the live mesh</span>
-<span class="d"># within seconds, and starts helping the network</span></pre>
-      <p class="ol-footnote-soft">No registration. No reputation system that we control. The network's topology detector picks healthy relays and routes around sick ones automatically.</p>
+      <p class="lede">Relay software is intended to forward encrypted bundles without content keys, but an operator can observe connection, routing, timing, and size metadata. A public one-line installer and production relay directory are not currently published.</p>
+      <pre class="ol-code"># Public relay installer not published. Build and review the relay source before experimental use.</pre>
+      <p class="ol-footnote-soft">A relay does not automatically appear on this website-presence map. Discovery, reputation, health selection, and failover require deployed, tested infrastructure.</p>
     </div>
   </section>
 
@@ -183,19 +170,19 @@
     <div class="footer-grid">
       <div>
         <a href="/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
-        <p class="footer-tag">A free, private network for messages, files, and devices. Owned by no one. Belongs to everyone.</p>
+        <p class="footer-tag">Open-source pre-release software for private communication. Built toward community ownership; current services still depend on identifiable maintainers, operators, and infrastructure providers.</p>
       </div>
-      <div><h3>Network</h3><ul><li><a href="/how-it-works/">How it works</a></li><li><a href="/features/">Features</a></li><li><a href="/mesh/">Live mesh</a></li></ul></div>
+      <div><h3>Network</h3><ul><li><a href="/how-it-works/">How it works</a></li><li><a href="/features/">Features</a></li><li><a href="/mesh/">Website presence</a></li></ul></div>
       <div><h3>For you</h3><ul><li><a href="/download/">Get One Link</a></li><li><a href="/security/">Security</a></li><li><a href="/verify-download/">Verify download</a></li><li><a href="/roadmap/">Roadmap</a></li><li><a href="/accessibility/">Accessibility</a></li><li><a href="/transparency/">Transparency</a></li><li><a href="/audits/">Audits</a></li></ul></div>
       <div><h3>For builders</h3><ul><li><a href="/builders/">Protocol &amp; source</a></li><li><a href="/changelog/">Changelog</a></li><li><a href="/releases/">Releases</a></li><li><a href="/mirror/">Mirror this site</a></li><li><a href="/download/source" rel="noopener">Source archive</a></li><li><a href="https://github.com/IamOneYouAreOneWeAreOne/one-link" rel="noopener external">GitHub</a></li></ul></div>
     </div>
     <div class="footer-bottom">
-      <span class="built-by">&copy; 2026 One Link contributors. <a href="/terms/">AGPL-3.0</a>. <a href="/security/">No tracking.</a> <a href="mailto:weareone@oneunity.earth">weareone@oneunity.earth</a></span>
+      <span class="built-by">&copy; 2026 One Link contributors. <a href="/terms/">AGPL-3.0</a>. <a href="/security/">No first-party analytics or tracking cookies; infrastructure metadata disclosed.</a> <a href="mailto:weareone@oneunity.earth">weareone@oneunity.earth</a></span>
       <span class="built-by">we are one</span>
     </div>
   </div>
 </footer>
 
-<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r95"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r97"></script>
 </body>
 </html>

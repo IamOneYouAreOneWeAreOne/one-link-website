@@ -19,8 +19,8 @@ use wasm_bindgen::prelude::*;
 use x25519_dalek::{PublicKey as X25519PublicKey, StaticSecret as X25519StaticSecret};
 
 use ol_onion::{
-    build_onion, peel_one_layer, Circuit, HopDescriptor, OnionError, OnionPacket, PeelOutcome,
-    HOP_ID_LEN, MAX_USER_PAYLOAD, ONION_PACKET_SIZE,
+    build_onion, peel_one_layer, Circuit, HopDescriptor, OnionPacket, PeelOutcome, HOP_ID_LEN,
+    MAX_USER_PAYLOAD, ONION_PACKET_SIZE,
 };
 
 #[wasm_bindgen(start)]
@@ -88,7 +88,7 @@ pub fn live_demo_round_trip(payload: &[u8]) -> Result<JsValue, JsError> {
     let mut hop_pubkeys_hex: Vec<String> = Vec::with_capacity(3);
 
     for _ in 0..3 {
-        let sk = X25519StaticSecret::random_from_rng(&mut rng);
+        let sk = X25519StaticSecret::random_from_rng(rng);
         let pk = X25519PublicKey::from(&sk).to_bytes();
         let mut id = [0u8; HOP_ID_LEN];
         rng.fill_bytes(&mut id);
@@ -102,9 +102,8 @@ pub fn live_demo_round_trip(payload: &[u8]) -> Result<JsValue, JsError> {
         .map_err(|e| JsError::new(&format!("ol_onion circuit: {e:?}")))?;
 
     // --- wrap ---
-    let packet: OnionPacket =
-        build_onion(&circuit, payload, &mut rng)
-            .map_err(|e| JsError::new(&format!("ol_onion wrap: {e:?}")))?;
+    let packet: OnionPacket = build_onion(&circuit, payload, &mut rng)
+        .map_err(|e| JsError::new(&format!("ol_onion wrap: {e:?}")))?;
 
     // --- peel 3 layers in sequence ---
     let mut current_bytes: Vec<u8> = packet.encode();
@@ -115,11 +114,16 @@ pub fn live_demo_round_trip(payload: &[u8]) -> Result<JsValue, JsError> {
         let current_packet = OnionPacket::decode(&current_bytes)
             .map_err(|e| JsError::new(&format!("ol_onion parse: {e:?}")))?;
         match peel_one_layer(sk, &current_packet) {
-            Ok(PeelOutcome::Forward { next_hop: _, inner_packet_bytes }) => {
+            Ok(PeelOutcome::Forward {
+                next_hop: _,
+                inner_packet_bytes,
+            }) => {
                 peel_stages.push("forward");
                 current_bytes = inner_packet_bytes;
             }
-            Ok(PeelOutcome::Deliver { payload: payload_bytes }) => {
+            Ok(PeelOutcome::Deliver {
+                payload: payload_bytes,
+            }) => {
                 peel_stages.push("deliver");
                 delivered = Some(payload_bytes.to_vec());
                 break;
@@ -134,17 +138,38 @@ pub fn live_demo_round_trip(payload: &[u8]) -> Result<JsValue, JsError> {
     // --- assemble JS object ---
     let obj = js_sys::Object::new();
     set(&obj, "hops", &JsValue::from_f64(3.0))?;
-    set(&obj, "payloadSize", &JsValue::from_f64(payload.len() as f64))?;
-    set(&obj, "packetSize", &JsValue::from_f64(ONION_PACKET_SIZE as f64))?;
+    set(
+        &obj,
+        "payloadSize",
+        &JsValue::from_f64(payload.len() as f64),
+    )?;
+    set(
+        &obj,
+        "packetSize",
+        &JsValue::from_f64(ONION_PACKET_SIZE as f64),
+    )?;
     set(&obj, "hopIds", &str_vec_to_js(&hop_ids_hex))?;
     set(&obj, "hopPubkeys", &str_vec_to_js(&hop_pubkeys_hex))?;
     set(
         &obj,
         "peelStages",
-        &str_vec_to_js(&peel_stages.iter().map(|s| s.to_string()).collect::<Vec<_>>()),
+        &str_vec_to_js(
+            &peel_stages
+                .iter()
+                .map(|s| s.to_string())
+                .collect::<Vec<_>>(),
+        ),
     )?;
-    set(&obj, "deliveredHex", &JsValue::from_str(&hex::encode(&delivered_bytes)))?;
-    set(&obj, "deliveredMatches", &JsValue::from_bool(delivered_matches))?;
+    set(
+        &obj,
+        "deliveredHex",
+        &JsValue::from_str(&hex::encode(&delivered_bytes)),
+    )?;
+    set(
+        &obj,
+        "deliveredMatches",
+        &JsValue::from_bool(delivered_matches),
+    )?;
     Ok(obj.into())
 }
 

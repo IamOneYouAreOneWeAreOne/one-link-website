@@ -33,9 +33,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r95">
-  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r95">
-  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r95">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r97">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r97">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r97">
 </head>
 <body>
 <a href="#main" class="skip-link">Saltar al contenido</a>
@@ -73,8 +73,8 @@
   <section class="section">
     <div class="container">
       <span class="kicker">Los crates</span>
-      <h2>One Link son <span class="grad">41 crates pequeños.</span></h2>
-      <p class="lede">Cada uno hace una cosa. Cada uno es auditable de forma independiente. Cada uno compila a nativo, WASM o ambos. Unidos por el daemon.</p>
+      <h2>Punteros de evidencia; no prueba de cada afirmación.</h2>
+      <p class="lede ol-mw-64ch">Evidencia interna declarada por contribuidores. Aquí no se publica auditoría independiente, artefacto versionado, transcripción exacta del comando actual ni reproducción externa; las afirmaciones formales, temporales y de fuzz siguen pendientes de esa evidencia.</p>
 
       <div class="ol-grid ol-grid-2">
         <article class="ol-tile">
@@ -87,11 +87,11 @@
         </article>
         <article class="ol-tile">
           <h3>ol_coherence_field</h3>
-          <p>Solucionador de Helmholtz amortiguado para el campo de enrutamiento tau_c. 10.000 pares en 1,74 ms en un solo núcleo de CPU (bench criterion). Acopla con homología y ratchet. La ruta por GPU llega en v0.22.</p>
+          <p>Evidencia interna declarada por contribuidores. Aquí no se publica auditoría independiente, artefacto versionado, transcripción exacta del comando actual ni reproducción externa; las afirmaciones formales, temporales y de fuzz siguen pendientes de esa evidencia.</p>
         </article>
         <article class="ol-tile">
           <h3>ol_transfer</h3>
-          <p>La canalización nativa de transferencia por fragmentos. AEAD por fragmento, rotación de claves cada N, codificación tipo fountain como respaldo para enlaces con pérdidas.</p>
+          <p>Motor integrado de obtención de fragmentos sobre QUIC: lecturas locales idempotentes, lotes acotados, intercambio de inventario Bloom y Bloom acotado, y símbolos fountain opcionales. Mueve bytes ChunkRecord ya formados; el AEAD de fragmento y la rotación de claves pertenecen a otras capas. Las pruebas de la crate no demuestran por sí solas el flujo completo de la aplicación.</p>
         </article>
         <article class="ol-tile">
           <h3>ol_ratchet</h3>
@@ -99,23 +99,23 @@
         </article>
         <article class="ol-tile">
           <h3>ol_capability</h3>
-          <p>Capacidades basadas en macaroons. Verificación en tiempo constante. Puerta de solidez de 1M de iteraciones. Alcance granular por recurso.</p>
+          <p>Evidencia interna declarada por contribuidores. Aquí no se publica auditoría independiente, artefacto versionado, transcripción exacta del comando actual ni reproducción externa; las afirmaciones formales, temporales y de fuzz siguen pendientes de esa evidencia.</p>
         </article>
         <article class="ol-tile">
           <h3>ol_threshold_recovery</h3>
-          <p>División k-de-n con multifirma BN y valores R por firmante. Sobrevive a la pérdida de un dispositivo sin sobrevivir a una filtración.</p>
+          <p>Secreto compartido Shamir k-de-n sobre GF(2^8), refresco proactivo de partes y enmascaramiento opcional ligado a un testigo de campo. No implementa multifirma BN ni valores R por firmante. Los bindings Python exponen las primitivas; la recuperación real entre dispositivos aún requiere evidencia de integración versionada.</p>
         </article>
         <article class="ol-tile">
           <h3>ol_confidential</h3>
-          <p>Trait de proveedor de cómputo confidencial. Base por software (ChaCha20-Poly1305 con Zeroize). Los respaldos hardware (TPM, Secure Enclave, SGX, SEV-SNP, TrustZone) se enchufan.</p>
+          <p>Trait de proveedor y base de sellado software con ChaCha20-Poly1305. Una función opcional de Windows TPM añade una clave de atestación arraigada en TPM, mientras el sellado de la clave maestra sigue siendo software. Los backends Secure Enclave, SGX, SEV-SNP y TrustZone no están implementados; el uso del daemon y las garantías de plataforma requieren evidencia de build y ejecución.</p>
         </article>
         <article class="ol-tile">
           <h3>ol_routing</h3>
-          <p>Selección de ruta guiada por tau_c. Las decisiones de enrutamiento siguen el gradiente del campo, no recorren una tabla de búsqueda.</p>
+          <p>Primitivas de coste ponderado por tau y Dijkstra sobre RTT, jitter, rendimiento y pérdidas observados, más ayudas de corroboración. Un binding Python expone las matemáticas del grafo; esta crate no demuestra que el tráfico de un daemon publicado siga un gradiente de campo.</p>
         </article>
         <article class="ol-tile">
           <h3>ol_homology</h3>
-          <p>Detección de particiones topológicas. Detecta divisiones de red en una sola ronda de gossip. 0% de falsos positivos en el fuzz de partición 4-regular.</p>
+          <p>Evidencia interna declarada por contribuidores. Aquí no se publica auditoría independiente, artefacto versionado, transcripción exacta del comando actual ni reproducción externa; las afirmaciones formales, temporales y de fuzz siguen pendientes de esa evidencia.</p>
         </article>
         <article class="ol-tile">
           <h3>ol_pqsig + ol_pqkem</h3>
@@ -123,7 +123,7 @@
         </article>
         <article class="ol-tile">
           <h3>ol_duress</h3>
-          <p>Una frase de seguridad secundaria abre una cuenta vacía creíble. Las matemáticas te dan una salida bajo coacción.</p>
+          <p>Las primitivas de política DuressGate clasifican frases precalculadas como reales, señuelo o rechazadas, derivan secretos de volumen y emiten un marcador encubierto. No son un sistema de archivos, una interfaz de cuenta ni integración en un daemon publicado, y no prueban que el señuelo resulte creíble bajo coacción.</p>
         </article>
       </div>
 
@@ -133,22 +133,12 @@
 
   <section class="section">
     <div class="container">
-      <span class="kicker">Reproducible por ti</span>
-      <h2>Reconstruye este sitio <span class="grad">en tu pestaña.</span></h2>
-      <p class="lede ol-mw-64ch">
-        Un clic descarga el archivo de fuente firmado, calcula su SHA-256 localmente y lo compara con la cadena de atestación. Si tú y nosotros llegamos al mismo hash, ninguna persona ha tocado el resultado. Cada versión debería ser reproducible por cualquiera con una conexión de red y un navegador. Aquí está.
-      </p>
-
+      <span class="kicker">Prueba de versión no disponible</span>
+      <h2>El código puede inspeccionarse, pero esta versión no está atestada.</h2>
+      <p class="lede ol-mw-64ch">El archivo fuente continuo no tiene firma vinculada al artefacto ni atestación reproducible publicada. Puedes clonar, compilar y calcular un hash local, pero esta página no lo presentará como verificación de versión.</p>
       <div class="ol-private-demo ol-mt">
-        <button type="button" id="ol-rebuild-btn" class="btn btn-primary">
-          Verificar el archivo de fuente de este sitio
-          <span class="arr" aria-hidden="true">&rarr;</span>
-        </button>
-        <span class="ol-status ol-status-inline" id="ol-rebuild-status">
-          <span class="dot"></span>
-          <span>descargando y hasheando</span>
-        </span>
-        <pre class="ol-code ol-output-pre" id="ol-rebuild-out"></pre>
+        <button type="button" id="ol-rebuild-btn" class="btn btn-primary" data-release-attestation="unavailable" disabled aria-disabled="true">Atestación de fuente no publicada</button>
+        <pre class="ol-code ol-output-pre" id="ol-rebuild-out">El archivo fuente continuo no tiene firma vinculada al artefacto ni atestación reproducible publicada. Puedes clonar, compilar y calcular un hash local, pero esta página no lo presentará como verificación de versión.</pre>
       </div>
     </div>
   </section>
@@ -157,14 +147,9 @@
     <div class="container">
       <span class="kicker">Levanta tu propio relé</span>
       <h2>Pasa a formar parte de la red.</h2>
-      <p class="lede">Un relé es un único binario que retiene y reenvía paquetes cifrados. No puede leer nada. No necesita una cuenta. Cualquiera puede levantar uno.</p>
-      <pre class="ol-code"><span class="d"># en un VPS pequeño, una Raspberry Pi o tu portátil viejo</span>
-<span class="c">curl</span> <span class="a">https://weareone-link.org/relay/install.sh</span> | sh
-<span class="c">one-link-relay</span> start
-
-<span class="d"># eso es todo. tu relé aparece en la malla en vivo</span>
-<span class="d"># en segundos, y empieza a ayudar a la red</span></pre>
-      <p class="ol-footnote-soft">Sin registro. Sin sistema de reputación que nosotros controlemos. El detector de topología de la red elige los relés sanos y enruta automáticamente alrededor de los enfermos.</p>
+      <p class="lede">El software de relé pretende reenviar paquetes cifrados sin claves de contenido, pero el operador ve metadatos de conexión, ruta, tiempo y tamaño. No se publica hoy un instalador de una línea ni un directorio productivo.</p>
+      <pre class="ol-code"># Instalador público de relé no publicado. Compila y revisa el código antes del uso experimental.</pre>
+      <p class="ol-footnote-soft">Un relé no aparece automáticamente en este mapa de presencia web. Descubrimiento, reputación, salud y failover requieren infraestructura desplegada y probada.</p>
     </div>
   </section>
 
@@ -175,7 +160,7 @@
     <div class="footer-grid">
       <div>
         <a href="/es/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
-        <p class="footer-tag">Una red libre y privada para mensajes, archivos y dispositivos. De nadie. De todos.</p>
+        <p class="footer-tag">Software preliminar de código abierto para comunicación privada. Aspira a propiedad comunitaria; los servicios actuales aún dependen de responsables, operadores y proveedores de infraestructura identificables.</p>
         <p class="ol-mt-md ol-soft-text ol-mono">
           <strong>Leer en:</strong>
           <a class="ol-cyan-text" hreflang="en" href="/builders/">English</a> &middot;
@@ -186,7 +171,7 @@
           <a class="ol-cyan-text" hreflang="it" href="/it/builders/">Italiano</a>
         </p>
       </div>
-      <div><h3>Red</h3><ul><li><a href="/how-it-works/" hreflang="en">Cómo funciona</a></li><li><a href="/features/" hreflang="en">Funciones</a></li><li><a href="/mesh/" hreflang="en">Malla en vivo</a></li></ul></div>
+      <div><h3>Red</h3><ul><li><a href="/how-it-works/" hreflang="en">Cómo funciona</a></li><li><a href="/features/" hreflang="en">Funciones</a></li><li><a href="/mesh/" hreflang="en">Presencia web</a></li></ul></div>
       <div><h3>Para ti</h3><ul><li><a href="/download/" hreflang="en">Obtener One Link</a></li><li><a href="/security/" hreflang="en">Seguridad</a></li><li><a href="/es/verify-download/" hreflang="es">Verificar descarga</a></li><li><a href="/es/roadmap/" hreflang="es">Hoja de ruta</a></li><li><a href="/accessibility/" hreflang="en">Accesibilidad</a></li><li><a href="/transparency/" hreflang="en">Transparencia</a></li><li><a href="/audits/" hreflang="en">Auditorías</a></li></ul></div>
       <div><h3>Para constructores</h3><ul><li><a href="/builders/" hreflang="en">Protocolo y fuente</a></li><li><a href="/changelog/" hreflang="en">Registro de cambios</a></li><li><a href="/releases/" hreflang="en">Versiones</a></li><li><a href="/mirror/" hreflang="en">Replicar este sitio</a></li><li><a href="/download/source" hreflang="en" rel="noopener">Archivo de fuente</a></li><li><a href="https://github.com/IamOneYouAreOneWeAreOne/one-link" rel="noopener external">GitHub</a></li></ul></div>
     </div>
@@ -197,6 +182,6 @@
   </div>
 </footer>
 
-<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r95"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r97"></script>
 </body>
 </html>

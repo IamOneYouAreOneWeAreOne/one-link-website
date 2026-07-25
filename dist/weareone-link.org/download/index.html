@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta name="x-emitted-by" content="coherence-lang/1.0.3 one_link.ssg.build">
-  <!-- Route: /download/ / build: 2026-05-16T00:00:00Z / source: pipeline/ssg/src/one_link_build.cl -->
+  <meta name="x-truth-rendered-by" content="scripts/apply_release_truth.py">
+  <!-- Release-truth copy reviewed 2026-07-22; historical SSG byte provenance is not asserted. -->
+  <meta name="x-truth-rendered-by" content="scripts/apply_release_truth.py">
+  <!-- Release-truth copy reviewed 2026-07-22; historical SSG byte provenance is not asserted. -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Get One Link - for any device, free, signed, verifiable</title>
-  <meta name="description" content="One file. One tap. Works on Windows, macOS, Linux, Android, iOS. Every binary is signed and reproducibly built. The proof is on the page.">
+  <title>Download current builds - One Link</title>
+  <meta name="description" content="Current One Link desktop alpha builds, exact platform availability, and honest verification status.">
   <link rel="canonical" href="https://weareone-link.org/download/">
   <link rel="alternate" hreflang="en" href="https://weareone-link.org/download/">
   <link rel="alternate" hreflang="es" href="https://weareone-link.org/es/download/">
@@ -22,7 +24,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="One Link">
   <meta property="og:title" content="Get One Link">
-  <meta property="og:description" content="Free. Signed. Reproducibly built. Yours.">
+  <meta property="og:description" content="Current One Link desktop alpha builds, exact platform availability, and honest verification status.">
   <meta property="og:url" content="https://weareone-link.org/download/">
   <meta property="og:image" content="https://weareone-link.org/og/download.png">
 
@@ -32,9 +34,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r95">
-  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r95">
-  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r95">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r97">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r97">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r97">
 </head>
 <body>
 <a href="#main" class="skip-link">Skip to content</a>
@@ -46,8 +48,7 @@
       <span class="logo-mark" aria-hidden="true"></span>
       <span>One Link</span>
     </a>
-    <input type="checkbox" id="nav-toggle" class="nav-toggle-input" aria-hidden="true">
-    <label for="nav-toggle" class="nav-toggle" aria-label="Open navigation" role="button" tabindex="0">&#9776;</label>
+    <button type="button" id="nav-toggle" class="nav-toggle" aria-label="Open navigation" aria-expanded="false" aria-controls="primary-nav">&#9776;</button>
     <nav class="site-nav" id="primary-nav" aria-label="Main">
       <a href="/how-it-works/">How it works</a>
       <a href="/features/">Features</a>
@@ -59,283 +60,47 @@
 </header>
 
 <main id="main">
-
-  <!-- ============================================================ HERO -->
-  <section class="hero ol-pb-sm">
+  <section class="hero">
     <div class="container">
-      <span class="we-are-one">Get One Link</span>
-      <h1>One tap. <span class="grad">Ready the moment it opens.</span></h1>
-      <p class="lede">
-        We detected your device and prepared the right build. Signed, reproducibly built, and downloaded through the network itself instead of a normal HTTP fetch. The proof is right under the button.
-      </p>
-    </div>
-  </section>
-
-  <!-- ============================================================ OS-WARNING HEADS-UP -->
-  <!--
-    Windows SmartScreen and macOS Gatekeeper both warn on freshly released
-    binaries that have not yet built reputation with their respective
-    publisher recognition systems. The warnings are expected, not bugs,
-    and the file is fine. Set expectations BEFORE the user clicks so
-    nobody bails on a legitimate download out of fear.
-    The Authenticode (Windows) and Developer ID notarization (macOS)
-    pipelines are on the roadmap; once they accumulate reputation the
-    warnings disappear on their own and this panel can be removed.
-  -->
-  <section class="section-tight">
-    <div class="container">
-      <div class="ol-warning-panel" role="region" aria-labelledby="ol-warn-h">
-        <h3 id="ol-warn-h">
-          <span class="ol-warning-icon" aria-hidden="true">!</span>
-          <span>Your OS will warn you the first time. The file is fine. Here is how to get past it.</span>
-        </h3>
-        <p class="ol-warning-prose">
-          Windows SmartScreen and macOS Gatekeeper both flag any newly released binary until the publisher has built up download history. We are putting the signing certificates in place; until they land and accumulate reputation, every fresh release triggers a warning. The bytes themselves are signed, hashed, and verifiable, and you can confirm that yourself in your browser. Two ways past:
-        </p>
-
-        <h4 class="ol-warning-h4">Two ways past the warning</h4>
-        <div class="ol-warning-grid">
-
-          <div class="ol-warning-tile">
-            <h5><span class="ol-warning-os-tag">Windows</span> Click through (10 seconds)</h5>
-            <ol>
-              <li>Click the download button below.</li>
-              <li>When Windows says "Windows protected your PC," click <strong>"More info"</strong>.</li>
-              <li>Click <strong>"Run anyway"</strong>.</li>
-            </ol>
-          </div>
-
-          <div class="ol-warning-tile">
-            <h5><span class="ol-warning-os-tag">macOS</span> Click through (10 seconds)</h5>
-            <ol>
-              <li>Click the download button below.</li>
-              <li>Right-click <code>one-link.dmg</code> in Finder and choose <strong>Open</strong>.</li>
-              <li>Click <strong>Open</strong> in the dialog. Or use <strong>System Settings &rarr; Privacy &amp; Security &rarr; Open Anyway</strong>.</li>
-            </ol>
-          </div>
-
-          <div class="ol-warning-tile">
-            <h5>Verify the file first (30 seconds)</h5>
-            <ol>
-              <li>Click the download button below.</li>
-              <li>Drag the downloaded file into <a class="ol-cyan-text" href="/verify-download/">/verify-download/</a>.</li>
-              <li>Your browser computes the SHA-256 locally (the file never leaves your tab) and compares it to the live signed value. Match means the binary is byte-for-byte what we shipped.</li>
-            </ol>
-          </div>
-
-          <div class="ol-warning-tile">
-            <h5>Build from source instead</h5>
-            <ol>
-              <li>Click the <strong>Source</strong> row below or visit our <a class="ol-cyan-text" href="https://github.com/IamOneYouAreOneWeAreOne/one-link" rel="noopener external">GitHub</a>.</li>
-              <li>Build the daemon yourself with cargo and Python 3.11+. The instructions are in the README.</li>
-              <li>You can read every line first. No warning because you compiled it.</li>
-            </ol>
-          </div>
-
-        </div>
-
-        <p class="ol-warning-foot">
-          The signed certificates (Authenticode for Windows, Developer ID notarization for macOS) are on the <a class="ol-cyan-text" href="/roadmap/">/roadmap/</a>. Once they accumulate reputation, this warning disappears automatically without any change on your end.
-        </p>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================================ PRIMARY DOWNLOAD CARD -->
-  <section class="section-tight">
-    <div class="container">
-      <div class="ol-download" id="ol-download">
-        <div class="primary">
-          <div class="os-line" id="ol-detected-os">Detecting your device...</div>
-          <a href="/download/macos" id="ol-download-button" class="btn btn-primary btn-large">
-            Download for macOS
-            <span class="arr" aria-hidden="true">&darr;</span>
-          </a>
-          <p class="ol-soft-text ol-mw-52ch">
-            The download opens a real One Link session with the release relay, streams the binary chunk by chunk, and verifies the signature in your browser as it arrives. If your network blocks anything alien, it falls back to a plain signed download silently.
-          </p>
-        </div>
-
-        <div class="alts ol-tag-grid" aria-label="Other devices">
-          <a href="/download/windows"       class="ol-platform-row">Windows (Intel/AMD) <span class="ol-platform-status ready">.exe installer, today</span></a>
-          <a href="/download/windows-arm64" class="ol-platform-row">Windows on ARM      <span class="ol-platform-status ready">.exe installer, today</span></a>
-          <a href="/download/macos"         class="ol-platform-row">macOS (Apple Silicon)    <span class="ol-platform-status ready">.dmg, today</span></a>
-          <a href="/download/macos-x86_64"  class="ol-platform-row">macOS (Intel)            <span class="ol-platform-status ready">.dmg, today</span></a>
-          <a href="/download/linux"         class="ol-platform-row">Linux (Intel/AMD) <span class="ol-platform-status ready">.AppImage, today</span></a>
-          <a href="/download/linux-arm64"   class="ol-platform-row">Linux on ARM (Pi) <span class="ol-platform-status ready">.AppImage, today</span></a>
-          <a href="/download/android"       class="ol-platform-row">Android <span class="ol-platform-status">in flight</span></a>
-          <a href="/download/ios"           class="ol-platform-row">iOS     <span class="ol-platform-status">in flight</span></a>
-          <a href="/download/openbsd"       class="ol-platform-row">OpenBSD <span class="ol-platform-status">source build, today</span></a>
-          <a href="/download/source"        class="ol-platform-row">Source  <span class="ol-platform-status ready">AGPL, today</span></a>
-        </div>
-        <p class="ol-attest-dim">
-          honest status: all six mainstream desktop architectures ship today &mdash; Windows + macOS + Linux, each in Intel and ARM flavors. Android + iOS are next. building from source works on every platform.
-        </p>
-        <p class="ol-attest-dim">
-          want the portable zip instead of the native installer? append <code>-zip</code> to any URL above (e.g. <code>/download/windows-arm64-zip</code>). same binary, different packaging.
-        </p>
-        <p class="ol-attest-dim">
-          want the portable zip instead of the native installer? append <code>-zip</code> to any URL above (e.g. <code>/download/windows-arm64-zip</code>). same binary, different packaging.
-        </p>
-
-        <div class="ol-attest" id="ol-attest">
-          <div class="row"><span class="key">version</span><span class="val">v0.21.0-alpha (continuous &mdash; rebuilt on every push to master)</span></div>
-          <div class="row"><span class="key">platform</span><span class="val" id="ol-detected-platform">auto-detected from your User-Agent</span></div>
-          <div class="row"><span class="key">source</span><span class="val muted">tip of <a class="ol-cyan-text" href="https://github.com/IamOneYouAreOneWeAreOne/one-link" rel="noopener external">master</a> &middot; see <a class="ol-cyan-text" href="/changelog/">/changelog/</a></span></div>
-          <div class="row"><span class="key">hash</span><span class="val"><code>manifest.txt</code> in the GitHub release lists the SHA-256 of every artifact &middot; drag your download into <a class="ol-cyan-text" href="/verify-download/">/verify-download/</a> to verify in-browser</span></div>
-          <div class="row"><span class="key">signature</span><span class="val">Ed25519 <span class="ol-green-text">live + verifiable</span> &middot; Authenticode (Windows) + Developer ID + notarization (macOS) <span class="ol-soft-text">in flight &mdash; see <a class="ol-cyan-text" href="/roadmap/">/roadmap/</a></span></span></div>
-          <div class="row"><span class="key">verify</span><span class="val"><a class="verify" href="/verify-download/">verify your download in your browser</a> &middot; SHA-256 computed locally, never uploaded</span></div>
-        </div>
-      </div>
-
-      <p class="ol-caption-centered">
-        No account. No email. No tracking. Free forever.
-      </p>
-      <p class="ol-caption-centered ol-soft-text">
-        One tap now, then it stays current on its own. When a new release lands, the daemon downloads it, checks the published SHA-256, and quietly restarts on the new version. Off-switch in Settings &rarr; About if you would rather pick when to update.
-      </p>
-    </div>
-  </section>
-
-  <!-- ============================================================ ATTESTATION EXPLANATION -->
-  <section class="section">
-    <div class="container">
-      <span class="kicker">Why the proof matters</span>
-      <h2>Verification you can <span class="grad">do yourself.</span></h2>
-      <p class="lede">
-        Every download here is signed, hashed, and reproducible. The math is open. The proof is in your tab. Run the verifier below and watch the bytes confirm themselves.
-      </p>
-
-      <div class="ol-grid ol-grid-3">
-        <article class="ol-tile">
-          <span class="ol-icon" aria-hidden="true">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L4 6v6c0 5 3.5 9 8 10 4.5-1 8-5 8-10V6l-8-4z"/></svg>
-          </span>
-          <h3>Signed and verifiable today.</h3>
-          <p>Every release carries an Ed25519 signature you can verify in your tab right now (button below). The post-quantum ML-DSA-65 half lands once the offline release rig is provisioned. Both halves required at the daemon's verifier in v0.22.</p>
-        </article>
-        <article class="ol-tile">
-          <span class="ol-icon" aria-hidden="true">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-          </span>
-          <h3>Built in a sealed room.</h3>
-          <p>The build happens in a confidential-compute environment. The attestation document proves the exact source commit, the exact build environment, and that nothing else touched it.</p>
-        </article>
-        <article class="ol-tile">
-          <span class="ol-icon" aria-hidden="true">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z"/><path d="M4 12h16"/><path d="M12 4v16"/></svg>
-          </span>
-          <h3>Reproducible.</h3>
-          <p>Anyone can build the same source and get the same byte-for-byte binary. If you and we both arrive at the same hash, no human has touched the result.</p>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================================ HOW THE DOWNLOAD ACTUALLY WORKS -->
-  <section class="section">
-    <div class="container">
-      <div class="ol-grid ol-grid-2 ol-gap-3 ol-items-center">
-        <div>
-          <span class="kicker">The download itself</span>
-          <h2>It is <span class="grad">already</span> One Link.</h2>
-          <p>The button you tap does not fetch a file over HTTP. It opens a real One Link session between your browser and the release relay, negotiates a hybrid key, then streams the binary chunk by chunk through the same protocol your phone will use tomorrow.</p>
-          <p>You can watch every step. Or ignore all of this and the file appears in your downloads folder. Both are fine.</p>
-        </div>
-        <div>
-          <pre class="ol-code"><span class="d">// every download, every time</span>
-<span class="c">1.</span> open session  <span class="d">browser &rarr; relay</span>
-<span class="c">2.</span> hybrid key    <span class="g">X25519 + ML-KEM-768</span>
-<span class="c">3.</span> request       <span class="a">one-link-&lt;your-os&gt;.bin</span>
-<span class="c">4.</span> stream chunks <span class="g">AEAD per chunk, rekey every N</span>
-<span class="c">5.</span> verify sha    <span class="g">matches advertised hash</span>
-<span class="c">6.</span> verify sig    <span class="g">Ed25519 ok</span> <span class="ol-soft-text">&middot; ML-DSA-65 pending (lands v0.22)</span>
-<span class="c">7.</span> attest        <span class="g">ol_confidential fresh, witness ok</span>
-
-<span class="c">done</span>  <span class="g">file written to disk</span></pre>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================================ PRIVATE BY DEFAULT -->
-  <section class="section">
-    <div class="container">
-      <span class="kicker">Private by default</span>
-      <h2>You can also download <span class="grad">anonymously.</span></h2>
-      <p class="lede">
-        Tap the toggle and the binary takes a three-hop route through volunteer relays on its way to you. Nobody, not even us, knows who pulled it. Same file, same hash, slower by a beat.
-      </p>
-      <p class="ol-soft-text ol-mw-56ch">
-        Your visit lives in your tab. The request lives between you and the relay. The relay lives between you and the file. Nothing about the download is recorded anywhere it could be retrieved later. The architecture itself keeps it that way.
-      </p>
-
-      <!--
-        Live in-browser proof. Click the button and the ol_onion crate
-        (compiled to WASM) generates 3 ephemeral hops, wraps a payload,
-        and peels each layer, all locally. The output below is the
-        actual wire bytes the daemon would emit for a real onion-routed
-        transfer. No network call.
-      -->
-      <div class="ol-private-demo ol-mt-lg">
-        <button type="button" id="ol-private-route-btn" class="btn btn-primary">
-          Run a real Sphinx route, right here
-          <span class="arr" aria-hidden="true">&rarr;</span>
-        </button>
-        <span class="ol-status ol-status-inline" id="ol-private-route-status">
-          <span class="dot"></span>
-          <span>computing</span>
-        </span>
-        <pre class="ol-code ol-output-pre" id="ol-private-route-out"></pre>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================================ ATTESTATION -->
-  <section class="section">
-    <div class="container">
-      <span class="kicker">Cryptographic receipt</span>
-      <h2>Verify the binary <span class="grad">before you run it.</span></h2>
-      <p class="lede ol-mw-64ch">
-        Every release ships next to a signed attestation document. The button below fetches that attestation, recomputes the canonical bytes locally, and verifies the Ed25519 signature against the pinned release-signing pubkey in your browser. A green check means the bytes you're about to receive are bit-for-bit what the maintainer signed. The proof is right here, every time.
-      </p>
-
-      <div class="ol-private-demo ol-mt">
-        <button type="button" id="ol-attest-btn" class="btn btn-primary">
-          Verify the latest Windows attestation in this tab
-          <span class="arr" aria-hidden="true">&rarr;</span>
-        </button>
-        <span class="ol-status ol-status-inline" id="ol-attest-status">
-          <span class="dot"></span>
-          <span>fetching + verifying</span>
-        </span>
-        <pre class="ol-code ol-output-pre" id="ol-attest-out"></pre>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================================ SOURCE -->
-  <section class="section">
-    <div class="container">
-      <span class="kicker">Or build it yourself</span>
-      <h2>The whole thing is <span class="grad">in the open.</span></h2>
-      <p class="lede">
-        AGPL-3.0. Every line of the daemon, every protocol crate, every shader, every word of this site. Clone it. Read it. Fork it. Run your own relay.
-      </p>
+      <span class="we-are-one">Current build channel</span>
+      <h1>Download with the proof state visible.</h1>
+      <p class="lede">The desktop artifacts below are mutable continuous alpha builds from GitHub's auto-latest channel. They are not an immutable versioned release. Artifact signatures, publisher code signing, reproducible-build evidence, and provenance attestations are not published.</p>
       <div class="cta-row">
-        <a href="https://github.com/IamOneYouAreOneWeAreOne/one-link" class="btn btn-ghost btn-large" rel="noopener external">
-          See the source on GitHub
-        </a>
-        <a href="/builders/" class="btn btn-ghost btn-large">
-          Read the protocol
-        </a>
-        <a href="/download/source" class="btn btn-ghost btn-large" rel="noopener">
-          Download source archive
-        </a>
+        <a href="#platforms" class="btn btn-primary btn-large">Choose the exact platform <span class="arr" aria-hidden="true">&rarr;</span></a>
+        <a href="https://github.com/IamOneYouAreOneWeAreOne/one-link/releases/tag/auto-latest" class="btn btn-ghost" rel="noopener external">Inspect GitHub artifacts</a>
       </div>
     </div>
   </section>
-
+  <section class="section">
+    <div class="container">
+      <h2>Choose the exact platform</h2>
+      <div class="alts ol-tag-grid" id="platforms" aria-label="Platform builds">
+          <a href="/download/windows-x86_64" class="ol-platform-row">Windows (Intel/AMD) <span class="ol-platform-status ready">.exe, continuous alpha build</span></a>
+          <a href="/download/windows-arm64" class="ol-platform-row">Windows (ARM64) <span class="ol-platform-status ready">.exe, continuous alpha build</span></a>
+          <a href="/download/macos-arm64" class="ol-platform-row">macOS (Apple Silicon) <span class="ol-platform-status ready">.dmg, continuous alpha build</span></a>
+          <span class="ol-platform-row" aria-disabled="true">macOS (Intel) <span class="ol-platform-status">not published</span></span>
+          <a href="/download/linux-x86_64" class="ol-platform-row">Linux (Intel/AMD) <span class="ol-platform-status ready">.AppImage, continuous alpha build</span></a>
+          <a href="/download/linux-arm64" class="ol-platform-row">Linux (ARM64) <span class="ol-platform-status ready">.AppImage, continuous alpha build</span></a>
+          <span class="ol-platform-row" aria-disabled="true">Android <span class="ol-platform-status">not published</span></span>
+          <span class="ol-platform-row" aria-disabled="true">iOS <span class="ol-platform-status">not published</span></span>
+          <a href="/download/source" class="ol-platform-row">Source <span class="ol-platform-status">source archive, when available</span></a>
+        </div>
+      <p class="ol-attest-dim">Windows on Intel/AMD and ARM, macOS on Apple Silicon, and Linux on Intel/AMD and ARM have rolling artifacts. No macOS Intel artifact is published. Android and iOS binaries are not published.</p>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container">
+      <span class="kicker">What you can verify today</span>
+      <h2>What you can verify today</h2>
+      <div class="ol-grid ol-grid-3">
+        <article class="ol-tile"><h3>Local hash</h3><p>The browser can compute SHA-256 over your file without uploading it. That identifies the bytes you hold, but it is not proof of who produced them.</p></article>
+        <article class="ol-tile"><h3>Artifact signature</h3><p>No One Link release signature, Windows Authenticode signature, or Apple Developer ID notarization is published for the rolling builds.</p></article>
+        <article class="ol-tile"><h3>Reproducibility and provenance</h3><p>No byte-for-byte reproducibility result or artifact-bound build attestation is published for the rolling builds.</p></article>
+      </div>
+      <p class="ol-soft-note">Treat these artifacts as pre-release test builds. Do not bypass operating-system warnings on the assumption that this website verified a signature.</p>
+      <div class="cta-row"><a href="/verify-download/" class="btn btn-primary">Compute a local SHA-256</a></div>
+    </div>
+  </section>
 </main>
 
 <footer class="site-footer" role="contentinfo">
@@ -346,19 +111,19 @@
           <span class="logo-mark" aria-hidden="true"></span>
           <span>One Link</span>
         </a>
-        <p class="footer-tag">A free, private network for messages, files, and devices. Owned by no one. Belongs to everyone.</p>
+        <p class="footer-tag">Open-source pre-release software for private communication. Built toward community ownership; current services still depend on identifiable maintainers, operators, and infrastructure providers.</p>
       </div>
-      <div><h3>Network</h3><ul><li><a href="/how-it-works/">How it works</a></li><li><a href="/features/">Features</a></li><li><a href="/mesh/">Live mesh</a></li></ul></div>
+      <div><h3>Network</h3><ul><li><a href="/how-it-works/">How it works</a></li><li><a href="/features/">Features</a></li><li><a href="/mesh/">Website presence</a></li></ul></div>
       <div><h3>For you</h3><ul><li><a href="/download/">Get One Link</a></li><li><a href="/security/">Security</a></li><li><a href="/verify-download/">Verify download</a></li><li><a href="/roadmap/">Roadmap</a></li><li><a href="/accessibility/">Accessibility</a></li><li><a href="/transparency/">Transparency</a></li><li><a href="/audits/">Audits</a></li></ul></div>
       <div><h3>For builders</h3><ul><li><a href="/builders/">Protocol &amp; source</a></li><li><a href="/changelog/">Changelog</a></li><li><a href="/releases/">Releases</a></li><li><a href="/mirror/">Mirror this site</a></li><li><a href="/download/source" rel="noopener">Source archive</a></li><li><a href="https://github.com/IamOneYouAreOneWeAreOne/one-link" rel="noopener external">GitHub</a></li></ul></div>
     </div>
     <div class="footer-bottom">
-      <span class="built-by">&copy; 2026 One Link contributors. <a href="/terms/">AGPL-3.0</a>. <a href="/security/">No tracking.</a> <a href="mailto:weareone@oneunity.earth">weareone@oneunity.earth</a></span>
+      <span class="built-by">&copy; 2026 One Link contributors. <a href="/terms/">AGPL-3.0</a>. <a href="/security/">No first-party analytics or tracking cookies; infrastructure metadata disclosed.</a> <a href="mailto:weareone@oneunity.earth">weareone@oneunity.earth</a></span>
       <span class="built-by">we are one</span>
     </div>
   </div>
 </footer>
 
-<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r95"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r97"></script>
 </body>
 </html>

@@ -58,10 +58,3 @@ qrcode = { version = "0.14", default-features = false, features = ["svg"] }
 [features]
 default     = ["debug-panic"]
 debug-panic = ["dep:console_error_panic_hook"]
-
-[profile.release]
-opt-level     = "z"      # size-optimize aggressively (target ~80kb gzipped)
-lto           = true
-codegen-units = 1
-strip         = "debuginfo"
-panic         = "abort"

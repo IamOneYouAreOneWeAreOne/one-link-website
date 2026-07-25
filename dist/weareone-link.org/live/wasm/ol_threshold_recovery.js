@@ -167,10 +167,6 @@ function debugString(val) {
     return className;
 }
 
-export function _init() {
-    wasm._init();
-}
-
 function passArray8ToWasm0(arg, malloc) {
     const ptr = malloc(arg.length * 1, 1) >>> 0;
     getUint8ArrayMemory0().set(arg, ptr / 1);
@@ -230,6 +226,22 @@ export function reconstructSecret(xs, streams_flat, secret_len, k) {
 }
 
 /**
+ * @returns {string}
+ */
+export function ol_threshold_recovery_version() {
+    let deferred1_0;
+    let deferred1_1;
+    try {
+        const ret = wasm.ol_threshold_recovery_version();
+        deferred1_0 = ret[0];
+        deferred1_1 = ret[1];
+        return getStringFromWasm0(ret[0], ret[1]);
+    } finally {
+        wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
+    }
+}
+
+/**
  * Split `secret` into `n` shares such that any `k` reconstruct, any `k-1`
  * cannot. Returns a JS array of N share-streams (each is a Uint8Array of
  * the same length as the secret).
@@ -248,20 +260,8 @@ export function splitSecret(secret, k, n) {
     return takeFromExternrefTable0(ret[0]);
 }
 
-/**
- * @returns {string}
- */
-export function ol_threshold_recovery_version() {
-    let deferred1_0;
-    let deferred1_1;
-    try {
-        const ret = wasm.ol_threshold_recovery_version();
-        deferred1_0 = ret[0];
-        deferred1_1 = ret[1];
-        return getStringFromWasm0(ret[0], ret[1]);
-    } finally {
-        wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
-    }
+export function _init() {
+    wasm._init();
 }
 
 async function __wbg_load(module, imports) {

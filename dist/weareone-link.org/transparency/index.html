@@ -32,9 +32,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r95">
-  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r95">
-  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r95">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r97">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r97">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r97">
 </head>
 <body>
 <a href="#main" class="skip-link">Skip to content</a>
@@ -58,30 +58,24 @@
     <div class="container">
       <span class="we-are-one">Transparency</span>
       <h1>What we know. <span class="grad">What we don't.</span></h1>
-      <p class="lede">One Link is software you run. The architecture was designed so that the smallest possible amount of information passes through anything we operate. This page is the dated, public record of what that means.</p>
+      <p class="lede">The source is self-hostable and some installed direct or local operations may work without this site. Current discovery, rendezvous, relay, sharing, downloads, updates, DNS, GitHub, and Cloudflare paths can still depend on deployed infrastructure; continuity has not been proven for every build.</p>
     </div>
   </section>
 
   <section class="section">
     <div class="container">
       <span class="kicker">Warrant canary</span>
-      <h2>Last verified <span class="grad">2026-05-17</span>.</h2>
+      <h2>Implementation boundary reviewed 2026-07-22.</h2>
       <div class="ol-grid ol-grid-2 ol-items-start">
         <div>
-          <p>As of the date above, the One Link contributors have received zero government requests of any kind related to this project, its source repositories, its relay infrastructure, or its website. We have issued zero National Security Letters or equivalent gag orders, because no such instrument has been served.</p>
-          <p>This page is updated on a monthly cadence. The disappearance or expiration of this statement is itself the signal.</p>
-          <p>The statement is signed and committed to the public source repository at every refresh, so historical attestations are tamper-evident via git log.</p>
+          <p>This page is a contributor-maintained disclosure, not an independently audited or cryptographically timestamped transparency report. The previous canary date expired and no current separately signed canary is published.</p>
+          <p>Commit history can show edits after publication, but absence or staleness is not a reliable gag-order signal.</p>
+          <p>Treat legal-request counts as unverified until a dated, separately signed statement and a documented retention procedure are published.</p>
         </div>
         <div>
-          <pre class="ol-code"><span class="d">// canary statement, plain</span>
-<span class="c">date</span>:               2026-05-17
-<span class="c">requests_received</span>:  0
-<span class="c">gag_orders_received</span>: 0
-<span class="c">subpoenas_received</span>: 0
-<span class="c">NSLs_received</span>:      0
-<span class="c">next_refresh</span>:       2026-06-17
-
-<span class="d">// signed in commit history</span></pre>
+          <pre class="ol-code">status: contributor disclosure
+external_signature: not-published
+previous_canary: expired</pre>
         </div>
       </div>
     </div>
@@ -94,27 +88,27 @@
       <div class="ol-grid ol-grid-3">
         <article class="ol-tile">
           <h3>Message content</h3>
-          <p>End-to-end encrypted with post-quantum-hybrid keys. The cleartext never reaches a relay, never reaches a server, never reaches us. There is no plaintext for any party other than the peers to hand over.</p>
+          <p>Implemented end-to-end-encrypted paths keep plaintext at endpoints. Relays and servers may process ciphertext plus connection, routing, timing, and size metadata. /api/session is not PQ-secured today, and a local primitive self-test does not prove every daemon path.</p>
         </article>
         <article class="ol-tile">
           <h3>Account identifiers</h3>
-          <p>One Link uses opaque rotating peer IDs. There is no email, phone number, or username database to subpoena. Recognition happens device to device through pairing.</p>
+          <p>Pairing state normally resides on endpoints and no hosted social-graph product is operated today. Website, relay, provider, and recipient systems still process ephemeral routing, session, delivery, and connection metadata.</p>
         </article>
         <article class="ol-tile">
           <h3>Social graph</h3>
-          <p>Pairings are stored on the devices that hold them, not on a server. The aggregate "who knows who" graph that messengers typically retain does not exist anywhere we operate.</p>
+          <p>Pairing state normally resides on endpoints and no hosted social-graph product is operated today. Website, relay, provider, and recipient systems still process ephemeral routing, session, delivery, and connection metadata.</p>
         </article>
         <article class="ol-tile">
           <h3>Relay logs</h3>
-          <p>Relays are designed to be stateless forwarders. They route sealed envelopes by topology, not by identity. They do not retain access logs across restarts. Anyone can run one.</p>
+          <p>Community relay operation and decentralized discovery are design goals. Current production availability, independent operators, gossip discovery, and failover are not established merely by publishing relay-capable source.</p>
         </article>
         <article class="ol-tile">
           <h3>Location</h3>
-          <p>The live mesh page shows approximate continental region only, derived from relay topology. No precise location of any peer is held anywhere we control.</p>
+          <p>The site does not request precise browser geolocation. Presence clients send a coarse estimate derived from their timezone, which can be wrong; Cloudflare still receives the request IP and other ordinary connection metadata.</p>
         </article>
         <article class="ol-tile">
           <h3>Payment records</h3>
-          <p>One Link is free. There is no subscription, no purchase history, no billing address. There is nothing to compel.</p>
+          <p>There is no paid tier today. The AGPL-3.0 source is public and self-hostable. This is not a promise about future pricing, hosting, connectivity, hardware, relay capacity, or operator costs.</p>
         </article>
       </div>
     </div>
@@ -132,23 +126,23 @@
         </article>
         <article class="ol-tile">
           <h3>MeshPresence Durable Object</h3>
-          <p>The "N here right now" pill uses a Cloudflare Durable Object that holds nothing but a per-session random ID for the lifetime of your tab. The ID rotates every visit. No identifying data is stored.</p>
+          <p>MeshPresence holds a random per-tab session ID, a client-supplied approximate region, and activity timestamps for the live website view. Other visitors see pseudonymous IDs; Cloudflare receives ordinary connection metadata outside the Durable Object state.</p>
         </article>
         <article class="ol-tile">
           <h3>NativeSession Durable Object</h3>
-          <p>Per-tab WebTransport session state for the /native handshake demo. Holds the ephemeral X25519 keys and One Link wire-protocol counters in memory only. Garbage collected on idle. No identifiers, no IPs.</p>
+          <p>/native currently returns a protocol advertisement, and /api/session registers a session plus an ephemeral Worker X25519 public key. NativeSession is a non-load-bearing stub; no browser ECDH, ML-KEM, WebTransport channel, or established session key is created.</p>
         </article>
         <article class="ol-tile">
           <h3>ShareRate Durable Object</h3>
-          <p>Per-subnet token bucket that throttles /api/share uploads (12 burst, 2/min steady). Keyed by the /24 (IPv4) or /48 (IPv6) of the uploader so dial-up NAT pools share a budget. Holds only a token count and a refill timestamp. No IP is stored, only the subnet hash used as the bucket key.</p>
+          <p>ShareRate keys a token bucket by a truncated IPv4 /24 or IPv6 /48 subnet string and persists token count plus refill time. It does not store the full address in DO storage, but Cloudflare receives the request IP at the network edge.</p>
         </article>
         <article class="ol-tile">
           <h3>Cloudflare R2 (RELEASES bucket)</h3>
-          <p>Holds two object families: signed release binaries the /download/ flow serves, and /share/ ciphertext (ciphertext only, key never sent, deleted on first GET or after 24h). Cloudflare sees object bytes and access logs; the keys to decrypt anything in the share bucket never leave the sender + recipient browsers.</p>
+          <p>The RELEASES R2 bucket holds source archives when available; desktop /download/ routes redirect to GitHub artifacts. The share store receives ciphertext, never the fragment key. One ShareObject Durable Object per item serializes retrieval claims, awaits R2 deletion before returning ciphertext, and schedules a 24-hour expiry alarm that reschedules cleanup failures. Provider outages can delay physical deletion.</p>
         </article>
         <article class="ol-tile">
           <h3>No tracking, no analytics</h3>
-          <p>Zero cookies. Zero analytics. Zero third-party scripts. Zero ad networks. Zero tracking pixels. This is enforced by the Content-Security-Policy that ships with every page.</p>
+          <p>The site has no application signup, advertising analytics, cookies, tracking pixels, fingerprinting code, or third-party browser scripts. That does not mean no data is processed: hosting and transfer providers receive ordinary network requests. Cloudflare receives request metadata including IP addresses. MeshPresence holds a random per-tab ID, client-supplied approximate region, and activity time; ShareRate keys limits by a truncated subnet; R2 holds /share/ ciphertext; GitHub receives redirected artifact downloads.</p>
         </article>
       </div>
     </div>
@@ -157,35 +151,35 @@
   <section class="section">
     <div class="container">
       <span class="kicker">What if this site goes away</span>
-      <h2>The network does not <span class="grad">depend on this site.</span></h2>
-      <p class="lede">This website runs on Cloudflare. A state actor, a copyright complaint, a policy change, or a billing problem could take it offline tomorrow. That outcome would be inconvenient. It would not stop One Link.</p>
+      <h2>Current infrastructure dependencies.</h2>
+      <p class="lede">The source is self-hostable and some installed direct or local operations may work without this site. Current discovery, rendezvous, relay, sharing, downloads, updates, DNS, GitHub, and Cloudflare paths can still depend on deployed infrastructure; continuity has not been proven for every build.</p>
       <div class="ol-grid ol-grid-2">
         <article class="ol-tile">
-          <h3>The daemon does not need this site.</h3>
-          <p>One Link clients pair device-to-device by QR. Once paired, they talk peer-to-peer (or via volunteer relays that anyone can run). No client ever calls weareone-link.org to function. If this site disappears today, every installed One Link keeps working.</p>
+          <h3>Some operations may work without this site; dependencies remain.</h3>
+          <p>The source is self-hostable and some installed direct or local operations may work without this site. Current discovery, rendezvous, relay, sharing, downloads, updates, DNS, GitHub, and Cloudflare paths can still depend on deployed infrastructure; continuity has not been proven for every build.</p>
         </article>
         <article class="ol-tile">
-          <h3>The relays do not need this site.</h3>
-          <p>The relay network is community-run. Anyone can run one. There is no central directory we control. The relays gossip among themselves to find each other. Removing our domain does not remove a single relay.</p>
+          <h3>Independent relay operation and discovery remain deployment goals.</h3>
+          <p>Community relay operation and decentralized discovery are design goals. Current production availability, independent operators, gossip discovery, and failover are not established merely by publishing relay-capable source.</p>
         </article>
         <article class="ol-tile">
-          <h3>This site is mirror-able by design.</h3>
-          <p>Every byte of this site lives in a public AGPL-3.0 repository. Anyone can clone, audit, and host it. See <a class="ol-cyan-text" href="/mirror/">/mirror/</a> for the three-line self-host command, a Tor onion-service guide, and an IPFS pin manifest. If we get banned, you can be the next host within five minutes.</p>
+          <h3>Static mirroring preserves pages, not the Worker services.</h3>
+          <p>Public source and static mirrors reduce one hosting dependency. Static mirrors do not provide presence, share, session registration, download routing, or other Worker APIs unless an operator deploys compatible services.</p>
         </article>
         <article class="ol-tile">
           <h3>The source is on GitHub today.</h3>
-          <p>And on multiple mirrors people maintain independently. The signing key for releases is offline-held. The build is reproducible. Even if every server we touched vanished, the code, the protocol, and the math survive in any clone.</p>
+          <p>The source and website bundle are public and mirrorable. The site-manifest signing key is held offline. Rolling application artifacts are not signed or reproducibly verified today; the code and protocol still survive in public clones.</p>
         </article>
       </div>
-      <p class="ol-mt-md ol-prose">This is not bravado, it is the architecture. The whole point of "no servers in the middle" is that the protocol works without us. Hosting this site is a convenience for first-time visitors, not a load-bearing dependency of the network.</p>
+      <p class="ol-mt-md ol-prose">Public source and static mirrors reduce one hosting dependency. Static mirrors do not provide presence, share, session registration, download routing, or other Worker APIs unless an operator deploys compatible services.</p>
     </div>
   </section>
 
   <section class="section">
     <div class="container">
       <span class="kicker">Cadence</span>
-      <h2>Refreshed monthly. <span class="grad">Always.</span></h2>
-      <p class="lede">If this page falls behind, that is itself a signal. Subscribe to the source repository for atomic notifications when this file changes.</p>
+      <h2>Refreshes are manual, not guaranteed monthly.</h2>
+      <p class="lede">This disclosure is reviewed manually and can become stale. Commit history shows edits but is not an atomic notification, independent timestamp, or reliable signal that the page remains complete.</p>
       <p class="lede">Source: <a class="ol-cyan-text" href="https://github.com/IamOneYouAreOneWeAreOne/one-link-website/commits/master/dist/weareone-link.org/transparency/index.html" rel="noopener">commit history for this page</a>.</p>
     </div>
   </section>
@@ -196,19 +190,19 @@
     <div class="footer-grid">
       <div>
         <a href="/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
-        <p class="footer-tag">A free, private network for messages, files, and devices. Owned by no one. Belongs to everyone.</p>
+        <p class="footer-tag">Open-source pre-release software for private communication. Built toward community ownership; current services still depend on identifiable maintainers, operators, and infrastructure providers.</p>
       </div>
-      <div><h3>Network</h3><ul><li><a href="/how-it-works/">How it works</a></li><li><a href="/features/">Features</a></li><li><a href="/mesh/">Live mesh</a></li></ul></div>
+      <div><h3>Network</h3><ul><li><a href="/how-it-works/">How it works</a></li><li><a href="/features/">Features</a></li><li><a href="/mesh/">Website presence</a></li></ul></div>
       <div><h3>For you</h3><ul><li><a href="/download/">Get One Link</a></li><li><a href="/security/">Security</a></li><li><a href="/verify-download/">Verify download</a></li><li><a href="/roadmap/">Roadmap</a></li><li><a href="/accessibility/">Accessibility</a></li><li><a href="/transparency/">Transparency</a></li><li><a href="/audits/">Audits</a></li></ul></div>
       <div><h3>For builders</h3><ul><li><a href="/builders/">Protocol &amp; source</a></li><li><a href="/changelog/">Changelog</a></li><li><a href="/releases/">Releases</a></li><li><a href="/mirror/">Mirror this site</a></li><li><a href="/download/source" rel="noopener">Source archive</a></li><li><a href="https://github.com/IamOneYouAreOneWeAreOne/one-link" rel="noopener external">GitHub</a></li></ul></div>
     </div>
     <div class="footer-bottom">
-      <span class="built-by">&copy; 2026 One Link contributors. <a href="/terms/">AGPL-3.0</a>. <a href="/security/">No tracking.</a> <a href="mailto:weareone@oneunity.earth">weareone@oneunity.earth</a></span>
+      <span class="built-by">&copy; 2026 One Link contributors. <a href="/terms/">AGPL-3.0</a>. <a href="/security/">No first-party analytics or tracking cookies; infrastructure metadata disclosed.</a> <a href="mailto:weareone@oneunity.earth">weareone@oneunity.earth</a></span>
       <span class="built-by">we are one</span>
     </div>
   </div>
 </footer>
 
-<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r95"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r97"></script>
 </body>
 </html>

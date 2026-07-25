@@ -32,9 +32,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r95">
-  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r95">
-  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r95">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r97">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r97">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r97">
 </head>
 <body>
 <a href="#main" class="skip-link">Skip to content</a>
@@ -67,9 +67,7 @@
       <p class="ol-prose">
         Every shipping decision passes a four-rule gate (reach, hide the engine, async by default, depth before polish). Items on this page are gated, ordered by what unlocks the most use for the most people, and tracked publicly. The detailed engineering version lives at <a class="ol-cyan-text" href="https://github.com/IamOneYouAreOneWeAreOne/one-link/blob/master/docs/ROADMAP.md" rel="noopener external">docs/ROADMAP.md in the source</a>.
       </p>
-      <p class="ol-prose">
-        For what has already shipped, see <a class="ol-cyan-text" href="/changelog/">/changelog/</a>.
-      </p>
+      <p class="ol-prose">Everything below is a proposal or acceptance target, not current availability. Use the changelog and versioned release evidence for shipped status; neither future tense nor a primitive demo proves daemon integration.</p>
     </div>
   </section>
 
@@ -92,7 +90,7 @@
 
         <article class="ol-tile">
           <h3>Group calls and bigger groups.</h3>
-          <p>Voice and video calls for groups, with 50-person voice and 8-person video as the first targets. The relay routing each call never sees the audio or video, only encrypted bytes. Group sender keys rotate per call so a leak does not roll backward.</p>
+          <p>Target: relays should not receive content keys, while operators will still observe connection, routing, timing, and size metadata. Deployment evidence must verify the boundary.</p>
         </article>
 
         <article class="ol-tile">
@@ -141,9 +139,9 @@
           <p>Streaming chunks straight to the media element as they arrive. Adaptive bitrate when bandwidth dips. Forwarded voice messages and shared video start the moment you tap, not after the whole file lands.</p>
         </article>
 
-        <article class="ol-tile">
-          <h3>If something breaks, it heals itself.</h3>
-          <p>The daemon notices when its state drifts from a peer (gaps in message numbers, ratchets out of sync, restored from a backup) and quietly catches up the next time you both come online. Any message that genuinely cannot be recovered becomes a single placeholder; silent loss is impossible by design.</p>
+        <article class="ol-tile" data-claim-id="roadmap-silent-loss">
+          <h3>Target: make unrecoverable gaps explicit.</h3>
+          <p>Target: detect peer-state divergence and represent every unrecoverable message as an authenticated, ordered gap instead of silently omitting it. Threat model: crashes, restore, replay, loss, reordering, duplicate delivery, and malicious truncation within the published retention window; endpoint deletion or compromise remains out of scope. Promote only after versioned fault-injection and cross-device recovery tests prove no undetected gaps across the supported matrix.</p>
         </article>
 
       </div>
@@ -169,7 +167,7 @@
 
         <article class="ol-tile">
           <h3>Forward secrecy on every chunk, always.</h3>
-          <p>Already shipping for messages; activating channel-wide so every byte gets the same property automatically. Zero new buttons.</p>
+          <p>Target: extend forward-secret key evolution to every supported transfer path and publish release-specific interoperability tests. This card does not assert that every current message or chunk path already has that property.</p>
         </article>
 
         <article class="ol-tile">
@@ -188,9 +186,9 @@
       <p class="lede">Every ship in this track makes the network harder for any single party to shut down, surveil, censor, or destroy. The architecture already gets us most of the way; these ships finish the job.</p>
       <div class="ol-grid ol-grid-2">
 
-        <article class="ol-tile">
-          <h3>Pair from a QR, never from a URL.</h3>
-          <p>The pairing handshake stays entirely on the two devices in the room. No URL token to leak, no remote-pair attack surface. Post-quantum hybrid keys; an optional second factor for users in hostile environments.</p>
+        <article class="ol-tile" data-claim-id="roadmap-remote-pair">
+          <h3>Target: local, user-verified QR pairing.</h3>
+          <p>Target: accept pairing only from an expiring, single-use QR exchange completed on two devices with out-of-band SAS confirmation, with no URL-token bootstrap in supported clients. Threat model: remote link theft, replay, substitution, malicious relays, and network MITM; compromised endpoints or cameras and dishonest SAS confirmation remain residual risks. Promote only after physical-device negative tests and packet captures prove the documented boundary.</p>
         </article>
 
         <article class="ol-tile">
@@ -198,9 +196,9 @@
           <p>One hop for paired contacts, three hops for paranoid mode. Path selection follows the coherence field that already routes the network. Sealed sender hides who is sending to whom from the relays carrying it.</p>
         </article>
 
-        <article class="ol-tile">
-          <h3>Cover traffic so timing tells nothing.</h3>
-          <p>Constant-rate background bytes between paired contacts so an observer cannot tell when a real message moves. Defeats timing-based traffic analysis. Off by default, available when needed.</p>
+        <article class="ol-tile" data-claim-id="roadmap-timing-analysis">
+          <h3>Target: measured resistance to traffic analysis.</h3>
+          <p>Target: offer bounded, optional padding and cover schedules that reduce a stated observer's ability to distinguish real sends. The threat model and evidence must name observer vantage, duration, collusion, latency, bandwidth, and anonymity set; a global observer is not presumed defeated. Promote only after published trace-classification tests meet a preregistered advantage bound without unbounded traffic, battery, or latency cost.</p>
         </article>
 
         <article class="ol-tile">
@@ -208,9 +206,9 @@
           <p>A pluggable transport that resists deep packet inspection. The network keeps working in places that block recognizable encrypted protocols.</p>
         </article>
 
-        <article class="ol-tile">
-          <h3>Identity keys live in hardware when hardware allows.</h3>
-          <p>Apple Secure Enclave, Windows TPM, Intel SGX, AMD SEV-SNP, ARM TrustZone. Local malware with administrator privileges still cannot extract the keys it needs to impersonate you.</p>
+        <article class="ol-tile" data-claim-id="roadmap-hardware-keys">
+          <h3>Target: hardware-backed identity keys where verified.</h3>
+          <p>Target: use supported non-exportable hardware operations and fail closed when the required tier is unavailable. The threat model must separate user-mode malware, administrator or kernel compromise, physical access, firmware or supply-chain compromise, and signing-oracle abuse; hardware does not make a compromised endpoint trustworthy. Promote each platform only with versioned key-export, attestation, downgrade, reset, backup, and impersonation tests on named hardware.</p>
         </article>
 
         <article class="ol-tile">
@@ -226,7 +224,7 @@
     <div class="container">
       <span class="kicker">External eyes</span>
       <h2>Audited by people who do not work on this.</h2>
-      <p class="lede">The internal red-team work is comprehensive (every finding closed, every commit signed, every release reproducible). For the architectural claims to stand up under a hostile audience, at least one published external report has to exist.</p>
+      <p class="lede">auto-latest is a mutable prerelease channel. It provides useful test artifacts, but it can change in place and currently has no published artifact signature, code-signing proof, reproducibility result, or provenance attestation.</p>
       <div class="ol-grid ol-grid-3">
         <article class="ol-tile">
           <h3>First external pentest, published.</h3>
@@ -268,7 +266,7 @@
 
         <article class="ol-tile">
           <h3>A hosted "for Business" version.</h3>
-          <p>A managed service inherits "our servers store your data" and "we comply with subpoena X," which is exactly what the protocol exists to avoid. The federation answer is: each organization runs its own relay. No operator can read what the relay carries.</p>
+          <p>Target: relays should not receive content keys, while operators will still observe connection, routing, timing, and size metadata. Deployment evidence must verify the boundary.</p>
         </article>
 
         <article class="ol-tile">
@@ -276,9 +274,9 @@
           <p>Auto-summarize, reply-suggest, content moderation: if you want those, they run locally against your own message store on your own device. The daemon refuses to ship features that need to read plaintext server-side; doing so would undo the whole architecture.</p>
         </article>
 
-        <article class="ol-tile">
-          <h3>Telemetry of any kind.</h3>
-          <p>This is the load-bearing privacy claim and it is structural, not policy. The architecture is shaped so the claim holds even if every contributor were replaced tomorrow. The only counters that exist are local and opt-in.</p>
+        <article class="ol-tile" data-claim-id="roadmap-telemetry">
+          <h3>Target: privacy-preserving operational evidence.</h3>
+          <p>Target: no advertising or behavioral profiling and no undeclared event collection. Reliability or security measurements, if any, must be opt-in or demonstrably aggregate and minimized, purpose-bound, documented with fields, processors, and retention, and covered by a threat model. Promote any no-telemetry wording only after build, network, and storage audits prove no undeclared emissions; local counters and infrastructure metadata remain disclosed.</p>
         </article>
 
       </div>
@@ -287,9 +285,7 @@
 
   <section class="section">
     <div class="container ol-mw-680">
-      <p class="ol-prose">
-        Last updated 2026-05-24. The dev-facing version with crate names, wire formats, and acceptance gates is at <a class="ol-cyan-text" href="https://github.com/IamOneYouAreOneWeAreOne/one-link/blob/master/docs/ROADMAP.md" rel="noopener external">docs/ROADMAP.md</a>.
-      </p>
+      <p class="ol-prose">Roadmap reviewed 2026-07-22.</p>
     </div>
   </section>
 
@@ -300,19 +296,19 @@
     <div class="footer-grid">
       <div>
         <a href="/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
-        <p class="footer-tag">A free, private network for messages, files, and devices. Owned by no one. Belongs to everyone.</p>
+        <p class="footer-tag">Open-source pre-release software for private communication. Built toward community ownership; current services still depend on identifiable maintainers, operators, and infrastructure providers.</p>
       </div>
-      <div><h3>Network</h3><ul><li><a href="/how-it-works/">How it works</a></li><li><a href="/features/">Features</a></li><li><a href="/mesh/">Live mesh</a></li></ul></div>
+      <div><h3>Network</h3><ul><li><a href="/how-it-works/">How it works</a></li><li><a href="/features/">Features</a></li><li><a href="/mesh/">Website presence</a></li></ul></div>
       <div><h3>For you</h3><ul><li><a href="/download/">Get One Link</a></li><li><a href="/security/">Security</a></li><li><a href="/verify-download/">Verify download</a></li><li><a href="/roadmap/">Roadmap</a></li><li><a href="/accessibility/">Accessibility</a></li><li><a href="/transparency/">Transparency</a></li><li><a href="/audits/">Audits</a></li></ul></div>
       <div><h3>For builders</h3><ul><li><a href="/builders/">Protocol &amp; source</a></li><li><a href="/changelog/">Changelog</a></li><li><a href="/releases/">Releases</a></li><li><a href="/mirror/">Mirror this site</a></li><li><a href="/download/source" rel="noopener">Source archive</a></li><li><a href="https://github.com/IamOneYouAreOneWeAreOne/one-link" rel="noopener external">GitHub</a></li></ul></div>
     </div>
     <div class="footer-bottom">
-      <span class="built-by">&copy; 2026 One Link contributors. <a href="/terms/">AGPL-3.0</a>. <a href="/security/">No tracking.</a> <a href="mailto:weareone@oneunity.earth">weareone@oneunity.earth</a></span>
+      <span class="built-by">&copy; 2026 One Link contributors. <a href="/terms/">AGPL-3.0</a>. <a href="/security/">No first-party analytics or tracking cookies; infrastructure metadata disclosed.</a> <a href="mailto:weareone@oneunity.earth">weareone@oneunity.earth</a></span>
       <span class="built-by">we are one</span>
     </div>
   </div>
 </footer>
 
-<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r95"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r97"></script>
 </body>
 </html>

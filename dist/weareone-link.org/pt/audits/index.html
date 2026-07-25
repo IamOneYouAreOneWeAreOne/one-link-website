@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Auditorias - o que foi revisto, por quem, com que conclusões</title>
-  <meta name="description" content="O registo de auditorias de One Link. Cada revisão externa, cada red-team interno, cada conclusão aberta ou fechada. Pública, datada, assinada.">
+  <meta name="description" content="Registo mantido por contribuidores de auditorias externas publicadas e notas internas. Nenhuma entidade externa publicou auditoria; entradas não são atestadas.">
   <link rel="canonical" href="https://weareone-link.org/pt/audits/">
   <link rel="alternate" hreflang="en" href="https://weareone-link.org/audits/">
   <link rel="alternate" hreflang="es" href="https://weareone-link.org/es/audits/">
@@ -20,12 +20,12 @@
   <meta property="og:locale" content="pt_PT">
   <meta property="og:site_name" content="One Link">
   <meta property="og:title" content="Auditorias - o que foi revisto, por quem, com que conclusões">
-  <meta property="og:description" content="O registo de auditorias de One Link. Cada revisão externa, cada red-team interno, cada conclusão aberta ou fechada.">
+  <meta property="og:description" content="Registo mantido por contribuidores de auditorias externas publicadas e notas internas. Nenhuma entidade externa publicou auditoria; entradas não são atestadas.">
   <meta property="og:url" content="https://weareone-link.org/pt/audits/">
   <meta property="og:image" content="https://weareone-link.org/og/one-link-pt.png">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Auditorias - o que foi revisto, por quem, com que conclusões">
-  <meta name="twitter:description" content="O registo de auditorias de One Link. Cada revisão externa, cada red-team interno, cada conclusão aberta ou fechada.">
+  <meta name="twitter:description" content="Registo mantido por contribuidores de auditorias externas publicadas e notas internas. Nenhuma entidade externa publicou auditoria; entradas não são atestadas.">
   <meta name="twitter:image" content="https://weareone-link.org/og/one-link-pt.png">
   <link rel="icon" type="image/x-icon" href="/images/favicon.ico"><link rel="icon" type="image/png" sizes="128x128" href="/images/logo-128.png"><link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
   <link rel="manifest" href="/app.webmanifest">
@@ -33,9 +33,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r95">
-  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r95">
-  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r95">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r97">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r97">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r97">
 </head>
 <body>
 <a href="#main" class="skip-link">Saltar para o conteúdo</a>
@@ -58,8 +58,8 @@
   <section class="hero">
     <div class="container">
       <span class="we-are-one">Auditorias</span>
-      <h1>Cada revisão, <span class="grad">registada.</span></h1>
-      <p class="lede">O registo de auditorias de One Link. Listamos cada revisão externa, cada red-team interno, cada conclusão (aberta ou fechada), cada commit que a fechou. Se a página estiver vazia, essa é a verdade. Se crescer, também é a verdade.</p>
+      <h1>Revisões selecionadas e lacunas de evidência.</h1>
+      <p class="lede">Este registo liga relatórios externos quando existem e notas internas selecionadas. Não é exaustivo nem auditoria independente.</p>
     </div>
   </section>
 
@@ -75,7 +75,7 @@
         <li>Deve confiar no código fonte que pode ler no GitHub.</li>
         <li>Deve desconfiar de qualquer afirmação neste site que não esteja sustentada por código ou por uma conclusão fechada no histórico de commits.</li>
       </ul>
-      <p class="ol-mt-md">Quando chegar uma auditoria externa, o nome da firma, o âmbito do compromisso, a contagem de conclusões por gravidade, o PDF do relatório e os commits que fecharam cada conclusão aparecerão todos nesta página. O registo de auditorias é assinado e gravado junto com o resto do site, pelo que o seu histórico é à prova de adulteração através do log público do git.</p>
+      <p class="ol-mt-md">Histórico público mostra alterações, mas não é registo assinado e selado independentemente nem prova que cada achado foi fechado.</p>
     </div>
   </section>
 
@@ -124,32 +124,32 @@
   <section class="section">
     <div class="container">
       <span class="kicker">Atividade de red-team interno</span>
-      <h2>O que fizemos <span class="grad">a nós próprios.</span></h2>
-      <p class="lede">Em vez de uma auditoria externa, publicamos cada conclusão de red-team interno e o commit que a fechou. Isto não substitui uma auditoria real. É o que hoje conseguimos fazer, com honestidade.</p>
+      <h2>Notas selecionadas de contribuidores; não auditoria independente.</h2>
+      <p class="lede ol-mw-64ch">Este registo liga relatórios externos quando existem e notas internas selecionadas. Não é exaustivo nem auditoria independente.</p>
       <div class="ol-grid ol-grid-2">
         <article class="ol-tile">
           <h3>Passagem de honestidade de auditoria v0.21.0-alpha (2026-05-19)</h3>
-          <p>Verificação cruzada multi-agente de cada afirmação deste site contra o código do daemon. Cinco exageros reformulados com ressalvas explícitas: formato de fio ML-KEM-768 reservado vs ativo, ratchet por bloco pronto vs ligado, âmbito de ChunkRatchet em repouso, lista de backends de hardware, metáfora do encaminhamento tau_c. <a class="ol-cyan-text" href="https://github.com/IamOneYouAreOneWeAreOne/one-link-website/commits/master" rel="noopener external">Histórico de commits</a>.</p>
+          <p>Apenas evidência interna declarada por contribuidores. Não se publica aqui auditoria independente, artefacto versionado, transcrição exata do comando atual ou reprodução externa; afirmações formais, temporais e de fuzz aguardam essa evidência.</p>
         </article>
         <article class="ol-tile">
           <h3>Ativação do ratchet de canal v0.20.7 (2026-05-08)</h3>
-          <p>Descobriu-se que a capacidade Double Ratchet estava implementada de ponta a ponta na v0.7.2, mas o daemon filtrava-a dos CAPS anunciados, deixando os canais em AEAD estático. O compromisso T3 do SECURITY.md sobre sigilo para a frente não estava cumprido. Fechado ao voltar a adicionar a capacidade ao anúncio LOCAL_CAPABILITIES.</p>
+          <p>Apenas evidência interna declarada por contribuidores. Não se publica aqui auditoria independente, artefacto versionado, transcrição exata do comando atual ou reprodução externa; afirmações formais, temporais e de fuzz aguardam essa evidência.</p>
         </article>
         <article class="ol-tile">
           <h3>Perfil de confiança iOS v0.20.6 (2026-05-08)</h3>
-          <p>iOS Safari bloqueava o fluxo HTTPS de emparelhamento contra certificados autoassinados do daemon. Fechado ao entregar um endpoint de Configuration Profile (.mobileconfig) que entrega o certificado autoassinado do daemon como raiz de confiança.</p>
+          <p>Apenas evidência interna declarada por contribuidores. Não se publica aqui auditoria independente, artefacto versionado, transcrição exata do comando atual ou reprodução externa; afirmações formais, temporais e de fuzz aguardam essa evidência.</p>
         </article>
         <article class="ol-tile">
           <h3>Auditoria de segurança multi-agente v0.20.5 (2026-05-09)</h3>
-          <p>Auditoria interna de 5 CRÍTICAS / 21 ALTAS / 24 MÉDIAS que cobriu vinculação DTLS-Ed25519, confiança do pin do Service Worker, reversão do permitir-tudo por defeito, ativação do Double Ratchet, falha de cifragem em repouso. Conclusões materiais fechadas na v0.20.7. Conclusões de gravidade menor seguidas na lista de incidências.</p>
+          <p>Apenas evidência interna declarada por contribuidores. Não se publica aqui auditoria independente, artefacto versionado, transcrição exata do comando atual ou reprodução externa; afirmações formais, temporais e de fuzz aguardam essa evidência.</p>
         </article>
         <article class="ol-tile">
           <h3>Porta de fuzz F1 (contínua)</h3>
-          <p>Fuzz de cinco milhões de iterações em 42 binários, zero crashes, zero falsos positivos. Vinte e quatro novos vetores adversariais v2 acrescentados desde v0.20.5. Reproduzível a partir de <code class="ol-inline-code">cargo fuzz</code>.</p>
+          <p>Apenas evidência interna declarada por contribuidores. Não se publica aqui auditoria independente, artefacto versionado, transcrição exata do comando atual ou reprodução externa; afirmações formais, temporais e de fuzz aguardam essa evidência.</p>
         </article>
         <article class="ol-tile">
           <h3>Portas de solidez de capacidades e CRDT (contínuas)</h3>
-          <p>Porta de atenuação de macaroons de um milhão de iterações (5,94 s, 0 violações). Porta de leis de reticulado OR-set + LWW de um milhão de iterações (7,46 s, 0 violações). Soak de divergência com o espelho nativo de duas mil iterações (alvo de zero divergência antes do corte autoritativo).</p>
+          <p>Apenas evidência interna declarada por contribuidores. Não se publica aqui auditoria independente, artefacto versionado, transcrição exata do comando atual ou reprodução externa; afirmações formais, temporais e de fuzz aguardam essa evidência.</p>
         </article>
       </div>
     </div>
@@ -158,8 +158,8 @@
   <section class="section">
     <div class="container">
       <span class="kicker">Onde olhar</span>
-      <h2>Cada afirmação, <span class="grad">amarrada a um commit.</span></h2>
-      <p class="lede">Se lê uma afirmação neste site e quer verificá-la, eis exatamente onde vive a evidência.</p>
+      <h2>Referências de evidência; não prova de cada afirmação.</h2>
+      <p class="lede ol-mw-64ch">Histórico público mostra alterações, mas não é registo assinado e selado independentemente nem prova que cada achado foi fechado.</p>
       <div class="ol-grid ol-grid-2">
         <article class="ol-tile">
           <h3>Código do daemon</h3>
@@ -171,7 +171,7 @@
         </article>
         <article class="ol-tile">
           <h3>Portas de integridade de CI</h3>
-          <p>Cada push executa deteção de em-dashes, deteção de identificadores pessoais, deteção de caminhos locais, deteção de tokens placeholder, deteção de linguagem de calendário, verificação de frescura do manifesto e deteção de ligações partidas. Ver <code class="ol-inline-code">.github/workflows/ci.yml</code>.</p>
+          <p>Apenas evidência interna declarada por contribuidores. Não se publica aqui auditoria independente, artefacto versionado, transcrição exata do comando atual ou reprodução externa; afirmações formais, temporais e de fuzz aguardam essa evidência.</p>
         </article>
         <article class="ol-tile">
           <h3>Benchmarks</h3>
@@ -196,7 +196,7 @@
     <div class="footer-grid">
       <div>
         <a href="/pt/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
-        <p class="footer-tag">Uma rede livre e privada para mensagens, ficheiros e dispositivos. De ninguém. De todos.</p>
+        <p class="footer-tag">Software preliminar de código aberto para comunicação privada. Construído rumo à propriedade comunitária; os serviços atuais ainda dependem de mantenedores, operadores e fornecedores identificáveis.</p>
         <p class="ol-mt-md ol-soft-text ol-mono">
           <strong>Ler em:</strong>
           <a class="ol-cyan-text" hreflang="en" href="/audits/">English</a> &middot;
@@ -207,7 +207,7 @@
           <a class="ol-cyan-text" hreflang="it" href="/it/audits/">Italiano</a>
         </p>
       </div>
-      <div><h3>Rede</h3><ul><li><a href="/how-it-works/" hreflang="en">Como funciona</a></li><li><a href="/features/" hreflang="en">Funcionalidades</a></li><li><a href="/mesh/" hreflang="en">Malha ao vivo</a></li></ul></div>
+      <div><h3>Rede</h3><ul><li><a href="/how-it-works/" hreflang="en">Como funciona</a></li><li><a href="/features/" hreflang="en">Funcionalidades</a></li><li><a href="/mesh/" hreflang="en">Presença web</a></li></ul></div>
       <div><h3>Para si</h3><ul><li><a href="/download/" hreflang="en">Obter One Link</a></li><li><a href="/security/" hreflang="en">Segurança</a></li><li><a href="/pt/verify-download/" hreflang="pt">Verificar descarga</a></li><li><a href="/pt/roadmap/" hreflang="pt">Roteiro</a></li><li><a href="/accessibility/" hreflang="en">Acessibilidade</a></li><li><a href="/transparency/" hreflang="en">Transparência</a></li><li><a href="/audits/" hreflang="en">Auditorias</a></li></ul></div>
       <div><h3>Para construtores</h3><ul><li><a href="/builders/" hreflang="en">Protocolo e código</a></li><li><a href="/changelog/" hreflang="en">Registo de alterações</a></li><li><a href="/releases/" hreflang="en">Versões</a></li><li><a href="/mirror/" hreflang="en">Espelhar este site</a></li><li><a href="/download/source" hreflang="en" rel="noopener">Arquivo de código</a></li><li><a href="https://github.com/IamOneYouAreOneWeAreOne/one-link" rel="noopener external">GitHub</a></li></ul></div>
     </div>
@@ -218,6 +218,6 @@
   </div>
 </footer>
 
-<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r95"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r97"></script>
 </body>
 </html>

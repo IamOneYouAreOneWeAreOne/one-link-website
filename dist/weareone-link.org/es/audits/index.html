@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Auditorías - qué se ha revisado, por quién, con qué hallazgos</title>
-  <meta name="description" content="El registro de auditorías de One Link. Cada revisión externa, cada red-team interno, cada hallazgo abierto o cerrado. Público, fechado, firmado.">
+  <meta name="description" content="Registro mantenido por contribuidores de auditorías externas publicadas y notas internas seleccionadas. Ninguna firma externa ha publicado una auditoría; las entradas no están atestadas independientemente.">
   <link rel="canonical" href="https://weareone-link.org/es/audits/">
   <link rel="alternate" hreflang="en" href="https://weareone-link.org/audits/">
   <link rel="alternate" hreflang="es" href="https://weareone-link.org/es/audits/">
@@ -20,12 +20,12 @@
   <meta property="og:locale" content="es_ES">
   <meta property="og:site_name" content="One Link">
   <meta property="og:title" content="Auditorías - qué se ha revisado, por quién, con qué hallazgos">
-  <meta property="og:description" content="El registro de auditorías de One Link. Cada revisión externa, cada red-team interno, cada hallazgo abierto o cerrado.">
+  <meta property="og:description" content="Registro mantenido por contribuidores de auditorías externas publicadas y notas internas seleccionadas. Ninguna firma externa ha publicado una auditoría; las entradas no están atestadas independientemente.">
   <meta property="og:url" content="https://weareone-link.org/es/audits/">
   <meta property="og:image" content="https://weareone-link.org/og/one-link-es.png">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Auditorías - qué se ha revisado, por quién, con qué hallazgos">
-  <meta name="twitter:description" content="El registro de auditorías de One Link. Cada revisión externa, cada red-team interno, cada hallazgo abierto o cerrado.">
+  <meta name="twitter:description" content="Registro mantenido por contribuidores de auditorías externas publicadas y notas internas seleccionadas. Ninguna firma externa ha publicado una auditoría; las entradas no están atestadas independientemente.">
   <meta name="twitter:image" content="https://weareone-link.org/og/one-link-es.png">
   <link rel="icon" type="image/x-icon" href="/images/favicon.ico"><link rel="icon" type="image/png" sizes="128x128" href="/images/logo-128.png"><link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
   <link rel="manifest" href="/app.webmanifest">
@@ -33,9 +33,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r95">
-  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r95">
-  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r95">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r97">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r97">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r97">
 </head>
 <body>
 <a href="#main" class="skip-link">Saltar al contenido</a>
@@ -58,8 +58,8 @@
   <section class="hero">
     <div class="container">
       <span class="we-are-one">Auditorías</span>
-      <h1>Cada revisión, <span class="grad">para que conste.</span></h1>
-      <p class="lede">El registro de auditorías de One Link. Listamos cada revisión externa, cada red-team interno, cada hallazgo (abierto o cerrado), cada commit que lo cerró. Si la página está vacía, esa es la verdad. Si crece, esa también es la verdad.</p>
+      <h1>Revisiones seleccionadas y carencias de evidencia.</h1>
+      <p class="lede">Este registro enlaza informes externos cuando existen y notas internas seleccionadas. No garantiza exhaustividad ni es una auditoría independiente o atestación de versión.</p>
     </div>
   </section>
 
@@ -75,7 +75,7 @@
         <li>Deberías confiar en el código fuente que puedes leer en GitHub.</li>
         <li>Deberías desconfiar de cualquier afirmación de este sitio que no esté respaldada por código o por un hallazgo cerrado en la historia de commits.</li>
       </ul>
-      <p class="ol-mt-md">Cuando llegue una auditoría externa, el nombre de la firma, el alcance del encargo, el conteo de hallazgos por severidad, el PDF del informe y los commits que cerraron cada hallazgo aparecerán todos en esta página. El registro de auditorías está firmado y commiteado junto con el resto del sitio, de modo que su historia es a prueba de manipulaciones a través del log público de git.</p>
+      <p class="ol-mt-md">El historial público muestra cambios de la página. No es un registro de auditoría firmado y sellado independientemente ni prueba que cada hallazgo se registró o cerró.</p>
     </div>
   </section>
 
@@ -124,32 +124,32 @@
   <section class="section">
     <div class="container">
       <span class="kicker">Actividad de red-team interno</span>
-      <h2>Lo que nos hemos hecho <span class="grad">a nosotros mismos.</span></h2>
-      <p class="lede">En lugar de una auditoría externa, publicamos cada hallazgo de red-team interno y el commit que lo cerró. Esto no sustituye a una auditoría real. Es lo que hoy podemos hacer, con honestidad.</p>
+      <h2>Notas seleccionadas de contribuidores; no auditoría independiente.</h2>
+      <p class="lede ol-mw-64ch">Este registro enlaza informes externos cuando existen y notas internas seleccionadas. No garantiza exhaustividad ni es una auditoría independiente o atestación de versión.</p>
       <div class="ol-grid ol-grid-2">
         <article class="ol-tile">
           <h3>Pase de honestidad de auditoría v0.21.0-alpha (2026-05-19)</h3>
-          <p>Comprobación cruzada multi-agente de cada afirmación de este sitio contra el código del daemon. Cinco exageraciones reformuladas con matizaciones explícitas: formato de cable ML-KEM-768 reservado frente a activo, ratchet por fragmento listo frente a cableado, alcance de ChunkRatchet en reposo, lista de backends de hardware, metáfora de enrutamiento tau_c. <a class="ol-cyan-text" href="https://github.com/IamOneYouAreOneWeAreOne/one-link-website/commits/master" rel="noopener external">Historial de commits</a>.</p>
+          <p>Evidencia interna declarada por contribuidores. Aquí no se publica auditoría independiente, artefacto versionado, transcripción exacta del comando actual ni reproducción externa; las afirmaciones formales, temporales y de fuzz siguen pendientes de esa evidencia.</p>
         </article>
         <article class="ol-tile">
           <h3>Activación del ratchet de canal v0.20.7 (2026-05-08)</h3>
-          <p>Se descubrió que la capacidad Double Ratchet estaba implementada de extremo a extremo en v0.7.2, pero el daemon la filtraba de los CAPS anunciados, dejando los canales con AEAD estático. El compromiso T3 de SECURITY.md sobre secreto hacia adelante no se cumplía. Se cerró re-añadiendo la capacidad al anuncio LOCAL_CAPABILITIES.</p>
+          <p>Evidencia interna declarada por contribuidores. Aquí no se publica auditoría independiente, artefacto versionado, transcripción exacta del comando actual ni reproducción externa; las afirmaciones formales, temporales y de fuzz siguen pendientes de esa evidencia.</p>
         </article>
         <article class="ol-tile">
           <h3>Perfil de confianza iOS v0.20.6 (2026-05-08)</h3>
-          <p>iOS Safari bloqueaba el flujo HTTPS de emparejamiento contra certificados autofirmados del daemon. Se cerró entregando un endpoint de Configuration Profile (.mobileconfig) que entrega el certificado autofirmado del daemon como raíz de confianza.</p>
+          <p>Evidencia interna declarada por contribuidores. Aquí no se publica auditoría independiente, artefacto versionado, transcripción exacta del comando actual ni reproducción externa; las afirmaciones formales, temporales y de fuzz siguen pendientes de esa evidencia.</p>
         </article>
         <article class="ol-tile">
           <h3>Auditoría de seguridad multi-agente v0.20.5 (2026-05-09)</h3>
-          <p>Auditoría interna de 5 CRÍTICAS / 21 ALTAS / 24 MEDIAS que cubrió la vinculación DTLS-Ed25519, la confianza del pin del Service Worker, la reversión de permitir-todo por defecto, la activación del Double Ratchet y la brecha de cifrado en reposo. Hallazgos materiales cerrados en v0.20.7. Hallazgos de severidad menor en la lista de incidencias.</p>
+          <p>Evidencia interna declarada por contribuidores. Aquí no se publica auditoría independiente, artefacto versionado, transcripción exacta del comando actual ni reproducción externa; las afirmaciones formales, temporales y de fuzz siguen pendientes de esa evidencia.</p>
         </article>
         <article class="ol-tile">
           <h3>Puerta de fuzz F1 (continua)</h3>
-          <p>Fuzz de cinco millones de iteraciones en 42 binarios, cero crashes, cero falsos positivos. Veinticuatro nuevos vectores adversarios v2 añadidos desde v0.20.5. Reproducible desde <code class="ol-inline-code">cargo fuzz</code>.</p>
+          <p>Evidencia interna declarada por contribuidores. Aquí no se publica auditoría independiente, artefacto versionado, transcripción exacta del comando actual ni reproducción externa; las afirmaciones formales, temporales y de fuzz siguen pendientes de esa evidencia.</p>
         </article>
         <article class="ol-tile">
           <h3>Puertas de solidez de capacidades y CRDT (continuas)</h3>
-          <p>Puerta de atenuación de macaroons de un millón de iteraciones (5,94 s, 0 violaciones). Puerta de leyes de retículo OR-set + LWW de un millón de iteraciones (7,46 s, 0 violaciones). Soak de divergencia con el espejo nativo de dos mil iteraciones (objetivo de cero divergencia antes del cambio autoritativo).</p>
+          <p>Evidencia interna declarada por contribuidores. Aquí no se publica auditoría independiente, artefacto versionado, transcripción exacta del comando actual ni reproducción externa; las afirmaciones formales, temporales y de fuzz siguen pendientes de esa evidencia.</p>
         </article>
       </div>
     </div>
@@ -158,8 +158,8 @@
   <section class="section">
     <div class="container">
       <span class="kicker">Dónde mirar</span>
-      <h2>Cada afirmación, <span class="grad">atada a un commit.</span></h2>
-      <p class="lede">Si lees una afirmación en este sitio y quieres verificarla, aquí está exactamente dónde vive la evidencia.</p>
+      <h2>Punteros de evidencia; no prueba de cada afirmación.</h2>
+      <p class="lede ol-mw-64ch">El historial público muestra cambios de la página. No es un registro de auditoría firmado y sellado independientemente ni prueba que cada hallazgo se registró o cerró.</p>
       <div class="ol-grid ol-grid-2">
         <article class="ol-tile">
           <h3>Código del daemon</h3>
@@ -171,7 +171,7 @@
         </article>
         <article class="ol-tile">
           <h3>Puertas de integridad de CI</h3>
-          <p>Cada push ejecuta detección de em-dashes, detección de identificadores personales, detección de rutas locales, detección de tokens marcador de posición, detección de lenguaje de calendario, verificación de frescura del manifiesto y detección de enlaces rotos. Ver <code class="ol-inline-code">.github/workflows/ci.yml</code>.</p>
+          <p>Evidencia interna declarada por contribuidores. Aquí no se publica auditoría independiente, artefacto versionado, transcripción exacta del comando actual ni reproducción externa; las afirmaciones formales, temporales y de fuzz siguen pendientes de esa evidencia.</p>
         </article>
         <article class="ol-tile">
           <h3>Benchmarks</h3>
@@ -196,7 +196,7 @@
     <div class="footer-grid">
       <div>
         <a href="/es/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
-        <p class="footer-tag">Una red libre y privada para mensajes, archivos y dispositivos. De nadie. De todos.</p>
+        <p class="footer-tag">Software preliminar de código abierto para comunicación privada. Aspira a propiedad comunitaria; los servicios actuales aún dependen de responsables, operadores y proveedores de infraestructura identificables.</p>
         <p class="ol-mt-md ol-soft-text ol-mono">
           <strong>Leer en:</strong>
           <a class="ol-cyan-text" hreflang="en" href="/audits/">English</a> &middot;
@@ -207,7 +207,7 @@
           <a class="ol-cyan-text" hreflang="it" href="/it/audits/">Italiano</a>
         </p>
       </div>
-      <div><h3>Red</h3><ul><li><a href="/how-it-works/" hreflang="en">Cómo funciona</a></li><li><a href="/features/" hreflang="en">Funciones</a></li><li><a href="/mesh/" hreflang="en">Malla en vivo</a></li></ul></div>
+      <div><h3>Red</h3><ul><li><a href="/how-it-works/" hreflang="en">Cómo funciona</a></li><li><a href="/features/" hreflang="en">Funciones</a></li><li><a href="/mesh/" hreflang="en">Presencia web</a></li></ul></div>
       <div><h3>Para ti</h3><ul><li><a href="/download/" hreflang="en">Obtener One Link</a></li><li><a href="/security/" hreflang="en">Seguridad</a></li><li><a href="/es/verify-download/" hreflang="es">Verificar descarga</a></li><li><a href="/es/roadmap/" hreflang="es">Hoja de ruta</a></li><li><a href="/accessibility/" hreflang="en">Accesibilidad</a></li><li><a href="/transparency/" hreflang="en">Transparencia</a></li><li><a href="/audits/" hreflang="en">Auditorías</a></li></ul></div>
       <div><h3>Para constructores</h3><ul><li><a href="/builders/" hreflang="en">Protocolo y fuente</a></li><li><a href="/changelog/" hreflang="en">Registro de cambios</a></li><li><a href="/releases/" hreflang="en">Versiones</a></li><li><a href="/mirror/" hreflang="en">Replicar este sitio</a></li><li><a href="/download/source" hreflang="en" rel="noopener">Archivo de fuente</a></li><li><a href="https://github.com/IamOneYouAreOneWeAreOne/one-link" rel="noopener external">GitHub</a></li></ul></div>
     </div>
@@ -218,6 +218,6 @@
   </div>
 </footer>
 
-<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r95"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r97"></script>
 </body>
 </html>

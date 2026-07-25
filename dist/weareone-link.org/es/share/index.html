@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Compartir un archivo - One Link</title>
-  <meta name="description" content="Suelta un archivo. Obtén una URL de un solo uso. Solo la persona a la que se la envíes puede leerlo. Sin cuentas, sin subir a la nube de nadie, la clave nunca toca nuestro servidor.">
+  <meta name="description" content="Cifra en el navegador un archivo de hasta 25 MB y sube el cifrado a Cloudflare R2. Un Durable Object por objeto programa una alarma de 24 horas; una caída del proveedor puede retrasar el borrado físico. La clave del fragmento no se envía en la solicitud HTTP.">
   <link rel="canonical" href="https://weareone-link.org/es/share/">
   <link rel="alternate" hreflang="en" href="https://weareone-link.org/share/">
   <link rel="alternate" hreflang="es" href="https://weareone-link.org/es/share/">
@@ -20,12 +20,12 @@
   <meta property="og:locale" content="es_ES">
   <meta property="og:site_name" content="One Link">
   <meta property="og:title" content="Compartir un archivo - One Link">
-  <meta property="og:description" content="Suelta un archivo. Obtén una URL de un solo uso. Solo la persona a la que se la envíes puede leerlo. Sin cuentas, sin subir a la nube de nadie, la clave nunca toca nuestro servidor.">
+  <meta property="og:description" content="Cifra en el navegador un archivo de hasta 25 MB y sube el cifrado a Cloudflare R2. Un Durable Object por objeto programa una alarma de 24 horas; una caída del proveedor puede retrasar el borrado físico. La clave del fragmento no se envía en la solicitud HTTP.">
   <meta property="og:url" content="https://weareone-link.org/es/share/">
   <meta property="og:image" content="https://weareone-link.org/og/one-link-es.png">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Compartir un archivo - One Link">
-  <meta name="twitter:description" content="Suelta un archivo. Obtén una URL de un solo uso. Solo la persona a la que se la envíes puede leerlo. Sin cuentas, sin subir a la nube de nadie, la clave nunca toca nuestro servidor.">
+  <meta name="twitter:description" content="Cifra en el navegador un archivo de hasta 25 MB y sube el cifrado a Cloudflare R2. Un Durable Object por objeto programa una alarma de 24 horas; una caída del proveedor puede retrasar el borrado físico. La clave del fragmento no se envía en la solicitud HTTP.">
   <meta name="twitter:image" content="https://weareone-link.org/og/one-link-es.png">
   <meta name="robots" content="noindex">
 
@@ -37,9 +37,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r95">
-  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r95">
-  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r95">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r97">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r97">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r97">
 </head>
 <body>
 <a href="#main" class="skip-link">Saltar al contenido</a>
@@ -64,17 +64,13 @@
   <section class="hero ol-pb-sm" id="ol-share-sender">
     <div class="container">
       <span class="we-are-one">Compartir un archivo</span>
-      <h1>Suelta un archivo. Envía el enlace. <span class="grad">Solo esa persona puede leerlo.</span></h1>
-      <p class="lede">
-        Suelta cualquier archivo de hasta 25 MB. Tu navegador lo cifra antes de que salga de tu equipo, entrega el texto cifrado a nuestro bucket de Cloudflare R2 durante hasta 24 horas, y te devuelve un enlace con la clave de descifrado en el fragmento de la URL. La primera persona que abra el enlace descifra el archivo en su navegador y, después, el texto cifrado desaparece.
-      </p>
-      <p class="ol-soft-text ol-mw-56ch">
-        Esta página es una comodidad: una prueba en el navegador, sin instalar nada, de lo que te da AES-GCM-256 con una clave en el fragmento de la URL. No es el protocolo completo de One Link. <a class="ol-cyan-text" href="/download/" hreflang="en">Obtén One Link</a> para transferencias de igual a igual reales sin límite de tamaño, sin retención en servidor y sin caducidad de 24 horas.
-      </p>
+      <h1>Suelta un archivo. Envía el enlace secreto completo. Quien tenga ese enlace puede leerlo.</h1>
+      <p class="lede">Cifra en el navegador un archivo de hasta 25 MB y sube el cifrado a Cloudflare R2. Un Durable Object por objeto programa una alarma de 24 horas; una caída del proveedor puede retrasar el borrado físico. La clave del fragmento no se envía en la solicitud HTTP. Un Durable Object por objeto serializa las recogidas para que solo una gane. Guarda el cifrado en memoria, espera al borrado R2 confirmado y solo entonces lo devuelve. La alarma elimina objetos no recogidos y reintenta los fallos. Logs, metadatos, cachés, backups, caídas y copias del destinatario quedan fuera de la garantía de un solo uso.</p>
+      <p class="ol-soft-text ol-mw-56ch">Esta es una demo de conveniencia, no todo el protocolo. Los clientes nativos preliminares prefieren transferencia directa y pueden usar relé cifrado. Límites y retención varían por transporte, versión, almacenamiento y red; no hay garantía ilimitada ni de retención cero.</p>
 
       <!-- Drop zone -->
       <div class="ol-drop-zone" id="ol-drop-zone" tabindex="0" role="button" aria-label="Suelta un archivo o haz clic para elegir">
-        <input type="file" id="ol-share-file" hidden>
+        <input type="file" id="ol-share-file" aria-label="Elige un archivo para cifrar y compartir" hidden>
         <div class="ol-drop-icon" aria-hidden="true">
           <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
@@ -106,9 +102,7 @@
     <div class="container">
       <span class="we-are-one">Archivo entrante</span>
       <h1 id="ol-recv-headline">Alguien te ha enviado algo.</h1>
-      <p class="lede" id="ol-recv-lede">
-        El archivo se cifró en su navegador. La clave está en tu URL, nunca en nuestro servidor. Haz clic para descifrar y descargar. El archivo se borra después de esto.
-      </p>
+      <p class="lede" id="ol-recv-lede">La clave está en el fragmento de URL, que el navegador no incluye en la solicitud HTTP. Quien obtenga el enlace completo por reenvío, historial, captura, registro o compromiso puede descargar y descifrar el contenido. Un Durable Object por objeto serializa las recogidas para que solo una gane. Guarda el cifrado en memoria, espera al borrado R2 confirmado y solo entonces lo devuelve. La alarma elimina objetos no recogidos y reintenta los fallos. Logs, metadatos, cachés, backups, caídas y copias del destinatario quedan fuera de la garantía de un solo uso.</p>
       <div class="cta-row">
         <button class="btn btn-primary btn-large" id="ol-recv-download" type="button">
           Descargar y descifrar <span class="arr">&rarr;</span>
@@ -128,11 +122,11 @@
         </article>
         <article class="ol-tile">
           <h3>La clave está en el enlace.</h3>
-          <p>La URL que te damos lleva la clave en el fragmento (la parte después del #). Los navegadores nunca envían los fragmentos al servidor. Solo la persona a la que envías el enlace puede derivarla.</p>
+          <p>La clave está en el fragmento de URL, que el navegador no incluye en la solicitud HTTP. Quien obtenga el enlace completo por reenvío, historial, captura, registro o compromiso puede descargar y descifrar el contenido.</p>
         </article>
         <article class="ol-tile">
-          <h3>Se autodestruye.</h3>
-          <p>La primera persona que abra el enlace obtiene el archivo, y a continuación se borra de nuestro servidor. Si nadie lo abre, se borra igualmente en 24 horas. Nada persiste.</p>
+          <h3>Recogida serializada para un consumidor y limpieza por alarma.</h3>
+          <p>Un Durable Object por objeto serializa las recogidas para que solo una gane. Guarda el cifrado en memoria, espera al borrado R2 confirmado y solo entonces lo devuelve. La alarma elimina objetos no recogidos y reintenta los fallos. Logs, metadatos, cachés, backups, caídas y copias del destinatario quedan fuera de la garantía de un solo uso.</p>
         </article>
       </div>
     </div>
@@ -140,11 +134,7 @@
 
   <section class="section-tight">
     <div class="container">
-      <p class="ol-mw-mono-small">
-        Esto es lo que One Link hace, hecho evidente en un navegador. Obtén One Link
-        para lo mismo en cada dispositivo, sin límite de tamaño, sin que estemos
-        en medio para nada.
-      </p>
+      <p class="ol-mw-mono-small">Esta es una demo de conveniencia, no todo el protocolo. Los clientes nativos preliminares prefieren transferencia directa y pueden usar relé cifrado. Límites y retención varían por transporte, versión, almacenamiento y red; no hay garantía ilimitada ni de retención cero.</p>
       <a href="/download/" hreflang="en" class="btn btn-primary btn-large ol-mt-sm">
         Obtener One Link <span class="arr">&rarr;</span>
       </a>
@@ -158,7 +148,7 @@
     <div class="footer-grid">
       <div>
         <a href="/es/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
-        <p class="footer-tag">Una red libre y privada para mensajes, archivos y dispositivos. De nadie. De todos.</p>
+        <p class="footer-tag">Software preliminar de código abierto para comunicación privada. Aspira a propiedad comunitaria; los servicios actuales aún dependen de responsables, operadores y proveedores de infraestructura identificables.</p>
         <p class="ol-mt-md ol-soft-text ol-mono">
           <strong>Leer en:</strong>
           <a class="ol-cyan-text" hreflang="en" href="/share/">English</a> &middot;
@@ -169,7 +159,7 @@
           <a class="ol-cyan-text" hreflang="it" href="/it/share/">Italiano</a>
         </p>
       </div>
-      <div><h3>Red</h3><ul><li><a href="/how-it-works/" hreflang="en">Cómo funciona</a></li><li><a href="/features/" hreflang="en">Funciones</a></li><li><a href="/mesh/" hreflang="en">Malla en vivo</a></li></ul></div>
+      <div><h3>Red</h3><ul><li><a href="/how-it-works/" hreflang="en">Cómo funciona</a></li><li><a href="/features/" hreflang="en">Funciones</a></li><li><a href="/mesh/" hreflang="en">Presencia web</a></li></ul></div>
       <div><h3>Para ti</h3><ul><li><a href="/download/" hreflang="en">Obtener One Link</a></li><li><a href="/security/" hreflang="en">Seguridad</a></li><li><a href="/es/verify-download/" hreflang="es">Verificar descarga</a></li><li><a href="/es/roadmap/" hreflang="es">Hoja de ruta</a></li><li><a href="/accessibility/" hreflang="en">Accesibilidad</a></li><li><a href="/transparency/" hreflang="en">Transparencia</a></li><li><a href="/audits/" hreflang="en">Auditorías</a></li></ul></div>
       <div><h3>Para constructores</h3><ul><li><a href="/builders/" hreflang="en">Protocolo y fuente</a></li><li><a href="/changelog/" hreflang="en">Registro de cambios</a></li><li><a href="/releases/" hreflang="en">Versiones</a></li><li><a href="/mirror/" hreflang="en">Replicar este sitio</a></li><li><a href="/download/source" hreflang="en" rel="noopener">Archivo de fuente</a></li><li><a href="https://github.com/IamOneYouAreOneWeAreOne/one-link" rel="noopener external">GitHub</a></li></ul></div>
     </div>
@@ -180,7 +170,7 @@
   </div>
 </footer>
 
-<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r95"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r97"></script>
 <script type="module" src="/live/share.js"></script>
 </body>
 </html>

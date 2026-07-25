@@ -66,6 +66,12 @@ pub struct OlPqKemKeypair {
     secret: HybridSecretKey,
 }
 
+impl Default for OlPqKemKeypair {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 #[wasm_bindgen]
 impl OlPqKemKeypair {
     /// Generate a fresh hybrid keypair using browser-side CSPRNG.
@@ -136,15 +142,31 @@ pub fn live_demo_round_trip() -> Result<JsValue, JsError> {
     let (alice_pub, alice_sk) = keypair(&mut rng);
     let (ct, bob_ss) = encapsulate(&alice_pub, &mut rng)
         .map_err(|e| JsError::new(&format!("ol_pqkem encap: {e:?}")))?;
-    let alice_ss = decapsulate(&alice_sk, &ct)
-        .map_err(|e| JsError::new(&format!("ol_pqkem decap: {e:?}")))?;
+    let alice_ss =
+        decapsulate(&alice_sk, &ct).map_err(|e| JsError::new(&format!("ol_pqkem decap: {e:?}")))?;
     let matched: bool = alice_ss[..] == bob_ss[..];
 
     let obj = js_sys::Object::new();
-    set(&obj, "alicePub", &js_sys::Uint8Array::from(&alice_pub.to_bytes()[..]).into())?;
-    set(&obj, "bobCiphertext", &js_sys::Uint8Array::from(&ct.to_bytes()[..]).into())?;
-    set(&obj, "bobSharedSecret", &js_sys::Uint8Array::from(&bob_ss[..]).into())?;
-    set(&obj, "aliceSharedSecret", &js_sys::Uint8Array::from(&alice_ss[..]).into())?;
+    set(
+        &obj,
+        "alicePub",
+        &js_sys::Uint8Array::from(&alice_pub.to_bytes()[..]).into(),
+    )?;
+    set(
+        &obj,
+        "bobCiphertext",
+        &js_sys::Uint8Array::from(&ct.to_bytes()[..]).into(),
+    )?;
+    set(
+        &obj,
+        "bobSharedSecret",
+        &js_sys::Uint8Array::from(&bob_ss[..]).into(),
+    )?;
+    set(
+        &obj,
+        "aliceSharedSecret",
+        &js_sys::Uint8Array::from(&alice_ss[..]).into(),
+    )?;
     set(&obj, "matched", &JsValue::from_bool(matched))?;
     Ok(obj.into())
 }

@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta name="x-emitted-by" content="coherence-lang/1.0.3 one_link.ssg.build">
-  <!-- Route: /security/ / build: 2026-05-16T00:00:00Z / source: pipeline/ssg/src/one_link_build.cl -->
+  <meta name="x-truth-rendered-by" content="scripts/apply_release_truth.py">
+  <!-- Release-truth copy reviewed 2026-07-22; historical SSG byte provenance is not asserted. -->
+  <meta name="x-truth-rendered-by" content="scripts/apply_release_truth.py">
+  <!-- Release-truth copy reviewed 2026-07-22; historical SSG byte provenance is not asserted. -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Security - what One Link protects, and what it cannot</title>
-  <meta name="description" content="The math keeps the promise. Every guarantee built into the protocol itself, verifiable in your tab. PQ-hybrid keys, Sphinx routing, threshold recovery, signed attestations.">
+  <meta name="description" content="A scoped pre-release security model: what implemented encryption protects, what infrastructure still processes, and which assurances remain unpublished.">
   <link rel="canonical" href="https://weareone-link.org/security/">
   <link rel="alternate" hreflang="en" href="https://weareone-link.org/security/">
   <link rel="alternate" hreflang="es" href="https://weareone-link.org/es/security/">
@@ -21,12 +23,12 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="One Link">
   <meta property="og:title" content="Security - what One Link protects, and what it cannot">
-  <meta property="og:description" content="The math keeps the promise. Every guarantee built into the protocol itself, verifiable in your tab. PQ-hybrid keys, Sphinx routing, threshold recovery, signed attestations.">
+  <meta property="og:description" content="A scoped pre-release security model: what implemented encryption protects, what infrastructure still processes, and which assurances remain unpublished.">
   <meta property="og:url" content="https://weareone-link.org/security/">
   <meta property="og:image" content="https://weareone-link.org/og/one-link.png">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Security - what One Link protects, and what it cannot">
-  <meta name="twitter:description" content="The math keeps the promise. Every guarantee built into the protocol itself, verifiable in your tab. PQ-hybrid keys, Sphinx routing, threshold recovery, signed attestations.">
+  <meta name="twitter:description" content="A scoped pre-release security model: what implemented encryption protects, what infrastructure still processes, and which assurances remain unpublished.">
   <meta name="twitter:image" content="https://weareone-link.org/og/one-link.png">
   <link rel="icon" type="image/x-icon" href="/images/favicon.ico"><link rel="icon" type="image/png" sizes="128x128" href="/images/logo-128.png"><link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
   <link rel="manifest" href="/app.webmanifest">
@@ -34,9 +36,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r95">
-  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r95">
-  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r95">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r97">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r97">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r97">
 </head>
 <body>
 <a href="#main" class="skip-link">Skip to content</a>
@@ -63,47 +65,47 @@
     <div class="container">
       <span class="we-are-one">Security</span>
       <h1>The math <span class="grad">keeps the promise.</span></h1>
-      <p class="lede">A promise is only as strong as the thing it rests on. Ours rests on architecture: every guarantee on this page is built into the protocol itself, verifiable in your tab, and impossible to walk back without rebuilding the product. Trust the math, then trust us.</p>
+      <p class="lede">Security claims on this page are scoped to named implementations and evidence. Browser self-tests demonstrate primitives, not every daemon path, deployment, endpoint, or provider boundary.</p>
     </div>
   </section>
 
   <section class="section-tight">
     <div class="container">
       <h2 class="ol-mt-0">What we collect</h2>
-      <p class="lede ol-mb-sm">Nothing.</p>
-      <p class="ol-soft-text ol-mw-56ch">No email. No phone. No analytics. No tracking pixels. No fingerprinting. No cookies. No request logs that contain you. This site has zero third-party requests. The Cloudflare Worker does not write a single thing about who visited or what they downloaded.</p>
-      <p class="ol-soft-text ol-mw-56ch">If a government asked us tomorrow who downloaded One Link, who paired with whom, or what was sent through the network, the honest answer is "we do not know and there is no way to find out." That is by construction.</p>
+      <p class="lede ol-mb-sm">No application signup or advertising profile.</p>
+      <p class="ol-soft-text ol-mw-56ch">The site avoids account identifiers, ad analytics, tracking pixels, fingerprinting code, and third-party browser scripts. Cloudflare and GitHub still receive ordinary request metadata, and website services process the fields listed on /transparency/.</p>
+      <p class="ol-soft-text ol-mw-56ch">The project does not maintain a conventional user or social-graph database, but it cannot claim identification is impossible: infrastructure providers, relays, endpoints, recipients, and network observers may retain or infer metadata.</p>
     </div>
   </section>
 
   <section class="section">
     <div class="container">
       <span class="kicker">Defends against</span>
-      <h2>The attacks we kill <span class="grad">at the door.</span></h2>
+      <h2>Current evidence, demonstrations, and capability requirements.</h2>
       <div class="ol-grid ol-grid-2">
         <article class="ol-tile">
           <h3>Passive eavesdropping.</h3>
-          <p>Anyone watching the wire sees ciphertext only. Signatures are PQ-hybrid today (Ed25519 + ML-DSA-65). The ML-KEM-768 key-exchange half is live on Sphinx hops; the pair and channel handshakes activate it in v0.22. The wire format already reserves the slot, so a quantum computer harvesting today's traffic faces a moving target.</p>
+          <p>/api/session advertises an ephemeral Worker X25519 public key while its ML-KEM-768 public key is null and pending. It performs no client ECDH or ML-KEM-768 exchange and therefore establishes no secure or PQ-protected browser-to-Worker session. Local primitive self-tests do not change that boundary.</p>
         </article>
         <article class="ol-tile">
           <h3>Active impersonation.</h3>
-          <p>Pairing uses a 5-word SAS derived from the shared secret. If anyone tried to sit in the middle, the words on the two devices would not match. The math agreed only because nobody was between you.</p>
+          <p>A correctly completed two-device SAS comparison can expose an active substitution attempt. The same-tab website self-test does not provide that human, camera, transport, or second-device assurance.</p>
         </article>
         <article class="ol-tile">
           <h3>Server compromise.</h3>
-          <p>There is no server holding your messages or files. A relay that gets compromised sees sealed boxes addressed to recipients it cannot identify. No archive to steal.</p>
+          <p>The design keeps plaintext off correctly implemented relays. Relay and /share/ services may hold ciphertext temporarily, and compromise can expose encrypted payloads plus routing, timing, size, session, and connection metadata.</p>
         </article>
         <article class="ol-tile">
           <h3>Traffic analysis <span class="ol-tile-badge">(in flight, lands v0.22)</span></h3>
-          <p>The Sphinx-routed three-hop private mode is implemented end-to-end as a WASM-verifiable primitive (see the live demo on /download/). User-toggle wiring into the daemon's transport layer lands in v0.22. Until then the bytes still take a direct path.</p>
+          <p>Three-hop Sphinx logic is available as a local primitive demonstration, but daemon transport wiring and website traffic do not currently provide the advertised private route. Multi-hop routing reduces some single-relay visibility; it does not guarantee anonymity.</p>
         </article>
         <article class="ol-tile">
           <h3>Lost device.</h3>
-          <p>Threshold recovery splits your identity across friends. Recover with k-of-n. The math means a leaked share is useless without the others. Try the 3-of-5 Shamir demo below to see the bytes.</p>
+          <p>Local browser/WASM demonstration only. It does not prove released daemon integration, real-device recovery, persistent hardware protection, or every message path. Broader behavior remains a capability requirement until a versioned acceptance test is published.</p>
         </article>
         <article class="ol-tile">
           <h3>Coerced unlock <span class="ol-tile-badge">(in flight, lands v0.22)</span></h3>
-          <p>Duress mode opens a believable empty account with a second passphrase. The cryptographic primitive ships in the ol_duress crate today; the daemon-level wiring (so the second passphrase unlocks an alternate vault) lands in v0.22.</p>
+          <p>Local browser/WASM demonstration only. It does not prove released daemon integration, real-device recovery, persistent hardware protection, or every message path. Broader behavior remains a capability requirement until a versioned acceptance test is published.</p>
         </article>
       </div>
     </div>
@@ -119,17 +121,14 @@
           <h3>The physical space around you.</h3>
           <p>The protocol secures what travels across the wire. The screen in front of you is yours to guard, the same way it is for any conversation in any room.</p>
         </article>
-        <article class="ol-tile">
-          <h3>The device under your hands.</h3>
-          <p>We sign every binary and ship the source so you can verify what you run. The operating system itself sits below us; choosing one you trust is the choice that makes the rest meaningful.</p>
-        </article>
+        <article class="ol-tile"><h3>Artifact signature</h3><p>No One Link release signature, Windows Authenticode signature, or Apple Developer ID notarization is published for the rolling builds.</p></article>
         <article class="ol-tile">
           <h3>The people you choose to share with.</h3>
-          <p>End-to-end encryption keeps the channel between just the two of you. What happens after they receive your message is the same human trust every relationship rests on.</p>
+          <p>Implemented end-to-end-encrypted paths encrypt content before transport. Endpoints decrypt it; relay and website services may process ciphertext plus routing, timing, size, session, and connection metadata. Demo-only and capability-dependent paths are listed separately. Dots use random, rotating per-tab IDs that are pseudonymous to other visitors, not anonymous to infrastructure. Cloudflare receives ordinary connection metadata and the selected peer can retain anything received.</p>
         </article>
         <article class="ol-tile">
           <h3>The widest of network-watchers.</h3>
-          <p>Three-hop private routing hides the route from anyone who sees one piece of the internet. For an observer who sees the whole internet at once, timing padding raises the cost dramatically; perfect resistance is the goal of the next research push.</p>
+          <p>Three-hop Sphinx logic is available as a local primitive demonstration, but daemon transport wiring and website traffic do not currently provide the advertised private route. Multi-hop routing reduces some single-relay visibility; it does not guarantee anonymity.</p>
         </article>
       </div>
     </div>
@@ -138,33 +137,30 @@
   <section class="section">
     <div class="container">
       <span class="kicker">Proofs and audits</span>
-      <h2>The receipts.</h2>
+      <h2>Evidence pointers; not proof of every claim.</h2>
       <div class="ol-grid ol-grid-2">
         <article class="ol-tile">
           <h3>Formal verification</h3>
-          <p>Critical protocol pieces (pairing handshake, threshold recovery, onion routing) have TLA+ specifications with invariants verified.</p>
+          <p>Contributor-reported internal evidence only. No independent audit, version-pinned artifact, exact current command transcript, or external reproduction is published here; formal-verification, timing, and fuzz assertions remain requirements pending that evidence.</p>
         </article>
         <article class="ol-tile">
           <h3>Constant-time crypto</h3>
-          <p>Macaroon verification + signature paths are constant-time tested with a 1M-iteration soundness gate. Observed wall-clock variance 1.01x. Gate fails above 1.20x.</p>
+          <p>Contributor-reported internal evidence only. No independent audit, version-pinned artifact, exact current command transcript, or external reproduction is published here; formal-verification, timing, and fuzz assertions remain requirements pending that evidence.</p>
         </article>
         <article class="ol-tile">
           <h3>Fuzz testing</h3>
-          <p>Nightly fuzz across 42 binaries. 5 million iterations per release. Adversarial vector library grows on every red-team finding.</p>
+          <p>Contributor-reported internal evidence only. No independent audit, version-pinned artifact, exact current command transcript, or external reproduction is published here; formal-verification, timing, and fuzz assertions remain requirements pending that evidence.</p>
         </article>
-        <article class="ol-tile">
-          <h3>Reproducible releases</h3>
-          <p>Every release is built in a confidential-compute environment. Attestation document published alongside the binary. Anyone can rebuild from source and verify byte equality.</p>
-        </article>
+        <article class="ol-tile"><h3>Reproducibility and provenance</h3><p>No byte-for-byte reproducibility result or artifact-bound build attestation is published for the rolling builds.</p></article>
 
         <article class="ol-tile">
-          <h3>Verified updates, hash-gated</h3>
-          <p>The auto-installer ALWAYS verifies the new binary's SHA-256 against the published SHA256SUMS file BEFORE replacing the running daemon. No hash on file, no install. Hash mismatch, no install. The path that updates your daemon is the same path that proves the bytes are the ones we signed.</p>
+          <h3>Experimental update check; publisher authentication pending.</h3>
+          <p>Local hashing; rolling updates are not authenticated. A same-channel checksum can detect corruption but does not prove publisher identity. Current rolling artifacts have no published artifact signature or independent reproducibility result.</p>
         </article>
 
         <article class="ol-tile">
           <h3>Verify the daemon you already have</h3>
-          <p>Run <code class="ol-inline-code">one-link verify-this-install</code> on any machine running the daemon. It computes a rollup hash of the running install and prints a fingerprint anyone can match against a fresh download. <code class="ol-inline-code">--json</code> for scripts. Catches tampering after install, not just before.</p>
+          <p>The command produces a local install fingerprint for comparison. It is tamper evidence only when compared with a separately authenticated baseline; comparison with another unauthenticated download does not prove provenance.</p>
         </article>
       </div>
     </div>
@@ -174,9 +170,7 @@
     <div class="container">
       <span class="kicker">Prove the bytes you're reading</span>
       <h2>Verify this site, <span class="grad">in your tab.</span></h2>
-      <p class="lede ol-mw-64ch">
-        One click verifies the Ed25519 signature on the asset manifest you just downloaded with this page, then re-fetches every asset listed in the manifest and recomputes its SHA-256 against the recorded hash. If both checks pass, the bytes you are reading match what the offline release key signed. No server-side claim, your browser does the cryptography. Same algorithm the Service Worker runs before serving any cached page.
-      </p>
+      <p class="lede ol-mw-64ch" data-claim-scope="site-manifest-current-status">The verifier authenticates the website-asset manifest with the offline site-manifest key and then re-hashes every listed file. The checked-in manifest is stale after the current website changes, so the full check fails and no current bundle-integrity verdict is published. This mechanism never authenticates application installers or proves a reproducible release build.</p>
 
       <div class="ol-private-demo ol-mt">
         <button type="button" id="ol-verify-site-btn" class="btn btn-primary">
@@ -191,10 +185,8 @@
   <section class="section">
     <div class="container">
       <span class="kicker">Prove it</span>
-      <h2>Mint a hybrid identity, <span class="grad">right here in your tab.</span></h2>
-      <p class="lede ol-mw-64ch">
-        One click runs the real <code class="ol-inline-code">ol_pqsig</code> crate (compiled to WASM) inside your browser. It generates a fresh Ed25519 + ML-DSA-65 hybrid keypair, signs a short message, verifies the signature, then flips one bit and shows you both halves refusing to verify. No network call. No server-side trust. The same code path the daemon uses for capability commits.
-      </p>
+      <h2>Current evidence, demonstrations, and capability requirements.</h2>
+      <p class="lede ol-mw-64ch">Local browser/WASM demonstration only. It does not prove released daemon integration, real-device recovery, persistent hardware protection, or every message path. Broader behavior remains a capability requirement until a versioned acceptance test is published.</p>
 
       <div class="ol-private-demo ol-mt">
         <button type="button" id="ol-pqsig-btn" class="btn btn-primary">
@@ -235,10 +227,8 @@
   <section class="section">
     <div class="container">
       <span class="kicker">Forward secrecy</span>
-      <h2>Every message gets a fresh key. <span class="grad">Compromising one tells you nothing about the next.</span></h2>
-      <p class="lede ol-mw-64ch">
-        One click runs <code class="ol-inline-code">ol_ratchet</code> (per-chunk forward-secret KDF chain, BLAKE3-derived). Your browser generates a fresh chain key, derives six sequential message keys, and shows that they are mutually distinct and that the ratchet refuses to rewind. An attacker who captures the key for chunk 3 cannot reconstruct the key for chunk 4 because the chain step is a one-way hash.
-      </p>
+      <h2>Current evidence, demonstrations, and capability requirements.</h2>
+      <p class="lede ol-mw-64ch">Local browser/WASM demonstration only. It does not prove released daemon integration, real-device recovery, persistent hardware protection, or every message path. Broader behavior remains a capability requirement until a versioned acceptance test is published.</p>
 
       <div class="ol-private-demo ol-mt">
         <button type="button" id="ol-ratchet-btn" class="btn btn-primary">
@@ -257,10 +247,8 @@
   <section class="section">
     <div class="container">
       <span class="kicker">Trust on first use</span>
-      <h2>Your device is recognized <span class="grad">without us knowing who you are.</span></h2>
-      <p class="lede ol-mw-64ch">
-        One click runs <code class="ol-inline-code">ol_hwkey</code> (TOFU software fallback, same trait surface the daemon uses with Secure Enclave / StrongBox / TPM on real hardware). Your browser mints a 32-byte device root on first visit and stores it locally. The button derives a deterministic device fingerprint from that root, then simulates an impersonation attempt with a random key and shows the TOFU store reject it in constant time. No identifier is sent to any server.
-      </p>
+      <h2>Current evidence, demonstrations, and capability requirements.</h2>
+      <p class="lede ol-mw-64ch">Local browser/WASM demonstration only. It does not prove released daemon integration, real-device recovery, persistent hardware protection, or every message path. Broader behavior remains a capability requirement until a versioned acceptance test is published.</p>
 
       <div class="ol-private-demo ol-mt">
         <button type="button" id="ol-hwkey-btn" class="btn btn-primary">
@@ -276,36 +264,18 @@
     </div>
   </section>
 
-  <section class="section">
+  <section class="section" data-claim-scope="security-disclosure">
     <div class="container">
-      <span class="kicker">Found a flaw</span>
-      <h2>Disclosure <span class="grad">is welcome.</span></h2>
-      <p class="lede">If you find a vulnerability in the daemon, the protocol, this website, the Service Worker, the Cloudflare Worker, or any WASM demo, please tell us. Coordinated disclosure is honored. Public attribution if you want it.</p>
+      <span class="kicker">Coordinated vulnerability disclosure</span>
+      <h2>Report privately; read the current commitments literally.</h2>
+      <p class="lede">The contributor-run inbox below is the published reporting path. It is monitored on a best-effort basis, not by a staffed 24/7 security team. Response, remediation, CVE, credit, bounty, safe-harbor, and disclosure dates are not guaranteed. The targets below preserve the program we want to build without presenting it as operating capacity today.</p>
       <div class="ol-grid ol-grid-2">
-        <article class="ol-tile">
-          <h3>How to reach us</h3>
-          <p>Email <a class="ol-cyan-text" href="mailto:weareone@oneunity.earth">weareone@oneunity.earth</a> with subject "security report." Encrypt the body via One Link's <a class="ol-cyan-text" href="/share/">/share/</a> if you have the app, or send plaintext if you do not. Full RFC 9116 contact at <a class="ol-cyan-text" href="/.well-known/security.txt">/.well-known/security.txt</a>.</p>
-        </article>
-        <article class="ol-tile">
-          <h3>Response time</h3>
-          <p>We acknowledge within 72 hours. We share an initial triage within 7 days. We coordinate a public disclosure date that works for both sides, typically 30 to 90 days depending on severity.</p>
-        </article>
-        <article class="ol-tile">
-          <h3>Bug-bounty intent</h3>
-          <p>Today there is no funded bug-bounty program because the project does not yet hold an entity that can disburse payments. We instead offer public acknowledgment (with your consent), a CVE assignment via MITRE for qualifying findings, and a permanent commit-message credit. A funded bounty program will open once the legal entity is stood up.</p>
-        </article>
-        <article class="ol-tile">
-          <h3>Severity tiers</h3>
-          <p>Critical: silent decryption of any sealed payload, identity-key recovery, or universal pairing bypass. High: targeted attacks on a specific peer, supply-chain compromise of releases, ratchet break. Medium: timing side-channels, denial-of-service, metadata leaks beyond what /transparency/ documents. Low: hardening opportunities, defense-in-depth gaps.</p>
-        </article>
-        <article class="ol-tile">
-          <h3>Safe harbor</h3>
-          <p>Good-faith research that follows this policy will not result in legal action, takedown demands, or DMCA threats from us. Test on your own devices and accounts. Do not exfiltrate, modify, or destroy other people's data. Do not degrade service for others. If you stay within those lines, you are welcome here.</p>
-        </article>
-        <article class="ol-tile">
-          <h3>Track record</h3>
-          <p>Every closed finding lives on <a class="ol-cyan-text" href="/audits/">/audits/</a> with the date, the severity tier, and the commit that closed it. New disclosures appear there once the coordinated date arrives.</p>
-        </article>
+        <article class="ol-tile" data-claim-id="security-contact"><h3>Published reporting path</h3><p>Email <a class="ol-cyan-text" href="mailto:weareone@oneunity.earth">weareone@oneunity.earth</a> with subject &quot;security report&quot;. <a class="ol-cyan-text" href="/.well-known/security.txt">/.well-known/security.txt</a> repeats this contact. Do not send exploit material or third-party personal data until scope and a protected exchange method are agreed. <a class="ol-cyan-text" href="/share/">/share/</a> is a temporary browser-sharing demo, not an authenticated security-report channel.</p></article>
+        <article class="ol-tile" data-claim-id="security-response"><h3>Response targets; no SLA</h3><p>Current status: contributor-run, with no guaranteed acknowledgement, triage, fix, or disclosure deadline. Non-guaranteed targets are acknowledgement within 72 hours, initial triage within 7 calendar days, and a mutually coordinated disclosure window often considered at 30 to 90 days. Impact, capacity, dependencies, reporter needs, and active exploitation can change the sequence or timing.</p></article>
+        <article class="ol-tile" data-claim-id="security-bounty-cve"><h3>No funded bounty or guaranteed CVE</h3><p>There is no funded bug-bounty program and no promise of payment, reward, public acknowledgment, or permanent credit. One Link does not claim CNA status and cannot assign or guarantee a CVE. For an apparently qualifying finding, contributors may help submit information to an appropriate CNA or CVE Program intake; assignment and publication are controlled by those third parties. A funded program remains a target contingent on published rules, funding, and legally capable administration; no launch date is promised.</p></article>
+        <article class="ol-tile" data-claim-id="security-severity"><h3>Intake severity, not entitlement</h3><p>The preliminary intake taxonomy is Critical for silent decryption, identity-key recovery, or universal pairing bypass; High for targeted peer attacks, release supply-chain compromise, or a ratchet break; Medium for timing side channels, denial of service, or metadata leakage beyond /transparency/; and Low for hardening or defense-in-depth gaps. It guides prioritization only and creates no response SLA, remediation deadline, bounty amount, safe-harbor guarantee, or CVE entitlement.</p></article>
+        <article class="ol-tile" data-claim-id="security-safe-harbor"><h3>Safe-harbor intent; not a legal guarantee</h3><p>Contributors intend to welcome good-faith, authorized, proportionate research on your own devices and accounts and not to initiate claims solely because such research is reported responsibly. That intent is not legal advice, a contract, authorization to access another person's data or systems, or a waiver of law. Project contributors cannot bind hosting providers, users, individual maintainers, rightsholders, law enforcement, or other third parties. Do not exfiltrate, modify, or destroy others' data or degrade service; request written authorization when scope is uncertain. A formal, versioned, legally reviewed safe-harbor policy remains the target.</p></article>
+        <article class="ol-tile" data-claim-id="security-track-record"><h3>Evidence and track record</h3><p>The contributor-maintained /audits/ register links published external reports when they exist and records selected internal review notes. It is not guaranteed exhaustive and is not an independent audit, release attestation, response log, or proof that every report was resolved.</p></article>
       </div>
     </div>
   </section>
@@ -327,19 +297,19 @@
     <div class="footer-grid">
       <div>
         <a href="/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
-        <p class="footer-tag">A free, private network for messages, files, and devices. Owned by no one. Belongs to everyone.</p>
+        <p class="footer-tag">Open-source pre-release software for private communication. Built toward community ownership; current services still depend on identifiable maintainers, operators, and infrastructure providers.</p>
       </div>
-      <div><h3>Network</h3><ul><li><a href="/how-it-works/">How it works</a></li><li><a href="/features/">Features</a></li><li><a href="/mesh/">Live mesh</a></li></ul></div>
+      <div><h3>Network</h3><ul><li><a href="/how-it-works/">How it works</a></li><li><a href="/features/">Features</a></li><li><a href="/mesh/">Website presence</a></li></ul></div>
       <div><h3>For you</h3><ul><li><a href="/download/">Get One Link</a></li><li><a href="/security/">Security</a></li><li><a href="/verify-download/">Verify download</a></li><li><a href="/roadmap/">Roadmap</a></li><li><a href="/accessibility/">Accessibility</a></li><li><a href="/transparency/">Transparency</a></li><li><a href="/audits/">Audits</a></li></ul></div>
       <div><h3>For builders</h3><ul><li><a href="/builders/">Protocol &amp; source</a></li><li><a href="/changelog/">Changelog</a></li><li><a href="/releases/">Releases</a></li><li><a href="/mirror/">Mirror this site</a></li><li><a href="/download/source" rel="noopener">Source archive</a></li><li><a href="https://github.com/IamOneYouAreOneWeAreOne/one-link" rel="noopener external">GitHub</a></li></ul></div>
     </div>
     <div class="footer-bottom">
-      <span class="built-by">&copy; 2026 One Link contributors. <a href="/terms/">AGPL-3.0</a>. <a href="/security/">No tracking.</a> <a href="mailto:weareone@oneunity.earth">weareone@oneunity.earth</a></span>
+      <span class="built-by">&copy; 2026 One Link contributors. <a href="/terms/">AGPL-3.0</a>. <a href="/security/">No first-party analytics or tracking cookies; infrastructure metadata disclosed.</a> <a href="mailto:weareone@oneunity.earth">weareone@oneunity.earth</a></span>
       <span class="built-by">we are one</span>
     </div>
   </div>
 </footer>
 
-<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r95"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r97"></script>
 </body>
 </html>

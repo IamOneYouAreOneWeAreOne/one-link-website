@@ -141,39 +141,19 @@ jobs:
   # 3. Manifest freshness (signed-manifest + Service Worker integrity)
   # ---------------------------------------------------------------------------
   manifest-freshness:
-    name: Manifest freshness (rehash + signed-diff)
+    name: Signed manifest and asset integrity
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Install signing deps
-        run: pip install cryptography
-      - name: Re-run rehash + verify no drift
-        env:
-          ONE_LINK_CI: '1'
+      - name: Verify signature and every tracked asset hash
         run: |
-          # If the manifest is out of date with the actual asset bytes,
-          # the SW will refuse to serve them. CI catches this BEFORE the
-          # offline-key-holder has to discover it post-deploy.
-          #
-          # We can only verify rehashing (deterministic) here; signing
-          # requires the offline ed25519 key. The signing step is skipped
-          # in CI; a diff that touches manifest.json must already be
-          # signed by the time it's pushed.
-          if [ -f scripts/rehash-manifest.py ]; then
-            # Run the hash stage; signing failure is expected in CI
-            # because the offline ed25519 key is not on the runner.
-            # ``|| true`` swallows the signing-key error so the
-            # subsequent git-diff sees a real result.
-            python scripts/rehash-manifest.py || true
-            # Confirm dist/ HTML + sw.js still match the recorded hashes.
-            if ! git diff --exit-code dist/weareone-link.org/manifest.json dist/weareone-link.org/sw.js > /dev/null; then
-              echo "::warning::manifest.json or sw.js drift detected. Run 'python scripts/rehash-manifest.py' locally + commit the result."
-              # Non-fatal for now; signing requires the offline key.
-            fi
-          fi
+          # Verification requires only the public key embedded in the signed
+          # manifest. Missing, stale, unsigned, or mismatched bytes are a hard
+          # failure; the offline private key never enters CI.
+          python scripts/verify-manifest.py
 
   # ---------------------------------------------------------------------------
   # 4. HTML hygiene (htmlhint)
@@ -202,12 +182,34 @@ jobs:
             dist/weareone-link.org/**/*.html
 
   # ---------------------------------------------------------------------------
-  # 5. Accessibility (pa11y, every public page)
+  # 5. Release truth (artifact matrix, proof state, fail-closed routes)
+  # ---------------------------------------------------------------------------
+  release-truth:
+    name: Release truth and route contracts
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check generated localized release surfaces
+        run: python scripts/apply_release_truth.py --check
+      - name: Exercise Worker release routes and browser truth contracts
+        run: node --test tests/*.test.mjs
+      - name: Validate both Worker bundles without deploying
+        run: |
+          npx --yes wrangler@4.113.0 deploy --dry-run --strict --config wrangler.toml
+          npx --yes wrangler@4.113.0 deploy --dry-run --strict --config wrangler.com.toml
+
+  # ---------------------------------------------------------------------------
+  # 6. Accessibility (pa11y, every public page)
   # ---------------------------------------------------------------------------
   accessibility:
     name: Accessibility (pa11y)
     runs-on: ubuntu-latest
-    continue-on-error: true # advisory while initial baseline is locked
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -221,18 +223,19 @@ jobs:
           http-server dist/weareone-link.org -p 8765 --silent &
           SERVER_PID=$!
           sleep 2
-          # Pages that exist + are public-relevant; expand as more land.
+          # Every canonical public route plus every localized share flow.
           for page in / /how-it-works/ /features/ /security/ /share/ /one/ \
                      /download/ /mesh/ /builders/ /about/ \
-                     /privacy/ /terms/ /accessibility/ /transparency/ /changelog/; do
+                     /privacy/ /terms/ /accessibility/ /transparency/ /changelog/ \
+                     /es/share/ /fr/share/ /de/share/ /pt/share/ /it/share/; do
             echo "::group::pa11y $page"
-            pa11y --standard WCAG2AA "http://127.0.0.1:8765$page" || true
+            pa11y --standard WCAG2AA "http://127.0.0.1:8765$page"
             echo "::endgroup::"
           done
           kill $SERVER_PID || true
 
   # ---------------------------------------------------------------------------
-  # 6. Deploy to Cloudflare (opt-in; runs on master only, requires secret)
+  # 7. Deploy to Cloudflare (opt-in; runs on master only, requires secret)
   # ---------------------------------------------------------------------------
   # Wires master → live by running ``wrangler deploy`` against both
   # the .org and .com Workers after every push. Opt-in via the
@@ -247,7 +250,7 @@ jobs:
   # finishing.
   deploy:
     name: Deploy to Cloudflare Workers
-    needs: [link-check, house-rules, manifest-freshness, html-hint, accessibility]
+    needs: [link-check, house-rules, manifest-freshness, html-hint, release-truth, accessibility]
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/master' && github.event_name == 'push'
     permissions:

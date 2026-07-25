@@ -328,11 +328,11 @@ body.ol-immersive::before {
 }
 
 /* =============================================================================
-   LIVE MESH WIDGET  (bounded panel bottom-right, scales 2 -> 10,000+ visitors)
+   WEBSITE-PRESENCE WIDGET  (bounded panel bottom-right)
    =============================================================================
    Replaces the full-viewport overlay. Visitor dots live INSIDE this widget's
    bounded space, never on the page itself. The widget is the truth source
-   for who's online and the only place you click to start a chat.
+   for validated website-presence sessions and the place used to start chat.
    ========================================================================== */
 .ol-peer-overlay {
   position: fixed;
@@ -359,7 +359,7 @@ body.ol-immersive::before {
 /* Pseudo fallback for older browsers without :has() — only render when
    the head hasn't mounted yet (the JS replaces it right after boot). */
 .ol-peer-overlay::before {
-  content: "live mesh";
+  content: "website presence";
   position: absolute;
   top: 0.55rem;
   left: 0.85rem;
@@ -815,7 +815,7 @@ body.ol-mesh-page .ol-peer-overlay { display: none; }
 }
 
 /* =============================================================================
-   STRANGER CHAT  (anonymous, ephemeral, server-relayed)
+   PSEUDONYMOUS CHAT  (ephemeral, encrypted payloads, server-relayed metadata)
    ========================================================================== */
 .ol-chat-panel {
   position: fixed;

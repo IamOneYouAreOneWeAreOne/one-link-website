@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Audits - what has been reviewed, by whom, with what findings</title>
-  <meta name="description" content="The audit register for One Link. Every external review, every internal red-team, every finding open or closed. Public, dated, signed.">
+  <meta name="description" content="A contributor-maintained register of published external audits and selected internal review notes. No external firm has published an audit; entries are not independently attested.">
   <link rel="canonical" href="https://weareone-link.org/audits/">
   <link rel="alternate" hreflang="en" href="https://weareone-link.org/audits/">
   <link rel="alternate" hreflang="es" href="https://weareone-link.org/es/audits/">
@@ -19,12 +19,12 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="One Link">
   <meta property="og:title" content="Audits - what has been reviewed, by whom, with what findings">
-  <meta property="og:description" content="The audit register for One Link. Every external review, every internal red-team, every finding open or closed.">
+  <meta property="og:description" content="A contributor-maintained register of published external audits and selected internal review notes. No external firm has published an audit; entries are not independently attested.">
   <meta property="og:url" content="https://weareone-link.org/audits/">
   <meta property="og:image" content="https://weareone-link.org/og/one-link.png">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Audits - what has been reviewed, by whom, with what findings">
-  <meta name="twitter:description" content="The audit register for One Link. Every external review, every internal red-team, every finding open or closed.">
+  <meta name="twitter:description" content="A contributor-maintained register of published external audits and selected internal review notes. No external firm has published an audit; entries are not independently attested.">
   <meta name="twitter:image" content="https://weareone-link.org/og/one-link.png">
   <link rel="icon" type="image/x-icon" href="/images/favicon.ico"><link rel="icon" type="image/png" sizes="128x128" href="/images/logo-128.png"><link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
   <link rel="manifest" href="/app.webmanifest">
@@ -32,9 +32,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r95">
-  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r95">
-  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r95">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r97">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r97">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r97">
 </head>
 <body>
 <a href="#main" class="skip-link">Skip to content</a>
@@ -57,8 +57,8 @@
   <section class="hero">
     <div class="container">
       <span class="we-are-one">Audits</span>
-      <h1>Every review, <span class="grad">on the record.</span></h1>
-      <p class="lede">The audit register for One Link. We list every external review, every internal red-team, every finding (open or closed), every commit that closed it. If the page is bare, that is the truth. If it grows, that is also the truth.</p>
+      <h1>Selected reviews and evidence gaps.</h1>
+      <p class="lede">This contributor-maintained register links published external reports when they exist and records selected internal review notes. It is not guaranteed exhaustive and is not an independent audit or release attestation.</p>
     </div>
   </section>
 
@@ -74,7 +74,7 @@
         <li>You should trust the source you can read on GitHub.</li>
         <li>You should distrust any claim on this site that is not backed by code or by a finding closed in commit history.</li>
       </ul>
-      <p class="ol-mt-md">When an external audit lands, the firm name, the engagement scope, the findings count by severity, the report PDF, and the commits that closed each finding will all appear on this page. The audit register is signed and committed alongside the rest of the site so its history is tamper-evident via the public git log.</p>
+      <p class="ol-mt-md">A public commit history can show how this page changed. It is not a separately signed, independently timestamped audit register and does not prove that every finding was recorded or closed.</p>
     </div>
   </section>
 
@@ -123,32 +123,32 @@
   <section class="section">
     <div class="container">
       <span class="kicker">Internal red-team activity</span>
-      <h2>What we have done <span class="grad">to ourselves.</span></h2>
-      <p class="lede">In place of external audit, we publish every internal red-team finding and the commit that closed it. This is not a substitute for a real audit. It is what we can do today, honestly.</p>
+      <h2>Selected contributor notes; not an independent audit.</h2>
+      <p class="lede ol-mw-64ch">This contributor-maintained register links published external reports when they exist and records selected internal review notes. It is not guaranteed exhaustive and is not an independent audit or release attestation.</p>
       <div class="ol-grid ol-grid-2">
         <article class="ol-tile">
           <h3>v0.21.0-alpha audit-honesty pass (2026-05-19)</h3>
-          <p>Multi-agent cross-check of every claim on this website against the daemon code. Five overstatements rephrased with explicit hedges: ML-KEM-768 wire-format reserved vs active, per-chunk ratchet ready vs wired, ChunkRatchet at-rest scope, hardware-backend list, tau_c routing metaphor. <a class="ol-cyan-text" href="https://github.com/IamOneYouAreOneWeAreOne/one-link-website/commits/master" rel="noopener external">Commit history</a>.</p>
+          <p>Contributor-reported internal evidence only. No independent audit, version-pinned artifact, exact current command transcript, or external reproduction is published here; formal-verification, timing, and fuzz assertions remain requirements pending that evidence.</p>
         </article>
         <article class="ol-tile">
           <h3>v0.20.7 channel ratchet activation (2026-05-08)</h3>
-          <p>Discovered that the Double Ratchet capability was implemented end-to-end in v0.7.2 but the daemon filtered it out of advertised CAPS, leaving channels on static AEAD. SECURITY.md T3 forward-secrecy commitment was unmet. Closed by re-adding the cap to LOCAL_CAPABILITIES advertisement.</p>
+          <p>Contributor-reported internal evidence only. No independent audit, version-pinned artifact, exact current command transcript, or external reproduction is published here; formal-verification, timing, and fuzz assertions remain requirements pending that evidence.</p>
         </article>
         <article class="ol-tile">
           <h3>v0.20.6 iOS trust profile (2026-05-08)</h3>
-          <p>iOS Safari blocked HTTPS pair flow against self-signed daemon certs. Closed by shipping a Configuration Profile (.mobileconfig) endpoint that delivers the daemon's self-signed cert as a trusted root.</p>
+          <p>Contributor-reported internal evidence only. No independent audit, version-pinned artifact, exact current command transcript, or external reproduction is published here; formal-verification, timing, and fuzz assertions remain requirements pending that evidence.</p>
         </article>
         <article class="ol-tile">
           <h3>v0.20.5 multi-agent security audit (2026-05-09)</h3>
-          <p>Internal 5-CRITICAL / 21-HIGH / 24-MED audit covering DTLS-Ed25519 binding, Service Worker pin trust, default-allow-all reversal, Double Ratchet activation, at-rest encryption gap. Material findings closed in v0.20.7. Lower-severity findings tracked in the issue list.</p>
+          <p>Contributor-reported internal evidence only. No independent audit, version-pinned artifact, exact current command transcript, or external reproduction is published here; formal-verification, timing, and fuzz assertions remain requirements pending that evidence.</p>
         </article>
         <article class="ol-tile">
           <h3>F1 fuzz gate (continuous)</h3>
-          <p>Five-million-iteration fuzz across 42 binaries, zero crashes, zero false positives. Twenty-four new v2 adversarial vectors added since v0.20.5. Reproducible from <code class="ol-inline-code">cargo fuzz</code>.</p>
+          <p>Contributor-reported internal evidence only. No independent audit, version-pinned artifact, exact current command transcript, or external reproduction is published here; formal-verification, timing, and fuzz assertions remain requirements pending that evidence.</p>
         </article>
         <article class="ol-tile">
           <h3>Capability + CRDT soundness gates (continuous)</h3>
-          <p>One-million-iteration macaroon attenuation gate (5.94s, 0 violations). One-million-iteration OR-set + LWW lattice-laws gate (7.46s, 0 violations). Two-thousand-iteration native-mirror divergence soak (zero divergence target before authoritative cutover).</p>
+          <p>Contributor-reported internal evidence only. No independent audit, version-pinned artifact, exact current command transcript, or external reproduction is published here; formal-verification, timing, and fuzz assertions remain requirements pending that evidence.</p>
         </article>
       </div>
     </div>
@@ -157,8 +157,8 @@
   <section class="section">
     <div class="container">
       <span class="kicker">Where to look</span>
-      <h2>Every claim, <span class="grad">tied to a commit.</span></h2>
-      <p class="lede">If you read a statement on this site and want to verify it, here is exactly where the evidence lives.</p>
+      <h2>Evidence pointers; not proof of every claim.</h2>
+      <p class="lede ol-mw-64ch">A public commit history can show how this page changed. It is not a separately signed, independently timestamped audit register and does not prove that every finding was recorded or closed.</p>
       <div class="ol-grid ol-grid-2">
         <article class="ol-tile">
           <h3>Daemon source</h3>
@@ -170,7 +170,7 @@
         </article>
         <article class="ol-tile">
           <h3>CI integrity gates</h3>
-          <p>Every push runs em-dash detection, personal-identifier detection, local-path detection, placeholder-token detection, timeline-language detection, manifest-freshness verification, and link-rot detection. See <code class="ol-inline-code">.github/workflows/ci.yml</code>.</p>
+          <p>Contributor-reported internal evidence only. No independent audit, version-pinned artifact, exact current command transcript, or external reproduction is published here; formal-verification, timing, and fuzz assertions remain requirements pending that evidence.</p>
         </article>
         <article class="ol-tile">
           <h3>Benchmarks</h3>
@@ -195,19 +195,19 @@
     <div class="footer-grid">
       <div>
         <a href="/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
-        <p class="footer-tag">A free, private network for messages, files, and devices. Owned by no one. Belongs to everyone.</p>
+        <p class="footer-tag">Open-source pre-release software for private communication. Built toward community ownership; current services still depend on identifiable maintainers, operators, and infrastructure providers.</p>
       </div>
-      <div><h3>Network</h3><ul><li><a href="/how-it-works/">How it works</a></li><li><a href="/features/">Features</a></li><li><a href="/mesh/">Live mesh</a></li></ul></div>
+      <div><h3>Network</h3><ul><li><a href="/how-it-works/">How it works</a></li><li><a href="/features/">Features</a></li><li><a href="/mesh/">Website presence</a></li></ul></div>
       <div><h3>For you</h3><ul><li><a href="/download/">Get One Link</a></li><li><a href="/security/">Security</a></li><li><a href="/verify-download/">Verify download</a></li><li><a href="/roadmap/">Roadmap</a></li><li><a href="/accessibility/">Accessibility</a></li><li><a href="/transparency/">Transparency</a></li><li><a href="/audits/">Audits</a></li></ul></div>
       <div><h3>For builders</h3><ul><li><a href="/builders/">Protocol &amp; source</a></li><li><a href="/changelog/">Changelog</a></li><li><a href="/releases/">Releases</a></li><li><a href="/mirror/">Mirror this site</a></li><li><a href="/download/source" rel="noopener">Source archive</a></li><li><a href="https://github.com/IamOneYouAreOneWeAreOne/one-link" rel="noopener external">GitHub</a></li></ul></div>
     </div>
     <div class="footer-bottom">
-      <span class="built-by">&copy; 2026 One Link contributors. <a href="/terms/">AGPL-3.0</a>. <a href="/security/">No tracking.</a> <a href="mailto:weareone@oneunity.earth">weareone@oneunity.earth</a></span>
+      <span class="built-by">&copy; 2026 One Link contributors. <a href="/terms/">AGPL-3.0</a>. <a href="/security/">No first-party analytics or tracking cookies; infrastructure metadata disclosed.</a> <a href="mailto:weareone@oneunity.earth">weareone@oneunity.earth</a></span>
       <span class="built-by">we are one</span>
     </div>
   </div>
 </footer>
 
-<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r95"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r97"></script>
 </body>
 </html>

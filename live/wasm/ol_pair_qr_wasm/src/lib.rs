@@ -108,7 +108,10 @@ impl OlInviter {
             .map_err(|e| JsError::new(&format!("invalid capability label: {e:?}")))?;
         let inviter = Inviter::new(signing, &mut rng, expiry_unix, scope);
         let invite_bytes = inviter.invite_bytes().to_vec();
-        Ok(OlInviter { inner: inviter, invite_bytes })
+        Ok(OlInviter {
+            inner: inviter,
+            invite_bytes,
+        })
     }
 
     /// QR-encodable bytes of the signed Invite. These ARE what the daemon
@@ -129,7 +132,9 @@ impl OlInviter {
     /// should compare. Returns the 5-word SAS as a space-joined string.
     #[wasm_bindgen(js_name = receiveResponse)]
     pub fn receive_response(&mut self, response_bytes: &[u8]) -> Result<String, JsError> {
-        self.inner.receive_response(response_bytes).map_err(pair_err)?;
+        self.inner
+            .receive_response(response_bytes)
+            .map_err(pair_err)?;
         let sas = self
             .inner
             .sas()
@@ -237,7 +242,10 @@ pub fn live_demo_round_trip() -> Result<JsValue, JsError> {
     let (mut scanner, response_bytes) =
         Scanner::scan(scanner_sk, &invite_bytes, 100, &mut rng).map_err(pair_err)?;
 
-    let sas_inviter = inviter.receive_response(&response_bytes).map_err(pair_err)?.clone();
+    let sas_inviter = inviter
+        .receive_response(&response_bytes)
+        .map_err(pair_err)?
+        .clone();
     let sas_scanner = scanner.sas().clone();
     let matched = sas_inviter == sas_scanner;
 
@@ -246,13 +254,41 @@ pub fn live_demo_round_trip() -> Result<JsValue, JsError> {
     debug_assert_eq!(chain_key_i.as_bytes(), chain_key_s.as_bytes());
 
     let obj = js_sys::Object::new();
-    set(&obj, "inviteBytes", &js_sys::Uint8Array::from(&invite_bytes[..]).into())?;
-    set(&obj, "inviteHex",   &JsValue::from_str(&hex::encode(&invite_bytes)))?;
-    set(&obj, "responseBytes", &js_sys::Uint8Array::from(&response_bytes[..]).into())?;
-    set(&obj, "sasInviter", &JsValue::from_str(&sas_inviter.display()))?;
-    set(&obj, "sasScanner", &JsValue::from_str(&sas_scanner.display()))?;
-    set(&obj, "confirmBytes", &js_sys::Uint8Array::from(&confirm_bytes[..]).into())?;
-    set(&obj, "chainKey", &js_sys::Uint8Array::from(chain_key_i.as_bytes().as_slice()).into())?;
+    set(
+        &obj,
+        "inviteBytes",
+        &js_sys::Uint8Array::from(&invite_bytes[..]).into(),
+    )?;
+    set(
+        &obj,
+        "inviteHex",
+        &JsValue::from_str(&hex::encode(&invite_bytes)),
+    )?;
+    set(
+        &obj,
+        "responseBytes",
+        &js_sys::Uint8Array::from(&response_bytes[..]).into(),
+    )?;
+    set(
+        &obj,
+        "sasInviter",
+        &JsValue::from_str(&sas_inviter.display()),
+    )?;
+    set(
+        &obj,
+        "sasScanner",
+        &JsValue::from_str(&sas_scanner.display()),
+    )?;
+    set(
+        &obj,
+        "confirmBytes",
+        &js_sys::Uint8Array::from(&confirm_bytes[..]).into(),
+    )?;
+    set(
+        &obj,
+        "chainKey",
+        &js_sys::Uint8Array::from(chain_key_i.as_bytes().as_slice()).into(),
+    )?;
     set(&obj, "matched", &JsValue::from_bool(matched))?;
     Ok(obj.into())
 }

@@ -33,9 +33,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r95">
-  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r95">
-  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r95">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r97">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r97">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r97">
 </head>
 <body>
 <a href="#main" class="skip-link">Salta al contenuto</a>
@@ -68,9 +68,7 @@
       <p class="ol-prose">
         Ogni decisione di rilascio passa per un cancello a quattro regole (portata, nascondere il motore, asincrono per impostazione predefinita, profondità prima della rifinitura). Gli elementi di questa pagina sono filtrati, ordinati per ciò che sblocca più utilizzo per più persone e tracciati pubblicamente. La versione dettagliata di ingegneria vive in <a class="ol-cyan-text" href="https://github.com/IamOneYouAreOneWeAreOne/one-link/blob/master/docs/ROADMAP.md" rel="noopener external">docs/ROADMAP.md nel codice sorgente</a>.
       </p>
-      <p class="ol-prose">
-        Per quello che è già stato rilasciato, vedi <a class="ol-cyan-text" href="/changelog/" hreflang="en">/changelog/</a>.
-      </p>
+      <p class="ol-prose">Tutto ciò che segue è proposta o obiettivo, non disponibilità attuale. Changelog ed evidenza di versione fissata determinano cosa è rilasciato.</p>
     </div>
   </section>
 
@@ -93,7 +91,7 @@
 
         <article class="ol-tile">
           <h3>Chiamate di gruppo e gruppi più grandi.</h3>
-          <p>Chiamate vocali e video per gruppi, con 50 persone in voce e 8 in video come primi obiettivi. L'instradamento via relay di ogni chiamata non vede mai l'audio o il video, solo byte cifrati. Le chiavi mittente di gruppo ruotano per chiamata in modo che una fuga non torni indietro.</p>
+          <p>Obiettivo: i relay non ricevono chiavi di contenuto, sebbene gli operatori vedano connessione, rotta, tempo e dimensione. Il deployment deve provarlo.</p>
         </article>
 
         <article class="ol-tile">
@@ -142,9 +140,9 @@
           <p>Frammenti in streaming direttamente all'elemento media mentre arrivano. Bitrate adattivo quando la banda cala. I messaggi vocali inoltrati e i video condivisi partono nel momento in cui tocchi, non dopo che il file intero è atterrato.</p>
         </article>
 
-        <article class="ol-tile">
-          <h3>Se qualcosa si rompe, si ripara da solo.</h3>
-          <p>Il daemon nota quando il suo stato devia da un peer (lacune nei numeri di messaggio, ratchet fuori sincrono, ripristino da un backup) e recupera silenziosamente la prossima volta che entrambi tornate online. Qualsiasi messaggio che genuinamente non può essere recuperato diventa un singolo segnaposto; la perdita silenziosa è impossibile per progettazione.</p>
+        <article class="ol-tile" data-claim-id="roadmap-silent-loss">
+          <h3>Obiettivo: rendere esplicite le lacune irrecuperabili.</h3>
+          <p>Obiettivo: rilevare divergenze di stato tra peer e rappresentare ogni messaggio irrecuperabile come lacuna autenticata e ordinata, invece di ometterlo in silenzio. Modello di minaccia: crash, ripristino, replay, perdita, riordino, duplicati e troncamento malevolo entro la finestra di conservazione pubblicata; cancellazione o compromissione dell’endpoint restano fuori ambito. Promuovere solo dopo test versionati di fault injection e recupero tra dispositivi che provino l’assenza di lacune non rilevate nella matrice supportata.</p>
         </article>
 
       </div>
@@ -170,7 +168,7 @@
 
         <article class="ol-tile">
           <h3>Forward secrecy su ogni frammento, sempre.</h3>
-          <p>Già in produzione per i messaggi; attivandosi a livello di canale in modo che ogni byte erediti automaticamente la stessa proprietà. Zero nuovi pulsanti.</p>
+          <p>Obiettivo: estendere l’evoluzione forward-secret a ogni rotta e pubblicare test per versione; non afferma che tutte le rotte attuali lo facciano.</p>
         </article>
 
         <article class="ol-tile">
@@ -189,9 +187,9 @@
       <p class="lede">Ogni rilascio in questa via rende la rete più difficile da spegnere, sorvegliare, censurare o distruggere da una singola parte. L'architettura ci porta già la maggior parte del cammino; questi rilasci completano il lavoro.</p>
       <div class="ol-grid ol-grid-2">
 
-        <article class="ol-tile">
-          <h3>Abbinare da un QR, mai da una URL.</h3>
-          <p>L'handshake di abbinamento resta interamente sui due dispositivi nella stanza. Nessun token URL da far trapelare, nessuna superficie d'attacco per l'abbinamento remoto. Chiavi ibride post-quantistiche; un secondo fattore opzionale per utenti in ambienti ostili.</p>
+        <article class="ol-tile" data-claim-id="roadmap-remote-pair">
+          <h3>Obiettivo: abbinamento QR locale verificato dall’utente.</h3>
+          <p>Obiettivo: accettare solo uno scambio QR monouso e con scadenza, completato su due dispositivi con conferma SAS fuori banda, senza bootstrap tramite token URL nei client supportati. Modello di minaccia: furto remoto del link, replay, sostituzione, relay malevoli e MITM di rete; endpoint o fotocamere compromessi e conferma SAS disonesta restano rischi residui. Promuovere solo dopo test negativi su dispositivi fisici e catture di pacchetti che provino il confine documentato.</p>
         </article>
 
         <article class="ol-tile">
@@ -199,9 +197,9 @@
           <p>Un salto per i contatti abbinati, tre salti per la modalità paranoica. La selezione del percorso segue il campo di coerenza che instrada già la rete. Il mittente sigillato nasconde ai relay che lo trasportano chi sta inviando a chi.</p>
         </article>
 
-        <article class="ol-tile">
-          <h3>Traffico di copertura perché i tempi non dicano nulla.</h3>
-          <p>Byte di sfondo a tasso costante tra contatti abbinati in modo che un osservatore non possa dire quando si muove un messaggio reale. Sconfigge l'analisi del traffico basata sui tempi. Disattivato per impostazione predefinita, disponibile quando serve.</p>
+        <article class="ol-tile" data-claim-id="roadmap-timing-analysis">
+          <h3>Obiettivo: resistenza misurata all’analisi del traffico.</h3>
+          <p>Obiettivo: offrire padding e programmi di copertura opzionali e limitati che riducano la capacità di un osservatore definito di distinguere gli invii reali. Il modello di minaccia e l’evidenza devono indicare posizione, durata, collusione, latenza, banda e insieme di anonimato; un osservatore globale non è considerato sconfitto. Promuovere solo dopo test pubblicati di classificazione delle tracce che rispettino un limite di vantaggio preregistrato senza costi illimitati di traffico, batteria o latenza.</p>
         </article>
 
         <article class="ol-tile">
@@ -209,9 +207,9 @@
           <p>Un trasporto collegabile che resiste all'ispezione profonda dei pacchetti. La rete continua a funzionare in luoghi che bloccano protocolli cifrati riconoscibili.</p>
         </article>
 
-        <article class="ol-tile">
-          <h3>Le chiavi di identità vivono nell'hardware quando l'hardware lo consente.</h3>
-          <p>Apple Secure Enclave, Windows TPM, Intel SGX, AMD SEV-SNP, ARM TrustZone. Il malware locale con privilegi di amministratore ancora non può estrarre le chiavi di cui avrebbe bisogno per impersonarti.</p>
+        <article class="ol-tile" data-claim-id="roadmap-hardware-keys">
+          <h3>Obiettivo: chiavi di identità supportate da hardware dove verificate.</h3>
+          <p>Obiettivo: usare operazioni hardware non esportabili supportate e fallire in modo chiuso quando manca il livello richiesto. Il modello di minaccia deve separare malware utente, compromissione amministratore o kernel, accesso fisico, firmware o supply chain e abuso come oracolo di firma; l’hardware non rende affidabile un endpoint compromesso. Promuovere ogni piattaforma solo con test versionati di esportazione, attestazione, downgrade, reset, backup e impersonificazione su hardware identificato.</p>
         </article>
 
         <article class="ol-tile">
@@ -227,7 +225,7 @@
     <div class="container">
       <span class="kicker">Occhi esterni</span>
       <h2>Verificato da persone che non lavorano a questo.</h2>
-      <p class="lede">Il lavoro interno di red team è esaustivo (ogni ritrovamento chiuso, ogni commit firmato, ogni rilascio riproducibile). Perché le affermazioni architetturali reggano davanti a un pubblico ostile, deve esistere almeno un rapporto esterno pubblicato.</p>
+      <p class="lede">auto-latest è un canale preliminare modificabile. Gli artefatti servono ai test, ma possono cambiare e non pubblicano firme, prove di firma dell'editore, risultati riproducibili o attestazioni di provenienza.</p>
       <div class="ol-grid ol-grid-3">
         <article class="ol-tile">
           <h3>Primo pentest esterno, pubblicato.</h3>
@@ -269,7 +267,7 @@
 
         <article class="ol-tile">
           <h3>Una versione ospitata «for Business».</h3>
-          <p>Un servizio gestito eredita «i nostri server conservano i tuoi dati» e «adempiamo all'intimazione X», che è esattamente ciò che il protocollo esiste per evitare. La risposta federata: ogni organizzazione gestisce il proprio relay. Nessun operatore può leggere ciò che il relay trasporta.</p>
+          <p>Obiettivo: i relay non ricevono chiavi di contenuto, sebbene gli operatori vedano connessione, rotta, tempo e dimensione. Il deployment deve provarlo.</p>
         </article>
 
         <article class="ol-tile">
@@ -277,9 +275,9 @@
           <p>Riassunto automatico, suggerimento di risposta, moderazione dei contenuti: se vuoi quello, gira localmente contro il tuo magazzino di messaggi sul tuo dispositivo. Il daemon rifiuta di rilasciare funzionalità che hanno bisogno di leggere testo in chiaro lato server; farlo annullerebbe l'intera architettura.</p>
         </article>
 
-        <article class="ol-tile">
-          <h3>Telemetria di qualsiasi tipo.</h3>
-          <p>Questa è l'affermazione di privacy portante ed è strutturale, non politica. L'architettura è plasmata affinché l'affermazione regga anche se ogni contributore fosse sostituito domani. Gli unici contatori che esistono sono locali e opt-in.</p>
+        <article class="ol-tile" data-claim-id="roadmap-telemetry">
+          <h3>Obiettivo: evidenza operativa che preservi la privacy.</h3>
+          <p>Obiettivo: nessuna pubblicità o profilazione comportamentale e nessuna raccolta di eventi non dichiarata. Qualsiasi misura di affidabilità o sicurezza deve essere opt-in oppure aggregata e minimizzata in modo dimostrabile, legata a uno scopo, documentata con campi, responsabili e conservazione, e coperta da un modello di minaccia. Promuovere una formula senza telemetria solo quando audit di build, rete e archiviazione provino l’assenza di emissioni non dichiarate; contatori locali e metadati infrastrutturali restano divulgati.</p>
         </article>
 
       </div>
@@ -288,9 +286,7 @@
 
   <section class="section">
     <div class="container ol-mw-680">
-      <p class="ol-prose">
-        Ultimo aggiornamento 2026-05-24. La versione orientata allo sviluppo con nomi dei crate, formati di filo e cancelli di accettazione è in <a class="ol-cyan-text" href="https://github.com/IamOneYouAreOneWeAreOne/one-link/blob/master/docs/ROADMAP.md" rel="noopener external">docs/ROADMAP.md</a>.
-      </p>
+      <p class="ol-prose">Roadmap rivista il 2026-07-22.</p>
     </div>
   </section>
 
@@ -301,7 +297,7 @@
     <div class="footer-grid">
       <div>
         <a href="/it/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
-        <p class="footer-tag">Una rete libera e privata per messaggi, file e dispositivi. Di nessuno. Di tutti.</p>
+        <p class="footer-tag">Software open source preliminare per comunicazioni private. Costruito verso la proprietà comunitaria; i servizi attuali dipendono ancora da manutentori, operatori e fornitori identificabili.</p>
         <p class="ol-mt-md ol-soft-text ol-mono">
           <strong>Leggi in:</strong>
           <a class="ol-cyan-text" hreflang="en" href="/roadmap/">English</a> &middot;
@@ -312,7 +308,7 @@
           <a class="ol-cyan-text" hreflang="it" href="/it/roadmap/">Italiano</a>
         </p>
       </div>
-      <div><h3>Rete</h3><ul><li><a href="/how-it-works/" hreflang="en">Come funziona</a></li><li><a href="/features/" hreflang="en">Funzionalità</a></li><li><a href="/mesh/" hreflang="en">Mesh dal vivo</a></li></ul></div>
+      <div><h3>Rete</h3><ul><li><a href="/how-it-works/" hreflang="en">Come funziona</a></li><li><a href="/features/" hreflang="en">Funzionalità</a></li><li><a href="/mesh/" hreflang="en">Presenza web</a></li></ul></div>
       <div><h3>Per te</h3><ul><li><a href="/download/" hreflang="en">Ottieni One Link</a></li><li><a href="/security/" hreflang="en">Sicurezza</a></li><li><a href="/it/verify-download/" hreflang="it">Verifica download</a></li><li><a href="/it/roadmap/" hreflang="it">Tabella di marcia</a></li><li><a href="/it/accessibility/" hreflang="it">Accessibilità</a></li><li><a href="/it/transparency/" hreflang="it">Trasparenza</a></li><li><a href="/audits/" hreflang="en">Audit</a></li></ul></div>
       <div><h3>Per i costruttori</h3><ul><li><a href="/builders/" hreflang="en">Protocollo e sorgente</a></li><li><a href="/changelog/" hreflang="en">Registro modifiche</a></li><li><a href="/releases/" hreflang="en">Versioni</a></li><li><a href="/mirror/" hreflang="en">Replica questo sito</a></li><li><a href="/download/source" hreflang="en" rel="noopener">Archivio sorgente</a></li><li><a href="https://github.com/IamOneYouAreOneWeAreOne/one-link" rel="noopener external">GitHub</a></li></ul></div>
     </div>
@@ -323,6 +319,6 @@
   </div>
 </footer>
 
-<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r95"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r97"></script>
 </body>
 </html>

@@ -24,7 +24,6 @@
 module one_link.ssg.build;
 
 import std.io.fs as fs;
-import std.io.fs.path as path;
 import std.time as time;
 
 // -----------------------------------------------------------------------------
@@ -68,13 +67,12 @@ fn site_header() -> String @ L0 {
     "<header class=\"site-header\" role=\"banner\">\n" +
     "  <div class=\"container\">\n" +
     "    <a href=\"/\" class=\"site-logo\"><span class=\"logo-mark\"></span><span>One Link</span></a>\n" +
-    "    <input type=\"checkbox\" id=\"nav-toggle\" class=\"nav-toggle-input\">\n" +
-    "    <label for=\"nav-toggle\" class=\"nav-toggle\" aria-label=\"Open navigation\" role=\"button\" tabindex=\"0\">&#9776;</label>\n" +
-    "    <nav class=\"site-nav\" aria-label=\"Main\">\n" +
+    "    <button type=\"button\" id=\"nav-toggle\" class=\"nav-toggle\" aria-label=\"Open navigation\" aria-expanded=\"false\" aria-controls=\"primary-nav\">&#9776;</button>\n" +
+    "    <nav class=\"site-nav\" id=\"primary-nav\" aria-label=\"Main\">\n" +
     "      <a href=\"/how-it-works/\">How it works</a>\n" +
     "      <a href=\"/features/\">Features</a>\n" +
     "      <a href=\"/security/\">Security</a>\n" +
-    "      <a href=\"/mesh/\">Live mesh</a>\n" +
+    "      <a href=\"/mesh/\">Website presence</a>\n" +
     "      <a href=\"/builders/\">Builders</a>\n" +
     "      <a href=\"/about/\">About</a>\n" +
     "      <a href=\"/download/\" class=\"cta-get\">Get One Link</a>\n" +
@@ -89,9 +87,9 @@ fn site_footer() -> String @ L0 {
     "    <div class=\"footer-grid\">\n" +
     "      <div>\n" +
     "        <a href=\"/\" class=\"site-logo\"><span class=\"logo-mark\"></span><span>One Link</span></a>\n" +
-    "        <p class=\"footer-tag\">A free, private network for messages, files, and devices. Owned by no one. Belongs to everyone.</p>\n" +
+    "        <p class=\"footer-tag\">Open-source pre-release communication software. Current services still depend on operators and infrastructure.</p>\n" +
     "      </div>\n" +
-    "      <div><h4>Network</h4><ul><li><a href=\"/how-it-works/\">How it works</a></li><li><a href=\"/features/\">Features</a></li><li><a href=\"/mesh/\">Live mesh</a></li></ul></div>\n" +
+    "      <div><h4>Network</h4><ul><li><a href=\"/how-it-works/\">How it works</a></li><li><a href=\"/features/\">Features</a></li><li><a href=\"/mesh/\">Website presence</a></li></ul></div>\n" +
     "      <div><h4>For you</h4><ul><li><a href=\"/download/\">Get One Link</a></li><li><a href=\"/security/\">Security</a></li><li><a href=\"/about/\">About</a></li></ul></div>\n" +
     "      <div><h4>For builders</h4><ul><li><a href=\"/builders/\">Protocol &amp; source</a></li><li><a href=\"https://github.com/IamOneYouAreOneWeAreOne/one-link\" rel=\"noopener\">GitHub</a></li><li><a href=\"/builders/#donate\">Donate</a></li></ul></div>\n" +
     "    </div>\n" +
@@ -114,8 +112,8 @@ fn home_hero() -> String @ L0 {
     "<section class=\"hero\">\n" +
     "  <div class=\"container\">\n" +
     "    <span class=\"we-are-one\">We are one</span>\n" +
-    "    <h1>Send anything.<br>To anyone.<br><span class=\"grad\">Only you and they can read it.</span></h1>\n" +
-    "    <p class=\"lede\">One Link is a free, private network for your messages, files, and devices. No accounts. No servers in the middle. No limits. It just works.</p>\n" +
+    "    <h1>Send messages and files.<br>To your peers.<br><span class=\"grad\">Encrypted on supported paths.</span></h1>\n" +
+    "    <p class=\"lede\">Private pre-release messaging and file transfer. Direct paths where possible; encrypted relay fallback when needed. Infrastructure still observes connection metadata.</p>\n" +
     "    <div class=\"cta-row\">\n" +
     "      <a href=\"/download/\" class=\"btn btn-primary btn-large\">Get One Link <span class=\"arr\">&rarr;</span></a>\n" +
     "      <a href=\"/how-it-works/\" class=\"btn btn-ghost btn-large\">See how it works</a>\n" +
@@ -131,7 +129,7 @@ fn home_hero() -> String @ L0 {
 fn build_home(stamp: String) -> String @ L0 {
     html_head(
         "One Link  -  we are one",
-        "Send anything. To anyone. From any device. No accounts. No servers. No middlemen. Only you and they can read it. Free forever.",
+        "Private pre-release messaging and file transfer with direct paths where possible, encrypted relay fallback when needed, and explicit infrastructure metadata limits.",
         CANONICAL_ORIGIN + "/"
     ) +
     provenance_block(stamp, "/") +
@@ -187,8 +185,6 @@ fn fold_in_page(rel_path: String, route: String, stamp: String) effects [Externa
 // -----------------------------------------------------------------------------
 
 fn write_file(filepath: String, content: String) effects [ExternalIO] {
-    let parent = path.Path.new(filepath).parent();
-    fs.create_dir_all(parent.as_str());
     fs.write_text(filepath, content);
 }
 

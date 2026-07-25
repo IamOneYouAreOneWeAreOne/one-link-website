@@ -21,9 +21,8 @@ use rand_core::OsRng;
 use wasm_bindgen::prelude::*;
 
 use ol_pqsig::{
-    HybridSigningKey, HybridVerifyingKey,
-    ED25519_SIG_LEN, ED25519_VK_LEN, HYBRID_SIG_LEN, HYBRID_SK_LEN, HYBRID_VK_LEN,
-    ML_DSA_65_SIG_LEN, ML_DSA_65_VK_LEN,
+    HybridSigningKey, HybridVerifyingKey, ED25519_SIG_LEN, ED25519_VK_LEN, HYBRID_SIG_LEN,
+    HYBRID_SK_LEN, HYBRID_VK_LEN, ML_DSA_65_SIG_LEN, ML_DSA_65_VK_LEN,
 };
 
 #[wasm_bindgen(start)]
@@ -70,6 +69,12 @@ pub fn pq_sig_sizes() -> PqSigSizes {
 pub struct OlPqSigKeypair {
     sk: HybridSigningKey,
     vk: HybridVerifyingKey,
+}
+
+impl Default for OlPqSigKeypair {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 #[wasm_bindgen]
@@ -153,17 +158,57 @@ pub fn live_demo_round_trip(message: &[u8]) -> Result<JsValue, JsError> {
     let vk_bytes = vk.to_bytes();
 
     let obj = js_sys::Object::new();
-    set(&obj, "verifyingKey",      &js_sys::Uint8Array::from(&vk_bytes[..]).into())?;
-    set(&obj, "signature",         &js_sys::Uint8Array::from(&sig[..]).into())?;
-    set(&obj, "verified",          &JsValue::from_bool(verified_ok))?;
-    set(&obj, "verifiedTampered",  &JsValue::from_bool(verified_tampered))?;
-    set(&obj, "verifiedTamperedSig",&JsValue::from_bool(verified_tampered_sig))?;
-    set(&obj, "ed25519VkLen",      &JsValue::from_f64(ED25519_VK_LEN as f64))?;
-    set(&obj, "ed25519SigLen",     &JsValue::from_f64(ED25519_SIG_LEN as f64))?;
-    set(&obj, "mlDsaVkLen",        &JsValue::from_f64(ML_DSA_65_VK_LEN as f64))?;
-    set(&obj, "mlDsaSigLen",       &JsValue::from_f64(ML_DSA_65_SIG_LEN as f64))?;
-    set(&obj, "hybridVkLen",       &JsValue::from_f64(HYBRID_VK_LEN as f64))?;
-    set(&obj, "hybridSigLen",      &JsValue::from_f64(HYBRID_SIG_LEN as f64))?;
+    set(
+        &obj,
+        "verifyingKey",
+        &js_sys::Uint8Array::from(&vk_bytes[..]).into(),
+    )?;
+    set(
+        &obj,
+        "signature",
+        &js_sys::Uint8Array::from(&sig[..]).into(),
+    )?;
+    set(&obj, "verified", &JsValue::from_bool(verified_ok))?;
+    set(
+        &obj,
+        "verifiedTampered",
+        &JsValue::from_bool(verified_tampered),
+    )?;
+    set(
+        &obj,
+        "verifiedTamperedSig",
+        &JsValue::from_bool(verified_tampered_sig),
+    )?;
+    set(
+        &obj,
+        "ed25519VkLen",
+        &JsValue::from_f64(ED25519_VK_LEN as f64),
+    )?;
+    set(
+        &obj,
+        "ed25519SigLen",
+        &JsValue::from_f64(ED25519_SIG_LEN as f64),
+    )?;
+    set(
+        &obj,
+        "mlDsaVkLen",
+        &JsValue::from_f64(ML_DSA_65_VK_LEN as f64),
+    )?;
+    set(
+        &obj,
+        "mlDsaSigLen",
+        &JsValue::from_f64(ML_DSA_65_SIG_LEN as f64),
+    )?;
+    set(
+        &obj,
+        "hybridVkLen",
+        &JsValue::from_f64(HYBRID_VK_LEN as f64),
+    )?;
+    set(
+        &obj,
+        "hybridSigLen",
+        &JsValue::from_f64(HYBRID_SIG_LEN as f64),
+    )?;
     Ok(obj.into())
 }
 

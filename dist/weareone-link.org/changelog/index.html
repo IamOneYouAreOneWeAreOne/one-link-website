@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Changelog - One Link</title>
-  <meta name="description" content="Every shipped change to One Link and to this site. Public, dated, signed.">
+  <meta name="description" content="The current One Link artifact channel and the exact evidence required before an immutable release is promoted.">
   <link rel="canonical" href="https://weareone-link.org/changelog/">
   <link rel="alternate" hreflang="en" href="https://weareone-link.org/changelog/">
   <link rel="alternate" hreflang="es" href="https://weareone-link.org/es/changelog/">
@@ -19,12 +19,12 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="One Link">
   <meta property="og:title" content="Changelog - One Link">
-  <meta property="og:description" content="Every shipped change to One Link and to this site. Public, dated, signed.">
+  <meta property="og:description" content="The current One Link artifact channel and the exact evidence required before an immutable release is promoted.">
   <meta property="og:url" content="https://weareone-link.org/changelog/">
   <meta property="og:image" content="https://weareone-link.org/og/one-link.png">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Changelog - One Link">
-  <meta name="twitter:description" content="Every shipped change to One Link and to this site. Public, dated, signed.">
+  <meta name="twitter:description" content="The current One Link artifact channel and the exact evidence required before an immutable release is promoted.">
   <meta name="twitter:image" content="https://weareone-link.org/og/one-link.png">
   <link rel="icon" type="image/x-icon" href="/images/favicon.ico"><link rel="icon" type="image/png" sizes="128x128" href="/images/logo-128.png"><link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
   <link rel="manifest" href="/app.webmanifest">
@@ -32,9 +32,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r95">
-  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r95">
-  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r95">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r97">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r97">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r97">
 </head>
 <body>
 <a href="#main" class="skip-link">Skip to content</a>
@@ -59,21 +59,19 @@
     <div class="container">
       <span class="we-are-one">Changelog</span>
       <h1>Every shipped <span class="grad">change.</span></h1>
-      <p class="lede">Every release of One Link, every push to this site, in reverse chronological order. The git history is the source of truth; this page is the human-readable view of it.</p>
+      <p class="lede">Selected historical notes through the date shown below. Git history may contain later changes; these entries describe past claims and do not establish current release, signature, audit, or deployment status.</p>
     </div>
   </section>
 
-  <section class="section">
+  <section class="section" data-claim-scope="historical-autoinstall-correction">
     <div class="container">
       <span class="kicker">2026-05-25</span>
-      <h2><span class="grad">daemon</span> auto-install ON by default + silent background install</h2>
+      <h2><span class="grad">daemon</span> historical updater experiment - current frozen install path disabled</h2>
       <ul>
-        <li>The daemon now polls GitHub Releases on a 6-hour heartbeat, downloads new builds in the background, verifies SHA-256 against the published checksum, then quietly restarts on the new version. Your browser tab auto-reconnects on its own; you do not lose your place.</li>
-        <li>Guards before any install fires: no active voice / video call, no in-flight file transfer, no install already in flight, mandatory hash match against SHA256SUMS (refuses to install an unverified binary). Any guard failing skips this cycle and tries again next heartbeat.</li>
-        <li>New <strong>Settings &rarr; About &rarr; Updates</strong> toggle: opt out without touching env vars. ON by default; flip it off if you would rather pick when to update yourself.</li>
-        <li>Operator hard-disable preserved: <code class="ol-inline-code">ONE_LINK_EXPERIMENTAL_AUTOINSTALL=0</code> blocks every auto-install regardless of the per-user toggle (for shared / locked-down deployments).</li>
-        <li>WebSocket broadcasts <code class="ol-inline-code">auto_install_starting</code> and <code class="ol-inline-code">auto_install_complete</code> so any open tab can show progress; version-drift handler triggers a soft page reload when the daemon comes back on the new version.</li>
-        <li>Three new CLI proof-tools shipped alongside: <code class="ol-inline-code">one-link verify-this-install</code> (rollup hash of the running daemon for tamper-detection), <code class="ol-inline-code">one-link backup test</code> + <code class="ol-inline-code">backup test-bundle</code> (proof-test a recovery phrase / backup BEFORE you rely on it), <code class="ol-inline-code">one-link recovery test-shares</code> (proof-test social-recovery shares).</li>
+        <li><strong>Historical note (superseded):</strong> The original entry announced &ldquo;auto-install ON by default&rdquo; and a &ldquo;silent background install,&rdquo; with a Settings opt-out, the <code class="ol-inline-code">ONE_LINK_EXPERIMENTAL_AUTOINSTALL</code> override, and <code class="ol-inline-code">auto_install_*</code> progress events. Those statements document an earlier experiment; they do not describe current frozen desktop bundles.</li>
+        <li><strong>Current correction:</strong> Hardened frozen desktop bundles disable automatic and in-place installation at the runtime boundary. Update checks may report availability, but replacement remains an explicit user or operator action.</li>
+        <li><strong>Current verification boundary:</strong> A same-channel checksum can detect corruption but does not authenticate the publisher. Current rolling artifacts are unsigned and are not reproducibly verified.</li>
+        <li><strong>Historical companion work:</strong> The entry also recorded <code class="ol-inline-code">verify-this-install</code>, backup test commands, and recovery-share proof tools. This dated note is not evidence of their availability in a current pinned release.</li>
       </ul>
     </div>
   </section>
@@ -84,10 +82,10 @@
       <h2><span class="grad">site</span> SmartScreen + Gatekeeper friction softened end-to-end</h2>
       <ul>
         <li>New heads-up panel above the download button on <a class="ol-cyan-text" href="/download/">/download/</a>: sets expectations before the click. Four tiles cover the two click-through paths (Windows "More info" then "Run anyway"; macOS right-click + Open or System Settings + Open Anyway with the exact localized dialog strings per language), the in-browser verify path, and the build-from-source alternative.</li>
-        <li>New page at <a class="ol-cyan-text" href="/verify-download/">/verify-download/</a>: drop a downloaded binary into the page, the browser computes its SHA-256 locally via Web Crypto (the file never leaves your tab), then fetches the live signed value via HEAD /download/&lt;os&gt; and renders a green match / red mismatch result with the attestation-chain link on success.</li>
+        <li><strong>Correction:</strong> If no reference hash is published, the tool reports NOT VERIFIED. It will not imply that a signature or attestation was checked.</li>
         <li>Worker now publishes X-Artifact-SHA256 on every R2-served download path (Windows, Linux, macOS, source, generic) with Access-Control-Expose-Headers so the verify page can read it. New attachArtifactHash() helper tries R2 auto-checksums first, falls back to customMetadata.sha256.</li>
         <li>Translated into all 5 shipped languages with native Windows + macOS dialog labels (es "Más información" / "Ejecutar de todas formas", fr "Informations complémentaires" / "Exécuter quand même", de "Weitere Informationen" / "Trotzdem ausführen", pt "Mais informações" / "Executar mesmo assim", it "Ulteriori informazioni" / "Esegui comunque"). 100 translated pages footer-swept to add the Verify-download link.</li>
-        <li>Until the EV Authenticode + Apple Developer ID notarization land (tracked on <a class="ol-cyan-text" href="/roadmap/">/roadmap/</a>), every new user has a 10-second click-through path with full bytes-in-tab verification. The warning becomes a footnote, not a wall.</li>
+        <li><strong>Current correction:</strong> The tab computes a local hash; without an authenticated reference it does not verify publisher identity.</li>
       </ul>
     </div>
   </section>
@@ -161,7 +159,7 @@
       <h2><span class="grad">site</span> v0.21.0-alpha.0+r34 .. r47 - public preview</h2>
       <ul>
         <li>Positive-forward framing sweep across all pages: zero "what we do not do" / "five companies" / "what we cannot fix" copy.</li>
-        <li>Real ed25519-signed release attestations for Windows + Linux + source archive.</li>
+        <li><strong>Correction:</strong> No byte-for-byte reproducibility result or artifact-bound build attestation is published for the rolling builds.</li>
         <li>Live MeshPresence Durable Object: real "N here right now" pill (replaces hardcoded counter).</li>
         <li>OS detection on home hero CTA + /download/ page CTAs.</li>
         <li>Service Worker with verify-against-signed-manifest before serve; cached integrity mismatch evicts + refetches.</li>
@@ -212,7 +210,7 @@
     <div class="container">
       <span class="kicker">Earlier history</span>
       <h2>Every commit since v0.1.0.</h2>
-      <p class="lede">The full history is in the public git repository, signed and dated:</p>
+      <p class="lede">Until every applicable gate is present, public routes stay on the clearly labelled rolling channel. Setting VERSIONED_RELEASE_TAG later pins the same routes to one explicit v* tag without changing their URLs.</p>
       <div class="cta-row">
         <a href="https://github.com/IamOneYouAreOneWeAreOne/one-link/commits/master" class="btn btn-primary" rel="noopener">Daemon git history <span class="arr">&rarr;</span></a>
         <a href="https://github.com/IamOneYouAreOneWeAreOne/one-link-website/commits/master" class="btn btn-ghost" rel="noopener">Website git history</a>
@@ -226,19 +224,19 @@
     <div class="footer-grid">
       <div>
         <a href="/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
-        <p class="footer-tag">A free, private network for messages, files, and devices. Owned by no one. Belongs to everyone.</p>
+        <p class="footer-tag">Open-source pre-release software for private communication. Built toward community ownership; current services still depend on identifiable maintainers, operators, and infrastructure providers.</p>
       </div>
-      <div><h3>Network</h3><ul><li><a href="/how-it-works/">How it works</a></li><li><a href="/features/">Features</a></li><li><a href="/mesh/">Live mesh</a></li></ul></div>
+      <div><h3>Network</h3><ul><li><a href="/how-it-works/">How it works</a></li><li><a href="/features/">Features</a></li><li><a href="/mesh/">Website presence</a></li></ul></div>
       <div><h3>For you</h3><ul><li><a href="/download/">Get One Link</a></li><li><a href="/security/">Security</a></li><li><a href="/verify-download/">Verify download</a></li><li><a href="/roadmap/">Roadmap</a></li><li><a href="/accessibility/">Accessibility</a></li><li><a href="/transparency/">Transparency</a></li><li><a href="/audits/">Audits</a></li></ul></div>
       <div><h3>For builders</h3><ul><li><a href="/builders/">Protocol &amp; source</a></li><li><a href="/changelog/">Changelog</a></li><li><a href="/releases/">Releases</a></li><li><a href="/mirror/">Mirror this site</a></li><li><a href="/download/source" rel="noopener">Source archive</a></li><li><a href="https://github.com/IamOneYouAreOneWeAreOne/one-link" rel="noopener external">GitHub</a></li></ul></div>
     </div>
     <div class="footer-bottom">
-      <span class="built-by">&copy; 2026 One Link contributors. <a href="/terms/">AGPL-3.0</a>. <a href="/security/">No tracking.</a> <a href="mailto:weareone@oneunity.earth">weareone@oneunity.earth</a></span>
+      <span class="built-by">&copy; 2026 One Link contributors. <a href="/terms/">AGPL-3.0</a>. <a href="/security/">No first-party analytics or tracking cookies; infrastructure metadata disclosed.</a> <a href="mailto:weareone@oneunity.earth">weareone@oneunity.earth</a></span>
       <span class="built-by">we are one</span>
     </div>
   </div>
 </footer>
 
-<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r95"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r97"></script>
 </body>
 </html>

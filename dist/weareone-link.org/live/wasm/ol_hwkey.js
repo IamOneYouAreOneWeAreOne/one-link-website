@@ -166,6 +166,21 @@ function debugString(val) {
     // TODO we could test for more things here, like `Set`s and `Map`s.
     return className;
 }
+/**
+ * @returns {string}
+ */
+export function ol_hwkey_version() {
+    let deferred1_0;
+    let deferred1_1;
+    try {
+        const ret = wasm.ol_hwkey_version();
+        deferred1_0 = ret[0];
+        deferred1_1 = ret[1];
+        return getStringFromWasm0(ret[0], ret[1]);
+    } finally {
+        wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
+    }
+}
 
 function passArray8ToWasm0(arg, malloc) {
     const ptr = malloc(arg.length * 1, 1) >>> 0;
@@ -173,11 +188,47 @@ function passArray8ToWasm0(arg, malloc) {
     WASM_VECTOR_LEN = arg.length;
     return ptr;
 }
+/**
+ * Constant-time pubkey compare. True iff bytes match exactly.
+ * @param {Uint8Array} stored
+ * @param {Uint8Array} presented
+ * @returns {boolean}
+ */
+export function tofuMatch(stored, presented) {
+    const ptr0 = passArray8ToWasm0(stored, wasm.__wbindgen_malloc);
+    const len0 = WASM_VECTOR_LEN;
+    const ptr1 = passArray8ToWasm0(presented, wasm.__wbindgen_malloc);
+    const len1 = WASM_VECTOR_LEN;
+    const ret = wasm.tofuMatch(ptr0, len0, ptr1, len1);
+    return ret !== 0;
+}
+
+export function _init() {
+    wasm._init();
+}
 
 function takeFromExternrefTable0(idx) {
     const value = wasm.__wbindgen_export_2.get(idx);
     wasm.__externref_table_dealloc(idx);
     return value;
+}
+/**
+ * Run the full TOFU demo with the given root. Returns:
+ *   - pkHex            : the 32-byte derived pubkey, hex
+ *   - rederiveMatch    : true (re-derive with same root + label = same key)
+ *   - attackerKey      : a random 32-byte attacker-presented key, hex
+ *   - tofuRejectAttack : true (TofuStore returns TofuMismatch on the attacker key)
+ * @param {Uint8Array} root_bytes
+ * @returns {any}
+ */
+export function liveDemoRoundTrip(root_bytes) {
+    const ptr0 = passArray8ToWasm0(root_bytes, wasm.__wbindgen_malloc);
+    const len0 = WASM_VECTOR_LEN;
+    const ret = wasm.liveDemoRoundTrip(ptr0, len0);
+    if (ret[2]) {
+        throw takeFromExternrefTable0(ret[1]);
+    }
+    return takeFromExternrefTable0(ret[0]);
 }
 
 function getArrayU8FromWasm0(ptr, len) {
@@ -205,60 +256,6 @@ export function derivePk(root_bytes, label) {
     var v3 = getArrayU8FromWasm0(ret[0], ret[1]).slice();
     wasm.__wbindgen_free(ret[0], ret[1] * 1, 1);
     return v3;
-}
-
-export function _init() {
-    wasm._init();
-}
-
-/**
- * Constant-time pubkey compare. True iff bytes match exactly.
- * @param {Uint8Array} stored
- * @param {Uint8Array} presented
- * @returns {boolean}
- */
-export function tofuMatch(stored, presented) {
-    const ptr0 = passArray8ToWasm0(stored, wasm.__wbindgen_malloc);
-    const len0 = WASM_VECTOR_LEN;
-    const ptr1 = passArray8ToWasm0(presented, wasm.__wbindgen_malloc);
-    const len1 = WASM_VECTOR_LEN;
-    const ret = wasm.tofuMatch(ptr0, len0, ptr1, len1);
-    return ret !== 0;
-}
-
-/**
- * Run the full TOFU demo with the given root. Returns:
- *   - pkHex            : the 32-byte derived pubkey, hex
- *   - rederiveMatch    : true (re-derive with same root + label = same key)
- *   - attackerKey      : a random 32-byte attacker-presented key, hex
- *   - tofuRejectAttack : true (TofuStore returns TofuMismatch on the attacker key)
- * @param {Uint8Array} root_bytes
- * @returns {any}
- */
-export function liveDemoRoundTrip(root_bytes) {
-    const ptr0 = passArray8ToWasm0(root_bytes, wasm.__wbindgen_malloc);
-    const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.liveDemoRoundTrip(ptr0, len0);
-    if (ret[2]) {
-        throw takeFromExternrefTable0(ret[1]);
-    }
-    return takeFromExternrefTable0(ret[0]);
-}
-
-/**
- * @returns {string}
- */
-export function ol_hwkey_version() {
-    let deferred1_0;
-    let deferred1_1;
-    try {
-        const ret = wasm.ol_hwkey_version();
-        deferred1_0 = ret[0];
-        deferred1_1 = ret[1];
-        return getStringFromWasm0(ret[0], ret[1]);
-    } finally {
-        wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
-    }
 }
 
 async function __wbg_load(module, imports) {

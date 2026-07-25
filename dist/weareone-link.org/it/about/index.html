@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Informazioni su One Link - perché esiste</title>
-  <meta name="description" content="Una connessione che ti appartiene. Costruita perché una persona, una famiglia, una scuola, un movimento, un'intera città possano parlare e condividere, libere, dirette, da pari a pari.">
+  <meta name="description" content="Messaggistica e trasferimento file privati in anteprima. Percorso diretto quando possibile e relay cifrato quando necessario. L’infrastruttura vede comunque metadati di connessione.">
   <link rel="canonical" href="https://weareone-link.org/it/about/">
   <link rel="alternate" hreflang="en" href="https://weareone-link.org/about/">
   <link rel="alternate" hreflang="es" href="https://weareone-link.org/es/about/">
@@ -20,12 +20,12 @@
   <meta property="og:locale" content="it_IT">
   <meta property="og:site_name" content="One Link">
   <meta property="og:title" content="Informazioni su One Link - perché esiste">
-  <meta property="og:description" content="Una connessione che ti appartiene. Costruita perché una persona, una famiglia, una scuola, un movimento, un'intera città possano parlare e condividere, libere, dirette, da pari a pari.">
+  <meta property="og:description" content="Messaggistica e trasferimento file privati in anteprima. Percorso diretto quando possibile e relay cifrato quando necessario. L’infrastruttura vede comunque metadati di connessione.">
   <meta property="og:url" content="https://weareone-link.org/it/about/">
   <meta property="og:image" content="https://weareone-link.org/og/one-link-it.png">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Informazioni su One Link - perché esiste">
-  <meta name="twitter:description" content="Una connessione che ti appartiene. Costruita perché una persona, una famiglia, una scuola, un movimento, un'intera città possano parlare e condividere, libere, dirette, da pari a pari.">
+  <meta name="twitter:description" content="Messaggistica e trasferimento file privati in anteprima. Percorso diretto quando possibile e relay cifrato quando necessario. L’infrastruttura vede comunque metadati di connessione.">
   <meta name="twitter:image" content="https://weareone-link.org/og/one-link-it.png">
   <link rel="icon" type="image/x-icon" href="/images/favicon.ico"><link rel="icon" type="image/png" sizes="128x128" href="/images/logo-128.png"><link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
   <link rel="manifest" href="/app.webmanifest">
@@ -33,9 +33,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r95">
-  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r95">
-  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r95">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r97">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r97">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r97">
 </head>
 <body>
 <a href="#main" class="skip-link">Salta al contenuto</a>
@@ -61,55 +61,39 @@
     <div class="container">
       <span class="we-are-one">Informazioni</span>
       <h1>Una connessione che <span class="grad">ti appartiene.</span></h1>
-      <p class="lede">Ogni messaggio, ogni file, ogni conversazione, tua. Custodita da te, inviata da te, aperta dalle persone che scegli. One Link è la rete come avrebbe sempre dovuto essere: libera, diretta e costruita per avvicinarci.</p>
+      <p class="lede">La promessa duratura è il diritto AGPL a ispezionare, eseguire, modificare e condividere. Privacy, disponibilità, costo e crittografia dipendono da build e deployment.</p>
     </div>
   </section>
 
   <section class="section-tight">
     <div class="container ol-mw-720">
       <h2>Cosa siamo</h2>
-      <p class="ol-prose">
-        One Link è una rete libera e privata per messaggi, file e dispositivi. Funziona su telefoni, portatili, tablet e piccole schede embedded. Funziona in aereo, in barca, in una cantina senza internet. Funziona quando il relay che gestiamo si spegne, perché chiunque può far girare un relay.
-      </p>
-      <p class="ol-prose">
-        Costruita perché una singola persona, una famiglia, una scuola, un movimento o un'intera città possa parlare e condividere senza che ci sia nessuno in mezzo. Costruita perché una giornalista possa consegnare documenti a una fonte senza lasciare traccia. Costruita perché un ragazzo possa inviare un gioco da 50 GB al suo amico senza prima caricarlo da qualche parte.
-      </p>
+      <p class="ol-prose">Alcune operazioni dirette o LAN possono funzionare dopo installazione e pairing. Scoperta, relay, share, download e update possono richiedere Internet e test per versione.</p>
+      <p class="ol-prose">Il design minimizza contenuto conservato. Endpoint, destinatari, reti, CDN, relay e storage osservano metadati; i limiti dipendono da build e trasporto.</p>
     </div>
   </section>
 
   <section class="section">
     <div class="container ol-mw-720">
       <h2>Per cosa <span class="grad">ci battiamo.</span></h2>
-      <p class="ol-prose">
-        Infrastruttura comune per la connessione umana. Libera, in ogni senso della parola. Aperta, in ogni riga. Tua, per via dell'architettura stessa. Abbiamo scelto AGPL di proposito. Il codice rimane in chiaro per sempre. Qualsiasi fork costruito sopra resta aperto anch'esso. Il lavoro appartiene a chiunque lo raccolga.
-      </p>
-      <p class="ol-prose">
-        Ogni riga viene rilasciata verificabile. Ogni versione è firmata. Il tuo One Link funziona da solo una volta installato. È stato costruito per durare più a lungo delle persone che lo hanno avviato. Se ci ritiriamo domani, la rete continua a funzionare sui relay che tu e altri state già gestendo. Questo è il progetto.
-      </p>
+      <p class="ol-prose">Il sorgente AGPL è pubblico. Il software è gratuito oggi, ma hosting, rete, hardware e relay hanno costi e prezzi futuri non sono garantiti.</p>
+      <p class="ol-prose">auto-latest è un canale preliminare mutabile senza firma artefatto, editore, riproduzione indipendente o provenienza. Trattalo come test.</p>
     </div>
   </section>
 
   <section class="section">
     <div class="container ol-mw-720">
       <h2>Chi c'è dietro</h2>
-      <p class="ol-prose">
-        Chiunque sia disposto a leggere il codice, gestire un relay, segnalare un bug o discutere una scelta di progettazione. Non c'è un'azienda. Non ci sono fondatori da mettere su una slide. Il lavoro appartiene a chiunque lo raccolga. La licenza (AGPL) rende quella promessa eseguibile.
-      </p>
-      <p class="ol-prose">
-        Il protocollo è nato da un filone di ricerca più ampio. Topologia del campo di coerenza. Crittografia post-quantistica. Legame al testimone di campo. Verifica formale. One Link è il pezzo più pubblico e utile di quel lavoro. Il laboratorio e la matematica dietro sono anch'essi aperti. Siamo uno.
-      </p>
+      <p class="ol-prose">Il sorgente AGPL è pubblico. Il software è gratuito oggi, ma hosting, rete, hardware e relay hanno costi e prezzi futuri non sono garantiti.</p>
+      <p class="ol-prose">Solo evidenza interna dichiarata dai contributori. Qui non sono pubblicati audit indipendente, artefatto versionato, trascrizione esatta del comando attuale o riproduzione esterna; le affermazioni formali, temporali e fuzz attendono tale evidenza.</p>
     </div>
   </section>
 
   <section class="section">
     <div class="container ol-mw-720">
       <h2>Il patto</h2>
-      <p class="ol-prose">
-        Libero per sempre. Aperto per sempre. I tuoi dati sono tuoi. La tua identità è tua. Le tue conversazioni vivono tra te e le persone che hai scelto. Ogni versione è firmata in un ambiente sigillato così chiunque possa verificare che ciò che esegue corrisponda a ciò che è stato costruito. Ogni promessa qui è ancorata nell'architettura, non nelle nostre intenzioni.
-      </p>
-      <p class="ol-prose">
-        Questa è tutta la promessa. Sostenuta dalla matematica e dalla licenza, perché resti vera anche quando le persone cambiano.
-      </p>
+      <p class="ol-prose">La promessa duratura è il diritto AGPL a ispezionare, eseguire, modificare e condividere. Privacy, disponibilità, costo e crittografia dipendono da build e deployment.</p>
+      <p class="ol-prose">La promessa duratura è il diritto AGPL a ispezionare, eseguire, modificare e condividere. Privacy, disponibilità, costo e crittografia dipendono da build e deployment.</p>
     </div>
   </section>
 
@@ -128,7 +112,7 @@
     <div class="footer-grid">
       <div>
         <a href="/it/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
-        <p class="footer-tag">Una rete libera e privata per messaggi, file e dispositivi. Di nessuno. Di tutti.</p>
+        <p class="footer-tag">Software open source preliminare per comunicazioni private. Costruito verso la proprietà comunitaria; i servizi attuali dipendono ancora da manutentori, operatori e fornitori identificabili.</p>
         <p class="ol-mt-md ol-soft-text ol-mono">
           <strong>Leggi in:</strong>
           <a class="ol-cyan-text" hreflang="en" href="/about/">English</a> &middot;
@@ -139,7 +123,7 @@
           <a class="ol-cyan-text" hreflang="it" href="/it/about/">Italiano</a>
         </p>
       </div>
-      <div><h3>Rete</h3><ul><li><a href="/how-it-works/" hreflang="en">Come funziona</a></li><li><a href="/features/" hreflang="en">Funzionalità</a></li><li><a href="/mesh/" hreflang="en">Mesh dal vivo</a></li></ul></div>
+      <div><h3>Rete</h3><ul><li><a href="/how-it-works/" hreflang="en">Come funziona</a></li><li><a href="/features/" hreflang="en">Funzionalità</a></li><li><a href="/mesh/" hreflang="en">Presenza web</a></li></ul></div>
       <div><h3>Per te</h3><ul><li><a href="/download/" hreflang="en">Ottieni One Link</a></li><li><a href="/security/" hreflang="en">Sicurezza</a></li><li><a href="/it/verify-download/" hreflang="it">Verifica download</a></li><li><a href="/it/roadmap/" hreflang="it">Tabella di marcia</a></li><li><a href="/accessibility/" hreflang="en">Accessibilità</a></li><li><a href="/transparency/" hreflang="en">Trasparenza</a></li><li><a href="/audits/" hreflang="en">Audit</a></li></ul></div>
       <div><h3>Per i costruttori</h3><ul><li><a href="/builders/" hreflang="en">Protocollo e sorgente</a></li><li><a href="/changelog/" hreflang="en">Registro modifiche</a></li><li><a href="/releases/" hreflang="en">Versioni</a></li><li><a href="/mirror/" hreflang="en">Replica questo sito</a></li><li><a href="/download/source" hreflang="en" rel="noopener">Archivio sorgente</a></li><li><a href="https://github.com/IamOneYouAreOneWeAreOne/one-link" rel="noopener external">GitHub</a></li></ul></div>
     </div>
@@ -150,6 +134,6 @@
   </div>
 </footer>
 
-<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r95"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r97"></script>
 </body>
 </html>

@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta name="x-emitted-by" content="coherence-lang/1.0.3 one_link.ssg.build">
-  <!-- Route: /about/ / build: 2026-05-16T00:00:00Z / source: pipeline/ssg/src/one_link_build.cl -->
+  <meta name="x-truth-rendered-by" content="scripts/apply_release_truth.py">
+  <!-- Release-truth copy reviewed 2026-07-22; historical SSG byte provenance is not asserted. -->
+  <meta name="x-truth-rendered-by" content="scripts/apply_release_truth.py">
+  <!-- Release-truth copy reviewed 2026-07-22; historical SSG byte provenance is not asserted. -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>About One Link - why this exists</title>
-  <meta name="description" content="Connection that belongs to you. Built so a person, a family, a school, a movement, a whole town can talk and share, free, direct, peer to peer.">
+  <meta name="description" content="Private pre-release messaging and file transfer. Direct paths where possible; encrypted relay fallback when needed. Infrastructure still observes connection metadata.">
   <link rel="canonical" href="https://weareone-link.org/about/">
   <link rel="alternate" hreflang="en" href="https://weareone-link.org/about/">
   <link rel="alternate" hreflang="es" href="https://weareone-link.org/es/about/">
@@ -21,12 +23,12 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="One Link">
   <meta property="og:title" content="About One Link - why this exists">
-  <meta property="og:description" content="Connection that belongs to you. Built so a person, a family, a school, a movement, a whole town can talk and share, free, direct, peer to peer.">
+  <meta property="og:description" content="Private pre-release messaging and file transfer. Direct paths where possible; encrypted relay fallback when needed. Infrastructure still observes connection metadata.">
   <meta property="og:url" content="https://weareone-link.org/about/">
   <meta property="og:image" content="https://weareone-link.org/og/one-link.png">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="About One Link - why this exists">
-  <meta name="twitter:description" content="Connection that belongs to you. Built so a person, a family, a school, a movement, a whole town can talk and share, free, direct, peer to peer.">
+  <meta name="twitter:description" content="Private pre-release messaging and file transfer. Direct paths where possible; encrypted relay fallback when needed. Infrastructure still observes connection metadata.">
   <meta name="twitter:image" content="https://weareone-link.org/og/one-link.png">
   <link rel="icon" type="image/x-icon" href="/images/favicon.ico"><link rel="icon" type="image/png" sizes="128x128" href="/images/logo-128.png"><link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
   <link rel="manifest" href="/app.webmanifest">
@@ -34,9 +36,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r95">
-  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r95">
-  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r95">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r97">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r97">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r97">
 </head>
 <body>
 <a href="#main" class="skip-link">Skip to content</a>
@@ -63,55 +65,39 @@
     <div class="container">
       <span class="we-are-one">About</span>
       <h1>Connection that belongs <span class="grad">to you.</span></h1>
-      <p class="lede">Every message, every file, every conversation, yours. Held by you, sent by you, opened by the people you choose. One Link is the network as it was always meant to be: free, direct, and built to bring us closer.</p>
+      <p class="lede">The durable promise is the AGPL-3.0 right to inspect, run, modify, and share source. Privacy, availability, cost, and cryptographic properties still depend on the exact build, configuration, endpoints, transport, and providers.</p>
     </div>
   </section>
 
   <section class="section-tight">
     <div class="container ol-mw-720">
       <h2>What we are</h2>
-      <p class="ol-prose">
-        One Link is a free, private network for messages, files, and devices. It works on phones, laptops, tablets, and small embedded boards. It works on a plane, on a boat, in a basement with no internet. It works when the relay we run goes dark, because anyone can run a relay.
-      </p>
-      <p class="ol-prose">
-        Built so a single person, a family, a school, a movement, or a whole town can talk and share without anyone in the middle. Built so a journalist can hand documents to a source without leaving a trace. Built so a kid can send a 50 GB game to their friend without uploading it to anyone first.
-      </p>
+      <p class="ol-prose">Some direct or local-network operations can work after installation and pairing. Discovery, rendezvous, relay delivery, sharing, downloads, and updates may require deployed Internet infrastructure; offline and operator-independence claims need release-specific tests.</p>
+      <p class="ol-prose">The design aims to minimize retained content and metadata. Endpoints, recipients, networks, CDNs, relays, and storage providers can still observe or retain metadata, and transfer limits depend on the selected build, transport, storage, and network.</p>
     </div>
   </section>
 
   <section class="section">
     <div class="container ol-mw-720">
       <h2>What we <span class="grad">stand for.</span></h2>
-      <p class="ol-prose">
-        Common infrastructure for human connection. Free, in every sense of the word. Open, in every line. Yours, by the architecture itself. We chose AGPL on purpose. The source stays in the open forever. Any fork built on it stays open too. The work belongs to whoever picks it up.
-      </p>
-      <p class="ol-prose">
-        Every line ships verifiable. Every release is signed. Your One Link works on its own once installed. It was built to outlast the people who started it. If we step away tomorrow, the network keeps running on the relays you and others are already operating. That is the design.
-      </p>
+      <p class="ol-prose">The AGPL-3.0 source is public and forks remain subject to the license. The software is free to use today, but hosting, connectivity, hardware, and relay operation have costs and future service pricing is not guaranteed.</p>
+      <p class="ol-prose">auto-latest is a mutable prerelease channel with no published artifact signature, publisher code signing, independent reproducibility result, or provenance attestation. Treat its artifacts as test builds.</p>
     </div>
   </section>
 
   <section class="section">
     <div class="container ol-mw-720">
       <h2>Who is behind it</h2>
-      <p class="ol-prose">
-        Anyone willing to read the code, run a relay, file a bug, or argue with a design decision. There is no company. There are no founders to put on a slide. The work belongs to whoever picks it up. The license (AGPL) makes that promise enforceable.
-      </p>
-      <p class="ol-prose">
-        The protocol grew out of a broader research thread. Coherence-field topology. Post-quantum cryptography. Field-witness binding. Formal verification. One Link is the most public, most useful piece of that work. The lab and the math behind it are open too. We are one.
-      </p>
+      <p class="ol-prose">The AGPL-3.0 source is public and forks remain subject to the license. The software is free to use today, but hosting, connectivity, hardware, and relay operation have costs and future service pricing is not guaranteed.</p>
+      <p class="ol-prose">Contributor-reported internal evidence only. No independent audit, version-pinned artifact, exact current command transcript, or external reproduction is published here; formal-verification, timing, and fuzz assertions remain requirements pending that evidence.</p>
     </div>
   </section>
 
   <section class="section">
     <div class="container ol-mw-720">
       <h2>The covenant</h2>
-      <p class="ol-prose">
-        Free forever. Open forever. Your data is yours. Your identity is yours. Your conversations live between you and the people you chose. Every release is signed in a sealed environment so anyone can verify what they're running matches what was built. Every promise here is locked into the architecture, not into our intentions.
-      </p>
-      <p class="ol-prose">
-        That is the whole promise. Held by the math and the license, so it stays true even when the people change.
-      </p>
+      <p class="ol-prose">The durable promise is the AGPL-3.0 right to inspect, run, modify, and share source. Privacy, availability, cost, and cryptographic properties still depend on the exact build, configuration, endpoints, transport, and providers.</p>
+      <p class="ol-prose">The durable promise is the AGPL-3.0 right to inspect, run, modify, and share source. Privacy, availability, cost, and cryptographic properties still depend on the exact build, configuration, endpoints, transport, and providers.</p>
     </div>
   </section>
 
@@ -130,19 +116,19 @@
     <div class="footer-grid">
       <div>
         <a href="/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
-        <p class="footer-tag">A free, private network for messages, files, and devices. Owned by no one. Belongs to everyone.</p>
+        <p class="footer-tag">Open-source pre-release software for private communication. Built toward community ownership; current services still depend on identifiable maintainers, operators, and infrastructure providers.</p>
       </div>
-      <div><h3>Network</h3><ul><li><a href="/how-it-works/">How it works</a></li><li><a href="/features/">Features</a></li><li><a href="/mesh/">Live mesh</a></li></ul></div>
+      <div><h3>Network</h3><ul><li><a href="/how-it-works/">How it works</a></li><li><a href="/features/">Features</a></li><li><a href="/mesh/">Website presence</a></li></ul></div>
       <div><h3>For you</h3><ul><li><a href="/download/">Get One Link</a></li><li><a href="/security/">Security</a></li><li><a href="/verify-download/">Verify download</a></li><li><a href="/roadmap/">Roadmap</a></li><li><a href="/accessibility/">Accessibility</a></li><li><a href="/transparency/">Transparency</a></li><li><a href="/audits/">Audits</a></li></ul></div>
       <div><h3>For builders</h3><ul><li><a href="/builders/">Protocol &amp; source</a></li><li><a href="/changelog/">Changelog</a></li><li><a href="/releases/">Releases</a></li><li><a href="/mirror/">Mirror this site</a></li><li><a href="/download/source" rel="noopener">Source archive</a></li><li><a href="https://github.com/IamOneYouAreOneWeAreOne/one-link" rel="noopener external">GitHub</a></li></ul></div>
     </div>
     <div class="footer-bottom">
-      <span class="built-by">&copy; 2026 One Link contributors. <a href="/terms/">AGPL-3.0</a>. <a href="/security/">No tracking.</a> <a href="mailto:weareone@oneunity.earth">weareone@oneunity.earth</a></span>
+      <span class="built-by">&copy; 2026 One Link contributors. <a href="/terms/">AGPL-3.0</a>. <a href="/security/">No first-party analytics or tracking cookies; infrastructure metadata disclosed.</a> <a href="mailto:weareone@oneunity.earth">weareone@oneunity.earth</a></span>
       <span class="built-by">we are one</span>
     </div>
   </div>
 </footer>
 
-<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r95"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r97"></script>
 </body>
 </html>

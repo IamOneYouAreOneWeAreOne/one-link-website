@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Privacidade - One Link não recolhe nada</title>
-  <meta name="description" content="Não recolhemos nada. Sem e-mail. Sem telefone. Sem analítica. Sem cookies. Sem rastreamento. A arquitetura é a política.">
+  <title>Privacidade e tratamento de dados - One Link</title>
+  <meta name="description" content="One Link não tem registo de aplicação nem analítica publicitária, mas Cloudflare, GitHub, relays, Durable Objects e R2 processam dados limitados de rede e serviço.">
   <link rel="canonical" href="https://weareone-link.org/pt/privacy/">
   <link rel="alternate" hreflang="en" href="https://weareone-link.org/privacy/">
   <link rel="alternate" hreflang="es" href="https://weareone-link.org/es/privacy/">
@@ -19,15 +19,15 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r95">
-  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r95">
-  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r95">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r97">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r97">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r97">
   <meta name="theme-color" content="#04060b" media="(prefers-color-scheme: dark)">
   <meta name="theme-color" content="#f0f4f8" media="(prefers-color-scheme: light)">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="pt_PT">
-  <meta property="og:title" content="Privacidade - One Link">
-  <meta property="og:description" content="Não recolhemos nada. A arquitetura é a política.">
+  <meta property="og:title" content="Privacidade e tratamento de dados - One Link">
+  <meta property="og:description" content="One Link não tem registo de aplicação nem analítica publicitária, mas Cloudflare, GitHub, relays, Durable Objects e R2 processam dados limitados de rede e serviço.">
   <meta property="og:url" content="https://weareone-link.org/pt/privacy/">
 </head>
 <body>
@@ -50,33 +50,19 @@
   <section class="hero ol-pb">
     <div class="container">
       <span class="we-are-one">Privacidade</span>
-      <h1>Não recolhemos <span class="grad">nada.</span></h1>
+      <h1>O que este site processa.</h1>
     </div>
   </section>
   <section class="section-tight">
     <div class="container ol-mw-680">
-      <p class="ol-prose">
-        Sem e-mail. Sem número de telefone. Sem nome. Sem analítica. Sem cookies. Sem píxeis de rastreamento. Sem impressão digital. Sem scripts de terceiros. O Cloudflare Worker que serve esta página não regista quem visitou ou o que descarregou. Os relés não registam nada sobre as pessoas que usam a rede.
-      </p>
-      <p class="ol-prose">
-        Para sermos totalmente honestos sobre o ambiente de execução: este site funciona em Cloudflare Workers como o nosso CDN. O Cloudflare vê o IP de cada pedido, tal como qualquer CDN. A etiqueta "N aqui agora mesmo" usa um Cloudflare Durable Object que apenas mantém um ID aleatório por sessão durante a vida do seu separador. O Worker de /share/ guarda o seu texto cifrado até 24 horas para que o destinatário o possa recolher uma vez. Consulte <a class="ol-cyan-text" href="/transparency/" hreflang="en">/transparency/</a> para a divulgação completa dos subcontratantes.
-      </p>
-      <p class="ol-prose">
-        Se nos perguntassem amanhã quem descarregou One Link ou quem se emparelhou com quem, a resposta honesta seria "a informação vive apenas nos dispositivos das pessoas, onde pertence." Isto é por desenho. A arquitetura é a política.
-      </p>
+      <p class="ol-prose">O site não tem registo, analítica publicitária, cookies, píxeis, fingerprinting ou scripts de terceiros. Isto não significa processamento zero: os fornecedores recebem pedidos de rede normais.</p>
+      <p class="ol-prose">O Cloudflare recebe IP e metadados. MeshPresence guarda ID aleatório por sessão, região aproximada e tempo; ShareRate limita por sub-rede truncada; R2 guarda texto cifrado de /share/; GitHub recebe downloads redirecionados.</p>
+      <p class="ol-prose">Não operamos base de contas com email, telefone ou utilizador. O emparelhamento costuma ficar nos terminais, mas fornecedores, relays, destinatários e observadores guardam ou inferem metadados; identificação não é impossível.</p>
       <p class="ol-prose">
         Para que não restem dúvidas:
       </p>
-      <ul class="ol-list-prose">
-        <li>A sua identidade vive no seu dispositivo. Não há base de dados de utilizadores.</li>
-        <li>O protocolo é o modelo de negócio. Não há superfície publicitária.</li>
-        <li>O trabalho é gratuito, para sempre. Não há transação para registar.</li>
-        <li>Os seus dados ficam consigo. Não há nada a transferir porque tudo é seu desde o início.</li>
-        <li>As suas ligações vivem entre si e as pessoas que escolheu. Os relés transportam envelopes selados que não podem abrir.</li>
-      </ul>
-      <p class="ol-prose-mt">
-        Última atualização 2026-05-18. <a class="ol-cyan-text" href="/security/" hreflang="en">Ver o modelo de segurança completo</a>.
-      </p>
+      <ul class="ol-list-prose"><li>Identidade e emparelhamento são sobretudo estado do terminal; exportações, backups e recuperação criam cópias.</li><li>Não incorporamos publicidade ou analítica comportamental.</li><li>O software é gratuito hoje, não garantia de custos futuros nulos.</li><li>Share e relay podem guardar texto cifrado temporariamente; destinatários conservam o recebido.</li><li>Fornecedores de ligação observam metadados mesmo quando o conteúdo está cifrado.</li></ul>
+      <p class="ol-prose-mt">Inventário de privacidade revisto em 2026-07-22.</p>
     </div>
   </section>
 </main>
@@ -85,7 +71,7 @@
     <div class="footer-grid">
       <div>
         <a href="/pt/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
-        <p class="footer-tag">Uma rede livre e privada para mensagens, ficheiros e dispositivos. De ninguém. De todos.</p>
+        <p class="footer-tag">Software preliminar de código aberto para comunicação privada. Construído rumo à propriedade comunitária; os serviços atuais ainda dependem de mantenedores, operadores e fornecedores identificáveis.</p>
         <p class="ol-mt-md ol-soft-text ol-mono">
           <strong>Ler em:</strong>
           <a class="ol-cyan-text" hreflang="en" href="/privacy/">English</a> &middot;
@@ -96,7 +82,7 @@
           <a class="ol-cyan-text" hreflang="it" href="/it/privacy/">Italiano</a>
         </p>
       </div>
-      <div><h3>Rede</h3><ul><li><a href="/how-it-works/" hreflang="en">Como funciona</a></li><li><a href="/features/" hreflang="en">Funcionalidades</a></li><li><a href="/mesh/" hreflang="en">Malha ao vivo</a></li></ul></div>
+      <div><h3>Rede</h3><ul><li><a href="/how-it-works/" hreflang="en">Como funciona</a></li><li><a href="/features/" hreflang="en">Funcionalidades</a></li><li><a href="/mesh/" hreflang="en">Presença web</a></li></ul></div>
       <div><h3>Para si</h3><ul><li><a href="/download/" hreflang="en">Obter One Link</a></li><li><a href="/security/" hreflang="en">Segurança</a></li><li><a href="/pt/verify-download/" hreflang="pt">Verificar descarga</a></li><li><a href="/pt/roadmap/" hreflang="pt">Roteiro</a></li><li><a href="/accessibility/" hreflang="en">Acessibilidade</a></li><li><a href="/transparency/" hreflang="en">Transparência</a></li><li><a href="/audits/" hreflang="en">Auditorias</a></li></ul></div>
       <div><h3>Para construtores</h3><ul><li><a href="/builders/" hreflang="en">Protocolo e código</a></li><li><a href="/changelog/" hreflang="en">Registo de alterações</a></li><li><a href="/releases/" hreflang="en">Versões</a></li><li><a href="/mirror/" hreflang="en">Espelhar este site</a></li><li><a href="/download/source" hreflang="en" rel="noopener">Arquivo de código</a></li><li><a href="https://github.com/IamOneYouAreOneWeAreOne/one-link" rel="noopener external">GitHub</a></li></ul></div>
     </div>
@@ -106,6 +92,6 @@
     </div>
   </div>
 </footer>
-<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r95"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r97"></script>
 </body>
 </html>

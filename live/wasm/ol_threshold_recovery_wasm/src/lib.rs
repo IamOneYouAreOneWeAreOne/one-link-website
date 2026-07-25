@@ -14,9 +14,7 @@
 
 use wasm_bindgen::prelude::*;
 
-use ol_threshold_recovery::{
-    reconstruct_bytes, share_bytes, PrngState,
-};
+use ol_threshold_recovery::{reconstruct_bytes, share_bytes, PrngState};
 
 #[wasm_bindgen(start)]
 pub fn _init() {
@@ -106,7 +104,10 @@ pub fn live_demo_round_trip(secret: &[u8], k: u32, n: u32) -> Result<JsValue, Js
     //    We capture the error message to surface in the demo.
     let recover_kminus_err = if k > 1 {
         let xs_km1: Vec<u8> = xs_full[..(k as usize - 1)].to_vec();
-        let stream_refs_km1: Vec<&[u8]> = streams[..(k as usize - 1)].iter().map(|v| v.as_slice()).collect();
+        let stream_refs_km1: Vec<&[u8]> = streams[..(k as usize - 1)]
+            .iter()
+            .map(|v| v.as_slice())
+            .collect();
         match reconstruct_bytes(&xs_km1, &stream_refs_km1, k) {
             Err(e) => format!("{e}"),
             Ok(_) => "BUG: K-1 shares reconstructed (should have failed)".to_string(),
@@ -146,15 +147,31 @@ pub fn live_demo_round_trip(secret: &[u8], k: u32, n: u32) -> Result<JsValue, Js
     }
 
     let obj = js_sys::Object::new();
-    set(&obj, "secretLen",          &JsValue::from_f64(secret.len() as f64))?;
-    set(&obj, "k",                  &JsValue::from_f64(k as f64))?;
-    set(&obj, "n",                  &JsValue::from_f64(n as f64))?;
-    set(&obj, "shareLen",           &JsValue::from_f64(streams.first().map(|s| s.len()).unwrap_or(0) as f64))?;
-    set(&obj, "recoveredWithKOk",   &JsValue::from_bool(recovered_ok))?;
-    set(&obj, "recoveredWithAltK",  &JsValue::from_bool(recovered_alt_ok))?;
-    set(&obj, "recoveredKMinusErr", &JsValue::from_str(&recover_kminus_err))?;
-    set(&obj, "sharePreviews",      &share_previews.into())?;
-    set(&obj, "recoveredBytes",     &js_sys::Uint8Array::from(recovered.as_slice()).into())?;
+    set(&obj, "secretLen", &JsValue::from_f64(secret.len() as f64))?;
+    set(&obj, "k", &JsValue::from_f64(k as f64))?;
+    set(&obj, "n", &JsValue::from_f64(n as f64))?;
+    set(
+        &obj,
+        "shareLen",
+        &JsValue::from_f64(streams.first().map(|s| s.len()).unwrap_or(0) as f64),
+    )?;
+    set(&obj, "recoveredWithKOk", &JsValue::from_bool(recovered_ok))?;
+    set(
+        &obj,
+        "recoveredWithAltK",
+        &JsValue::from_bool(recovered_alt_ok),
+    )?;
+    set(
+        &obj,
+        "recoveredKMinusErr",
+        &JsValue::from_str(&recover_kminus_err),
+    )?;
+    set(&obj, "sharePreviews", &share_previews.into())?;
+    set(
+        &obj,
+        "recoveredBytes",
+        &js_sys::Uint8Array::from(recovered.as_slice()).into(),
+    )?;
     Ok(obj.into())
 }
 

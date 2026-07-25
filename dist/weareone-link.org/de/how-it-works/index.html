@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>So funktioniert One Link - in klaren Worten</title>
-  <meta name="description" content="Geräte in fünf Sekunden paaren. Alles an jeden senden. Keine Server dazwischen. Optional über drei Hops für vollständige Anonymität. Die Mathematik steht hier, falls Sie sie lesen wollen.">
+  <meta name="description" content="So sollen Kopplung und Übertragung in One Link funktionieren: direkte Peer-Pfade, wenn verfügbar, sonst verschlüsselte Relay-Infrastruktur, mit ausdrücklich benannten Metadaten und Vorabgrenzen.">
   <link rel="canonical" href="https://weareone-link.org/de/how-it-works/">
   <link rel="alternate" hreflang="en" href="https://weareone-link.org/how-it-works/">
   <link rel="alternate" hreflang="es" href="https://weareone-link.org/es/how-it-works/">
@@ -20,12 +20,12 @@
   <meta property="og:locale" content="de_DE">
   <meta property="og:site_name" content="One Link">
   <meta property="og:title" content="So funktioniert One Link - in klaren Worten">
-  <meta property="og:description" content="Geräte in fünf Sekunden paaren. Alles an jeden senden. Keine Server dazwischen. Optional über drei Hops für vollständige Anonymität. Die Mathematik steht hier, falls Sie sie lesen wollen.">
+  <meta property="og:description" content="So sollen Kopplung und Übertragung in One Link funktionieren: direkte Peer-Pfade, wenn verfügbar, sonst verschlüsselte Relay-Infrastruktur, mit ausdrücklich benannten Metadaten und Vorabgrenzen.">
   <meta property="og:url" content="https://weareone-link.org/de/how-it-works/">
   <meta property="og:image" content="https://weareone-link.org/og/one-link-de.png">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="So funktioniert One Link - in klaren Worten">
-  <meta name="twitter:description" content="Geräte in fünf Sekunden paaren. Alles an jeden senden. Keine Server dazwischen. Optional über drei Hops für vollständige Anonymität. Die Mathematik steht hier, falls Sie sie lesen wollen.">
+  <meta name="twitter:description" content="So sollen Kopplung und Übertragung in One Link funktionieren: direkte Peer-Pfade, wenn verfügbar, sonst verschlüsselte Relay-Infrastruktur, mit ausdrücklich benannten Metadaten und Vorabgrenzen.">
   <meta name="twitter:image" content="https://weareone-link.org/og/one-link-de.png">
   <link rel="icon" type="image/x-icon" href="/images/favicon.ico"><link rel="icon" type="image/png" sizes="128x128" href="/images/logo-128.png"><link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
   <link rel="manifest" href="/app.webmanifest">
@@ -33,9 +33,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r95">
-  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r95">
-  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r95">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r97">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r97">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r97">
 </head>
 <body>
 <a href="#main" class="skip-link">Zum Inhalt springen</a>
@@ -61,7 +61,7 @@
     <div class="container">
       <span class="we-are-one">So funktioniert es</span>
       <h1>One Link in <span class="grad">vier Schritten.</span></h1>
-      <p class="lede">Kein Einrichtungs-Assistent. Kein Fragebogen. Die vier Schritte unten sind bereits geschehen, in dem Moment, als Sie die App zum ersten Mal geöffnet haben. Sie haben nichts davon gesehen.</p>
+      <p class="lede">Dies ist ein vorgesehener Vorabablauf, kein Beleg, dass jeder Schritt beim Öffnen dieser Seite oder App erfolgte. Verhalten, lokale Identität, Sicherungen, Transport und Wiederherstellung hängen vom exakten Build und versionierten Tests ab.</p>
     </div>
   </section>
 
@@ -72,25 +72,25 @@
         <article class="ol-tile">
           <span class="ol-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></span>
           <h3>1. App öffnen.</h3>
-          <p>Das ist die ganze Anmeldung. Keine E-Mail. Kein Telefon. Kein Passwort. Ihr Gerät erzeugt beim ersten Mal einen Schlüssel. Der Schlüssel ist Ihre Identität. Er verlässt das Gerät nie.</p>
+          <p>Dies ist ein vorgesehener Vorabablauf, kein Beleg, dass jeder Schritt beim Öffnen dieser Seite oder App erfolgte. Verhalten, lokale Identität, Sicherungen, Transport und Wiederherstellung hängen vom exakten Build und versionierten Tests ab.</p>
         </article>
 
         <article class="ol-tile">
           <span class="ol-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M14 14h7v7h-7z"/></svg></span>
           <h3>2. Mit jemandem paaren.</h3>
-          <p>Sie zeigen ihr oder ihm einen QR. Diese Person scannt ihn. Sie beide sehen dieselben fünf Wörter. Sie beide sagen „ja". Sie sind verbunden. Das Ganze dauert fünf Sekunden. Die fünf Wörter heißen, dass die Mathematik einig war.</p>
+          <p>Installierte Clients sollen zwei Geräte per QR und durch Benutzervergleich eines Fünf-Wort-SAS koppeln. Die Website führt beide Rollen als Primitiv-Selbsttest in einem Tab aus; sie scannt keine Kamera, koppelt kein Telefon, prüft keinen Transport und garantiert keinen Abschluss in fünf Sekunden.</p>
         </article>
 
         <article class="ol-tile">
           <span class="ol-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 4l8 8-8 8"/></svg></span>
           <h3>3. Etwas senden.</h3>
-          <p>Ziehen Sie eine Datei. Tippen Sie eine Nachricht. Legen Sie einen Ordner ab. Es geht direkt von Ihrem Gerät zu deren. Verschlüsselt, bevor es geht. Verifiziert, wenn es ankommt. Nichts dazwischen.</p>
+          <p>Implementierte verschlüsselte Übertragungen bevorzugen einen direkten Peer-Pfad. Ist direkter Transport nicht verfügbar, kann Rendezvous- oder Relay-Infrastruktur Chiffretext befördern und Verbindungs-, Zeit-, Routing- und Größenmetadaten sehen.</p>
         </article>
 
         <article class="ol-tile">
           <span class="ol-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
           <h3>4. Fertig.</h3>
-          <p>Das war es. Kein „Synchronisieren". Kein „auf Ihr Konto hochgeladen". Kein „wir schicken Ihnen einen Link per E-Mail". Es ist passiert. Es ist auf ihrem Gerät. Es ist nirgendwo sonst.</p>
+          <p>Der Empfänger erhält eine Kopie. Absenderspeicher, Endgerätesicherungen und verschlüsselte Relay-Puffer hängen vom gewählten Transport, der Clientkonfiguration, dem Zustellstatus und der Aufbewahrungsrichtlinie ab.</p>
         </article>
 
       </div>
@@ -101,20 +101,20 @@
     <div class="container">
       <span class="kicker">Wenn sie offline sind</span>
       <h2>Das Netzwerk <span class="grad">wartet.</span></h2>
-      <p class="lede">Wenn die Person, an die Sie senden, schläft oder offline ist, hält ein freiwilliges Relay Ihr verschlüsseltes Bündel, bis sie zurückkommt. Das Relay kann es nicht lesen. Das Relay weiß nicht, wer es gesendet hat. Das Relay vergisst es, sobald es zugestellt ist.</p>
+      <p class="lede">Gepufferte Relay-Zustellung ist ein Entwurfsziel und unterscheidet sich je Build. Ein Relay kann Inhalte nicht entschlüsseln und dennoch Routing-Kennungen, Zeiten, Größen und Verbindungsmetadaten sehen; Aufbewahrung und Ausfallsicherung benötigen releasespezifische Nachweise.</p>
 
       <div class="ol-grid ol-grid-3">
         <article class="ol-tile">
           <h3>Verschlüsselt, bevor es geht.</h3>
-          <p>Das Relay sieht eine versiegelte Box und eine Empfänger-Kennung. Sonst nichts. Der Inhalt ist ohne den Schlüssel der Empfängerin nicht lesbar.</p>
+          <p>Ein geeignetes Relay befördert Chiffretext samt den zum Weiterleiten nötigen Routing-Informationen. Korrekt implementierte Ende-zu-Ende-Verschlüsselung schützt Inhalte, verbirgt aber nicht alle Metadaten und beseitigt das Risiko einer Relay-Kompromittierung nicht.</p>
         </article>
         <article class="ol-tile">
           <h3>Kurz gehalten.</h3>
-          <p>Bis zu sieben Tage. Danach weg. Die meisten Nachrichten und Dateien sind in Sekunden durch, weil beide Geräte meist wach sind.</p>
+          <p>Gehen Sie nicht von einer allgemeinen Sieben-Tage-Regel aus. Aufbewahrung, Löschung, Wiederholungsversuche und Zustellgarantien müssen für das konkret eingesetzte Relay- und Client-Release veröffentlicht und getestet sein.</p>
         </article>
         <article class="ol-tile">
           <h3>Viele Relays, nie nur eines.</h3>
-          <p>Jeder kann ein Relay betreiben. Das Netzwerk wählt automatisch das gesündeste nahe an jeder Seite. Wenn ein Relay verschwindet, wechselt der Verkehr lautlos zu einem anderen.</p>
+          <p>Erkennung freiwillig betriebener Relays und automatisches Failover bleiben vom Deployment abhängig. Verfügbarkeit ist nicht allein deshalb garantiert, weil das Protokoll weitere Betreiber zulässt.</p>
         </article>
       </div>
     </div>
@@ -124,12 +124,12 @@
     <div class="container">
       <span class="kicker">Wenn Sie Ihre Spur verbergen möchten</span>
       <h2>Einen Schalter umlegen. <span class="grad">Drei Hops.</span></h2>
-      <p class="lede">Der Privat-Modus leitet Ihren Verkehr über drei freiwillige Knoten zur Empfängerin. Niemand, wir eingeschlossen, kann sehen, wer was an wen gesendet hat. Standardmäßig aus, für Tempo. An, wenn Sie es brauchen.</p>
+      <p class="lede">Privates Dreisprung-Routing ist ein Integrationsziel, nicht der Pfad des heutigen Website-Verkehrs. Es kann die Sicht jedes einzelnen Relays begrenzen; Endgeräte, erster und letzter Sprung, Infrastrukturanbieter und Zeitbeobachter können dennoch Metadaten ableiten.</p>
 
       <div class="ol-grid ol-grid-2 ol-gap-3 ol-items-center">
         <div>
-          <p>Jeder Hop kennt nur den Hop davor und den Hop danach. Der erste Hop sieht Sie, aber nicht die Nachricht. Der letzte Hop sieht das Ziel, aber nicht, wer Sie sind. Kein Hop in der Mitte sieht beides.</p>
-          <p>Das ist dieselbe Idee, die Tor nutzt, mit zwei Extras: Sie verwendet Post-Quanten-Schlüssel, und sie bindet jeden Hop an den umgebenden physischen Kontext, sodass ein gestohlener Hop-Schlüssel anderswo nicht wiederabgespielt werden kann.</p>
+
+
         </div>
         <pre class="ol-code"><span class="d">// Sie tippen „privat"</span>
 <span class="c">waehle</span> drei gesunde Relays
@@ -152,20 +152,7 @@
       <details class="ol-proof" open>
         <summary>Der vollständige kryptographische Stack</summary>
         <div class="ol-proof-body">
-          <dl>
-            <dt>Identität</dt><dd>Hybride Signatur Ed25519 + ML-DSA-65. Der Geräteschlüssel signiert alles, was Sie tun.</dd>
-            <dt>Sitzungsschlüssel</dt><dd>Heute X25519, mit dem ML-KEM-768-Hybrid-Slot im Wire-Format reserviert. Sphinx-Onion-Hops nutzen den Hybrid live; Pair- und Kanal-Handshakes aktivieren ihn in v0.22.</dd>
-            <dt>Forward Secrecy</dt><dd>Double Ratchet (Signal-Stil) über der hybriden Wurzel.</dd>
-            <dt>Krypto pro Chunk</dt><dd>ChaCha20-Poly1305 AEAD, Rekey alle N Chunks.</dd>
-            <dt>Pairing-Verifikation</dt><dd>5-Wort-SAS, abgeleitet aus dem geteilten Geheimnis. Levenshtein-geprüfte Wortliste.</dd>
-            <dt>Onion-Routing</dt><dd>Sphinx Coherence (Ristretto255 mit Füllbyte-Konstruktion, PQ-Hybrid-Blinding, Feldzeugen).</dd>
-            <dt>Signatur-Aggregation</dt><dd>Schnorr-Aggregation über Ristretto255 mit Batch-Verify per Pippenger MSM.</dd>
-            <dt>Confidential Build</dt><dd>AttestationDoc aus ol_confidential mit PQ-Hybrid, Peer-Nonce, 30 s Frische.</dd>
-            <dt>Schwellen-Wiederherstellung</dt><dd>BN-Multi-Signatur mit R-Werten pro Signer, k-aus-n-Share-Split.</dd>
-            <dt>Routing</dt><dd>Das tau_c-Kohärenzfeld (Helmholtz-Löser in ol_coherence_field) reiht heute Chunk-Halter ein. Vollständige feldgeroutete Mehrhop-Zustellung wird mit dem Relay-Mesh-Cutover in v0.22 aktiv.</dd>
-            <dt>Capability-Zugriff</dt><dd>Macaroon-basierte Capabilities mit Konstantzeit-Verifikation und 1M-Iterationen-Solidness-Gate.</dd>
-            <dt>Speicherung</dt><dd>ChunkRatchet beim Transit. Zeroize beim Drop. Verschlüsselung im Ruhezustand ist heute optional über den ONE_LINK_PASSPHRASE-Wrap des Identitätsschlüssels; die PWA-Ebene liefert in v0.22 immer-aktive Verschlüsselung im Ruhezustand.</dd>
-          </dl>
+          <dl data-claim-scope="cryptographic-stack"><dt>Website aktuell</dt><dd>Lokale WASM-Schaltflächen üben benannte Primitive in einem Tab. Das sind Selbsttests, kein Daemon, Transport, Deployment oder externes Audit.</dd><dt>Worker-Sitzungsendpoint</dt><dd>/api/session meldet flüchtiges X25519 und null für ML-KEM-768. Der Browser führt mit dem Worker weder ECDH noch ML-KEM aus und leitet keinen gemeinsamen Sitzungsschlüssel ab.</dd><dt>Daemon-/Protokolldesign</dt><dd>Ratchets, Chunk-AEAD, SAS, Onion-Routing, Wiederherstellung, Fähigkeiten, Routing und Ruheverschlüsselung brauchen versionierte Integration und Angriffstests. Ein Crate-Name belegt keinen Einsatz auf allen Pfaden.</dd><dt>Roadmap</dt><dd>PQ-Netzwerkhandshakes, Multi-Hop-Routing, universelle Vorwärtsgeheimhaltung und stets aktive Ruheverschlüsselung bleiben Anforderungen bis zum Nachweis eines gepinnten Releases.</dd></dl>
         </div>
       </details>
 
@@ -188,7 +175,7 @@
     <div class="footer-grid">
       <div>
         <a href="/de/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
-        <p class="footer-tag">Ein freies, privates Netzwerk für Nachrichten, Dateien und Geräte. Niemandem. Allen.</p>
+        <p class="footer-tag">Quelloffene Vorabsoftware für private Kommunikation. Auf gemeinschaftliche Trägerschaft ausgerichtet; heutige Dienste hängen noch von identifizierbaren Betreuern, Betreibern und Infrastrukturprovidern ab.</p>
         <p class="ol-mt-md ol-soft-text ol-mono">
           <strong>Lesen in:</strong>
           <a class="ol-cyan-text" hreflang="en" href="/how-it-works/">English</a> &middot;
@@ -199,7 +186,7 @@
           <a class="ol-cyan-text" hreflang="it" href="/it/how-it-works/">Italiano</a>
         </p>
       </div>
-      <div><h3>Netzwerk</h3><ul><li><a href="/how-it-works/" hreflang="en">So funktioniert es</a></li><li><a href="/features/" hreflang="en">Funktionen</a></li><li><a href="/mesh/" hreflang="en">Live-Mesh</a></li></ul></div>
+      <div><h3>Netzwerk</h3><ul><li><a href="/how-it-works/" hreflang="en">So funktioniert es</a></li><li><a href="/features/" hreflang="en">Funktionen</a></li><li><a href="/mesh/" hreflang="en">Website-Präsenz</a></li></ul></div>
       <div><h3>Für Sie</h3><ul><li><a href="/download/" hreflang="en">One Link holen</a></li><li><a href="/security/" hreflang="en">Sicherheit</a></li><li><a href="/de/verify-download/" hreflang="de">Download verifizieren</a></li><li><a href="/de/roadmap/" hreflang="de">Roadmap</a></li><li><a href="/accessibility/" hreflang="en">Barrierefreiheit</a></li><li><a href="/transparency/" hreflang="en">Transparenz</a></li><li><a href="/audits/" hreflang="en">Audits</a></li></ul></div>
       <div><h3>Für Erbauer</h3><ul><li><a href="/builders/" hreflang="en">Protokoll und Quelltext</a></li><li><a href="/changelog/" hreflang="en">Änderungsprotokoll</a></li><li><a href="/releases/" hreflang="en">Versionen</a></li><li><a href="/mirror/" hreflang="en">Diese Seite spiegeln</a></li><li><a href="/download/source" hreflang="en" rel="noopener">Quellarchiv</a></li><li><a href="https://github.com/IamOneYouAreOneWeAreOne/one-link" rel="noopener external">GitHub</a></li></ul></div>
     </div>
@@ -210,6 +197,6 @@
   </div>
 </footer>
 
-<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r95"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r97"></script>
 </body>
 </html>

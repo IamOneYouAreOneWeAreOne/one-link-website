@@ -1,7 +1,7 @@
 {
   "name": "One Link",
   "short_name": "One Link",
-  "description": "Free, private, peer-to-peer. Messages, files, devices. Owned by no one. Belongs to everyone.",
+  "description": "Open-source pre-release messaging and file transfer. Current website services depend on Cloudflare, GitHub, maintainers, and other infrastructure providers.",
   "id": "/",
   "start_url": "/",
   "scope": "/",
@@ -49,21 +49,21 @@
     {
       "name": "Share a file",
       "short_name": "Share",
-      "description": "Drop a file, get an encrypted one-shot link",
+      "description": "Encrypt up to 25 MB in this browser and create a best-effort one-retrieval link",
       "url": "/share/",
       "icons": [{ "src": "/images/logo-128.png", "sizes": "128x128" }]
     },
     {
       "name": "Get One Link",
       "short_name": "Get it",
-      "description": "Download One Link for your device",
+      "description": "View available unsigned continuous alpha builds",
       "url": "/download/",
       "icons": [{ "src": "/images/logo-128.png", "sizes": "128x128" }]
     },
     {
-      "name": "Live mesh",
-      "short_name": "Mesh",
-      "description": "See who else is here right now",
+      "name": "Website presence",
+      "short_name": "Presence",
+      "description": "See validated website-presence sessions; this is not relay or node topology",
       "url": "/mesh/",
       "icons": [{ "src": "/images/logo-128.png", "sizes": "128x128" }]
     }

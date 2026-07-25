@@ -29,9 +29,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r95">
-  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r95">
-  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r95">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r97">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r97">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r97">
 </head>
 <body>
 <a href="#main" class="skip-link">Salta al contenuto</a>
@@ -55,30 +55,24 @@
     <div class="container">
       <span class="we-are-one">Trasparenza</span>
       <h1>Quello che sappiamo. <span class="grad">Quello che non sappiamo.</span></h1>
-      <p class="lede">One Link è software che esegui tu. L'architettura è stata progettata in modo che la minima quantità possibile di informazioni passi attraverso qualsiasi cosa gestiamo. Questa pagina è il registro pubblico e datato di cosa significhi.</p>
+      <p class="lede">Il sorgente è auto-ospitabile e alcune operazioni locali possono funzionare senza sito. Scoperta, rendezvous, relay, share, download, update, DNS, GitHub e Cloudflare hanno dipendenze infrastrutturali non provate per ogni build.</p>
     </div>
   </section>
 
   <section class="section">
     <div class="container">
       <span class="kicker">Warrant canary</span>
-      <h2>Ultima verifica <span class="grad">2026-05-17</span>.</h2>
+      <h2>Confine implementativo revisionato il 2026-07-22.</h2>
       <div class="ol-grid ol-grid-2 ol-items-start">
         <div>
-          <p>Alla data indicata, i contributori di One Link hanno ricevuto zero richieste governative di qualsiasi tipo relative a questo progetto, ai suoi repository sorgenti, alla sua infrastruttura di relay o al suo sito web. Abbiamo ricevuto zero Lettere di Sicurezza Nazionale o ordini bavaglio equivalenti, perché nessuno strumento simile è stato notificato.</p>
-          <p>Questa pagina viene aggiornata con cadenza mensile. La scomparsa o la scadenza di questa dichiarazione è essa stessa il segnale.</p>
-          <p>La dichiarazione viene firmata e committata nel repository pubblico sorgente a ogni aggiornamento, quindi le attestazioni storiche sono a prova di manomissione tramite git log.</p>
+          <p>Questa informativa è mantenuta dai contributori, non auditata o marcata indipendentemente. Il canary precedente è scaduto e non c’è firma corrente separata.</p>
+          <p>La cronologia mostra modifiche, ma assenza o ritardo non è segnale affidabile di un ordine di segretezza.</p>
+          <p>I conteggi legali sono non verificati senza dichiarazione datata, firmata e retention documentata.</p>
         </div>
         <div>
-          <pre class="ol-code"><span class="d">// dichiarazione canary, in chiaro</span>
-<span class="c">data</span>:                   2026-05-17
-<span class="c">richieste_ricevute</span>:    0
-<span class="c">ordini_bavaglio</span>:       0
-<span class="c">citazioni_ricevute</span>:    0
-<span class="c">NSL_ricevute</span>:          0
-<span class="c">prossimo_aggiornamento</span>: 2026-06-17
-
-<span class="d">// firmato nella cronologia dei commit</span></pre>
+          <pre class="ol-code">status: contributor disclosure
+external_signature: not-published
+previous_canary: expired</pre>
         </div>
       </div>
     </div>
@@ -91,27 +85,27 @@
       <div class="ol-grid ol-grid-3">
         <article class="ol-tile">
           <h3>Contenuto del messaggio</h3>
-          <p>Cifrato end-to-end con chiavi ibride post-quantistiche. Il testo in chiaro non raggiunge mai un relay, mai un server, mai noi. Non c'è testo in chiaro che una qualsiasi parte oltre ai peer possa consegnare.</p>
+          <p>I percorsi E2EE tengono il testo in chiaro sugli endpoint. Relay e server elaborano cifrato e metadati. /api/session non è PQ e un autotest non prova ogni rotta.</p>
         </article>
         <article class="ol-tile">
           <h3>Identificatori di account</h3>
-          <p>One Link usa ID peer opachi e rotanti. Non c'è alcun database di email, numeri di telefono o nomi utente da citare. Il riconoscimento avviene da dispositivo a dispositivo tramite abbinamento.</p>
+          <p>Gli abbinamenti risiedono normalmente sugli endpoint e non c’è un prodotto social graph ospitato. Servizi e destinatari elaborano comunque metadati effimeri.</p>
         </article>
         <article class="ol-tile">
           <h3>Grafo sociale</h3>
-          <p>Gli abbinamenti sono memorizzati sui dispositivi che li detengono, non su un server. Il grafo aggregato «chi conosce chi» che tipicamente i messenger conservano non esiste da nessuna parte dove operiamo.</p>
+          <p>Gli abbinamenti risiedono normalmente sugli endpoint e non c’è un prodotto social graph ospitato. Servizi e destinatari elaborano comunque metadati effimeri.</p>
         </article>
         <article class="ol-tile">
           <h3>Log dei relay</h3>
-          <p>I relay sono progettati come inoltratori senza stato. Instradano buste sigillate per topologia, non per identità. Non conservano log di accesso tra riavvii. Chiunque può gestirne uno.</p>
+          <p>Operazione comunitaria e scoperta decentralizzata sono obiettivi. Pubblicare codice non prova disponibilità, operatori, gossip o failover.</p>
         </article>
         <article class="ol-tile">
           <h3>Posizione</h3>
-          <p>La pagina mesh dal vivo mostra solo la regione continentale approssimativa, derivata dalla topologia dei relay. Nessuna posizione precisa di alcun peer è mantenuta da nessuna parte che controlliamo.</p>
+          <p>Il sito non chiede geolocalizzazione precisa. Il client invia una stima grossolana dal fuso orario; Cloudflare riceve IP e metadati normali.</p>
         </article>
         <article class="ol-tile">
           <h3>Registri di pagamento</h3>
-          <p>One Link è gratuito. Non c'è abbonamento, né cronologia degli acquisti, né indirizzo di fatturazione. Non c'è nulla da imporre.</p>
+          <p>Oggi non c’è piano a pagamento. Il sorgente AGPL-3.0 è pubblico e auto-ospitabile. Non promette prezzi, hosting, connettività, hardware, capacità relay o costi futuri.</p>
         </article>
       </div>
     </div>
@@ -129,23 +123,23 @@
         </article>
         <article class="ol-tile">
           <h3>Durable Object MeshPresence</h3>
-          <p>L'etichetta «N qui adesso» usa un Cloudflare Durable Object che mantiene solo un ID casuale per sessione per la durata della tua scheda. L'ID ruota ad ogni visita. Nessun dato identificativo viene memorizzato.</p>
+          <p>MeshPresence conserva ID casuale per sessione, regione approssimata e tempi. I visitatori vedono ID pseudonimi; Cloudflare riceve metadati fuori dal DO.</p>
         </article>
         <article class="ol-tile">
           <h3>Durable Object NativeSession</h3>
-          <p>Stato di sessione WebTransport per scheda per la demo di handshake /native. Tiene le chiavi X25519 effimere e i contatori del protocollo di filo di One Link solo in memoria. Viene raccolto dal garbage collector quando inattivo. Nessun identificatore, nessun IP.</p>
+          <p>/native annuncia il protocollo e /api/session registra sessione più chiave X25519 effimera. NativeSession è uno stub; non crea ECDH, ML-KEM-768, WebTransport o chiave stabilita.</p>
         </article>
         <article class="ol-tile">
           <h3>Durable Object ShareRate</h3>
-          <p>Secchio di token per sottorete che limita i caricamenti su /api/share (burst 12, sostenuto 2/min). Indicizzato in base al /24 (IPv4) o /48 (IPv6) di chi carica, in modo che i pool NAT in dial-up condividano un budget. Tiene solo un conteggio di token e un timestamp di ricarica. Nessun IP viene memorizzato, solo l'hash di sottorete usato come chiave del secchio.</p>
+          <p>ShareRate usa sottorete IPv4 /24 o IPv6 /48 troncata e conserva token e ricarica. Il DO non salva l’IP completo, ma Cloudflare lo riceve al bordo.</p>
         </article>
         <article class="ol-tile">
           <h3>Cloudflare R2 (bucket RELEASES)</h3>
-          <p>Contiene due famiglie di oggetti: binari di versione firmati che il flusso /download/ serve e testo cifrato di /share/ (solo testo cifrato, la chiave non viene mai inviata, eliminato al primo GET o dopo 24h). Cloudflare vede i byte degli oggetti e i registri di accesso; le chiavi per decifrare qualsiasi cosa nel bucket di condivisione non lasciano mai i browser del mittente e del destinatario.</p>
+          <p>Il bucket RELEASES di R2 contiene gli archivi disponibili; /download/ reindirizza a GitHub. La condivisione riceve cifrato, mai la chiave. Un ShareObject Durable Object per elemento serializza il recupero, attende la cancellazione R2 prima di restituire il cifrato e pianifica un allarme di 24 ore che ritenta i fallimenti. Un guasto del fornitore può ritardare la cancellazione fisica.</p>
         </article>
         <article class="ol-tile">
           <h3>Nessun tracciamento, nessuna analitica</h3>
-          <p>Zero cookie. Zero analitica. Zero script di terze parti. Zero reti pubblicitarie. Zero pixel di tracciamento. Questo è imposto dalla Content-Security-Policy che accompagna ogni pagina.</p>
+          <p>Il sito non usa registrazione, analytics pubblicitari, cookie, pixel, fingerprinting o script terzi. Non significa elaborazione zero: i provider ricevono normali richieste di rete. Cloudflare riceve IP e metadati. MeshPresence conserva ID casuale per sessione, regione approssimata e tempo; ShareRate limita per sottorete troncata; R2 conserva testo cifrato di /share/; GitHub riceve download reindirizzati.</p>
         </article>
       </div>
     </div>
@@ -154,35 +148,35 @@
   <section class="section">
     <div class="container">
       <span class="kicker">Cosa succede se questo sito sparisce</span>
-      <h2>La rete non <span class="grad">dipende da questo sito.</span></h2>
-      <p class="lede">Questo sito gira su Cloudflare. Un attore statale, una denuncia per copyright, un cambio di politica o un problema di fatturazione potrebbero metterlo offline domani. Quel risultato sarebbe scomodo. Non fermerebbe One Link.</p>
+      <h2>Dipendenze infrastrutturali attuali.</h2>
+      <p class="lede">Il sorgente è auto-ospitabile e alcune operazioni locali possono funzionare senza sito. Scoperta, rendezvous, relay, share, download, update, DNS, GitHub e Cloudflare hanno dipendenze infrastrutturali non provate per ogni build.</p>
       <div class="ol-grid ol-grid-2">
         <article class="ol-tile">
-          <h3>Il daemon non ha bisogno di questo sito.</h3>
-          <p>I client One Link si abbinano da dispositivo a dispositivo via QR. Una volta abbinati, parlano peer-to-peer (o tramite relay volontari che chiunque può gestire). Nessun client chiama mai weareone-link.org per funzionare. Se questo sito sparisce oggi, ogni One Link installato continua a funzionare.</p>
+          <h3>Alcune operazioni possono funzionare senza il sito; restano dipendenze.</h3>
+          <p>Il sorgente è auto-ospitabile e alcune operazioni locali possono funzionare senza sito. Scoperta, rendezvous, relay, share, download, update, DNS, GitHub e Cloudflare hanno dipendenze infrastrutturali non provate per ogni build.</p>
         </article>
         <article class="ol-tile">
-          <h3>I relay non hanno bisogno di questo sito.</h3>
-          <p>La rete di relay è gestita dalla comunità. Chiunque può gestirne uno. Non c'è directory centrale che controlliamo. I relay si parlano tra loro per trovarsi. Rimuovere il nostro dominio non rimuove un solo relay.</p>
+          <h3>Gestione e scoperta indipendenti dei relay restano obiettivi.</h3>
+          <p>Operazione comunitaria e scoperta decentralizzata sono obiettivi. Pubblicare codice non prova disponibilità, operatori, gossip o failover.</p>
         </article>
         <article class="ol-tile">
-          <h3>Questo sito è replicabile per progettazione.</h3>
-          <p>Ogni byte di questo sito vive in un repository pubblico AGPL-3.0. Chiunque può clonarlo, auditarlo e ospitarlo. Vedi <a class="ol-cyan-text" href="/mirror/" hreflang="en">/mirror/</a> per il comando di auto-hosting in tre righe, una guida del servizio onion Tor e un manifesto di pin IPFS. Se veniamo banditi, puoi essere il prossimo host in cinque minuti.</p>
+          <h3>Il mirror statico conserva pagine, non i servizi Worker.</h3>
+          <p>Sorgente pubblico e mirror statici riducono una dipendenza. Non forniscono presenza, share, sessione, download o API senza servizi compatibili.</p>
         </article>
         <article class="ol-tile">
           <h3>Il sorgente è su GitHub oggi.</h3>
-          <p>E su più mirror che le persone mantengono indipendentemente. La chiave di firma per le release è tenuta offline. La build è riproducibile. Anche se ogni server che abbiamo toccato sparisse, il codice, il protocollo e la matematica sopravvivono in qualsiasi clone.</p>
+          <p>Il sorgente e il bundle web sono pubblici e replicabili. La chiave del manifest del sito è tenuta offline. Gli artefatti continui dell'applicazione non sono firmati né verificati come riproducibili; codice e protocollo sopravvivono nei cloni pubblici.</p>
         </article>
       </div>
-      <p class="ol-mt-md ol-prose">Questa non è spavalderia, è l'architettura. L'intero punto di «nessun server in mezzo» è che il protocollo funziona senza di noi. Ospitare questo sito è una comodità per i visitatori per la prima volta, non una dipendenza portante della rete.</p>
+      <p class="ol-mt-md ol-prose">Sorgente pubblico e mirror statici riducono una dipendenza. Non forniscono presenza, share, sessione, download o API senza servizi compatibili.</p>
     </div>
   </section>
 
   <section class="section">
     <div class="container">
       <span class="kicker">Cadenza</span>
-      <h2>Aggiornato mensilmente. <span class="grad">Sempre.</span></h2>
-      <p class="lede">Se questa pagina rimane indietro, è di per sé un segnale. Iscriviti al repository sorgente per notifiche atomiche quando questo file cambia.</p>
+      <h2>Le revisioni sono manuali, non mensili garantite.</h2>
+      <p class="lede">Questa informativa è rivista manualmente e può diventare obsoleta. La cronologia mostra modifiche, ma non è notifica atomica, timestamp indipendente o segnale affidabile di completezza.</p>
       <p class="lede">Fonte: <a class="ol-cyan-text" href="https://github.com/IamOneYouAreOneWeAreOne/one-link-website/commits/master/dist/weareone-link.org/transparency/index.html" rel="noopener">cronologia dei commit per questa pagina</a>.</p>
     </div>
   </section>
@@ -193,7 +187,7 @@
     <div class="footer-grid">
       <div>
         <a href="/it/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
-        <p class="footer-tag">Una rete libera e privata per messaggi, file e dispositivi. Di nessuno. Di tutti.</p>
+        <p class="footer-tag">Software open source preliminare per comunicazioni private. Costruito verso la proprietà comunitaria; i servizi attuali dipendono ancora da manutentori, operatori e fornitori identificabili.</p>
         <p class="ol-mt-md ol-soft-text ol-mono">
           <strong>Leggi in:</strong>
           <a class="ol-cyan-text" hreflang="en" href="/transparency/">English</a> &middot;
@@ -204,7 +198,7 @@
           <a class="ol-cyan-text" hreflang="it" href="/it/transparency/">Italiano</a>
         </p>
       </div>
-      <div><h3>Rete</h3><ul><li><a href="/how-it-works/" hreflang="en">Come funziona</a></li><li><a href="/features/" hreflang="en">Funzionalità</a></li><li><a href="/mesh/" hreflang="en">Mesh dal vivo</a></li></ul></div>
+      <div><h3>Rete</h3><ul><li><a href="/how-it-works/" hreflang="en">Come funziona</a></li><li><a href="/features/" hreflang="en">Funzionalità</a></li><li><a href="/mesh/" hreflang="en">Presenza web</a></li></ul></div>
       <div><h3>Per te</h3><ul><li><a href="/download/" hreflang="en">Ottieni One Link</a></li><li><a href="/security/" hreflang="en">Sicurezza</a></li><li><a href="/it/verify-download/" hreflang="it">Verifica download</a></li><li><a href="/it/roadmap/" hreflang="it">Tabella di marcia</a></li><li><a href="/it/accessibility/" hreflang="it">Accessibilità</a></li><li><a href="/it/transparency/" hreflang="it">Trasparenza</a></li><li><a href="/audits/" hreflang="en">Audit</a></li></ul></div>
       <div><h3>Per i costruttori</h3><ul><li><a href="/builders/" hreflang="en">Protocollo e sorgente</a></li><li><a href="/changelog/" hreflang="en">Registro modifiche</a></li><li><a href="/releases/" hreflang="en">Versioni</a></li><li><a href="/mirror/" hreflang="en">Replica questo sito</a></li><li><a href="/download/source" hreflang="en" rel="noopener">Archivio sorgente</a></li><li><a href="https://github.com/IamOneYouAreOneWeAreOne/one-link" rel="noopener external">GitHub</a></li></ul></div>
     </div>
@@ -215,6 +209,6 @@
   </div>
 </footer>
 
-<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r95"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r97"></script>
 </body>
 </html>

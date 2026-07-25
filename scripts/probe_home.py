@@ -9,6 +9,10 @@ BASE = sys.argv[1].rstrip("/") if len(sys.argv) > 1 else "https://weareone-link.
 events = []
 def log(k, v=""): events.append({"t": round(time.time()*1000), "k": k, "v": v})
 
+def frame_payload(frame):
+    """Normalize Playwright's old frame wrapper and current raw payload."""
+    return getattr(frame, "payload", frame)
+
 with sync_playwright() as p:
     b = p.chromium.launch(headless=True)
     # No reduced-motion this time; let everything run.
@@ -20,7 +24,7 @@ with sync_playwright() as p:
     page.on("response", lambda r: log("resp", f"{r.status} {r.url}") if any(
         s in r.url for s in ["/live/", "/api/", ".wasm"]) else None)
     page.on("websocket", lambda ws: (log("ws.open", ws.url),
-        ws.on("framereceived", lambda f: log("ws.frame", str(f.payload)[:200])),
+        ws.on("framereceived", lambda f: log("ws.frame", str(frame_payload(f))[:200])),
         ws.on("close", lambda: log("ws.close",""))))
 
     log("nav.start")

@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>A malha - cada nó de One Link, ao vivo</title>
-  <meta name="description" content="O mapa global da malha ao vivo. Cada nó ativo, cada relé, o campo de encaminhamento que decide como os pacotes se encontram. Nunca dados identificadores.">
+  <title>Ilustração de presença web - One Link</title>
+  <meta name="description" content="Visualização de presença de visitantes do site, não de nós ou relays instalados. Visitantes veem IDs pseudónimos e regiões aproximadas; Cloudflare vê metadados.">
   <link rel="canonical" href="https://weareone-link.org/pt/mesh/">
   <link rel="alternate" hreflang="en" href="https://weareone-link.org/mesh/">
   <link rel="alternate" hreflang="es" href="https://weareone-link.org/es/mesh/">
@@ -19,13 +19,13 @@
   <meta property="og:type" content="website">
   <meta property="og:locale" content="pt_PT">
   <meta property="og:site_name" content="One Link">
-  <meta property="og:title" content="A malha - cada nó de One Link, ao vivo">
-  <meta property="og:description" content="O mapa global da malha ao vivo. Cada nó ativo, cada relé, o campo de encaminhamento que decide como os pacotes se encontram. Nunca dados identificadores.">
+  <meta property="og:title" content="Ilustração de presença web - One Link">
+  <meta property="og:description" content="Visualização de presença de visitantes do site, não de nós ou relays instalados. Visitantes veem IDs pseudónimos e regiões aproximadas; Cloudflare vê metadados.">
   <meta property="og:url" content="https://weareone-link.org/pt/mesh/">
   <meta property="og:image" content="https://weareone-link.org/og/one-link-pt.png">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="A malha - cada nó de One Link, ao vivo">
-  <meta name="twitter:description" content="O mapa global da malha ao vivo. Cada nó ativo, cada relé, o campo de encaminhamento que decide como os pacotes se encontram. Nunca dados identificadores.">
+  <meta name="twitter:title" content="Ilustração de presença web - One Link">
+  <meta name="twitter:description" content="Visualização de presença de visitantes do site, não de nós ou relays instalados. Visitantes veem IDs pseudónimos e regiões aproximadas; Cloudflare vê metadados.">
   <meta name="twitter:image" content="https://weareone-link.org/og/one-link-pt.png">
   <link rel="icon" type="image/x-icon" href="/images/favicon.ico"><link rel="icon" type="image/png" sizes="128x128" href="/images/logo-128.png"><link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
   <link rel="manifest" href="/app.webmanifest">
@@ -33,9 +33,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r95">
-  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r95">
-  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r95">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r97">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r97">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r97">
 </head>
 <body class="ol-mesh-page">
 <a href="#main" class="skip-link">Saltar para o conteúdo</a>
@@ -62,20 +62,20 @@
     <span class="ol-presence-bar-suffix">aqui agora mesmo</span>
   </span>
 </div>
-<div class="ol-peer-overlay" id="ol-peer-overlay" aria-label="Outras pessoas a ver agora"></div>
+<div class="ol-peer-overlay" id="ol-peer-overlay" aria-label="Sessões do site visíveis agora; identidades não verificadas"></div>
 <div class="ol-peer-hint" id="ol-peer-hint" hidden>
-  <span>toque em qualquer ponto a brilhar para iniciar um chat anónimo</span>
+  <span>toque num ponto luminoso para iniciar uma conversa pseudónima</span>
 </div>
 <div class="ol-ping-toast" id="ol-ping-toast" aria-live="polite" hidden>
   <span class="ol-ping-glyph" aria-hidden="true">&#9883;</span>
   <span class="ol-ping-text">alguém disse olá</span>
 </div>
-<div class="ol-chat-panel" id="ol-chat-panel" hidden role="dialog" aria-label="Chat anónimo com um estranho">
+<div class="ol-chat-panel" id="ol-chat-panel" hidden role="dialog" aria-label="Conversa pseudónima com uma pessoa desconhecida">
   <div class="ol-chat-head">
     <span class="ol-chat-dot" id="ol-chat-dot"></span>
     <span class="ol-chat-title" id="ol-chat-title">estranho</span>
     <span class="ol-chat-state" id="ol-chat-state">a ligar</span>
-    <a href="#" class="ol-chat-on-mesh-link" id="ol-chat-on-mesh-link" aria-label="Abrir este chat na página da malha ao vivo">ver na malha &rarr;</a>
+    <a href="#" class="ol-chat-on-mesh-link" id="ol-chat-on-mesh-link" aria-label="Abrir este chat na página da malha ao vivo">see presence view &rarr;</a>
     <button type="button" class="ol-chat-close" id="ol-chat-close" aria-label="Fechar chat">&times;</button>
   </div>
   <div class="ol-chat-log" id="ol-chat-log" aria-live="polite"></div>
@@ -83,7 +83,7 @@
     <input type="text" id="ol-chat-input" maxlength="280" placeholder="diga algo simpático..." autocomplete="off" aria-label="Mensagem">
     <button type="submit" class="ol-chat-send" aria-label="Enviar">&rarr;</button>
   </form>
-  <div class="ol-chat-foot">efémero &middot; anónimo &middot; cifrado de ponta a ponta</div>
+  <div class="ol-chat-foot">efémero &middot; sem identidade duradoura &middot; a escrita só abre após ambos declararem comparar as cinco palavras SAS por um canal de confiança separado &middot; a autenticação depende dessa comparação honesta &middot; Cloudflare retransmite o cifrado e vê metadados &middot; o par pode guardar mensagens</div>
 </div>
 <div class="ol-chat-request-toast" id="ol-chat-request-toast" hidden role="alert">
   <div class="ol-chat-request-dot" id="ol-chat-request-dot"></div>
@@ -101,20 +101,20 @@
 
   <section class="hero ol-pb-sm">
     <div class="container">
-      <span class="we-are-one">Malha ao vivo</span>
-      <h1>É um entre <span class="grad" id="ol-hero-count">0</span>.</h1>
-      <p class="lede">Cada ponto é um nó real de One Link online neste momento. As cores são o campo de coerência que decide como os pacotes se encontram. Toque em qualquer ponto para abrir um chat anónimo cifrado de ponta a ponta. Cada mensagem que enviar viajará como um pacote visível pela malha. Sem IPs. Sem nomes de utilizador. Sem mais localização do que uma região aproximada.</p>
+      <span class="we-are-one">Presença web</span>
+      <h1>É um entre <span class="grad" id="ol-hero-count">&hellip;</span>.</h1>
+      <p class="lede">Cada ponto é uma sessão validada de presença web, não prova de um nó ou relay instalado. O campo é ilustrativo, não telemetria de encaminhamento. Separadores compatíveis cifram o chat antes de o Cloudflare retransmitir e a escrita fica bloqueada até ambos declararem comparar as cinco palavras SAS por um canal de confiança separado. A autenticação depende dessa comparação honesta e não cria identidade duradoura. O Cloudflare continua a ver metadados. A interface mostra um ID rotativo e uma região aproximada do cliente.</p>
     </div>
   </section>
 
   <section class="section-tight">
     <div class="container">
       <div class="ol-mesh-wrap ol-mesh-aspect-cinema">
-        <canvas class="ol-mesh-canvas" id="ol-mesh-canvas" aria-label="Visualização global da malha ao vivo"></canvas>
+        <canvas class="ol-mesh-canvas" id="ol-mesh-canvas" aria-label="Website-presence illustration; not live routing telemetry"></canvas>
         <div class="ol-mesh-overlay">
-          <div class="row"><span class="key">nós</span><span class="val" id="ol-mesh-nodes">0</span></div>
-          <div class="row"><span class="key">relés</span><span class="val" id="ol-mesh-relays">0</span></div>
-          <div class="row"><span class="key">campo</span><span class="val">encaminhamento &tau;_c</span></div>
+          <div class="row"><span class="key">nós</span><span class="val" id="ol-mesh-nodes">&hellip;</span></div>
+          <div class="row"><span class="key">relés</span><span class="val" id="ol-mesh-relays">&mdash;</span></div>
+          <div class="row"><span class="key">campo</span><span class="val">illustrative</span></div>
           <div class="row"><span class="key">varrimento</span><span class="val">60 Hz</span></div>
           <div class="row"><span class="key">você</span><span class="val" id="ol-mesh-you">a ligar...</span></div>
         </div>
@@ -128,9 +128,9 @@
       <h2>O campo de coerência <span class="grad">tau_c.</span></h2>
       <div class="ol-grid ol-grid-2 ol-gap-3 ol-items-start">
         <div>
-          <p>One Link não usa uma tabela de encaminhamento. Usa um campo contínuo. A vista local que cada par tem do campo é uma pequena ondulação num oscilador de Helmholtz amortecido. Os pedidos de bloco seguem o gradiente do campo na direção do detentor mais saudável, da mesma forma que a água encontra o ponto baixo de uma colina. A entrega multi-salto encaminhada por campo ativa-se com a viragem da malha de relés na v0.22.</p>
-          <p>Quando um relé desaparece, o campo reassenta-se numa única ronda. Quando entram novos pares, as suas ondulações integram-se no campo. A matemática são as mesmas equações que descrevem a coerência quântica e as membranas biológicas. Pedimos a ideia emprestada à física.</p>
-          <p>O mapa de cores do canvas acima é o estado de energia do campo, amostrado a 60 Hz, suavizado para o olho. Os pontos são pares. Quanto mais brilhante o campo local, mais tráfego flui por essa região.</p>
+          <p>O mapa mostra apenas presença de visitantes do site; não mostra nós, relays, rotas ou capacidade reais do daemon.</p>
+          <p>A região é estimativa grosseira pela zona horária, pode estar errada e não é topologia de relay nem localização precisa.</p>
+          <p>O mapa mostra apenas presença de visitantes do site; não mostra nós, relays, rotas ou capacidade reais do daemon.</p>
         </div>
         <div>
           <pre class="ol-code"><span class="d">// solver, um passo temporal</span>
@@ -161,15 +161,15 @@
       <div class="ol-grid ol-grid-3">
         <article class="ol-tile">
           <h3>Só presença.</h3>
-          <p>O mapa mostra que você e outras pessoas estão aqui. Os relés transportam envelopes selados entre pares; os identificadores ficam nos dispositivos que os guardam.</p>
+          <p>O mapa mostra apenas presença de visitantes do site; não mostra nós, relays, rotas ou capacidade reais do daemon.</p>
         </article>
         <article class="ol-tile">
           <h3>IDs de par opacos.</h3>
-          <p>Os pontos são IDs de par anónimos que rodam. Sem nomes de utilizador, sem perfis. O reconhecimento, quando acontece, passa pelo emparelhamento, nunca pelo mapa.</p>
+          <p>IDs aleatórios por sessão são pseudónimos para visitantes, não anónimos para a infraestrutura. Cloudflare recebe metadados e o destinatário conserva o recebido.</p>
         </article>
         <article class="ol-tile">
           <h3>Forma continental.</h3>
-          <p>Os pontos agrupam-se por região continental aproximada derivada da topologia de relés. A forma da rede, não a localização precisa de qualquer pessoa.</p>
+          <p>A região é estimativa grosseira pela zona horária, pode estar errada e não é topologia de relay nem localização precisa.</p>
         </article>
       </div>
     </div>
@@ -178,8 +178,8 @@
   <section class="section">
     <div class="container">
       <span class="kicker">Junte-se à malha</span>
-      <h2>Acenda um <span class="grad">novo ponto.</span></h2>
-      <p class="lede">Instale One Link e o seu dispositivo passa a ser parte do campo. Cada novo nó fortalece o encaminhamento para toda a gente.</p>
+      <h2>Capacidades propostas; não disponibilidade atual.</h2>
+      <p class="lede ol-mw-64ch">Abrir esta página pode adicionar um ponto validado de presença web. Instalar um cliente não prova participação numa malha de produção nem reforço de rotas; essa topologia permanece um objetivo futuro testado por versão.</p>
       <div class="cta-row">
         <a href="/download/" hreflang="en" class="btn btn-primary">Obter One Link <span class="arr">&rarr;</span></a>
         <a href="/builders/" hreflang="en" class="btn btn-ghost">Manter um relé</a>
@@ -194,7 +194,7 @@
     <div class="footer-grid">
       <div>
         <a href="/pt/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
-        <p class="footer-tag">Uma rede livre e privada para mensagens, ficheiros e dispositivos. De ninguém. De todos.</p>
+        <p class="footer-tag">Software preliminar de código aberto para comunicação privada. Construído rumo à propriedade comunitária; os serviços atuais ainda dependem de mantenedores, operadores e fornecedores identificáveis.</p>
         <p class="ol-mt-md ol-soft-text ol-mono">
           <strong>Ler em:</strong>
           <a class="ol-cyan-text" hreflang="en" href="/mesh/">English</a> &middot;
@@ -205,7 +205,7 @@
           <a class="ol-cyan-text" hreflang="it" href="/it/mesh/">Italiano</a>
         </p>
       </div>
-      <div><h3>Rede</h3><ul><li><a href="/how-it-works/" hreflang="en">Como funciona</a></li><li><a href="/features/" hreflang="en">Funcionalidades</a></li><li><a href="/mesh/" hreflang="en">Malha ao vivo</a></li></ul></div>
+      <div><h3>Rede</h3><ul><li><a href="/how-it-works/" hreflang="en">Como funciona</a></li><li><a href="/features/" hreflang="en">Funcionalidades</a></li><li><a href="/mesh/" hreflang="en">Presença web</a></li></ul></div>
       <div><h3>Para si</h3><ul><li><a href="/download/" hreflang="en">Obter One Link</a></li><li><a href="/security/" hreflang="en">Segurança</a></li><li><a href="/pt/verify-download/" hreflang="pt">Verificar descarga</a></li><li><a href="/pt/roadmap/" hreflang="pt">Roteiro</a></li><li><a href="/accessibility/" hreflang="en">Acessibilidade</a></li><li><a href="/transparency/" hreflang="en">Transparência</a></li><li><a href="/audits/" hreflang="en">Auditorias</a></li></ul></div>
       <div><h3>Para construtores</h3><ul><li><a href="/builders/" hreflang="en">Protocolo e código</a></li><li><a href="/changelog/" hreflang="en">Registo de alterações</a></li><li><a href="/releases/" hreflang="en">Versões</a></li><li><a href="/mirror/" hreflang="en">Espelhar este site</a></li><li><a href="/download/source" hreflang="en" rel="noopener">Arquivo de código</a></li><li><a href="https://github.com/IamOneYouAreOneWeAreOne/one-link" rel="noopener external">GitHub</a></li></ul></div>
     </div>
@@ -216,6 +216,6 @@
   </div>
 </footer>
 
-<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r95"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r97"></script>
 </body>
 </html>

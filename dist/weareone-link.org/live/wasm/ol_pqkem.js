@@ -200,12 +200,28 @@ export function ol_pqkem_version() {
     }
 }
 
+export function _init() {
+    wasm._init();
+}
+
 /**
- * @returns {PqKemSizes}
+ * Encapsulate a fresh shared secret against the given peer hybrid public key.
+ * Returns `[ciphertext_bytes, shared_secret_bytes]`.
+ *
+ * Used by the browser-side session-start flow: fetch the relay's hybrid
+ * pubkey from `/api/session`, call this to derive `(ct, ss)`, send `ct`
+ * back, both sides now hold the same `ss`.
+ * @param {Uint8Array} peer_pubkey_bytes
+ * @returns {Array<any>}
  */
-export function pqKemSizes() {
-    const ret = wasm.pqKemSizes();
-    return PqKemSizes.__wrap(ret);
+export function encapsulateAgainst(peer_pubkey_bytes) {
+    const ptr0 = passArray8ToWasm0(peer_pubkey_bytes, wasm.__wbindgen_malloc);
+    const len0 = WASM_VECTOR_LEN;
+    const ret = wasm.encapsulateAgainst(ptr0, len0);
+    if (ret[2]) {
+        throw takeFromExternrefTable0(ret[1]);
+    }
+    return takeFromExternrefTable0(ret[0]);
 }
 
 /**
@@ -229,27 +245,11 @@ export function liveDemoRoundTrip() {
 }
 
 /**
- * Encapsulate a fresh shared secret against the given peer hybrid public key.
- * Returns `[ciphertext_bytes, shared_secret_bytes]`.
- *
- * Used by the browser-side session-start flow: fetch the relay's hybrid
- * pubkey from `/api/session`, call this to derive `(ct, ss)`, send `ct`
- * back, both sides now hold the same `ss`.
- * @param {Uint8Array} peer_pubkey_bytes
- * @returns {Array<any>}
+ * @returns {PqKemSizes}
  */
-export function encapsulateAgainst(peer_pubkey_bytes) {
-    const ptr0 = passArray8ToWasm0(peer_pubkey_bytes, wasm.__wbindgen_malloc);
-    const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.encapsulateAgainst(ptr0, len0);
-    if (ret[2]) {
-        throw takeFromExternrefTable0(ret[1]);
-    }
-    return takeFromExternrefTable0(ret[0]);
-}
-
-export function _init() {
-    wasm._init();
+export function pqKemSizes() {
+    const ret = wasm.pqKemSizes();
+    return PqKemSizes.__wrap(ret);
 }
 
 const OlPqKemKeypairFinalization = (typeof FinalizationRegistry === 'undefined')

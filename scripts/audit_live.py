@@ -36,14 +36,14 @@ PAGES = [
     ("how-it-works",    "/how-it-works/",
         ["h1", ".ol-grid", ".site-footer"]),
     ("features",        "/features/",
-        ["h1", ".ol-grid", "code"]),
+        ["h1", ".ol-grid", ".ol-tile"]),
     ("security",        "/security/",
         ["h1", ".ol-grid", "#ol-verify-site-btn"]),
     ("share",           "/share/",
         ["h1", ".site-footer"]),
     ("download",        "/download/",
-        ["h1", ".ol-warning-panel", ".ol-warning-tile", ".ol-warning-icon",
-         "a[href='/verify-download/']", "a[href='/roadmap/']", "#ol-download"]),
+        ["h1", "#platforms, .ol-warning-panel", ".ol-platform-row, .ol-warning-tile",
+         "a[href='/verify-download/']", "a[href='/roadmap/']"]),
     ("verify-download", "/verify-download/",
         ["h1", "#ol-verify-drop", "#ol-verify-file", "#ol-verify-result"]),
     ("roadmap",         "/roadmap/",
@@ -60,7 +60,7 @@ PAGES = [
         ["h1"]),
     # i18n spot checks
     ("es-home",         "/es/",                ["h1", ".site-footer", "a[href='/es/roadmap/']"]),
-    ("es-download",     "/es/download/",       ["h1", ".ol-warning-panel"]),
+    ("es-download",     "/es/download/",       ["h1", "#platforms, .ol-warning-panel", ".ol-platform-row, .ol-warning-tile"]),
     ("fr-roadmap",      "/fr/roadmap/",        ["h1", ".ol-grid"]),
     ("de-verify",       "/de/verify-download/",["h1", "#ol-verify-drop"]),
 ]
@@ -131,7 +131,8 @@ with sync_playwright() as p:
 # Markdown summary
 md = ["# Live audit  -  " + BASE, ""]
 for r in results:
-    icon = "OK" if (r.get("status") == 200 and not r["missing"] and not r["console_errors"]) else "ISSUE"
+    expected_statuses = {200, 404} if r["page"] == "404" else {200}
+    icon = "OK" if (r.get("status") in expected_statuses and not r["missing"] and not r["console_errors"]) else "ISSUE"
     md.append(f"## [{icon}] {r['page']} ({r['viewport']})  {r['url']}  status={r.get('status')}")
     if r["missing"]:        md.append(f"- missing selectors: {r['missing']}")
     if r["console_errors"]: md.append(f"- console errors: {r['console_errors']}")
@@ -139,7 +140,13 @@ for r in results:
     md.append("")
 (OUT / "report.md").write_text("\n".join(md), encoding="utf-8")
 
-issues = sum(1 for r in results if r.get("status") != 200 or r["missing"] or r["console_errors"])
+issues = sum(
+    1
+    for r in results
+    if r.get("status") not in ({200, 404} if r["page"] == "404" else {200})
+    or r["missing"]
+    or r["console_errors"]
+)
 ok     = len(results) - issues
 print(f":: {len(results)} page-views captured, {ok} clean, {issues} with issues")
 print(f":: screenshots + report at {OUT}")

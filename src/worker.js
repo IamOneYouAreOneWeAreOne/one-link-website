@@ -3,25 +3,25 @@
 // =============================================================================
 //
 // Serves the One Link public site. Static assets from dist/, plus dynamic
-// endpoints that are themselves alien tech, not marketing surface:
+// endpoints with explicit implementation boundaries:
 //
 //   GET  /api/health        - heartbeat
-//   GET  /api/capabilities  - live capability advertisement from demo daemon
-//                              (the /features page is GENERATED from this)
-//   GET  /api/topology      - live relay topology for the mesh-viz canvas
-//   GET  /api/attest/:sha   - reproducible-build attestation chain for an artifact
-//   POST /api/session       - opens a session: returns server X25519 + ML-KEM-768
-//                              public keys for in-browser hybrid handshake
-//   GET  /native            - WebTransport endpoint (One Link wire protocol)
-//   GET  /download/:os      - signed binary fetch (mesh-routed by default,
-//                              plain CDN fallback if WASM unsupported)
+//   GET  /api/capabilities  - unsigned, hard-coded website-build advertisement;
+//                              not live daemon inventory or release evidence
+//   GET  /api/topology      - fail-closed relay-topology availability status
+//   GET  /api/attest/:sha   - versioned release attestation, when enabled
+//   POST /api/session       - registers ephemeral state and advertises Worker
+//                              X25519; ML-KEM and shared-key exchange are pending
+//   GET  /native            - protocol advertisement; no WebTransport session
+//   GET  /download/:os      - artifact routing with explicit proof status
 //
-// Privacy by construction:
-//   - No cookies set anywhere.
-//   - No third-party requests.
-//   - No analytics, no tracking pixels.
-//   - No request body or identifier is logged.
-//   - Every response includes Permissions-Policy that bans tracking surfaces.
+// Privacy scope:
+//   - The application intentionally sets no tracking cookies, ad analytics, or
+//     tracking pixels. Cloudflare still processes ordinary edge metadata.
+//   - Dynamic services process the scoped state documented on /transparency/;
+//     structured operational errors avoid full addresses and full share IDs.
+//   - Response policy headers restrict browser capabilities but do not erase
+//     provider, network, recipient, or endpoint metadata.
 //
 // Copyright (C) 2024-2026 One Link contributors. AGPL-3.0.
 // =============================================================================
@@ -167,8 +167,8 @@ function onionLocationHeader(request, env) {
 }
 
 // Attach an X-Artifact-SHA256 header to a download response so the
-// /verify-download/ page (and curl users) can confirm the bytes match
-// what we signed without trusting the network in between.
+// /verify-download/ page (and curl users) can identify the bytes received.
+// This checksum is transport metadata, not an artifact signature.
 //
 // Three sources, in order of preference:
 //   1. R2's auto-computed checksum from upload (obj.checksums.sha256).
@@ -279,145 +279,216 @@ function json(payload, init = {}) {
 // -----------------------------------------------------------------------------
 function health(env) {
   return json({
+    schema: "website-health-v1",
     ok: true,
     service: "weareone-link.org",
     protocol_version: env.PROTOCOL_VERSION || "1",
-    native_transfer_cap: env.NATIVE_TRANSFER_CAP || "NATIVE_TRANSFER_V1",
+    native_transport_ready: false,
+    native_transfer_requirement: env.NATIVE_TRANSFER_CAP || "NATIVE_TRANSFER_V1",
     timestamp: new Date().toISOString(),
   });
 }
 
 // -----------------------------------------------------------------------------
-// /api/capabilities - live capability advertisement
-//
-// This is the SOURCE OF TRUTH for the /features page. The HTML page does NOT
-// hard-code the feature list. It fetches this endpoint at build time AND at
-// page-view time, then renders only what the live demo daemon actually
-// advertises. If a capability is removed from the daemon, the page reflects
-// it within a deploy. You cannot lie about features.
+// /api/capabilities - non-authoritative website requirement advertisement
 // -----------------------------------------------------------------------------
-function capabilities(env) {
-  // Mirrors One Link daemon's CapabilityAdvert structure. Hard-coded here
-  // until the Worker can dial the actual demo daemon for the live version
-  // (next session's wiring).
+function capabilities() {
+  // These identifiers are product requirements tracked by the website build.
+  // They are deliberately NOT returned as implemented capabilities. A future
+  // live daemon inventory must be authenticated, versioned, and backed by
+  // acceptance evidence before a client may promote it as authoritative.
+  const requirements = [
+    "NATIVE_TRANSFER_V1",
+    "PAIR_QR_V1",
+    "SPHINX_ONION_V1",
+    "PQ_HYBRID_V1",
+    "DOUBLE_RATCHET_V1",
+    "THRESHOLD_RECOVERY_V1",
+    "CONFIDENTIAL_COMPUTE_V1",
+    "FOLDER_MIRROR_V1",
+    "TAU_ROUTING_V1",
+    "FIELD_BOUND_BLINDING_V1",
+    "FOUNTAIN_TRANSFER_V1",
+    "RELAY_OUTBOX_V1",
+    "HARDWARE_KEY_TOFU_V1",
+  ];
   return json({
-    protocol_version: env.PROTOCOL_VERSION || "1",
-    issued_at: new Date().toISOString(),
-    capabilities: [
-      "NATIVE_TRANSFER_V1",
-      "PAIR_QR_V1",
-      "SPHINX_ONION_V1",
-      "PQ_HYBRID_V1",
-      "DOUBLE_RATCHET_V1",
-      "THRESHOLD_RECOVERY_V1",
-      "CONFIDENTIAL_COMPUTE_V1",
-      "FOLDER_MIRROR_V1",
-      "TAU_ROUTING_V1",
-      "FIELD_BOUND_BLINDING_V1",
-      "FOUNTAIN_TRANSFER_V1",
-      "RELAY_OUTBOX_V1",
-      "HARDWARE_KEY_TOFU_V1",
-    ],
-    signed: false, // becomes true once Ed25519 + ML-DSA-65 hybrid wired
+    schema: "website-capability-requirements-v1",
+    authoritative: false,
+    signed: false,
+    reviewed_at: "2026-07-22",
+    source: "hard-coded website build; not queried from a daemon",
+    capabilities: [],
+    implemented_capabilities: [],
+    requirements,
+    evidence: {
+      daemon_inventory: "not-connected",
+      acceptance_suite: "not-published",
+      release_binding: "not-published",
+    },
   });
 }
 
 // -----------------------------------------------------------------------------
-// /api/topology - live mesh map data feed
+// /api/topology - explicit topology availability status
 //
-// Returns aggregated, identifier-free node counts and τ_c routing field
-// snapshot for the mesh-viz canvas. Never returns IPs, never returns
-// individual session data.
+// The relay registry is not wired. This endpoint must fail closed instead of
+// returning shape-compatible zeros that a client could mislabel as live relay
+// or daemon telemetry.
 // -----------------------------------------------------------------------------
 async function topology(env) {
-  // Stub until live relay registry is wired. Returns shape the canvas expects.
+  // Stub until a versioned, authenticated relay registry is wired.
   const now = Date.now();
   return json({
+    schema: "topology-status-v1",
+    authoritative: false,
     issued_at: new Date(now).toISOString(),
-    active_nodes: 0,
-    active_relays: 0,
-    field_snapshot: {
-      resolution: [64, 64],
-      tau_c_min: 0.05,
-      tau_c_max: 0.95,
-      dt_ms: 16.67,
-    },
-    relay_health: [],
-    note: "live topology binding lands once RELAY_KV is provisioned",
+    active_nodes: null,
+    active_relays: null,
+    field_snapshot: null,
+    relay_health: null,
+    scope: "stub-not-production-inventory",
+    note: "No authoritative relay registry is deployed for this website build.",
   });
 }
 
 // -----------------------------------------------------------------------------
-// /api/attest/:sha - reproducible-build attestation chain
+// /api/attest/:sha - published release attestation
 // -----------------------------------------------------------------------------
-async function attestation(env, sha, request) {
+const MAX_ATTESTATION_BYTES = 256 * 1024;
+
+async function attestation(env, sha) {
   if (!sha || !/^[a-f0-9]{64}$/i.test(sha)) {
     return json({ error: "invalid sha256" }, { status: 400 });
   }
+  const normalizedSha = sha.toLowerCase();
 
-  // 1. R2 (production path).
-  if (env.ATTESTATIONS) {
-    const obj = await env.ATTESTATIONS.get(`${sha}.json`);
-    if (obj) {
-      return new Response(obj.body, {
-        headers: {
-          "Content-Type": "application/json; charset=utf-8",
-          "Cache-Control": "public, max-age=31536000, immutable",
-          ...PRIVACY_HEADERS,
-        },
-      });
-    }
+  // Fail closed. dist/attestations contains schema fixtures and historical
+  // development samples, not proof for the rolling artifacts routed by
+  // /download/*. A deployment must explicitly opt in after the immutable
+  // release pipeline has uploaded matching documents to R2.
+  if (env?.RELEASE_ATTESTATIONS_READY !== "true") {
+    return json(
+      {
+        error: "release attestation unavailable",
+        sha: normalizedSha,
+        status: "not-published",
+        note: "No attestation is published for the current rolling build.",
+      },
+      { status: 404 }
+    );
   }
 
-  // 2. Static fallback: shipped at /attestations/<sha>.json.
-  // Lets us seed the chain with sample/historical attestations before R2
-  // is provisioned, and serves as the offline-first source.
+  if (!env.ATTESTATIONS) {
+    return json(
+      {
+        error: "release attestation store unavailable",
+        sha: normalizedSha,
+        status: "misconfigured",
+      },
+      { status: 503 }
+    );
+  }
+
+  let obj;
   try {
-    const fallback = new URL(request.url);
-    fallback.pathname = `/attestations/${sha}.json`;
-    const res = await env.ASSETS.fetch(new Request(fallback.toString()));
-    if (res && res.ok) {
-      const headers = new Headers(res.headers);
-      headers.set("Cache-Control", "public, max-age=31536000, immutable");
-      for (const [k, v] of Object.entries(PRIVACY_HEADERS)) headers.set(k, v);
-      return new Response(res.body, { status: res.status, headers });
-    }
+    obj = await env.ATTESTATIONS.get(`${normalizedSha}.json`);
   } catch {
-    // fall through
+    return json(
+      {
+        error: "release attestation store request failed",
+        sha: normalizedSha,
+        status: "storage-error",
+      },
+      { status: 503 }
+    );
   }
 
-  return json(
-    { error: "no attestation on file for this sha", sha },
-    { status: 404 }
-  );
+  if (!obj) {
+    return json(
+      { error: "no attestation on file for this sha", sha: normalizedSha, status: "not-published" },
+      { status: 404 }
+    );
+  }
+
+  // Attestations are small signed JSON documents. Parse and minimally bind
+  // the document to the requested artifact before publishing it. This avoids
+  // labelling an arbitrary or malformed R2 object as a release attestation.
+  if (typeof obj.size === "number" && obj.size > MAX_ATTESTATION_BYTES) {
+    return json(
+      { error: "release attestation document is too large", sha: normalizedSha, status: "invalid-document" },
+      { status: 503 }
+    );
+  }
+
+  let document;
+  try {
+    document = await obj.json();
+  } catch {
+    return json(
+      { error: "release attestation document is invalid JSON", sha: normalizedSha, status: "invalid-document" },
+      { status: 503 }
+    );
+  }
+
+  const artifactSha = document?.artifact?.sha256;
+  const ed25519Signature = Array.isArray(document?.signatures)
+    ? document.signatures.find(entry => entry?.scheme === "ed25519")
+    : null;
+  const structurallyBound = typeof artifactSha === "string"
+    && artifactSha.toLowerCase() === normalizedSha
+    && /^[a-f0-9]{64}$/i.test(ed25519Signature?.public_key_hex || "")
+    && /^[a-f0-9]{128}$/i.test(ed25519Signature?.signature_hex || "");
+  if (!structurallyBound) {
+    return json(
+      {
+        error: "release attestation is not bound to the requested artifact",
+        sha: normalizedSha,
+        status: "invalid-document",
+      },
+      { status: 503 }
+    );
+  }
+
+  const headers = new Headers({
+    "Content-Type": "application/json; charset=utf-8",
+    "Cache-Control": "public, max-age=31536000, immutable",
+    "X-One-Link-Attestation-Status": "published",
+    // The browser verifier checks the signature against its pinned key. The
+    // API only asserts that a structurally valid document was published.
+    "X-One-Link-Attestation-Signature": "present-unverified",
+  });
+  for (const [k, v] of Object.entries(PRIVACY_HEADERS)) headers.set(k, v);
+  for (const [k, v] of Object.entries(NEL_OPT_OUT_HEADERS)) headers.set(k, v);
+  return new Response(JSON.stringify(document), { headers });
 }
 
 // -----------------------------------------------------------------------------
-// POST /api/session - server-side X25519 (real) + ML-KEM-768 (deferred) handshake
+// POST /api/session - ephemeral registration plus capability advertisement
 //
 // Returns: {
 //   server_x25519:       hex (32 bytes, REAL Worker-side WebCrypto-generated)
 //   server_mlkem768_pk:  null  (deferred until WASM-in-Worker tooling ships)
 //   session_id:          hex (16 bytes)
-//   handshake_version:   "x25519-v1+mlkem768-pending"
+//   handshake_version:   "session-registration-v1+x25519-advertised+mlkem768-pending"
 // }
 //
-// Currently the X25519 half is genuine: the Worker mints a fresh X25519
-// keypair via WebCrypto every restart, holds it in instance memory (no
-// disk, no KV), and serves the public half. Browser side runs ECDH
-// against it and gets a real classical shared secret.
+// The Worker mints a fresh X25519 keypair via WebCrypto every restart, holds
+// it in instance memory (no disk, no KV), and advertises the public half.
+// The current browser bridge does not run ECDH against that key, so this
+// endpoint must not be described as an established secure session.
 //
 // The PQ-hybrid half (ML-KEM-768) lands once we bundle ol_pqkem WASM
 // for the Workers runtime - the bundler dance is more involved than
 // fits in this push; doing it half-right would be worse than a clean
 // deferral.
 //
-// What the browser-side ol_pqkem WASM still proves (in-tab):
+// What the browser-side ol_pqkem WASM self-test proves (in-tab only):
 //   - both halves of the hybrid KEM compose correctly (Alice <-> Bob
 //     locally; see /security/ when PQ-KEM demo ships)
 //   - byte-identical to what the daemon would compute
-//   So the protocol primitive is verifiable. The SERVER's PQ half is
-//   what's pending here, not the math.
+// It does not prove protection of the browser-to-Worker path. Both the client
+// key agreement and the Worker's PQ half remain pending.
 // -----------------------------------------------------------------------------
 let __SERVER_X25519_KEY = null;
 async function getOrMintServerX25519() {
@@ -452,37 +523,39 @@ async function openSession(env, request) {
     );
   }
   return json({
+    schema: "website-session-registration-v1",
+    registered: true,
     server_x25519: serverKey.publicKeyHex,
     server_mlkem768_pk: null,
     session_id: crypto.randomUUID().replace(/-/g, "").slice(0, 32),
-    handshake_version: "x25519-v1+mlkem768-pending",
+    handshake_version: "session-registration-v1+x25519-advertised+mlkem768-pending",
     note:
-      "X25519 half is real (Worker WebCrypto-generated, in-memory). " +
-      "ML-KEM-768 half lands when the WASM-in-Worker bundler dance is " +
-      "complete. Browser-side ol_pqkem WASM exercises BOTH halves " +
-      "locally so the hybrid math is verifiable today.",
+      "The Worker advertises an ephemeral X25519 public key, but this request " +
+      "does not complete client ECDH or ML-KEM-768. Browser-side ol_pqkem WASM " +
+      "only performs a local primitive self-test today.",
   });
 }
 
 // -----------------------------------------------------------------------------
-// GET /native - WebTransport endpoint (One Link wire protocol)
-//
-// Cloudflare Workers don't yet expose raw WebTransport in stable, so this is
-// the negotiation surface. Once WebTransport-on-Workers lands, this becomes
-// the actual UDP-style entrypoint for the FILE_NATIVE_CHUNK pipeline.
+// GET /native - explicit native-transport availability boundary
 // -----------------------------------------------------------------------------
-function nativeAdvert(env) {
+function nativeAdvert() {
   return json({
-    transport: "webtransport-h3",
-    status: "advertised",
-    accepted_caps: [
+    schema: "native-transport-status-v1",
+    authoritative: true,
+    ready: false,
+    status: "not-implemented-on-website-worker",
+    transport_target: "webtransport-h3",
+    accepted_caps: [],
+    capability_requirements: [
       "NATIVE_TRANSFER_V1",
       "PAIR_QR_V1",
       "SPHINX_ONION_V1",
       "PQ_HYBRID_V1",
     ],
-    note: "WebTransport upgrade lands when CF Worker support is stable; the demo daemon at the release relay accepts native dial today",
-  });
+    session_endpoint: null,
+    note: "This endpoint does not accept a native dial, negotiate WebTransport, or prove that a release relay is deployed.",
+  }, { status: 501 });
 }
 
 // -----------------------------------------------------------------------------
@@ -506,9 +579,10 @@ function nativeAdvert(env) {
 //   ``source``                           — R2-hosted source archive.
 //   ``android`` / ``ios`` / ``openbsd``  — coming-soon page (honest).
 //
-// Resolution: detect OS + arch + format → choose the matching GitHub
-// auto-latest asset name → HTTP 302 redirect to
-// ``github.com/IamOneYouAreOneWeAreOne/one-link/releases/download/auto-latest/<asset>``.
+// Resolution: detect OS + arch + format, choose the matching GitHub asset,
+// then redirect. The default remains the mutable ``auto-latest`` prerelease
+// so existing supported downloads keep working. A deployment can set
+// VERSIONED_RELEASE_TAG to pin all public routes to an explicit v* tag.
 //
 // Why redirect, not proxy: the auto-latest GitHub release is the single
 // source of truth (continuously rebuilt by the One Link repo's CI on
@@ -519,12 +593,57 @@ function nativeAdvert(env) {
 // source-archive path is the canonical mirror.
 // -----------------------------------------------------------------------------
 
-// GitHub release base — the auto-latest tag is rebuilt on every push
-// to the one-link repo's master, so this URL is always the freshest
-// continuous build. Tagged releases live at /releases/tag/v* and are
-// reached via /releases on the website.
+// ``auto-latest`` is a rolling CI artifact channel. It is not an immutable
+// release and is not evidence of artifact signing, attestation, or
+// reproducibility. VERSIONED_RELEASE_TAG is deliberately opt-in so a future
+// version can be promoted without changing the public download URLs.
 const GITHUB_REPO = "https://github.com/IamOneYouAreOneWeAreOne/one-link";
-const AUTO_LATEST_BASE = `${GITHUB_REPO}/releases/download/auto-latest`;
+const VERSIONED_RELEASE_TAG_RE = /^v\d+\.\d+\.\d+(?:-[0-9A-Za-z](?:[0-9A-Za-z.-]*[0-9A-Za-z])?)?$/;
+
+function releaseDescriptor(env) {
+  const configured = typeof env?.VERSIONED_RELEASE_TAG === "string"
+    ? env.VERSIONED_RELEASE_TAG.trim()
+    : "";
+  if (configured && !VERSIONED_RELEASE_TAG_RE.test(configured)) {
+    return {
+      ok: false,
+      error: "VERSIONED_RELEASE_TAG must be an explicit vMAJOR.MINOR.PATCH tag",
+    };
+  }
+  const tag = configured || "auto-latest";
+  const versionPinned = Boolean(configured);
+  return {
+    ok: true,
+    channel: versionPinned ? "versioned" : "continuous",
+    tag,
+    version_pinned: versionPinned,
+    // GitHub release assets can still be replaced by a repository maintainer.
+    // A tag pins the route name; it does not by itself prove immutability.
+    mutable: true,
+    immutability: versionPinned ? "not-enforced" : "rolling-channel",
+    base_url: `${GITHUB_REPO}/releases/download/${encodeURIComponent(tag)}`,
+    // These stay unavailable until an artifact-bound, signed release catalog
+    // is checked into the Worker. A tag alone is not cryptographic proof.
+    integrity: {
+      sha256: null,
+      signature: "not-published",
+      attestation: "not-published",
+      reproducible_build: "not-verified",
+    },
+  };
+}
+
+function releaseHeaders(release) {
+  return {
+    "X-One-Link-Release-Channel": release.channel,
+    "X-One-Link-Release-Tag": release.tag,
+    "X-One-Link-Version-Pinned": String(release.version_pinned),
+    "X-One-Link-Immutability": release.immutability,
+    "X-One-Link-Artifact-Hash": "not-published",
+    "X-One-Link-Artifact-Signature": "not-published",
+    "X-One-Link-Artifact-Attestation": "not-published",
+  };
+}
 
 // Parse a "platform spec" — the path segment after /download/. Accepts:
 //   windows, macos, linux                      — OS only
@@ -542,27 +661,43 @@ function parsePlatformSpec(spec) {
   if (!KNOWN_OS.has(head)) return null;
   const out = { os: head, arch: null, format: null };
   for (const p of parts.slice(1)) {
-    if (p === "x86_64" || p === "amd64") out.arch = "x86_64";
-    else if (p === "arm64" || p === "aarch64") out.arch = "arm64";
-    else if (p === "zip" || p === "portable") out.format = "zip";
-    else if (p === "installer") out.format = "installer";
+    if (p === "x86_64" || p === "amd64") {
+      if (out.arch !== null) return null;
+      out.arch = "x86_64";
+    }
+    else if (p === "arm64" || p === "aarch64") {
+      if (out.arch !== null) return null;
+      out.arch = "arm64";
+    }
+    else if (p === "zip" || p === "portable") {
+      if (out.format !== null) return null;
+      out.format = "zip";
+    }
+    else if (p === "installer") {
+      if (out.format !== null) return null;
+      out.format = "installer";
+    }
     else return null;
+  }
+  // Architectures and packaging formats only make sense for desktop binary
+  // routes. Reject misleading forms such as /download/source-arm64 instead
+  // of silently ignoring their suffixes.
+  if (!["windows", "macos", "linux"].includes(head)
+      && (out.arch !== null || out.format !== null)) {
+    return null;
   }
   return out;
 }
 
 // Heuristic OS + arch detection from the User-Agent header. Used to
 // pick a default when the user hit /download/windows (etc.) without
-// an explicit arch hint. Apple deliberately hides Mac arch from the
-// UA so the Mac default is ``arm64`` (every Mac shipped since late
-// 2020 is Apple Silicon — Intel users can pick from the download
-// page tile).
+// an explicit arch hint. Apple does not provide a reliable Mac architecture
+// signal in the ordinary UA, so macOS returns unknown instead of guessing.
 // Detect the visitor's OS from the User-Agent. Powers the
 // ``/download/auto`` shortcut so the homepage "Download" CTA goes
 // straight to the right installer with one click — no platform
-// picker, no intermediate page. Falls back to ``windows`` for
-// unrecognised UAs (largest install base — least likely to be a
-// terrible default).
+// picker, no intermediate page. Unrecognised UAs return no platform: sending
+// an arbitrary Windows build is worse than asking the visitor to choose.
 function detectOsFromUA(ua) {
   const s = (ua || "").toLowerCase();
   if (/iphone|ipad|ipod/.test(s)) return "ios";
@@ -571,7 +706,7 @@ function detectOsFromUA(ua) {
   if (s.includes("windows")) return "windows";
   if (s.includes("linux") || s.includes("ubuntu") || s.includes("debian") || s.includes("fedora")) return "linux";
   if (/freebsd|openbsd|netbsd/.test(s)) return "openbsd";
-  return "windows";
+  return null;
 }
 
 function detectArchFromUA(ua, fallbackOs) {
@@ -582,11 +717,10 @@ function detectArchFromUA(ua, fallbackOs) {
     return "x86_64";
   }
   if (fallbackOs === "macos") {
-    // Apple Safari + Chrome both report "Intel Mac OS X" regardless of
-    // actual silicon. The Apple-Silicon-vs-Intel signal isn't in the UA.
-    // Default to arm64 since it's the dominant macOS arch since 2020.
-    // Intel-Mac users see an obvious tile on the download page.
-    return "arm64";
+    // Safari and Chromium commonly report "Intel Mac OS X" on both Intel
+    // and Apple Silicon. Guessing arm64 here sent Intel users an unusable
+    // artifact. Require an explicit architecture route instead.
+    return null;
   }
   if (fallbackOs === "linux") {
     if (s.includes("aarch64") || s.includes("arm64")) return "arm64";
@@ -600,22 +734,20 @@ function detectArchFromUA(ua, fallbackOs) {
 // (e.g. /download/android — no Android build yet).
 function chooseAsset(os, arch, format) {
   if (os === "windows") {
+    if (arch !== "x86_64" && arch !== "arm64") return null;
     if (format === "zip") return `one-link-windows-${arch}.zip`;
     // Default + explicit installer both → the per-user Inno Setup .exe.
     return `one-link-setup-${arch}.exe`;
   }
   if (os === "macos") {
-    // Intel-Mac .dmg is not currently built (macos-13 runner-pool
-    // starvation — see one-link auto_build.yml). Fall back to the
-    // arm64 .dmg, which Intel Macs run via Rosetta 2. The macOS
-    // .zip is still built per-arch and works directly.
-    if (arch === "x86_64" && format !== "zip") {
-      return "one-link-macos-arm64.dmg";
-    }
+    // Only Apple Silicon artifacts currently exist. Never substitute arm64
+    // for an x86_64 request and never invent an absent Intel zip.
+    if (arch !== "arm64") return null;
     if (format === "zip") return `one-link-macos-${arch}.zip`;
     return `one-link-macos-${arch}.dmg`;
   }
   if (os === "linux") {
+    if (arch !== "x86_64" && arch !== "arm64") return null;
     if (format === "zip") return `one-link-linux-${arch}.zip`;
     return `one-link-linux-${arch}.AppImage`;
   }
@@ -623,6 +755,14 @@ function chooseAsset(os, arch, format) {
 }
 
 async function download(env, platformSpec, request) {
+  const release = releaseDescriptor(env);
+  if (!release.ok) {
+    return json(
+      { error: "release routing is misconfigured", detail: release.error },
+      { status: 503 }
+    );
+  }
+
   // ``auto`` — the homepage "Download" CTA target. Detect everything
   // from the User-Agent and short-circuit straight to the redirect.
   // No platform picker, no intermediate page, no required JS. One
@@ -630,6 +770,30 @@ async function download(env, platformSpec, request) {
   if (platformSpec === "auto") {
     const ua = request?.headers.get("User-Agent") || "";
     const detectedOs = detectOsFromUA(ua);
+    if (!detectedOs) {
+      const accept = (request?.headers.get("Accept") || "").toLowerCase();
+      if (!accept.includes("text/html")) {
+        return json(
+          {
+            error: "platform selection required",
+            available: [
+              "windows-x86_64", "windows-arm64", "macos-arm64",
+              "linux-x86_64", "linux-arm64", "source",
+            ],
+            note: "The User-Agent did not identify a supported platform, so no artifact was selected.",
+          },
+          { status: 300 }
+        );
+      }
+      const headers = new Headers({
+        Location: "/download/",
+        "Cache-Control": "no-store",
+        Vary: "User-Agent, Accept",
+      });
+      for (const [k, v] of Object.entries(PRIVACY_HEADERS)) headers.set(k, v);
+      for (const [k, v] of Object.entries(NEL_OPT_OUT_HEADERS)) headers.set(k, v);
+      return new Response(null, { status: 302, headers });
+    }
     // Android / iOS / OpenBSD don't have installers yet — route to
     // the coming-soon page rather than redirecting to a 404 asset.
     if (detectedOs === "android" || detectedOs === "ios" || detectedOs === "openbsd") {
@@ -638,16 +802,20 @@ async function download(env, platformSpec, request) {
     const detectedArch = detectArchFromUA(ua, detectedOs);
     const asset = chooseAsset(detectedOs, detectedArch, "installer");
     if (asset) {
-      const target = `${AUTO_LATEST_BASE}/${asset}`;
+      const target = `${release.base_url}/${asset}`;
       const headers = new Headers({
         Location: target,
         "Cache-Control": "no-cache, no-store, must-revalidate",
+        ...releaseHeaders(release),
       });
       for (const [k, v] of Object.entries(PRIVACY_HEADERS)) headers.set(k, v);
       return new Response(null, { status: 302, headers });
     }
     // Unknown platform fall-through → coming-soon page in the visitor's
     // language so they at least understand what happened.
+    if (detectedOs === "macos") {
+      return unavailableMacArchitecture(request, detectedArch);
+    }
     return downloadComingSoonPage(detectedOs, detectLanguage(request));
   }
 
@@ -655,13 +823,14 @@ async function download(env, platformSpec, request) {
   if (!parsed) {
     return json({
       error: "unknown platform",
-      supported: [
+      available: [
         "auto",
         "windows", "windows-x86_64", "windows-arm64", "windows-x86_64-zip",
-        "macos", "macos-arm64", "macos-x86_64",
+        "macos", "macos-arm64", "macos-arm64-zip",
         "linux", "linux-x86_64", "linux-arm64",
-        "source", "android", "ios",
+        "source",
       ],
+      unavailable: ["macos-x86_64", "android", "ios", "openbsd", "freebsd"],
     }, { status: 404 });
   }
   const os = parsed.os;
@@ -673,19 +842,63 @@ async function download(env, platformSpec, request) {
   if (os === "source" && env.RELEASES) {
     const ua = (request?.headers.get("User-Agent") || "").toLowerCase();
     const wantsZip = /windows|iphone|ipad|ios|android|mac os/.test(ua);
+    const sourcePrefix = release.version_pinned
+      ? `releases/${release.tag}`
+      : "latest";
     const key = wantsZip
-      ? "latest/one-link-source.zip"
-      : "latest/one-link-source.tar.gz";
-    const obj = await env.RELEASES.get(key);
+      ? `${sourcePrefix}/one-link-source.zip`
+      : `${sourcePrefix}/one-link-source.tar.gz`;
+    let obj;
+    try {
+      obj = await env.RELEASES.get(key);
+    } catch {
+      return json(
+        {
+          error: "source archive store request failed",
+          status: "storage-error",
+          retryable: true,
+        },
+        { status: 503 }
+      );
+    }
     if (obj) {
       const headers = new Headers();
+      attachArtifactHash(headers, obj);
+      const sourceSha256 = headers.get("X-Artifact-SHA256");
+      const accept = (request?.headers.get("Accept") || "").toLowerCase();
+      if (accept.includes("application/json")) {
+        return json({
+          os: "source",
+          asset: wantsZip ? "one-link-source.zip" : "one-link-source.tar.gz",
+          release: {
+            channel: release.channel,
+            tag: release.tag,
+            version_pinned: release.version_pinned,
+            mutable: release.mutable,
+            immutability: release.immutability,
+          },
+          integrity: {
+            ...release.integrity,
+            sha256: sourceSha256 || null,
+          },
+          note: sourceSha256
+            ? "A transport checksum is available, but no artifact signature or attestation is published."
+            : "No artifact-bound reference hash, signature, or attestation is published.",
+        });
+      }
       headers.set("Content-Type", wantsZip ? "application/zip" : "application/gzip");
       headers.set(
         "Content-Disposition",
         `attachment; filename="${wantsZip ? "one-link-source.zip" : "one-link-source.tar.gz"}"`
       );
-      headers.set("Cache-Control", "public, max-age=86400");
-      attachArtifactHash(headers, obj);
+      headers.set(
+        "Cache-Control",
+        "public, max-age=86400"
+      );
+      for (const [k, v] of Object.entries(releaseHeaders(release))) headers.set(k, v);
+      if (headers.has("X-Artifact-SHA256")) {
+        headers.set("X-One-Link-Artifact-Hash", "published-unsigned");
+      }
       for (const [k, v] of Object.entries(PRIVACY_HEADERS)) headers.set(k, v);
       for (const [k, v] of Object.entries(NEL_OPT_OUT_HEADERS)) headers.set(k, v);
       return new Response(obj.body, { headers });
@@ -693,6 +906,17 @@ async function download(env, platformSpec, request) {
     // R2 miss: 503 with honest reason.
     return json(
       { error: "source archive temporarily unavailable", note: "R2 object missing; retry shortly" },
+      { status: 503 }
+    );
+  }
+
+  if (os === "source") {
+    return json(
+      {
+        error: "source archive store unavailable",
+        status: "misconfigured",
+        note: "Clone the public repository while the release mirror is unavailable.",
+      },
       { status: 503 }
     );
   }
@@ -707,9 +931,10 @@ async function download(env, platformSpec, request) {
     const format = parsed.format || "installer";
     const asset = chooseAsset(os, arch, format);
     if (!asset) {
+      if (os === "macos") return unavailableMacArchitecture(request, arch);
       return downloadComingSoonPage(os, detectLanguage(request));
     }
-    const target = `${AUTO_LATEST_BASE}/${asset}`;
+    const target = `${release.base_url}/${asset}`;
     // Browser navigation → 302 redirect to GitHub. Programmatic clients
     // that ask for JSON (e.g. ``curl -H 'Accept: application/json'``)
     // get the resolved URL back as JSON so scripts don't have to
@@ -718,12 +943,23 @@ async function download(env, platformSpec, request) {
     if (accept.includes("application/json")) {
       return json({
         os, arch, format, asset, url: target,
-        note: "redirects to GitHub auto-latest; this is the always-fresh asset URL",
+        release: {
+          channel: release.channel,
+          tag: release.tag,
+          version_pinned: release.version_pinned,
+          mutable: release.mutable,
+          immutability: release.immutability,
+        },
+        integrity: release.integrity,
+        note: release.version_pinned
+          ? "Version-pinned GitHub URL. Repository maintainers can still replace the asset; no signature or attestation is published by this route."
+          : "Mutable GitHub continuous build. It is not a signed or attested immutable release.",
       });
     }
     const headers = new Headers({
       Location: target,
       "Cache-Control": "no-cache, no-store, must-revalidate",
+      ...releaseHeaders(release),
     });
     for (const [k, v] of Object.entries(PRIVACY_HEADERS)) headers.set(k, v);
     return new Response(null, { status: 302, headers });
@@ -735,7 +971,7 @@ async function download(env, platformSpec, request) {
   const accept = (request?.headers.get("Accept") || "").toLowerCase();
   if (!accept.includes("text/html")) {
     return json(
-      { error: "no signed release on file yet", os,
+      { error: "no binary artifact on file yet", os,
         note: "browse to this URL in a browser for the human-readable page" },
       { status: 503 }
     );
@@ -777,6 +1013,41 @@ function detectLanguage(request) {
   return "en";
 }
 
+function unavailableMacArchitecture(request, arch) {
+  const explicitIntel = arch === "x86_64";
+  const status = explicitIntel ? 503 : 300;
+  const payload = {
+    error: explicitIntel
+      ? "macOS Intel artifact unavailable"
+      : "macOS architecture selection required",
+    os: "macos",
+    arch: arch || null,
+    available: ["macos-arm64", "macos-arm64-zip"],
+    note: explicitIntel
+      ? "No x86_64 macOS artifact is published. This route will not substitute an Apple Silicon build."
+      : "A normal macOS User-Agent does not reliably identify Intel versus Apple Silicon. Choose explicitly.",
+  };
+  const accept = (request?.headers.get("Accept") || "").toLowerCase();
+  if (!accept.includes("text/html")) return json(payload, { status });
+
+  const block = {
+    label: explicitIntel ? "macOS Intel" : "macOS",
+    headline: explicitIntel
+      ? "No macOS Intel artifact is published."
+      : "Choose your macOS architecture.",
+    lede: explicitIntel
+      ? "This route will not send you an Apple Silicon artifact or a filename that does not exist. Build from source, or use the Apple Silicon download only on an Apple Silicon Mac."
+      : "Browsers do not reliably reveal whether a Mac is Intel or Apple Silicon. Select Apple Silicon below only if that matches your Mac. There is no Intel artifact today.",
+    cta: {
+      kind: "direct",
+      label: "Apple Silicon download",
+      href: "/download/macos-arm64",
+    },
+    note: "Current desktop artifacts are rolling alpha builds. Artifact signing, attestation, and reproducible-build proof are not published.",
+  };
+  return downloadComingSoonPage("macos", "en", block, status);
+}
+
 // -----------------------------------------------------------------------------
 // "Not yet" HTML page (on-brand, OS-specific, honest, in the visitor's
 // language). The chrome + per-OS body strings are dispatched by detected
@@ -791,60 +1062,60 @@ const COMING_SOON_BLOCKS = {
       cta: { kind: "watch" },
       note: "If you want a direct ping the moment TestFlight opens, drop a comment on issue #1 in the repo. No email or signup needed.",
     },
-    android: { label: "Android", headline: "Android build is being packaged.", lede: "We are bundling a signed APK now. Until that lands, the source builds cleanly with the Android NDK. Instructions in the repo.", cta: { kind: "build", anchor: "#android" }, note: null },
-    macos:   { label: "macOS",   headline: "macOS signed build is being notarized.", lede: "Apple Developer ID notarization takes a beat. Until the signed .dmg lands, the daemon builds cleanly from source with cargo + Python 3.11+.", cta: { kind: "build", anchor: "#macos" }, note: "macOS will refuse to open an unsigned binary served from a website. We are not going to ask you to bypass Gatekeeper. Either build it yourself or wait for the signed build." },
-    windows: { label: "Windows", headline: "Windows signed installer is being packaged.", lede: "We are getting the Authenticode signing cert in place so SmartScreen does not yell at you. Until that lands, the daemon builds cleanly from source.", cta: { kind: "build", anchor: "#windows" }, note: null },
-    linux:   { label: "Linux",   headline: "Linux build is being packaged.", lede: "AppImage + .deb + .rpm coming. For now the daemon builds cleanly from source on any glibc 2.28+ distro.", cta: { kind: "build", anchor: "#linux" }, note: null },
+    android: { label: "Android", headline: "No Android artifact is published.", lede: "Follow the public repository for build instructions and release status.", cta: { kind: "build", anchor: "#android" }, note: null },
+    macos:   { label: "macOS",   headline: "Choose Apple Silicon or build from source.", lede: "A rolling Apple Silicon artifact exists. No Intel artifact, Developer ID signature, or notarization proof is published.", cta: { kind: "build", anchor: "#macos" }, note: "Do not bypass Gatekeeper on the assumption that this website verified a publisher signature." },
+    windows: { label: "Windows", headline: "A rolling Windows alpha build is available.", lede: "The artifact is not Authenticode-signed and no One Link release signature is published. Treat it as a test build.", cta: { kind: "build", anchor: "#windows" }, note: null },
+    linux:   { label: "Linux",   headline: "Rolling Linux alpha builds are available.", lede: "AppImage and portable zip artifacts are published for x86_64 and arm64. They are not signed production releases; .deb and .rpm packages are not published.", cta: { kind: "build", anchor: "#linux" }, note: null },
     openbsd: { label: "OpenBSD", headline: "OpenBSD port pending.", lede: "If you are on OpenBSD you can probably build from source faster than we can write a port. Patches welcome.", cta: { kind: "source" }, note: null },
     freebsd: { label: "FreeBSD", headline: "FreeBSD port pending.", lede: "Same story as OpenBSD. Build from source today.", cta: { kind: "source" }, note: null },
     source:  { label: "Source",  headline: "Building from source today.", lede: "AGPL-3.0. Every line of the daemon, every protocol crate, every shader. Clone, read, fork, run your own.", cta: { kind: "clone" }, note: "Requires Rust 1.95+, Python 3.11+, and an internet connection long enough to pull the workspace. Build instructions are in the repo README." },
   },
   es: {
     ios:     { label: "iOS",     headline: "iOS llega vía TestFlight.", lede: "Las apps de iOS solo se instalan por App Store o TestFlight. Aún no estamos en ninguno. Sigue el repo y publicaremos el enlace de TestFlight en cuanto se abra.", cta: { kind: "watch" }, note: "Si quieres un aviso directo en el momento que TestFlight abra, comenta en el issue #1 del repo. No hace falta correo ni registro." },
-    android: { label: "Android", headline: "El build de Android está en preparación.", lede: "Estamos empaquetando un APK firmado ahora. Hasta que llegue, la fuente compila sin problemas con el Android NDK. Instrucciones en el repo.", cta: { kind: "build", anchor: "#android" }, note: null },
-    macos:   { label: "macOS",   headline: "El build firmado de macOS está siendo notarizado.", lede: "La notarización con Apple Developer ID lleva su tiempo. Hasta que llegue el .dmg firmado, el daemon compila sin problemas desde la fuente con cargo + Python 3.11+.", cta: { kind: "build", anchor: "#macos" }, note: "macOS no abre un binario sin firmar servido desde un sitio web. No te vamos a pedir que esquives Gatekeeper. O lo compilas tú o esperas al build firmado." },
-    windows: { label: "Windows", headline: "El instalador firmado de Windows está en preparación.", lede: "Estamos poniendo en marcha el certificado Authenticode para que SmartScreen no te chille. Hasta entonces, el daemon compila sin problemas desde la fuente.", cta: { kind: "build", anchor: "#windows" }, note: null },
-    linux:   { label: "Linux",   headline: "El build de Linux está en preparación.", lede: "AppImage + .deb + .rpm en camino. Por ahora el daemon compila sin problemas desde la fuente en cualquier distro con glibc 2.28+.", cta: { kind: "build", anchor: "#linux" }, note: null },
+    android: { label: "Android", headline: "No hay artefacto Android publicado.", lede: "Consulta el repositorio público para instrucciones y estado.", cta: { kind: "build", anchor: "#android" }, note: null },
+    macos:   { label: "macOS",   headline: "Elige Apple Silicon o compila desde el código.", lede: "Existe un artefacto continuo para Apple Silicon. No se publica artefacto Intel, firma Developer ID ni prueba de notarización.", cta: { kind: "build", anchor: "#macos" }, note: "No esquives Gatekeeper suponiendo que este sitio verificó una firma del editor." },
+    windows: { label: "Windows", headline: "Hay una build alfa continua de Windows.", lede: "El artefacto no tiene Authenticode ni una firma de versión One Link publicada. Trátalo como build de prueba.", cta: { kind: "build", anchor: "#windows" }, note: null },
+    linux:   { label: "Linux",   headline: "Hay builds alfa continuas para Linux.", lede: "Se publican AppImage y zip portátiles para x86_64 y arm64. No son versiones de producción firmadas; no se publican paquetes .deb ni .rpm.", cta: { kind: "build", anchor: "#linux" }, note: null },
     openbsd: { label: "OpenBSD", headline: "Port de OpenBSD pendiente.", lede: "Si estás en OpenBSD probablemente puedas compilar desde la fuente más rápido de lo que tardamos en escribir un port. Se aceptan parches.", cta: { kind: "source" }, note: null },
     freebsd: { label: "FreeBSD", headline: "Port de FreeBSD pendiente.", lede: "La misma historia que OpenBSD. Compila desde la fuente hoy.", cta: { kind: "source" }, note: null },
     source:  { label: "Fuente",  headline: "Construyendo desde la fuente hoy.", lede: "AGPL-3.0. Cada línea del daemon, cada crate del protocolo, cada shader. Clónalo, léelo, bifúrcalo, opera el tuyo.", cta: { kind: "clone" }, note: "Requiere Rust 1.95+, Python 3.11+ y una conexión a internet lo bastante larga para descargar el workspace. Las instrucciones de compilación están en el README del repo." },
   },
   fr: {
     ios:     { label: "iOS",     headline: "iOS arrive via TestFlight.", lede: "Les apps iOS ne s'installent qu'à travers l'App Store ou TestFlight. Nous ne sommes encore sur aucun. Suivez le dépôt et nous publierons le lien TestFlight dès qu'il sera ouvert.", cta: { kind: "watch" }, note: "Si vous voulez une alerte directe au moment où TestFlight ouvre, commentez le ticket #1 du dépôt. Pas besoin d'e-mail ni d'inscription." },
-    android: { label: "Android", headline: "Le build Android est en préparation.", lede: "Nous empaquetons un APK signé maintenant. En attendant, la source compile sans problème avec le NDK Android. Instructions dans le dépôt.", cta: { kind: "build", anchor: "#android" }, note: null },
-    macos:   { label: "macOS",   headline: "Le build signé macOS est en cours de notarisation.", lede: "La notarisation Apple Developer ID prend du temps. En attendant le .dmg signé, le daemon compile sans problème depuis la source avec cargo + Python 3.11+.", cta: { kind: "build", anchor: "#macos" }, note: "macOS refuse d'ouvrir un binaire non signé servi depuis un site web. Nous n'allons pas vous demander de contourner Gatekeeper. Soit vous compilez vous-même, soit vous attendez le build signé." },
-    windows: { label: "Windows", headline: "L'installeur signé Windows est en préparation.", lede: "Nous mettons en place le certificat Authenticode pour que SmartScreen ne crie pas. En attendant, le daemon compile sans problème depuis la source.", cta: { kind: "build", anchor: "#windows" }, note: null },
-    linux:   { label: "Linux",   headline: "Le build Linux est en préparation.", lede: "AppImage + .deb + .rpm en route. Pour l'instant le daemon compile sans problème depuis la source sur toute distro glibc 2.28+.", cta: { kind: "build", anchor: "#linux" }, note: null },
+    android: { label: "Android", headline: "Aucun artefact Android n'est publié.", lede: "Consultez le dépôt public pour les instructions et l'état.", cta: { kind: "build", anchor: "#android" }, note: null },
+    macos:   { label: "macOS",   headline: "Choisissez Apple Silicon ou compilez les sources.", lede: "Un artefact continu Apple Silicon existe. Aucun artefact Intel, signature Developer ID ou preuve de notarisation n'est publié.", cta: { kind: "build", anchor: "#macos" }, note: "Ne contournez pas Gatekeeper en supposant que ce site a vérifié une signature d'éditeur." },
+    windows: { label: "Windows", headline: "Un build alpha continu Windows est disponible.", lede: "L'artefact n'est pas signé Authenticode et aucune signature de version One Link n'est publiée. Traitez-le comme un build de test.", cta: { kind: "build", anchor: "#windows" }, note: null },
+    linux:   { label: "Linux",   headline: "Des builds alpha continus Linux sont disponibles.", lede: "Des AppImage et zip portables sont publiés pour x86_64 et arm64. Ce ne sont pas des versions de production signées ; aucun paquet .deb ou .rpm n'est publié.", cta: { kind: "build", anchor: "#linux" }, note: null },
     openbsd: { label: "OpenBSD", headline: "Port OpenBSD en attente.", lede: "Si vous êtes sous OpenBSD vous pouvez probablement compiler depuis la source plus vite que nous n'écrivons un port. Les patchs sont les bienvenus.", cta: { kind: "source" }, note: null },
     freebsd: { label: "FreeBSD", headline: "Port FreeBSD en attente.", lede: "Même histoire qu'OpenBSD. Compilez depuis la source aujourd'hui.", cta: { kind: "source" }, note: null },
     source:  { label: "Source",  headline: "Compiler depuis la source aujourd'hui.", lede: "AGPL-3.0. Chaque ligne du daemon, chaque crate du protocole, chaque shader. Clonez, lisez, forkez, exploitez le vôtre.", cta: { kind: "clone" }, note: "Nécessite Rust 1.95+, Python 3.11+, et une connexion internet assez longue pour télécharger le workspace. Les instructions de compilation sont dans le README du dépôt." },
   },
   de: {
     ios:     { label: "iOS",     headline: "iOS kommt via TestFlight.", lede: "iOS-Apps lassen sich nur über den App Store oder TestFlight installieren. Wir sind auf keinem davon. Beobachten Sie das Repo, wir posten den TestFlight-Link in dem Moment, in dem er offen ist.", cta: { kind: "watch" }, note: "Wenn Sie einen direkten Hinweis möchten, sobald TestFlight öffnet, kommentieren Sie Issue #1 im Repo. Keine E-Mail, keine Anmeldung nötig." },
-    android: { label: "Android", headline: "Android-Build wird gerade gepackt.", lede: "Wir bauen jetzt ein signiertes APK. Bis das landet, kompiliert der Quelltext sauber mit dem Android NDK. Anleitung im Repo.", cta: { kind: "build", anchor: "#android" }, note: null },
-    macos:   { label: "macOS",   headline: "Signiertes macOS-Build wird notariell beglaubigt.", lede: "Die Apple Developer ID Notarisierung braucht einen Moment. Bis das signierte .dmg landet, baut der Daemon sauber aus dem Quelltext mit cargo + Python 3.11+.", cta: { kind: "build", anchor: "#macos" }, note: "macOS weigert sich, eine unsignierte Binärdatei von einer Website zu öffnen. Wir werden Sie nicht bitten, Gatekeeper zu umgehen. Bauen Sie es selbst oder warten Sie auf den signierten Build." },
-    windows: { label: "Windows", headline: "Signierter Windows-Installer wird gerade gepackt.", lede: "Wir bringen das Authenticode-Signaturzertifikat in Stellung, damit SmartScreen Sie nicht anschreit. Bis dahin baut der Daemon sauber aus dem Quelltext.", cta: { kind: "build", anchor: "#windows" }, note: null },
-    linux:   { label: "Linux",   headline: "Linux-Build wird gerade gepackt.", lede: "AppImage + .deb + .rpm kommen. Vorerst baut der Daemon sauber aus dem Quelltext auf jeder glibc-2.28+-Distro.", cta: { kind: "build", anchor: "#linux" }, note: null },
+    android: { label: "Android", headline: "Kein Android-Artefakt ist veröffentlicht.", lede: "Anleitungen und Status stehen im öffentlichen Repository.", cta: { kind: "build", anchor: "#android" }, note: null },
+    macos:   { label: "macOS",   headline: "Apple Silicon wählen oder aus dem Quelltext bauen.", lede: "Ein kontinuierliches Apple-Silicon-Artefakt existiert. Intel-Artefakt, Developer-ID-Signatur und Notarisierungsnachweis sind nicht veröffentlicht.", cta: { kind: "build", anchor: "#macos" }, note: "Umgehen Sie Gatekeeper nicht in der Annahme, diese Website habe eine Herausgebersignatur geprüft." },
+    windows: { label: "Windows", headline: "Ein kontinuierlicher Windows-Alpha-Build ist verfügbar.", lede: "Das Artefakt ist nicht Authenticode-signiert; eine One-Link-Releasesignatur ist nicht veröffentlicht. Behandeln Sie es als Test-Build.", cta: { kind: "build", anchor: "#windows" }, note: null },
+    linux:   { label: "Linux",   headline: "Kontinuierliche Linux-Alpha-Builds sind verfügbar.", lede: "AppImage und portable Zip-Artefakte werden für x86_64 und arm64 veröffentlicht. Es sind keine signierten Produktions-Releases; .deb- und .rpm-Pakete sind nicht veröffentlicht.", cta: { kind: "build", anchor: "#linux" }, note: null },
     openbsd: { label: "OpenBSD", headline: "OpenBSD-Port ausstehend.", lede: "Wenn Sie unter OpenBSD sind, können Sie wahrscheinlich schneller aus dem Quelltext bauen, als wir einen Port schreiben können. Patches willkommen.", cta: { kind: "source" }, note: null },
     freebsd: { label: "FreeBSD", headline: "FreeBSD-Port ausstehend.", lede: "Gleiche Geschichte wie OpenBSD. Bauen Sie heute aus dem Quelltext.", cta: { kind: "source" }, note: null },
     source:  { label: "Quelltext", headline: "Heute aus dem Quelltext bauen.", lede: "AGPL-3.0. Jede Zeile des Daemons, jede Protokoll-Crate, jeder Shader. Klonen, lesen, forken, eigenen betreiben.", cta: { kind: "clone" }, note: "Benötigt Rust 1.95+, Python 3.11+ und eine Internetverbindung, die lange genug ist, um den Workspace zu ziehen. Build-Anweisungen sind in der README des Repos." },
   },
   pt: {
     ios:     { label: "iOS",     headline: "iOS chega via TestFlight.", lede: "As apps iOS só se instalam pela App Store ou TestFlight. Ainda não estamos em nenhuma. Acompanhe o repo e publicaremos o link de TestFlight no momento em que estiver aberto.", cta: { kind: "watch" }, note: "Se quiser um aviso direto no momento em que o TestFlight abrir, comente o issue #1 no repo. Não é preciso e-mail nem registo." },
-    android: { label: "Android", headline: "O build de Android está a ser empacotado.", lede: "Estamos a empacotar um APK assinado agora. Até isso chegar, o código compila bem com o Android NDK. Instruções no repo.", cta: { kind: "build", anchor: "#android" }, note: null },
-    macos:   { label: "macOS",   headline: "O build assinado de macOS está a ser notarizado.", lede: "A notarização Apple Developer ID demora um pouco. Até chegar o .dmg assinado, o daemon compila bem a partir do código com cargo + Python 3.11+.", cta: { kind: "build", anchor: "#macos" }, note: "O macOS recusa abrir um binário sem assinatura servido a partir de um site. Não lhe vamos pedir para contornar o Gatekeeper. Ou compila você ou espera pelo build assinado." },
-    windows: { label: "Windows", headline: "O instalador assinado de Windows está a ser empacotado.", lede: "Estamos a pôr em marcha o certificado Authenticode para que o SmartScreen não lhe grite. Até lá, o daemon compila bem a partir do código.", cta: { kind: "build", anchor: "#windows" }, note: null },
-    linux:   { label: "Linux",   headline: "O build de Linux está a ser empacotado.", lede: "AppImage + .deb + .rpm a caminho. Por agora o daemon compila bem a partir do código em qualquer distro glibc 2.28+.", cta: { kind: "build", anchor: "#linux" }, note: null },
+    android: { label: "Android", headline: "Nenhum artefacto Android está publicado.", lede: "Consulte o repositório público para instruções e estado.", cta: { kind: "build", anchor: "#android" }, note: null },
+    macos:   { label: "macOS",   headline: "Escolha Apple Silicon ou compile o código.", lede: "Existe um artefacto contínuo para Apple Silicon. Não há artefacto Intel, assinatura Developer ID nem prova de notarização publicados.", cta: { kind: "build", anchor: "#macos" }, note: "Não contorne o Gatekeeper supondo que este site verificou uma assinatura do editor." },
+    windows: { label: "Windows", headline: "Está disponível um build alfa contínuo de Windows.", lede: "O artefacto não tem Authenticode e não há assinatura de versão One Link publicada. Trate-o como build de teste.", cta: { kind: "build", anchor: "#windows" }, note: null },
+    linux:   { label: "Linux",   headline: "Há builds alfa contínuos para Linux.", lede: "São publicados AppImage e zip portáteis para x86_64 e arm64. Não são versões de produção assinadas; não há pacotes .deb nem .rpm publicados.", cta: { kind: "build", anchor: "#linux" }, note: null },
     openbsd: { label: "OpenBSD", headline: "Port de OpenBSD pendente.", lede: "Se está em OpenBSD provavelmente consegue compilar a partir do código mais rápido do que nós escrevemos um port. Patches bem-vindos.", cta: { kind: "source" }, note: null },
     freebsd: { label: "FreeBSD", headline: "Port de FreeBSD pendente.", lede: "Mesma história que OpenBSD. Compile a partir do código hoje.", cta: { kind: "source" }, note: null },
     source:  { label: "Código",  headline: "A compilar a partir do código hoje.", lede: "AGPL-3.0. Cada linha do daemon, cada crate do protocolo, cada shader. Clone, leia, faça fork, opere o seu.", cta: { kind: "clone" }, note: "Requer Rust 1.95+, Python 3.11+ e uma ligação à internet suficientemente longa para puxar o workspace. As instruções de compilação estão no README do repo." },
   },
   it: {
     ios:     { label: "iOS",     headline: "iOS arriva tramite TestFlight.", lede: "Le app iOS si possono installare solo dall'App Store o da TestFlight. Non siamo ancora su nessuno dei due. Segui il repo e pubblicheremo il link TestFlight nel momento in cui sarà aperto.", cta: { kind: "watch" }, note: "Se vuoi un avviso diretto nel momento in cui TestFlight apre, lascia un commento sull'issue #1 nel repo. Niente email, niente registrazione." },
-    android: { label: "Android", headline: "La build per Android è in preparazione.", lede: "Stiamo impacchettando un APK firmato adesso. Finché non arriva, il sorgente compila pulito con l'Android NDK. Istruzioni nel repo.", cta: { kind: "build", anchor: "#android" }, note: null },
-    macos:   { label: "macOS",   headline: "La build firmata per macOS è in notarizzazione.", lede: "La notarizzazione Apple Developer ID richiede un attimo. Finché non arriva il .dmg firmato, il daemon compila pulito dal sorgente con cargo + Python 3.11+.", cta: { kind: "build", anchor: "#macos" }, note: "macOS rifiuta di aprire un binario non firmato servito da un sito web. Non ti chiederemo di aggirare Gatekeeper. O lo compili tu o aspetti la build firmata." },
-    windows: { label: "Windows", headline: "L'installer firmato per Windows è in preparazione.", lede: "Stiamo mettendo in piedi il certificato Authenticode in modo che SmartScreen non ti urli contro. Fino ad allora, il daemon compila pulito dal sorgente.", cta: { kind: "build", anchor: "#windows" }, note: null },
-    linux:   { label: "Linux",   headline: "La build per Linux è in preparazione.", lede: "AppImage + .deb + .rpm in arrivo. Per ora il daemon compila pulito dal sorgente su qualsiasi distro con glibc 2.28+.", cta: { kind: "build", anchor: "#linux" }, note: null },
+    android: { label: "Android", headline: "Nessun artefatto Android è pubblicato.", lede: "Consulta il repository pubblico per istruzioni e stato.", cta: { kind: "build", anchor: "#android" }, note: null },
+    macos:   { label: "macOS",   headline: "Scegli Apple Silicon o compila il sorgente.", lede: "Esiste un artefatto continuo per Apple Silicon. Non sono pubblicati artefatto Intel, firma Developer ID o prova di notarizzazione.", cta: { kind: "build", anchor: "#macos" }, note: "Non aggirare Gatekeeper supponendo che questo sito abbia verificato una firma dell'editore." },
+    windows: { label: "Windows", headline: "È disponibile una build alfa continua Windows.", lede: "L'artefatto non ha Authenticode e non è pubblicata una firma di release One Link. Trattalo come build di test.", cta: { kind: "build", anchor: "#windows" }, note: null },
+    linux:   { label: "Linux",   headline: "Sono disponibili build alfa continue per Linux.", lede: "Sono pubblicati AppImage e zip portatili per x86_64 e arm64. Non sono release di produzione firmate; non sono pubblicati pacchetti .deb o .rpm.", cta: { kind: "build", anchor: "#linux" }, note: null },
     openbsd: { label: "OpenBSD", headline: "Port OpenBSD in sospeso.", lede: "Se sei su OpenBSD probabilmente puoi compilare dal sorgente più velocemente di quanto noi possiamo scrivere un port. Patch benvenute.", cta: { kind: "source" }, note: null },
     freebsd: { label: "FreeBSD", headline: "Port FreeBSD in sospeso.", lede: "Stessa storia di OpenBSD. Compila dal sorgente oggi.", cta: { kind: "source" }, note: null },
     source:  { label: "Sorgente", headline: "Compilare dal sorgente oggi.", lede: "AGPL-3.0. Ogni riga del daemon, ogni crate del protocollo, ogni shader. Clonalo, leggilo, forkalo, esegui il tuo.", cta: { kind: "clone" }, note: "Richiede Rust 1.95+, Python 3.11+ e una connessione internet abbastanza lunga da scaricare il workspace. Le istruzioni di build sono nel README del repo." },
@@ -852,28 +1123,28 @@ const COMING_SOON_BLOCKS = {
 };
 
 const COMING_SOON_CHROME = {
-  en: { skipLink: "Skip to content", logoAria: "One Link",   navAria: "Main",       navHowItWorks: "How it works", navFeatures: "Features",       navSecurity: "Security",   navAll: "All downloads", titleSuffix: "not yet",      ctaPrimary: "Download source today", ctaOthers: "Other platforms", ctaBuild: "Build from source",  ctaWatch: "Watch on GitHub", ctaClone: "Clone on GitHub", ctaSource: "Source on GitHub", archiveLine: "The source archive (19 MB) works on every device including this one. Every protocol, every crate, every shader, every word of the daemon. AGPL-3.0.", honestLine: "Honest status: no signed binary has been published to the release relay yet. This page is what you see when the front door is still being painted. The protocol works today. The polish is on the way.", footerBuilt: "Built in the open. AGPL-3.0.",                  footerNoTracking: "No tracking, no analytics, no cookies.", footerMantra: "we are one" },
-  es: { skipLink: "Saltar al contenido",  logoAria: "One Link", navAria: "Principal", navHowItWorks: "Cómo funciona", navFeatures: "Funciones",     navSecurity: "Seguridad",  navAll: "Todas las descargas", titleSuffix: "aún no", ctaPrimary: "Descargar la fuente hoy", ctaOthers: "Otras plataformas", ctaBuild: "Compilar desde la fuente", ctaWatch: "Seguir en GitHub", ctaClone: "Clonar en GitHub", ctaSource: "Fuente en GitHub", archiveLine: "El archivo de la fuente (19 MB) funciona en cada dispositivo incluido este. Cada protocolo, cada crate, cada shader, cada palabra del daemon. AGPL-3.0.", honestLine: "Estado honesto: aún no se ha publicado ningún binario firmado en el relé de versiones. Esta página es lo que ves cuando la puerta de entrada aún se está pintando. El protocolo funciona hoy. El acabado está en camino.", footerBuilt: "Construido en abierto. AGPL-3.0.", footerNoTracking: "Sin rastreo, sin analíticas, sin cookies.", footerMantra: "somos uno" },
-  fr: { skipLink: "Aller au contenu",     logoAria: "One Link", navAria: "Principale", navHowItWorks: "Comment ça marche", navFeatures: "Fonctionnalités", navSecurity: "Sécurité", navAll: "Tous les téléchargements", titleSuffix: "pas encore", ctaPrimary: "Télécharger la source aujourd'hui", ctaOthers: "Autres plateformes", ctaBuild: "Compiler depuis la source", ctaWatch: "Suivre sur GitHub", ctaClone: "Cloner sur GitHub", ctaSource: "Source sur GitHub", archiveLine: "L'archive source (19 Mo) fonctionne sur chaque appareil y compris celui-ci. Chaque protocole, chaque crate, chaque shader, chaque mot du daemon. AGPL-3.0.", honestLine: "Statut honnête : aucun binaire signé n'a encore été publié sur le relais de versions. Cette page est ce que vous voyez quand la porte d'entrée est encore en train d'être peinte. Le protocole fonctionne aujourd'hui. Le poli est en chemin.", footerBuilt: "Construit à découvert. AGPL-3.0.", footerNoTracking: "Pas de pistage, pas d'analytique, pas de cookies.", footerMantra: "nous sommes un" },
-  de: { skipLink: "Zum Inhalt springen", logoAria: "One Link", navAria: "Haupt",      navHowItWorks: "So funktioniert es", navFeatures: "Funktionen",    navSecurity: "Sicherheit", navAll: "Alle Downloads",         titleSuffix: "noch nicht",  ctaPrimary: "Quelltext heute herunterladen", ctaOthers: "Andere Plattformen", ctaBuild: "Aus dem Quelltext bauen", ctaWatch: "Auf GitHub beobachten", ctaClone: "Auf GitHub klonen", ctaSource: "Quelltext auf GitHub", archiveLine: "Das Quelltext-Archiv (19 MB) funktioniert auf jedem Gerät, auch auf diesem. Jedes Protokoll, jede Crate, jeder Shader, jedes Wort des Daemons. AGPL-3.0.", honestLine: "Ehrlicher Status: noch keine signierte Binärdatei wurde am Release-Relay veröffentlicht. Diese Seite ist das, was Sie sehen, während die Eingangstür noch gestrichen wird. Das Protokoll funktioniert heute. Der Schliff ist auf dem Weg.", footerBuilt: "Offen gebaut. AGPL-3.0.", footerNoTracking: "Kein Tracking, keine Analytik, keine Cookies.", footerMantra: "wir sind eins" },
-  pt: { skipLink: "Saltar para o conteúdo", logoAria: "One Link", navAria: "Principal", navHowItWorks: "Como funciona", navFeatures: "Funcionalidades", navSecurity: "Segurança", navAll: "Todas as descargas",        titleSuffix: "ainda não",   ctaPrimary: "Descarregar o código hoje", ctaOthers: "Outras plataformas", ctaBuild: "Compilar a partir do código", ctaWatch: "Acompanhar no GitHub", ctaClone: "Clonar no GitHub", ctaSource: "Código no GitHub", archiveLine: "O arquivo do código (19 MB) funciona em cada dispositivo incluindo este. Cada protocolo, cada crate, cada shader, cada palavra do daemon. AGPL-3.0.", honestLine: "Estado honesto: ainda não foi publicado nenhum binário assinado no relé de versões. Esta página é o que vê quando a porta da frente ainda está a ser pintada. O protocolo funciona hoje. O polimento está a caminho.", footerBuilt: "Construído em aberto. AGPL-3.0.", footerNoTracking: "Sem rastreamento, sem analítica, sem cookies.", footerMantra: "somos um" },
-  it: { skipLink: "Salta al contenuto",   logoAria: "One Link", navAria: "Principale", navHowItWorks: "Come funziona", navFeatures: "Funzionalità",  navSecurity: "Sicurezza",  navAll: "Tutti i download",       titleSuffix: "non ancora",  ctaPrimary: "Scarica il sorgente oggi", ctaOthers: "Altre piattaforme",  ctaBuild: "Compila dal sorgente",  ctaWatch: "Segui su GitHub", ctaClone: "Clona su GitHub", ctaSource: "Sorgente su GitHub", archiveLine: "L'archivio del sorgente (19 MB) funziona su ogni dispositivo, incluso questo. Ogni protocollo, ogni crate, ogni shader, ogni parola del daemon. AGPL-3.0.", honestLine: "Stato onesto: nessun binario firmato è ancora stato pubblicato sul relay di rilascio. Questa pagina è ciò che vedi quando la porta d'ingresso è ancora in fase di verniciatura. Il protocollo funziona oggi. La rifinitura è in arrivo.", footerBuilt: "Costruito allo scoperto. AGPL-3.0.", footerNoTracking: "Nessun tracciamento, nessuna analitica, nessun cookie.", footerMantra: "siamo uno" },
+  en: { skipLink: "Skip to content", logoAria: "One Link", navAria: "Main", navHowItWorks: "How it works", navFeatures: "Features", navSecurity: "Security", navAll: "All downloads", titleSuffix: "not yet", ctaPrimary: "Download source today", ctaOthers: "Other platforms", ctaBuild: "Build from source", ctaWatch: "Watch on GitHub", ctaClone: "Clone on GitHub", ctaSource: "Source on GitHub", archiveLine: "The public repository is the canonical source. The release-mirror archive is available only while its R2 object is healthy. AGPL-3.0.", honestLine: "Honest status: supported platforms have mutable rolling alpha artifacts. No artifact signature, publisher code signing, reproducibility result, or provenance attestation is published.", footerBuilt: "Built in the open. AGPL-3.0.", footerNoTracking: "No tracking, no analytics, no cookies.", footerMantra: "we are one" },
+  es: { skipLink: "Saltar al contenido", logoAria: "One Link", navAria: "Principal", navHowItWorks: "Cómo funciona", navFeatures: "Funciones", navSecurity: "Seguridad", navAll: "Todas las descargas", titleSuffix: "aún no", ctaPrimary: "Descargar la fuente hoy", ctaOthers: "Otras plataformas", ctaBuild: "Compilar desde la fuente", ctaWatch: "Seguir en GitHub", ctaClone: "Clonar en GitHub", ctaSource: "Fuente en GitHub", archiveLine: "El repositorio público es la fuente canónica. El archivo del espejo de versiones solo está disponible mientras su objeto R2 funcione. AGPL-3.0.", honestLine: "Estado honesto: las plataformas compatibles tienen artefactos alfa continuos y mutables. No se publican firma, firma del editor, resultado reproducible ni atestación de procedencia.", footerBuilt: "Construido en abierto. AGPL-3.0.", footerNoTracking: "Sin rastreo, sin analíticas, sin cookies.", footerMantra: "somos uno" },
+  fr: { skipLink: "Aller au contenu", logoAria: "One Link", navAria: "Principale", navHowItWorks: "Comment ça marche", navFeatures: "Fonctionnalités", navSecurity: "Sécurité", navAll: "Tous les téléchargements", titleSuffix: "pas encore", ctaPrimary: "Télécharger la source aujourd'hui", ctaOthers: "Autres plateformes", ctaBuild: "Compiler depuis la source", ctaWatch: "Suivre sur GitHub", ctaClone: "Cloner sur GitHub", ctaSource: "Source sur GitHub", archiveLine: "Le dépôt public est la source canonique. L'archive du miroir de version n'est disponible que lorsque son objet R2 est sain. AGPL-3.0.", honestLine: "Statut honnête : les plateformes prises en charge ont des artefacts alpha continus et modifiables. Aucune signature, signature d'éditeur, preuve de reproductibilité ou attestation de provenance n'est publiée.", footerBuilt: "Construit à découvert. AGPL-3.0.", footerNoTracking: "Pas de pistage, pas d'analytique, pas de cookies.", footerMantra: "nous sommes un" },
+  de: { skipLink: "Zum Inhalt springen", logoAria: "One Link", navAria: "Haupt", navHowItWorks: "So funktioniert es", navFeatures: "Funktionen", navSecurity: "Sicherheit", navAll: "Alle Downloads", titleSuffix: "noch nicht", ctaPrimary: "Quelltext heute herunterladen", ctaOthers: "Andere Plattformen", ctaBuild: "Aus dem Quelltext bauen", ctaWatch: "Auf GitHub beobachten", ctaClone: "Auf GitHub klonen", ctaSource: "Quelltext auf GitHub", archiveLine: "Das öffentliche Repository ist die kanonische Quelle. Das Release-Spiegelarchiv ist nur verfügbar, solange sein R2-Objekt erreichbar ist. AGPL-3.0.", honestLine: "Ehrlicher Status: unterstützte Plattformen haben veränderliche kontinuierliche Alpha-Artefakte. Artefaktsignatur, Herausgebersignatur, Reproduzierbarkeitsnachweis und Herkunftsattestierung sind nicht veröffentlicht.", footerBuilt: "Offen gebaut. AGPL-3.0.", footerNoTracking: "Kein Tracking, keine Analytik, keine Cookies.", footerMantra: "wir sind eins" },
+  pt: { skipLink: "Saltar para o conteúdo", logoAria: "One Link", navAria: "Principal", navHowItWorks: "Como funciona", navFeatures: "Funcionalidades", navSecurity: "Segurança", navAll: "Todas as descargas", titleSuffix: "ainda não", ctaPrimary: "Descarregar o código hoje", ctaOthers: "Outras plataformas", ctaBuild: "Compilar a partir do código", ctaWatch: "Acompanhar no GitHub", ctaClone: "Clonar no GitHub", ctaSource: "Código no GitHub", archiveLine: "O repositório público é a fonte canónica. O arquivo do espelho de versões só está disponível enquanto o objeto R2 estiver saudável. AGPL-3.0.", honestLine: "Estado honesto: as plataformas suportadas têm artefactos alfa contínuos e mutáveis. Não são publicadas assinatura, assinatura do editor, prova de reprodução ou atestação de proveniência.", footerBuilt: "Construído em aberto. AGPL-3.0.", footerNoTracking: "Sem rastreamento, sem analítica, sem cookies.", footerMantra: "somos um" },
+  it: { skipLink: "Salta al contenuto", logoAria: "One Link", navAria: "Principale", navHowItWorks: "Come funziona", navFeatures: "Funzionalità", navSecurity: "Sicurezza", navAll: "Tutti i download", titleSuffix: "non ancora", ctaPrimary: "Scarica il sorgente oggi", ctaOthers: "Altre piattaforme", ctaBuild: "Compila dal sorgente", ctaWatch: "Segui su GitHub", ctaClone: "Clona su GitHub", ctaSource: "Sorgente su GitHub", archiveLine: "Il repository pubblico è la fonte canonica. L'archivio dello specchio di release è disponibile solo mentre il relativo oggetto R2 è integro. AGPL-3.0.", honestLine: "Stato onesto: le piattaforme supportate hanno artefatti alfa continui e modificabili. Non sono pubblicate firma, firma dell'editore, prova di riproducibilità o attestazione di provenienza.", footerBuilt: "Costruito allo scoperto. AGPL-3.0.", footerNoTracking: "Nessun tracciamento, nessuna analitica, nessun cookie.", footerMantra: "siamo uno" },
 };
 
-function downloadComingSoonPage(os, lang = "en") {
+function downloadComingSoonPage(os, lang = "en", overrideBlock = null, status = 200) {
   const repo = "https://github.com/IamOneYouAreOneWeAreOne/one-link";
   const L = COMING_SOON_BLOCKS[lang] || COMING_SOON_BLOCKS.en;
   const C = COMING_SOON_CHROME[lang] || COMING_SOON_CHROME.en;
-  const b = L[os] || L.source;
+  const b = overrideBlock || L[os] || L.source;
   // Resolve the CTA from its semantic kind so each language uses the right
   // wording without translators duplicating button text per OS.
-  const ctaLabel = (
+  const ctaLabel = b.cta.label || (
     b.cta.kind === "build"  ? C.ctaBuild  :
     b.cta.kind === "watch"  ? C.ctaWatch  :
     b.cta.kind === "clone"  ? C.ctaClone  :
     b.cta.kind === "source" ? C.ctaSource : C.ctaSource
   );
-  const ctaHref = (
+  const ctaHref = b.cta.href || (
     b.cta.kind === "build" ? `${repo}${b.cta.anchor || ""}` : repo
   );
   // The site-logo + nav links target the language root + the canonical
@@ -950,10 +1221,7 @@ function downloadComingSoonPage(os, lang = "en") {
   headers.set("Vary", "Accept-Language");
   for (const [k, v] of Object.entries(PRIVACY_HEADERS)) headers.set(k, v);
   for (const [k, v] of Object.entries(NEL_OPT_OUT_HEADERS)) headers.set(k, v);
-  // 200 (not 503): the page IS the response for this URL today; 5xx makes
-  // Google de-index over time. The page is honest about the binary being
-  // in flight; that does not mean the page itself is a server error.
-  return new Response(html, { status: 200, headers });
+  return new Response(html, { status, headers });
 }
 
 // -----------------------------------------------------------------------------
@@ -1011,7 +1279,7 @@ export default {
     if (path === "/native") return nativeAdvert(env);
 
     const attestMatch = path.match(/^\/api\/attest\/([a-f0-9]+)$/i);
-    if (attestMatch) return attestation(env, attestMatch[1], request);
+    if (attestMatch) return attestation(env, attestMatch[1]);
 
     // /download/<spec> where <spec> is windows / macos-arm64 /
     // linux-x86_64-zip / source / etc. Allows lowercase letters,
@@ -1030,10 +1298,10 @@ export default {
     //                                fragment, fetches, decrypts, downloads)
     if (path === "/api/share" && request.method === "POST")
       return shareUpload(env, request);
-    const shareApiMatch = path.match(/^\/api\/share\/([A-Za-z0-9_-]{8,32})$/);
+    const shareApiMatch = path.match(/^\/api\/share\/([A-Za-z0-9_-]{16})$/);
     if (shareApiMatch && request.method === "GET")
       return shareDownload(env, shareApiMatch[1]);
-    const sharePathMatch = path.match(/^\/share\/([A-Za-z0-9_-]{8,32})\/?$/);
+    const sharePathMatch = path.match(/^\/share\/([A-Za-z0-9_-]{16})\/?$/);
     if (sharePathMatch) {
       // Rewrite to the static /share/index.html so the JS module loads;
       // the JS reads location.pathname to extract the id.
@@ -1113,8 +1381,9 @@ export default {
 //
 // The server only ever sees ciphertext + a random object id. It never sees
 // the key (which lives in the URL fragment client-side) and never sees the
-// plaintext. R2 holds the ciphertext for 24h max; first successful GET
-// deletes the object.
+// plaintext. Application expiry is scheduled for 24 hours. Provider outages
+// can delay physical deletion, so this is not an absolute retention claim.
+// A successful consume deletes the R2 object before returning ciphertext.
 // -----------------------------------------------------------------------------
 const SHARE_MAX_BYTES   = 26 * 1024 * 1024;        // 26 MiB = 25 MiB plaintext + tag overhead
 const SHARE_TTL_MS      = 24 * 60 * 60 * 1000;     // 24h
@@ -1128,33 +1397,75 @@ function shareRandomId() {
 }
 
 // Reduce an IP to a /24 (IPv4) or /48 (IPv6) so co-tenants behind a single
-// NAT or carrier-grade gateway share a rate budget, but distinct end-users
-// don't collide. Falls back to the full string if the format is unfamiliar.
-function shareRateBucketKey(ip) {
+// NAT or carrier-grade gateway share a rate budget. Malformed input collapses
+// into one non-identifying bucket; a full address is never used as a DO name.
+export function shareRateBucketKey(ip) {
   if (!ip || typeof ip !== "string") return "unknown";
-  // IPv4: a.b.c.d -> "v4:a.b.c"
-  const v4 = ip.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.\d{1,3}$/);
-  if (v4) return `v4:${v4[1]}.${v4[2]}.${v4[3]}`;
-  // IPv6: full or compressed; take first 3 hextets (/48).
-  if (ip.includes(":")) {
-    const parts = ip.toLowerCase().split(":");
-    const head = parts.slice(0, 3).join(":");
-    return `v6:${head}`;
+  const candidate = ip.trim().toLowerCase();
+  const v4 = candidate.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/);
+  if (v4) {
+    const octets = v4.slice(1).map(Number);
+    if (octets.every((part) => Number.isInteger(part) && part >= 0 && part <= 255)) {
+      return `v4:${octets[0]}.${octets[1]}.${octets[2]}`;
+    }
+    return "unknown";
   }
-  return `raw:${ip}`;
+  if (!candidate.includes(":")) return "unknown";
+
+  // Expand one RFC 4291 "::" run, including an optional dotted-quad tail,
+  // then retain exactly the first three 16-bit groups (/48).
+  let ipv6 = candidate;
+  const dottedTail = ipv6.match(/(?:^|:)(\d{1,3}(?:\.\d{1,3}){3})$/);
+  if (dottedTail) {
+    const parts = dottedTail[1].split(".").map(Number);
+    if (!parts.every((part) => part >= 0 && part <= 255)) return "unknown";
+    const replacement = `${((parts[0] << 8) | parts[1]).toString(16)}:${((parts[2] << 8) | parts[3]).toString(16)}`;
+    ipv6 = ipv6.slice(0, -dottedTail[1].length) + replacement;
+  }
+  if ((ipv6.match(/::/g) || []).length > 1) return "unknown";
+  const halves = ipv6.split("::");
+  const left = halves[0] ? halves[0].split(":") : [];
+  const right = halves.length === 2 && halves[1] ? halves[1].split(":") : [];
+  if (halves.length === 1 && left.length !== 8) return "unknown";
+  const missing = 8 - left.length - right.length;
+  if (missing < (halves.length === 2 ? 1 : 0)) return "unknown";
+  const groups = [...left, ...Array(missing).fill("0"), ...right];
+  if (groups.length !== 8 || !groups.every((group) => /^[0-9a-f]{1,4}$/.test(group))) {
+    return "unknown";
+  }
+  return `v6:${groups.slice(0, 3).map((group) => parseInt(group, 16).toString(16)).join(":")}`;
 }
 
 async function shareUpload(env, request) {
-  if (!env.RELEASES) {
-    return json({ error: "R2 not bound" }, { status: 503 });
+  if (!env.RELEASES || !env.SHARE_OBJECTS) {
+    return json({ error: "share storage unavailable" }, { status: 503 });
   }
   const ct = request.headers.get("Content-Type") || "";
   if (!ct.includes("application/octet-stream")) {
     return json({ error: "expected application/octet-stream" }, { status: 400 });
   }
-  const lenHeader = parseInt(request.headers.get("Content-Length") || "0", 10);
-  if (lenHeader && lenHeader > SHARE_MAX_BYTES) {
+  const lengthValue = request.headers.get("Content-Length");
+  if (lengthValue === null) {
+    return json(
+      { error: "content-length required", max_bytes: SHARE_MAX_BYTES },
+      { status: 411 },
+    );
+  }
+  if (!/^\d+$/.test(lengthValue)) {
+    return json({ error: "invalid content-length" }, { status: 400 });
+  }
+  const expectedBytes = Number(lengthValue);
+  if (!Number.isSafeInteger(expectedBytes)) {
+    return json({ error: "invalid content-length" }, { status: 400 });
+  }
+  if (expectedBytes === 0) {
+    return json({ error: "empty body" }, { status: 400 });
+  }
+  if (expectedBytes > SHARE_MAX_BYTES) {
     return json({ error: "too large", max_bytes: SHARE_MAX_BYTES }, { status: 413 });
+  }
+  if (!request.body) {
+    return json({ error: "missing body" }, { status: 400 });
   }
 
   // -------------------------------------------------------------------
@@ -1185,91 +1496,99 @@ async function shareUpload(env, request) {
         }
       );
     }
-  }
-
-  const body = await request.arrayBuffer();
-  if (body.byteLength === 0) {
-    return json({ error: "empty body" }, { status: 400 });
-  }
-  if (body.byteLength > SHARE_MAX_BYTES) {
-    return json({ error: "too large", max_bytes: SHARE_MAX_BYTES }, { status: 413 });
+    if (!rateRes.ok) {
+      console.error(JSON.stringify({ event: "share_rate_unavailable", status: rateRes.status }));
+      return json({ error: "share admission control unavailable" }, { status: 503 });
+    }
   }
 
   const id = shareRandomId();
   const expiresAt = Date.now() + SHARE_TTL_MS;
 
   try {
-    await env.RELEASES.put(`shares/${id}`, body, {
-      httpMetadata: { contentType: "application/octet-stream" },
-      customMetadata: {
-        expires_at: String(expiresAt),
-        created_at: String(Date.now()),
+    const stub = env.SHARE_OBJECTS.get(env.SHARE_OBJECTS.idFromName(id));
+    const storeRequest = new Request("https://share-object/store", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/octet-stream",
+        "X-Share-Id": id,
+        "X-Share-Expires-At": String(expiresAt),
+        "X-Share-Bytes": String(expectedBytes),
       },
+      body: request.body,
+      duplex: "half",
     });
+    const stored = await stub.fetch(storeRequest);
+    if (!stored.ok) {
+      console.error(JSON.stringify({
+        event: "share_store_failed",
+        status: stored.status,
+        share_id_prefix: id.slice(0, 4),
+      }));
+      return json({ error: "store failed" }, { status: 503 });
+    }
   } catch (e) {
-    return json({ error: "store failed", detail: e?.message || String(e) }, { status: 500 });
+    console.error(JSON.stringify({
+      event: "share_store_exception",
+      error: e?.message || String(e),
+      share_id_prefix: id.slice(0, 4),
+    }));
+    return json({ error: "store failed" }, { status: 503 });
   }
 
   return json({
     id,
     expires_at: new Date(expiresAt).toISOString(),
-    bytes: body.byteLength,
-    note: "one-shot: deletes on first download, or in 24 hours.",
+    bytes: expectedBytes,
+    lifecycle: "single-consumer claim; R2 deletion completes before ciphertext is returned",
+    expiry: "Durable Object alarm scheduled for expiry with retry on cleanup failure",
   });
 }
 
 async function shareDownload(env, id) {
-  if (!env.RELEASES) return json({ error: "R2 not bound" }, { status: 503 });
-  const key = `shares/${id}`;
-  const obj = await env.RELEASES.get(key);
-  if (!obj) return json({ error: "not found or already collected" }, { status: 404 });
-
-  // TTL enforcement (R2 has no native TTL; we check on read).
-  const expires = parseInt(obj.customMetadata?.expires_at || "0", 10);
-  if (expires && Date.now() > expires) {
-    await env.RELEASES.delete(key).catch(() => {});
-    return json({ error: "expired" }, { status: 410 });
+  if (!env.RELEASES || !env.SHARE_OBJECTS) {
+    return json({ error: "share storage unavailable" }, { status: 503 });
   }
-
-  const body = await obj.arrayBuffer();
-  // Delete BEFORE returning so a network mid-flight failure still means
-  // the object is gone (one-shot semantics).
-  await env.RELEASES.delete(key).catch(() => {});
-
-  const headers = new Headers();
-  headers.set("Content-Type", "application/octet-stream");
-  headers.set("Cache-Control", "no-store");
-  headers.set("X-Share-Bytes", String(body.byteLength));
-  for (const [k, v] of Object.entries(PRIVACY_HEADERS)) headers.set(k, v);
-  return new Response(body, { headers });
+  const stub = env.SHARE_OBJECTS.get(env.SHARE_OBJECTS.idFromName(id));
+  return stub.fetch("https://share-object/consume", {
+    method: "POST",
+    headers: { "X-Share-Id": id },
+  });
 }
 
 // -----------------------------------------------------------------------------
 // MeshPresence Durable Object
 //
 // Holds the in-flight set of visitor sessions for the live "N here right now"
-// counter + the mesh-viz dots. Pure ephemeral state: keyed by random session
-// id, valued by { geo: {lat, lng}, last_seen_ms }. Zero PII. Garbage
-// collected when sockets close + on idle heartbeat sweep.
+// counter + the mesh-viz dots. In-memory application state is keyed by a
+// random session id and includes { geo: {lat, lng}, last_seen_ms }. The region
+// is client supplied and coarse; Cloudflare still receives ordinary request
+// and connection metadata outside this map. Closed and idle entries are
+// removed from the map, without making a claim about provider-level logs.
 //
 // Wire protocol (JSON over WebSocket):
 //   client -> server  { type: "hello",  protocol: 1, geo: {lat, lng} }
 //   server -> client  { type: "welcome", self_id: "...", population: N }
 //   server -> ALL     { type: "population", n: N }
 //   server -> ALL     { type: "peers", peers: [{id, lat, lng}, ...] }
-//   client -> server  { type: "ping", to: "<peer-id>" }   (anonymous, ephemeral)
+//   client -> server  { type: "ping", to: "<peer-id>" }   (pseudonymous session id)
 //   server -> RECIP   { type: "ping", from: "<sender-id>" }
 //
-// No IPs, no Cookies, no headers logged. Idle sessions evict after 90s.
+// This application code sets no cookies and does not add an access-log store.
+// Cloudflare receives the connection IP and other edge metadata. Idle session
+// entries are evicted from this in-memory map after 90 seconds.
 // -----------------------------------------------------------------------------
 const PRESENCE_IDLE_MS = 90_000;
 const PRESENCE_BROADCAST_THROTTLE_MS = 1_500;
+const PRESENCE_MAX_SESSIONS = 5_000;
+const PRESENCE_FRAME_BURST = 30;
+const PRESENCE_FRAME_REFILL_PER_SECOND = 5;
 
 export class MeshPresence {
   constructor(state, env) {
     this.state = state;
     this.env = env;
-    this.sessions = new Map(); // sessionId -> { ws, geo, lastSeen }
+    this.sessions = new Map(); // sessionId -> { ws, geo, lastSeen, validated, frameTokens }
     this.lastBroadcast = 0;
     this.sweepStarted = false;
   }
@@ -1278,6 +1597,28 @@ export class MeshPresence {
     const buf = new Uint8Array(8);
     crypto.getRandomValues(buf);
     return Array.from(buf, b => b.toString(16).padStart(2, "0")).join("");
+  }
+
+  population() {
+    let total = 0;
+    for (const session of this.sessions.values()) {
+      if (session.validated) total++;
+    }
+    return total;
+  }
+
+  consumeFrameBudget(session, rawLength) {
+    const now = Date.now();
+    const elapsedSeconds = Math.max(0, (now - session.frameRefillAt) / 1000);
+    session.frameTokens = Math.min(
+      PRESENCE_FRAME_BURST,
+      session.frameTokens + elapsedSeconds * PRESENCE_FRAME_REFILL_PER_SECOND,
+    );
+    session.frameRefillAt = now;
+    const cost = Math.max(1, Math.ceil(rawLength / 4096));
+    if (session.frameTokens < cost) return false;
+    session.frameTokens -= cost;
+    return true;
   }
 
   startSweep() {
@@ -1293,23 +1634,29 @@ export class MeshPresence {
           evicted++;
         }
       }
-      if (evicted) this.broadcast({ type: "population", n: this.sessions.size });
+      if (evicted) {
+        this.broadcast({ type: "population", n: this.population() });
+        this.maybeBroadcastPeers();
+      }
       setTimeout(tick, 30_000);
     };
     setTimeout(tick, 30_000);
   }
 
   peersSnapshot() {
-    return Array.from(this.sessions.entries()).map(([id, s]) => ({
-      id,
-      lat: s.geo?.lat ?? 0.5,
-      lng: s.geo?.lng ?? 0.5,
-    }));
+    return Array.from(this.sessions.entries())
+      .filter(([, session]) => session.validated)
+      .map(([id, session]) => ({
+        id,
+        lat: session.geo?.lat ?? 0.5,
+        lng: session.geo?.lng ?? 0.5,
+      }));
   }
 
   broadcast(msg) {
     const payload = JSON.stringify(msg);
     for (const s of this.sessions.values()) {
+      if (!s.validated) continue;
       try { s.ws.send(payload); } catch {}
     }
   }
@@ -1342,33 +1689,44 @@ export class MeshPresence {
    *  broadcast. */
   sendPeersTo(sessionId) {
     const s = this.sessions.get(sessionId);
-    if (!s) return;
+    if (!s?.validated) return;
     try {
       s.ws.send(JSON.stringify({ type: "peers", peers: this.peersSnapshot() }));
     } catch {}
   }
 
   handleMessage(sessionId, raw) {
+    if (typeof raw !== "string" || raw.length > 140_000) return;
     let msg;
     try { msg = JSON.parse(raw); } catch { return; }
     const session = this.sessions.get(sessionId);
     if (!session) return;
-    session.lastSeen = Date.now();
+    if (!msg || typeof msg !== "object" || Array.isArray(msg) || typeof msg.type !== "string") return;
 
     switch (msg.type) {
       case "hello": {
-        if (msg.geo && typeof msg.geo === "object") {
-          session.geo = {
-            lat: Math.max(0, Math.min(1, +msg.geo.lat || 0.5)),
-            lng: Math.max(0, Math.min(1, +msg.geo.lng || 0.5)),
-          };
+        if (session.validated || msg.protocol !== 1 || !msg.geo || typeof msg.geo !== "object") {
+          try { session.ws.close(1008, "invalid hello"); } catch {}
+          return;
         }
+        const lat = Number(msg.geo.lat);
+        const lng = Number(msg.geo.lng);
+        if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
+          try { session.ws.close(1008, "invalid geo hint"); } catch {}
+          return;
+        }
+        session.geo = {
+          lat: Math.max(0, Math.min(1, lat)),
+          lng: Math.max(0, Math.min(1, lng)),
+        };
+        session.validated = true;
+        session.lastSeen = Date.now();
         session.ws.send(JSON.stringify({
           type: "welcome",
           self_id: sessionId,
-          population: this.sessions.size,
+          population: this.population(),
         }));
-        this.broadcast({ type: "population", n: this.sessions.size });
+        this.broadcast({ type: "population", n: this.population() });
         // 1. Direct: tell the new tab who's already here (bypasses throttle).
         this.sendPeersTo(sessionId);
         // 2. Throttled broadcast: tell everyone else about the new tab.
@@ -1376,11 +1734,15 @@ export class MeshPresence {
         break;
       }
       case "heartbeat": {
+        if (!session.validated || !this.consumeFrameBudget(session, raw.length)) return;
+        session.lastSeen = Date.now();
         break;
       }
       case "ping": {
+        if (!session.validated || !this.consumeFrameBudget(session, raw.length)) return;
+        session.lastSeen = Date.now();
         const target = this.sessions.get(msg.to);
-        if (target && msg.to !== sessionId) {
+        if (target?.validated && msg.to !== sessionId) {
           try {
             target.ws.send(JSON.stringify({ type: "ping", from: sessionId }));
           } catch {}
@@ -1389,12 +1751,16 @@ export class MeshPresence {
       }
 
       // -------------------------------------------------------------------
-      // STRANGER CHAT relay  (server-side server-relayed, NOT yet E2EE).
+      // STRANGER CHAT relay (pseudonymous and Cloudflare-relayed). Content is
+      // encrypted after the ol_pair_qr exchange; typing remains locked until
+      // both clients report an out-of-band five-word SAS comparison.
       // -------------------------------------------------------------------
       // chat-request : "Alice asks Bob to open a chat"
-      // chat-accept  : "Bob agrees, chat is open"
+      // chat-accept  : Bob returns the handshake response
+      // SAS confirmations travel inside authenticated chat-msg ciphertext;
+      // the relay cannot forge that control payload.
       // chat-decline : "Bob declines"
-      // chat-msg     : single short message (server enforces 280 char cap)
+      // chat-msg     : bounded encrypted frame (client enforces 280 plaintext chars)
       // chat-leave   : tell the other side we closed the panel
       //
       // The DO never stores chat content. It receives a frame, forwards
@@ -1412,15 +1778,26 @@ export class MeshPresence {
       case "chat-confirm":
       case "chat-decline":
       case "chat-leave": {
+        if (!session.validated || !this.consumeFrameBudget(session, raw.length)) return;
+        session.lastSeen = Date.now();
         const target = this.sessions.get(msg.to);
-        if (target && msg.to !== sessionId) {
+        if (target?.validated && msg.to !== sessionId) {
           try {
-            // Pass through invite_hex / response_hex / confirm_hex blindly.
-            // The DO does NOT parse them; it only forwards opaque bytes.
             const out = { type: msg.type, from: sessionId };
-            if (typeof msg.invite_hex   === "string") out.invite_hex   = msg.invite_hex.slice(0, 4096);
-            if (typeof msg.response_hex === "string") out.response_hex = msg.response_hex.slice(0, 4096);
-            if (typeof msg.confirm_hex  === "string") out.confirm_hex  = msg.confirm_hex.slice(0, 4096);
+            const frameField = {
+              "chat-request": "invite_hex",
+              "chat-accept": "response_hex",
+              "chat-confirm": "confirm_hex",
+            }[msg.type];
+            if (frameField) {
+              const value = msg[frameField];
+              if (typeof value !== "string"
+                  || value.length < 2
+                  || value.length > 131_072
+                  || value.length % 2 !== 0
+                  || !/^[0-9a-f]+$/i.test(value)) break;
+              out[frameField] = value;
+            }
             target.ws.send(JSON.stringify(out));
           } catch {}
         }
@@ -1430,16 +1807,26 @@ export class MeshPresence {
       // Encrypted message frame: { iv_b64, ct_b64 }. The DO forwards
       // verbatim. It cannot decrypt; the key never touches the server.
       case "chat-msg": {
+        if (!session.validated || !this.consumeFrameBudget(session, raw.length)) return;
+        session.lastSeen = Date.now();
         const target = this.sessions.get(msg.to);
-        if (target && msg.to !== sessionId
+        if (target?.validated && msg.to !== sessionId
             && typeof msg.iv_b64 === "string"
-            && typeof msg.ct_b64 === "string") {
+            && typeof msg.ct_b64 === "string"
+            && msg.iv_b64.length > 0
+            && msg.iv_b64.length <= 24
+            && msg.ct_b64.length > 0
+            && msg.ct_b64.length <= 1024
+            && msg.iv_b64.length % 4 === 0
+            && msg.ct_b64.length % 4 === 0
+            && /^[A-Za-z0-9+/]*={0,2}$/.test(msg.iv_b64)
+            && /^[A-Za-z0-9+/]*={0,2}$/.test(msg.ct_b64)) {
           try {
             target.ws.send(JSON.stringify({
               type: "chat-msg",
               from: sessionId,
-              iv_b64: msg.iv_b64.slice(0, 64),
-              ct_b64: msg.ct_b64.slice(0, 2048),
+              iv_b64: msg.iv_b64,
+              ct_b64: msg.ct_b64,
               ts: Date.now(),
             }));
           } catch {}
@@ -1450,14 +1837,22 @@ export class MeshPresence {
   }
 
   async fetch(request) {
+    if (this.sessions.size >= PRESENCE_MAX_SESSIONS) {
+      return json({ error: "website presence is at capacity" }, { status: 503 });
+    }
     const pair = new WebSocketPair();
     const client = pair[0], server = pair[1];
 
-    const sessionId = this.randomId();
+    let sessionId = this.randomId();
+    while (this.sessions.has(sessionId)) sessionId = this.randomId();
+    const now = Date.now();
     this.sessions.set(sessionId, {
       ws: server,
       geo: { lat: 0.5, lng: 0.5 },
-      lastSeen: Date.now(),
+      lastSeen: now,
+      validated: false,
+      frameTokens: PRESENCE_FRAME_BURST,
+      frameRefillAt: now,
     });
 
     server.accept();
@@ -1465,17 +1860,270 @@ export class MeshPresence {
 
     server.addEventListener("message", (ev) => {
       this.handleMessage(sessionId, ev.data);
-      this.maybeBroadcastPeers();
     });
     const cleanup = () => {
+      const existing = this.sessions.get(sessionId);
+      if (!existing) return;
       this.sessions.delete(sessionId);
-      this.broadcast({ type: "population", n: this.sessions.size });
-      this.maybeBroadcastPeers();
+      if (existing.validated) {
+        this.broadcast({ type: "population", n: this.population() });
+        this.maybeBroadcastPeers();
+      }
     };
     server.addEventListener("close", cleanup);
     server.addEventListener("error", cleanup);
 
     return new Response(null, { status: 101, webSocket: client });
+  }
+}
+
+// -----------------------------------------------------------------------------
+// ShareObject Durable Object - one coordination atom per ciphertext object
+//
+// A per-share request queue plus durable lifecycle state prevents concurrent
+// GETs from both winning. R2 deletion is awaited before ciphertext leaves the
+// object. An expiry alarm removes never-consumed objects and reschedules itself
+// after provider failures so cleanup is not dependent on a future GET.
+// -----------------------------------------------------------------------------
+const SHARE_CLAIM_TIMEOUT_MS = 2 * 60 * 1000;
+const SHARE_CLEANUP_RETRY_MS = 5 * 60 * 1000;
+const SHARE_TOMBSTONE_MS = 60 * 60 * 1000;
+
+function shareObjectResponse(body, init = {}) {
+  const headers = new Headers(init.headers || {});
+  headers.set("Cache-Control", "no-store");
+  for (const [key, value] of Object.entries(PRIVACY_HEADERS)) headers.set(key, value);
+  return new Response(body, { ...init, headers });
+}
+
+function shareObjectJson(payload, status) {
+  return shareObjectResponse(JSON.stringify(payload), {
+    status,
+    headers: { "Content-Type": "application/json; charset=utf-8" },
+  });
+}
+
+export class ShareObject {
+  constructor(state, env) {
+    this.state = state;
+    this.env = env;
+    this.operation = Promise.resolve();
+  }
+
+  enqueue(operation) {
+    const run = this.operation.then(operation, operation);
+    this.operation = run.then(() => undefined, () => undefined);
+    return run;
+  }
+
+  validId(id) {
+    return typeof id === "string" && /^[A-Za-z0-9_-]{16}$/.test(id);
+  }
+
+  async fetch(request) {
+    return this.enqueue(() => this.handleFetch(request));
+  }
+
+  async handleFetch(request) {
+    const url = new URL(request.url);
+    const id = request.headers.get("X-Share-Id") || "";
+    if (!this.validId(id)) return shareObjectJson({ error: "invalid share id" }, 400);
+    if (!this.env.RELEASES) return shareObjectJson({ error: "share storage unavailable" }, 503);
+
+    if (url.pathname === "/store" && request.method === "POST") {
+      return this.store(id, request);
+    }
+    if (url.pathname === "/consume" && request.method === "POST") {
+      return this.consume(id);
+    }
+    return shareObjectJson({ error: "not found" }, 404);
+  }
+
+  async store(id, request) {
+    const now = Date.now();
+    const expiresAt = Number(request.headers.get("X-Share-Expires-At"));
+    const expectedBytes = Number(request.headers.get("X-Share-Bytes"));
+    if (!Number.isInteger(expiresAt)
+        || expiresAt <= now
+        || expiresAt > now + SHARE_TTL_MS + 60_000
+        || !Number.isInteger(expectedBytes)
+        || expectedBytes <= 0
+        || expectedBytes > SHARE_MAX_BYTES) {
+      return shareObjectJson({ error: "invalid share metadata" }, 400);
+    }
+    const existing = await this.state.storage.get("lifecycle");
+    if (existing) return shareObjectJson({ error: "share id already initialized" }, 409);
+
+    const lifecycle = {
+      version: 1,
+      id,
+      status: "uploading",
+      created_at: now,
+      expires_at: expiresAt,
+      bytes: expectedBytes,
+    };
+    await this.state.storage.put("lifecycle", lifecycle);
+    await this.state.storage.setAlarm(expiresAt);
+
+    try {
+      const body = await request.arrayBuffer();
+      if (body.byteLength !== expectedBytes || body.byteLength > SHARE_MAX_BYTES) {
+        await this.cleanupOrRetry(lifecycle, "upload-size-mismatch");
+        return shareObjectJson({ error: "invalid share body" }, 400);
+      }
+      await this.env.RELEASES.put(`shares/${id}`, body, {
+        httpMetadata: { contentType: "application/octet-stream" },
+        customMetadata: {
+          expires_at: String(expiresAt),
+          created_at: String(now),
+          lifecycle: "share-object-v1",
+        },
+      });
+      lifecycle.status = "available";
+      await this.state.storage.put("lifecycle", lifecycle);
+      return shareObjectJson({ stored: true, expires_at: expiresAt }, 201);
+    } catch (error) {
+      await this.cleanupOrRetry(lifecycle, "upload-failed");
+      console.error(JSON.stringify({
+        event: "share_object_upload_failed",
+        error: error?.message || String(error),
+        share_id_prefix: id.slice(0, 4),
+      }));
+      return shareObjectJson({ error: "store failed" }, 503);
+    }
+  }
+
+  async consume(id) {
+    const now = Date.now();
+    const lifecycle = await this.state.storage.get("lifecycle");
+    if (!lifecycle || lifecycle.id !== id) {
+      return shareObjectJson({ error: "not found or already collected" }, 404);
+    }
+    if (lifecycle.status === "consumed") {
+      return shareObjectJson({ error: "already collected" }, 410);
+    }
+    if (lifecycle.expires_at <= now) {
+      const deleted = await this.cleanupOrRetry(lifecycle, "expired-on-read");
+      return shareObjectJson(
+        { error: deleted ? "expired" : "expiry cleanup pending" },
+        deleted ? 410 : 503,
+      );
+    }
+    if (lifecycle.status !== "available") {
+      return shareObjectJson({ error: "share is not available" }, 409);
+    }
+
+    lifecycle.status = "consuming";
+    lifecycle.claim_started_at = now;
+    await this.state.storage.put("lifecycle", lifecycle);
+    await this.state.storage.setAlarm(Math.min(lifecycle.expires_at, now + SHARE_CLAIM_TIMEOUT_MS));
+
+    let object;
+    try {
+      object = await this.env.RELEASES.get(`shares/${id}`);
+      if (!object) {
+        lifecycle.status = "consumed";
+        lifecycle.consumed_at = Date.now();
+        await this.state.storage.put("lifecycle", lifecycle);
+        await this.state.storage.setAlarm(Date.now() + SHARE_TOMBSTONE_MS);
+        return shareObjectJson({ error: "not found or already collected" }, 404);
+      }
+      if (!Number.isInteger(object.size)
+          || object.size <= 0
+          || object.size > SHARE_MAX_BYTES
+          || object.size !== lifecycle.bytes) {
+        throw new Error("stored share metadata size outside enforced bounds");
+      }
+      const body = await object.arrayBuffer();
+      if (body.byteLength !== object.size
+          || body.byteLength <= 0
+          || body.byteLength > SHARE_MAX_BYTES) {
+        throw new Error("stored share size outside enforced bounds");
+      }
+      // This await is the one-shot commit point. No ciphertext response is
+      // released while the R2 object still exists.
+      await this.env.RELEASES.delete(`shares/${id}`);
+      lifecycle.status = "consumed";
+      lifecycle.consumed_at = Date.now();
+      delete lifecycle.claim_started_at;
+      await this.state.storage.put("lifecycle", lifecycle);
+      await this.state.storage.setAlarm(Date.now() + SHARE_TOMBSTONE_MS);
+
+      return shareObjectResponse(body, {
+        status: 200,
+        headers: {
+          "Content-Type": "application/octet-stream",
+          "X-Share-Bytes": String(body.byteLength),
+          "X-Share-Lifecycle": "consumed-after-r2-delete-ack",
+        },
+      });
+    } catch (error) {
+      lifecycle.status = "available";
+      delete lifecycle.claim_started_at;
+      await this.state.storage.put("lifecycle", lifecycle);
+      await this.state.storage.setAlarm(lifecycle.expires_at);
+      console.error(JSON.stringify({
+        event: "share_object_consume_failed",
+        error: error?.message || String(error),
+        share_id_prefix: id.slice(0, 4),
+      }));
+      return shareObjectJson({ error: "collection failed; retry later" }, 503);
+    }
+  }
+
+  async cleanupOrRetry(lifecycle, reason) {
+    try {
+      await this.env.RELEASES.delete(`shares/${lifecycle.id}`);
+      await this.state.storage.deleteAlarm();
+      await this.state.storage.deleteAll();
+      return true;
+    } catch (error) {
+      lifecycle.status = "cleanup-pending";
+      lifecycle.cleanup_reason = reason;
+      lifecycle.cleanup_attempted_at = Date.now();
+      await this.state.storage.put("lifecycle", lifecycle);
+      await this.state.storage.setAlarm(Date.now() + SHARE_CLEANUP_RETRY_MS);
+      console.error(JSON.stringify({
+        event: "share_object_cleanup_retry",
+        reason,
+        error: error?.message || String(error),
+        share_id_prefix: lifecycle.id.slice(0, 4),
+      }));
+      return false;
+    }
+  }
+
+  async alarm() {
+    return this.enqueue(async () => {
+      const lifecycle = await this.state.storage.get("lifecycle");
+      if (!lifecycle) {
+        await this.state.storage.deleteAlarm();
+        return;
+      }
+      const now = Date.now();
+      if (lifecycle.status === "consumed") {
+        await this.state.storage.deleteAlarm();
+        await this.state.storage.deleteAll();
+        return;
+      }
+      if (lifecycle.status === "consuming" && lifecycle.expires_at > now) {
+        const leaseEnds = Number(lifecycle.claim_started_at || 0) + SHARE_CLAIM_TIMEOUT_MS;
+        if (leaseEnds > now) {
+          await this.state.storage.setAlarm(Math.min(lifecycle.expires_at, leaseEnds));
+          return;
+        }
+        lifecycle.status = "available";
+        delete lifecycle.claim_started_at;
+        await this.state.storage.put("lifecycle", lifecycle);
+        await this.state.storage.setAlarm(lifecycle.expires_at);
+        return;
+      }
+      if (lifecycle.status === "available" && lifecycle.expires_at > now) {
+        await this.state.storage.setAlarm(lifecycle.expires_at);
+        return;
+      }
+      await this.cleanupOrRetry(lifecycle, "expiry-alarm");
+    });
   }
 }
 
@@ -1499,12 +2147,13 @@ export class MeshPresence {
 // R2 will gladly bill the operator for those tokens, not us, until the
 // bucket fires.
 //
-// State is held in instance memory + DO storage. DO migrations preserve
-// storage across deploys; an idle bucket gets evicted by the DO runtime
-// after ~30 days, which is fine (it just resets to full).
+// State is held in instance memory + DO storage. Each persisted update also
+// schedules an idle-expiry alarm; runtime eviction alone would not delete
+// Durable Object storage.
 // -----------------------------------------------------------------------------
 const SHARE_RATE_CAPACITY    = 12;
 const SHARE_RATE_REFILL_PER_S = 2 / 60; // 2 per minute
+const SHARE_RATE_IDLE_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 
 export class ShareRate {
   constructor(state, env) {
@@ -1541,6 +2190,14 @@ export class ShareRate {
       tokens: this.tokens,
       last_refill_ms: this.lastRefillMs,
     });
+    await this.state.storage.setAlarm(Date.now() + SHARE_RATE_IDLE_TTL_MS);
+  }
+
+  async alarm() {
+    await this.state.storage.deleteAlarm();
+    await this.state.storage.deleteAll();
+    this.tokens = null;
+    this.lastRefillMs = null;
   }
 
   async fetch(request) {
@@ -1550,7 +2207,13 @@ export class ShareRate {
     this.refill(now);
 
     if (url.pathname === "/check" && request.method === "POST") {
-      const cost = parseFloat(url.searchParams.get("cost") || "1") || 1;
+      const cost = Number(url.searchParams.get("cost") || "1");
+      if (!Number.isInteger(cost) || cost < 1 || cost > SHARE_RATE_CAPACITY) {
+        return new Response(
+          JSON.stringify({ error: "invalid token cost" }),
+          { status: 400, headers: { "Content-Type": "application/json" } }
+        );
+      }
       if (this.tokens >= cost) {
         this.tokens -= cost;
         await this.persist();
@@ -1595,9 +2258,9 @@ export class ShareRate {
 // -----------------------------------------------------------------------------
 // NativeSession Durable Object
 //
-// Per-session state for the WebTransport /native channel. Holds the agreed
-// hybrid session keys, the One Link wire protocol sequence numbers, and the
-// active capability set. Garbage collected on idle.
+// Reserved binding only. It does not hold negotiated keys, sequence numbers,
+// streams, or an active capability set. Keep it fail-closed until a versioned
+// native transport and its acceptance tests are deployed.
 // -----------------------------------------------------------------------------
 export class NativeSession {
   constructor(state, env) {
@@ -1608,11 +2271,19 @@ export class NativeSession {
   async fetch(request) {
     return new Response(
       JSON.stringify({
-        ok: true,
+        ok: false,
+        schema: "native-session-status-v1",
+        status: "not-implemented",
         session_durable_object: true,
-        note: "real WebTransport session lifecycle wires once CF Worker supports raw WT streams",
+        note: "No WebTransport session, shared key, or native capability negotiation is established.",
       }),
-      { headers: { "Content-Type": "application/json" } }
+      {
+        status: 501,
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+          "Cache-Control": "no-store",
+        },
+      }
     );
   }
 }

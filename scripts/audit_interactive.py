@@ -57,15 +57,20 @@ with sync_playwright() as p:
     def on_ws(ws):
         results["websocket_url"] = ws.url
         results["websocket_state"] = "opened"
-        def fr_text(payload):
+        def fr_text(frame):
             try:
+                # Current Playwright Python passes the frame payload directly;
+                # older releases exposed an object with a ``payload`` member.
+                # Accept both so an audit cannot crash as soon as a real Worker
+                # sends its first WebSocket message.
+                payload = getattr(frame, "payload", frame)
                 if isinstance(payload, bytes):
                     payload = payload.decode("utf-8","replace")
-                results["websocket_frames"].append(payload[:400])
+                results["websocket_frames"].append(str(payload)[:400])
             except Exception:
                 pass
-        ws.on("framereceived", lambda f: fr_text(f.payload))
-        ws.on("close", lambda: results.setdefault("websocket_state","closed"))
+        ws.on("framereceived", fr_text)
+        ws.on("close", lambda: results.__setitem__("websocket_state", "closed"))
     page.on("websocket", on_ws)
 
     # ---- visit ----

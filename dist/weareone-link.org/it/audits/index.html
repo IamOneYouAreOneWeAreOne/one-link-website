@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Audit - cosa è stato esaminato, da chi, con quali esiti</title>
-  <meta name="description" content="Il registro degli audit di One Link. Ogni revisione esterna, ogni red-team interno, ogni esito aperto o chiuso. Pubblico, datato, firmato.">
+  <meta name="description" content="Registro mantenuto dai contributori di audit esterni pubblicati e note interne. Nessuna società esterna ha pubblicato un audit; le voci non sono attestate.">
   <link rel="canonical" href="https://weareone-link.org/it/audits/">
   <link rel="alternate" hreflang="en" href="https://weareone-link.org/audits/">
   <link rel="alternate" hreflang="es" href="https://weareone-link.org/es/audits/">
@@ -20,12 +20,12 @@
   <meta property="og:locale" content="it_IT">
   <meta property="og:site_name" content="One Link">
   <meta property="og:title" content="Audit - cosa è stato esaminato, da chi, con quali esiti">
-  <meta property="og:description" content="Il registro degli audit di One Link. Ogni revisione esterna, ogni red-team interno, ogni esito aperto o chiuso.">
+  <meta property="og:description" content="Registro mantenuto dai contributori di audit esterni pubblicati e note interne. Nessuna società esterna ha pubblicato un audit; le voci non sono attestate.">
   <meta property="og:url" content="https://weareone-link.org/it/audits/">
   <meta property="og:image" content="https://weareone-link.org/og/one-link-it.png">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Audit - cosa è stato esaminato, da chi, con quali esiti">
-  <meta name="twitter:description" content="Il registro degli audit di One Link. Ogni revisione esterna, ogni red-team interno, ogni esito aperto o chiuso.">
+  <meta name="twitter:description" content="Registro mantenuto dai contributori di audit esterni pubblicati e note interne. Nessuna società esterna ha pubblicato un audit; le voci non sono attestate.">
   <meta name="twitter:image" content="https://weareone-link.org/og/one-link-it.png">
   <link rel="icon" type="image/x-icon" href="/images/favicon.ico"><link rel="icon" type="image/png" sizes="128x128" href="/images/logo-128.png"><link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
   <link rel="manifest" href="/app.webmanifest">
@@ -33,9 +33,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r95">
-  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r95">
-  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r95">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r97">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r97">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r97">
 </head>
 <body>
 <a href="#main" class="skip-link">Salta al contenuto</a>
@@ -58,8 +58,8 @@
   <section class="hero">
     <div class="container">
       <span class="we-are-one">Audit</span>
-      <h1>Ogni revisione, <span class="grad">a verbale.</span></h1>
-      <p class="lede">Il registro degli audit di One Link. Elenchiamo ogni revisione esterna, ogni red-team interno, ogni esito (aperto o chiuso), ogni commit che lo ha chiuso. Se la pagina è vuota, è la verità. Se cresce, è anche questa la verità.</p>
+      <h1>Revisioni selezionate e lacune di evidenza.</h1>
+      <p class="lede">Il registro collega rapporti esterni quando esistono e note interne selezionate. Non è esaustivo né audit indipendente.</p>
     </div>
   </section>
 
@@ -75,7 +75,7 @@
         <li>Dovresti fidarti del codice sorgente che puoi leggere su GitHub.</li>
         <li>Dovresti diffidare di qualsiasi affermazione su questo sito che non sia sostenuta da codice o da un esito chiuso nella cronologia dei commit.</li>
       </ul>
-      <p class="ol-mt-md">Quando arriverà un audit esterno, il nome della società, l'ambito dell'incarico, il conteggio degli esiti per gravità, il PDF del rapporto e i commit che hanno chiuso ogni esito appariranno tutti su questa pagina. Il registro degli audit è firmato e committato insieme al resto del sito, così la sua storia è a prova di manomissione tramite il log git pubblico.</p>
+      <p class="ol-mt-md">La cronologia pubblica mostra modifiche, ma non è registro firmato e marcato indipendentemente né prova la chiusura di ogni rilievo.</p>
     </div>
   </section>
 
@@ -124,32 +124,32 @@
   <section class="section">
     <div class="container">
       <span class="kicker">Attività di red-team interno</span>
-      <h2>Cosa abbiamo fatto <span class="grad">a noi stessi.</span></h2>
-      <p class="lede">Al posto di un audit esterno, pubblichiamo ogni esito di red-team interno e il commit che lo ha chiuso. Non sostituisce un audit vero. È quello che oggi possiamo fare, con onestà.</p>
+      <h2>Note selezionate dei contributori; non audit indipendente.</h2>
+      <p class="lede ol-mw-64ch">Il registro collega rapporti esterni quando esistono e note interne selezionate. Non è esaustivo né audit indipendente.</p>
       <div class="ol-grid ol-grid-2">
         <article class="ol-tile">
           <h3>Passaggio di onestà d'audit v0.21.0-alpha (2026-05-19)</h3>
-          <p>Verifica incrociata multi-agente di ogni dichiarazione di questo sito rispetto al codice del daemon. Cinque esagerazioni riformulate con limiti espliciti: formato di wire ML-KEM-768 riservato vs attivo, ratchet per blocco pronto vs cablato, ambito di ChunkRatchet a riposo, lista dei backend hardware, metafora del routing tau_c. <a class="ol-cyan-text" href="https://github.com/IamOneYouAreOneWeAreOne/one-link-website/commits/master" rel="noopener external">Cronologia dei commit</a>.</p>
+          <p>Solo evidenza interna dichiarata dai contributori. Qui non sono pubblicati audit indipendente, artefatto versionato, trascrizione esatta del comando attuale o riproduzione esterna; le affermazioni formali, temporali e fuzz attendono tale evidenza.</p>
         </article>
         <article class="ol-tile">
           <h3>Attivazione del ratchet di canale v0.20.7 (2026-05-08)</h3>
-          <p>Scoperto che la capability Double Ratchet era implementata end-to-end in v0.7.2 ma il daemon la filtrava dai CAPS pubblicizzati, lasciando i canali su AEAD statico. L'impegno T3 di SECURITY.md sulla segretezza in avanti non era rispettato. Chiuso reinserendo la capability nella pubblicità di LOCAL_CAPABILITIES.</p>
+          <p>Solo evidenza interna dichiarata dai contributori. Qui non sono pubblicati audit indipendente, artefatto versionato, trascrizione esatta del comando attuale o riproduzione esterna; le affermazioni formali, temporali e fuzz attendono tale evidenza.</p>
         </article>
         <article class="ol-tile">
           <h3>Profilo di fiducia iOS v0.20.6 (2026-05-08)</h3>
-          <p>iOS Safari bloccava il flusso HTTPS di abbinamento contro i certificati autofirmati del daemon. Chiuso consegnando un endpoint Configuration Profile (.mobileconfig) che consegna il certificato autofirmato del daemon come root di fiducia.</p>
+          <p>Solo evidenza interna dichiarata dai contributori. Qui non sono pubblicati audit indipendente, artefatto versionato, trascrizione esatta del comando attuale o riproduzione esterna; le affermazioni formali, temporali e fuzz attendono tale evidenza.</p>
         </article>
         <article class="ol-tile">
           <h3>Audit di sicurezza multi-agente v0.20.5 (2026-05-09)</h3>
-          <p>Audit interno di 5 CRITICHE / 21 ALTE / 24 MEDIE che ha coperto il binding DTLS-Ed25519, la fiducia del pin del Service Worker, l'inversione di consenti-tutto per default, l'attivazione del Double Ratchet, la lacuna di cifratura a riposo. Esiti materiali chiusi in v0.20.7. Esiti di gravità minore tracciati nella lista delle issue.</p>
+          <p>Solo evidenza interna dichiarata dai contributori. Qui non sono pubblicati audit indipendente, artefatto versionato, trascrizione esatta del comando attuale o riproduzione esterna; le affermazioni formali, temporali e fuzz attendono tale evidenza.</p>
         </article>
         <article class="ol-tile">
           <h3>Porta di fuzz F1 (continua)</h3>
-          <p>Fuzz a cinque milioni di iterazioni su 42 binari, zero crash, zero falsi positivi. Ventiquattro nuovi vettori avversariali v2 aggiunti dalla v0.20.5. Riproducibile da <code class="ol-inline-code">cargo fuzz</code>.</p>
+          <p>Solo evidenza interna dichiarata dai contributori. Qui non sono pubblicati audit indipendente, artefatto versionato, trascrizione esatta del comando attuale o riproduzione esterna; le affermazioni formali, temporali e fuzz attendono tale evidenza.</p>
         </article>
         <article class="ol-tile">
           <h3>Porte di solidità capability e CRDT (continue)</h3>
-          <p>Porta di attenuazione macaroon a un milione di iterazioni (5,94 s, 0 violazioni). Porta delle leggi di reticolo OR-set + LWW a un milione di iterazioni (7,46 s, 0 violazioni). Soak di divergenza con lo specchio nativo a duemila iterazioni (target di zero divergenza prima del cutover autorevole).</p>
+          <p>Solo evidenza interna dichiarata dai contributori. Qui non sono pubblicati audit indipendente, artefatto versionato, trascrizione esatta del comando attuale o riproduzione esterna; le affermazioni formali, temporali e fuzz attendono tale evidenza.</p>
         </article>
       </div>
     </div>
@@ -158,8 +158,8 @@
   <section class="section">
     <div class="container">
       <span class="kicker">Dove guardare</span>
-      <h2>Ogni dichiarazione, <span class="grad">legata a un commit.</span></h2>
-      <p class="lede">Se leggi un'affermazione su questo sito e vuoi verificarla, ecco esattamente dove vive la prova.</p>
+      <h2>Riferimenti di evidenza; non prova di ogni affermazione.</h2>
+      <p class="lede ol-mw-64ch">La cronologia pubblica mostra modifiche, ma non è registro firmato e marcato indipendentemente né prova la chiusura di ogni rilievo.</p>
       <div class="ol-grid ol-grid-2">
         <article class="ol-tile">
           <h3>Sorgente del daemon</h3>
@@ -171,7 +171,7 @@
         </article>
         <article class="ol-tile">
           <h3>Porte di integrità CI</h3>
-          <p>Ogni push esegue rilevamento di em-dash, rilevamento di identificatori personali, rilevamento di percorsi locali, rilevamento di token segnaposto, rilevamento di linguaggio da calendario, verifica di freschezza del manifest e rilevamento di link rotti. Vedi <code class="ol-inline-code">.github/workflows/ci.yml</code>.</p>
+          <p>Solo evidenza interna dichiarata dai contributori. Qui non sono pubblicati audit indipendente, artefatto versionato, trascrizione esatta del comando attuale o riproduzione esterna; le affermazioni formali, temporali e fuzz attendono tale evidenza.</p>
         </article>
         <article class="ol-tile">
           <h3>Benchmark</h3>
@@ -196,7 +196,7 @@
     <div class="footer-grid">
       <div>
         <a href="/it/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
-        <p class="footer-tag">Una rete libera e privata per messaggi, file e dispositivi. Di nessuno. Di tutti.</p>
+        <p class="footer-tag">Software open source preliminare per comunicazioni private. Costruito verso la proprietà comunitaria; i servizi attuali dipendono ancora da manutentori, operatori e fornitori identificabili.</p>
         <p class="ol-mt-md ol-soft-text ol-mono">
           <strong>Leggi in:</strong>
           <a class="ol-cyan-text" hreflang="en" href="/audits/">English</a> &middot;
@@ -207,7 +207,7 @@
           <a class="ol-cyan-text" hreflang="it" href="/it/audits/">Italiano</a>
         </p>
       </div>
-      <div><h3>Rete</h3><ul><li><a href="/how-it-works/" hreflang="en">Come funziona</a></li><li><a href="/features/" hreflang="en">Funzionalità</a></li><li><a href="/mesh/" hreflang="en">Mesh dal vivo</a></li></ul></div>
+      <div><h3>Rete</h3><ul><li><a href="/how-it-works/" hreflang="en">Come funziona</a></li><li><a href="/features/" hreflang="en">Funzionalità</a></li><li><a href="/mesh/" hreflang="en">Presenza web</a></li></ul></div>
       <div><h3>Per te</h3><ul><li><a href="/download/" hreflang="en">Ottieni One Link</a></li><li><a href="/security/" hreflang="en">Sicurezza</a></li><li><a href="/it/verify-download/" hreflang="it">Verifica download</a></li><li><a href="/it/roadmap/" hreflang="it">Tabella di marcia</a></li><li><a href="/accessibility/" hreflang="en">Accessibilità</a></li><li><a href="/transparency/" hreflang="en">Trasparenza</a></li><li><a href="/audits/" hreflang="en">Audit</a></li></ul></div>
       <div><h3>Per i costruttori</h3><ul><li><a href="/builders/" hreflang="en">Protocollo e sorgente</a></li><li><a href="/changelog/" hreflang="en">Registro modifiche</a></li><li><a href="/releases/" hreflang="en">Versioni</a></li><li><a href="/mirror/" hreflang="en">Replica questo sito</a></li><li><a href="/download/source" hreflang="en" rel="noopener">Archivio sorgente</a></li><li><a href="https://github.com/IamOneYouAreOneWeAreOne/one-link" rel="noopener external">GitHub</a></li></ul></div>
     </div>
@@ -218,6 +218,6 @@
   </div>
 </footer>
 
-<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r95"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r97"></script>
 </body>
 </html>

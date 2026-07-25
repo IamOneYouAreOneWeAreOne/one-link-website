@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Obtener One Link - para cualquier dispositivo, gratis, firmado, verificable</title>
-  <meta name="description" content="Un archivo. Un toque. Funciona en Windows, macOS, Linux, Android, iOS. Cada binario está firmado y compilado de forma reproducible. La prueba está en la página.">
+  <title>Descargar compilaciones actuales - One Link</title>
+  <meta name="description" content="Compilaciones alfa actuales de One Link, disponibilidad exacta y estado real de verificación.">
   <link rel="canonical" href="https://weareone-link.org/es/download/">
   <link rel="alternate" hreflang="en" href="https://weareone-link.org/download/">
   <link rel="alternate" hreflang="es" href="https://weareone-link.org/es/download/">
@@ -21,7 +21,7 @@
   <meta property="og:locale" content="es_ES">
   <meta property="og:site_name" content="One Link">
   <meta property="og:title" content="Obtener One Link">
-  <meta property="og:description" content="Gratis. Firmado. Compilado de forma reproducible. Tuyo.">
+  <meta property="og:description" content="Compilaciones alfa actuales de One Link, disponibilidad exacta y estado real de verificación.">
   <meta property="og:url" content="https://weareone-link.org/es/download/">
   <meta property="og:image" content="https://weareone-link.org/og/download.png">
 
@@ -31,9 +31,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r95">
-  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r95">
-  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r95">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r97">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r97">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r97">
 </head>
 <body>
 <a href="#main" class="skip-link">Saltar al contenido</a>
@@ -45,8 +45,7 @@
       <span class="logo-mark" aria-hidden="true"></span>
       <span>One Link</span>
     </a>
-    <input type="checkbox" id="nav-toggle" class="nav-toggle-input" aria-hidden="true">
-    <label for="nav-toggle" class="nav-toggle" aria-label="Abrir navegación" role="button" tabindex="0">&#9776;</label>
+    <button type="button" id="nav-toggle" class="nav-toggle" aria-label="Abrir navegación" aria-expanded="false" aria-controls="primary-nav">&#9776;</button>
     <nav class="site-nav" id="primary-nav" aria-label="Principal">
       <a href="/how-it-works/" hreflang="en">Cómo funciona</a>
       <a href="/features/" hreflang="en">Funciones</a>
@@ -58,253 +57,47 @@
 </header>
 
 <main id="main">
-
-  <section class="hero ol-pb-sm">
+  <section class="hero">
     <div class="container">
-      <span class="we-are-one">Obtener One Link</span>
-      <h1>Un toque. <span class="grad">Listo en el momento que se abre.</span></h1>
-      <p class="lede">
-        Detectamos tu dispositivo y preparamos la compilación adecuada. Firmada, compilada de forma reproducible y descargada por la propia red en vez de por una petición HTTP normal. La prueba está justo debajo del botón.
-      </p>
-    </div>
-  </section>
-
-  <section class="section-tight">
-    <div class="container">
-      <div class="ol-warning-panel" role="region" aria-labelledby="ol-warn-h">
-        <h3 id="ol-warn-h">
-          <span class="ol-warning-icon" aria-hidden="true">!</span>
-          <span>Tu sistema operativo te avisará la primera vez. El archivo está bien. Así puedes pasar el aviso.</span>
-        </h3>
-        <p class="ol-warning-prose">
-          Windows SmartScreen y macOS Gatekeeper marcan cualquier binario recién publicado hasta que el editor acumule historial de descargas. Estamos preparando los certificados de firma; hasta que estén en su sitio y acumulen reputación, cada versión recién publicada activa un aviso. Los propios bytes están firmados, hasheados y son verificables, y puedes confirmarlo tú mismo en tu navegador. Cómo pasar el aviso:
-        </p>
-
-        <h4 class="ol-warning-h4">Cómo pasar el aviso</h4>
-        <div class="ol-warning-grid">
-
-          <div class="ol-warning-tile">
-            <h5><span class="ol-warning-os-tag">Windows</span> Pasar el aviso (10 segundos)</h5>
-            <ol>
-              <li>Pulsa el botón de descarga de abajo.</li>
-              <li>Cuando Windows diga «Windows protegió su PC», pulsa <strong>«Más información»</strong>.</li>
-              <li>Pulsa <strong>«Ejecutar de todas formas»</strong>.</li>
-            </ol>
-          </div>
-
-          <div class="ol-warning-tile">
-            <h5><span class="ol-warning-os-tag">macOS</span> Pasar el aviso (10 segundos)</h5>
-            <ol>
-              <li>Pulsa el botón de descarga de abajo.</li>
-              <li>Haz clic derecho sobre <code>one-link.dmg</code> en el Finder y elige <strong>Abrir</strong>.</li>
-              <li>Pulsa <strong>Abrir</strong> en el diálogo. O usa <strong>Configuración del Sistema &rarr; Privacidad y seguridad &rarr; Abrir de todos modos</strong>.</li>
-            </ol>
-          </div>
-
-          <div class="ol-warning-tile">
-            <h5>Verifica primero el archivo (30 segundos)</h5>
-            <ol>
-              <li>Pulsa el botón de descarga de abajo.</li>
-              <li>Arrastra el archivo descargado a <a class="ol-cyan-text" href="/es/verify-download/" hreflang="es">/es/verify-download/</a>.</li>
-              <li>Tu navegador calcula el SHA-256 localmente (el archivo nunca sale de tu pestaña) y lo compara con el valor firmado en vivo. Si coinciden, el binario es byte a byte lo que publicamos.</li>
-            </ol>
-          </div>
-
-          <div class="ol-warning-tile">
-            <h5>O compílalo desde el código fuente</h5>
-            <ol>
-              <li>Pulsa la fila <strong>Código fuente</strong> más abajo o visita nuestro <a class="ol-cyan-text" href="https://github.com/IamOneYouAreOneWeAreOne/one-link" rel="noopener external">GitHub</a>.</li>
-              <li>Compila el daemon tú mismo con cargo y Python 3.11+. Las instrucciones están en el README.</li>
-              <li>Puedes leer cada línea antes. Sin aviso porque lo compilaste tú.</li>
-            </ol>
-          </div>
-
-        </div>
-
-        <p class="ol-warning-foot">
-          Los certificados firmados (Authenticode para Windows, notarización de Developer ID para macOS) están en la <a class="ol-cyan-text" href="/es/roadmap/" hreflang="es">/es/roadmap/</a>. Una vez que acumulen reputación, este aviso desaparece automáticamente sin ningún cambio por tu parte.
-        </p>
-      </div>
-    </div>
-  </section>
-
-  <section class="section-tight">
-    <div class="container">
-      <div class="ol-download" id="ol-download">
-        <div class="primary">
-          <div class="os-line" id="ol-detected-os">Detectando tu dispositivo...</div>
-          <a href="/download/macos" id="ol-download-button" class="btn btn-primary btn-large">
-            Descargar para macOS
-            <span class="arr" aria-hidden="true">&darr;</span>
-          </a>
-          <p class="ol-soft-text ol-mw-52ch">
-            La descarga abre una sesión real de One Link con el relé de versiones, transmite el binario fragmento a fragmento y verifica la firma en tu navegador conforme llega. Si tu red bloquea algo extraño, recurre en silencio a una descarga firmada simple.
-          </p>
-        </div>
-
-        <div class="alts ol-tag-grid" aria-label="Other devices">
-          <a href="/download/windows"       class="ol-platform-row">Windows (Intel/AMD) <span class="ol-platform-status ready">.exe installer, hoy</span></a>
-          <a href="/download/windows-arm64" class="ol-platform-row">Windows en ARM      <span class="ol-platform-status ready">.exe installer, hoy</span></a>
-          <a href="/download/macos"         class="ol-platform-row">macOS (Apple Silicon)    <span class="ol-platform-status ready">.dmg, hoy</span></a>
-          <a href="/download/macos-x86_64"  class="ol-platform-row">macOS (Intel)            <span class="ol-platform-status ready">.dmg, hoy</span></a>
-          <a href="/download/linux"         class="ol-platform-row">Linux (Intel/AMD) <span class="ol-platform-status ready">.AppImage, hoy</span></a>
-          <a href="/download/linux-arm64"   class="ol-platform-row">Linux en ARM (Pi) <span class="ol-platform-status ready">.AppImage, hoy</span></a>
-          <a href="/download/android"       class="ol-platform-row">Android <span class="ol-platform-status">en camino</span></a>
-          <a href="/download/ios"           class="ol-platform-row">iOS     <span class="ol-platform-status">en camino</span></a>
-          <a href="/download/openbsd"       class="ol-platform-row">OpenBSD <span class="ol-platform-status">compilar desde el c&oacute;digo, hoy</span></a>
-          <a href="/download/source"        class="ol-platform-row">C&oacute;digo fuente  <span class="ol-platform-status ready">AGPL, hoy</span></a>
-        </div>
-        <p class="ol-attest-dim">
-          estado honesto: las seis arquitecturas de escritorio mayoritarias ya est&aacute;n disponibles hoy &mdash; Windows + macOS + Linux, cada uno en versi&oacute;n Intel y ARM. Android + iOS son los siguientes. compilar desde el c&oacute;digo funciona en todas las plataformas.
-        </p>
-        <p class="ol-attest-dim">
-          &iquest;prefieres el ZIP port&aacute;til en lugar del instalador nativo? a&ntilde;ade <code>-zip</code> a cualquier URL anterior (p. ej. <code>/download/windows-arm64-zip</code>). el mismo binario, distinto empaquetado.
-        </p>
-
-        <div class="ol-attest" id="ol-attest">
-          <div class="row"><span class="key">versión</span><span class="val">0.21.0-alpha.0</span></div>
-          <div class="row"><span class="key">plataforma</span><span class="val">windows .exe, 58,7 MB</span></div>
-          <div class="row"><span class="key">sha256</span><span class="val ol-word-break" id="ol-sha">ea4efc8bf92f5ddd911e10f940a46899fda6fa786755ce797429b8fd62c05aed</span></div>
-          <div class="row"><span class="key">blake3</span><span class="val muted ol-word-break">dbd29b475fba238344609089973c49fb7a947e58b187cd3591bb615c46c818f8</span></div>
-          <div class="row"><span class="key">firma</span><span class="val">Ed25519 <span class="ol-green-text">en vivo y verificable</span> &middot; ML-DSA-65 <span class="ol-soft-text">en camino (llega en v0.22)</span></span></div>
-          <div class="row"><span class="key">fuente</span><span class="val muted">eb87dd2 (v0.21.0-alpha.0-71-geb87dd2)</span></div>
-          <div class="row"><span class="key">verificar</span><span class="val"><a class="verify" href="/api/attest/ea4efc8bf92f5ddd911e10f940a46899fda6fa786755ce797429b8fd62c05aed">leer la cadena de atestación</a> &middot; o usa el verificador en vivo más abajo</span></div>
-        </div>
-      </div>
-
-      <p class="ol-caption-centered">
-        Sin cuenta. Sin correo. Sin seguimiento. Gratis para siempre.
-      </p>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="container">
-      <span class="kicker">Por qué importa la prueba</span>
-      <h2>Una verificación que puedes <span class="grad">hacer tú.</span></h2>
-      <p class="lede">
-        Cada descarga aquí está firmada, hasheada y es reproducible. Las matemáticas están abiertas. La prueba está en tu pestaña. Pulsa el verificador de abajo y observa cómo los bytes se confirman a sí mismos.
-      </p>
-
-      <div class="ol-grid ol-grid-3">
-        <article class="ol-tile">
-          <span class="ol-icon" aria-hidden="true">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L4 6v6c0 5 3.5 9 8 10 4.5-1 8-5 8-10V6l-8-4z"/></svg>
-          </span>
-          <h3>Firmado y verificable hoy.</h3>
-          <p>Cada versión lleva una firma Ed25519 que puedes verificar en tu pestaña ahora mismo (botón más abajo). La mitad postcuántica ML-DSA-65 llega cuando el equipo de firma sin conexión esté aprovisionado. Ambas mitades exigidas en el verificador del daemon en v0.22.</p>
-        </article>
-        <article class="ol-tile">
-          <span class="ol-icon" aria-hidden="true">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-          </span>
-          <h3>Construido en una sala sellada.</h3>
-          <p>La compilación ocurre en un entorno de cómputo confidencial. El documento de atestación prueba el commit exacto, el entorno exacto y que nada más lo tocó.</p>
-        </article>
-        <article class="ol-tile">
-          <span class="ol-icon" aria-hidden="true">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z"/><path d="M4 12h16"/><path d="M12 4v16"/></svg>
-          </span>
-          <h3>Reproducible.</h3>
-          <p>Cualquiera puede compilar la misma fuente y obtener el mismo binario byte a byte. Si tú y nosotros llegamos al mismo hash, ninguna persona ha tocado el resultado.</p>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="container">
-      <div class="ol-grid ol-grid-2 ol-gap-3 ol-items-center">
-        <div>
-          <span class="kicker">La descarga en sí</span>
-          <h2>Ya es <span class="grad">One Link.</span></h2>
-          <p>El botón que tocas no se trae un archivo por HTTP. Abre una sesión real de One Link entre tu navegador y el relé de versiones, negocia una clave híbrida y transmite el binario fragmento a fragmento por el mismo protocolo que tu teléfono usará mañana.</p>
-          <p>Puedes observar cada paso. O ignorarlo todo y el archivo aparece en tu carpeta de descargas. Cualquiera de las dos cosas está bien.</p>
-        </div>
-        <div>
-          <pre class="ol-code"><span class="d">// cada descarga, cada vez</span>
-<span class="c">1.</span> abrir sesion   <span class="d">navegador &rarr; relé</span>
-<span class="c">2.</span> clave híbrida  <span class="g">X25519 + ML-KEM-768</span>
-<span class="c">3.</span> petición       <span class="a">one-link-&lt;tu-so&gt;.bin</span>
-<span class="c">4.</span> transmitir     <span class="g">AEAD por fragmento, rotación cada N</span>
-<span class="c">5.</span> verificar sha  <span class="g">coincide con el hash anunciado</span>
-<span class="c">6.</span> verificar sig  <span class="g">Ed25519 ok</span> <span class="ol-soft-text">&middot; ML-DSA-65 pendiente (llega en v0.22)</span>
-<span class="c">7.</span> atestar        <span class="g">ol_confidential fresco, testigo ok</span>
-
-<span class="c">listo</span>  <span class="g">archivo escrito a disco</span></pre>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="container">
-      <span class="kicker">Privado por defecto</span>
-      <h2>También puedes descargar <span class="grad">de forma anónima.</span></h2>
-      <p class="lede">
-        Toca el interruptor y el binario toma una ruta de tres saltos por relés voluntarios en su camino a ti. Nadie, ni siquiera nosotros, sabe quién lo trajo. Mismo archivo, mismo hash, un poco más lento.
-      </p>
-      <p class="ol-soft-text ol-mw-56ch">
-        Tu visita vive en tu pestaña. La petición vive entre tú y el relé. El relé vive entre tú y el archivo. Nada de la descarga se registra en sitio alguno del que pueda recuperarse después. La arquitectura misma lo mantiene así.
-      </p>
-
-      <div class="ol-private-demo ol-mt-lg">
-        <button type="button" id="ol-private-route-btn" class="btn btn-primary">
-          Ejecutar una ruta Sphinx real, aquí mismo
-          <span class="arr" aria-hidden="true">&rarr;</span>
-        </button>
-        <span class="ol-status ol-status-inline" id="ol-private-route-status">
-          <span class="dot"></span>
-          <span>calculando</span>
-        </span>
-        <pre class="ol-code ol-output-pre" id="ol-private-route-out"></pre>
-      </div>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="container">
-      <span class="kicker">Recibo criptográfico</span>
-      <h2>Verifica el binario <span class="grad">antes de ejecutarlo.</span></h2>
-      <p class="lede ol-mw-64ch">
-        Cada versión se publica junto a un documento de atestación firmado. El botón de abajo trae esa atestación, recalcula los bytes canónicos localmente y verifica la firma Ed25519 contra la clave pública de firma de versión anclada en tu navegador. Una marca verde significa que los bytes que estás a punto de recibir son bit a bit lo que firmó quien mantiene el proyecto. La prueba está aquí mismo, cada vez.
-      </p>
-
-      <div class="ol-private-demo ol-mt">
-        <button type="button" id="ol-attest-btn" class="btn btn-primary">
-          Verificar la última atestación de Windows en esta pestaña
-          <span class="arr" aria-hidden="true">&rarr;</span>
-        </button>
-        <span class="ol-status ol-status-inline" id="ol-attest-status">
-          <span class="dot"></span>
-          <span>trayendo y verificando</span>
-        </span>
-        <pre class="ol-code ol-output-pre" id="ol-attest-out"></pre>
-      </div>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="container">
-      <span class="kicker">O compílalo tú</span>
-      <h2>Todo está <span class="grad">a la vista.</span></h2>
-      <p class="lede">
-        AGPL-3.0. Cada línea del daemon, cada crate del protocolo, cada shader, cada palabra de este sitio. Clónalo. Léelo. Bifúrcalo. Levanta tu propio relé.
-      </p>
+      <span class="we-are-one">Canal de compilación actual</span>
+      <h1>Descarga con el estado de prueba visible.</h1>
+      <p class="lede">Los artefactos de escritorio son compilaciones alfa continuas y mutables del canal auto-latest de GitHub. No son una versión inmutable. No se publican firmas de artefacto, firma del editor, pruebas de compilación reproducible ni atestaciones de procedencia.</p>
       <div class="cta-row">
-        <a href="https://github.com/IamOneYouAreOneWeAreOne/one-link" class="btn btn-ghost btn-large" rel="noopener external">
-          Ver el código en GitHub
-        </a>
-        <a href="/builders/" hreflang="en" class="btn btn-ghost btn-large">
-          Leer el protocolo
-        </a>
-        <a href="/download/source" hreflang="en" class="btn btn-ghost btn-large" rel="noopener">
-          Descargar el archivo de fuente
-        </a>
+        <a href="#platforms" class="btn btn-primary btn-large">Elige la plataforma exacta <span class="arr" aria-hidden="true">&rarr;</span></a>
+        <a href="https://github.com/IamOneYouAreOneWeAreOne/one-link/releases/tag/auto-latest" class="btn btn-ghost" rel="noopener external">Inspeccionar artefactos en GitHub</a>
       </div>
     </div>
   </section>
-
+  <section class="section">
+    <div class="container">
+      <h2>Elige la plataforma exacta</h2>
+      <div class="alts ol-tag-grid" id="platforms" aria-label="Platform builds">
+          <a href="/download/windows-x86_64" class="ol-platform-row">Windows (Intel/AMD) <span class="ol-platform-status ready">.exe, compilación alfa continua</span></a>
+          <a href="/download/windows-arm64" class="ol-platform-row">Windows (ARM64) <span class="ol-platform-status ready">.exe, compilación alfa continua</span></a>
+          <a href="/download/macos-arm64" class="ol-platform-row">macOS (Apple Silicon) <span class="ol-platform-status ready">.dmg, compilación alfa continua</span></a>
+          <span class="ol-platform-row" aria-disabled="true">macOS (Intel) <span class="ol-platform-status">no publicado</span></span>
+          <a href="/download/linux-x86_64" class="ol-platform-row">Linux (Intel/AMD) <span class="ol-platform-status ready">.AppImage, compilación alfa continua</span></a>
+          <a href="/download/linux-arm64" class="ol-platform-row">Linux (ARM64) <span class="ol-platform-status ready">.AppImage, compilación alfa continua</span></a>
+          <span class="ol-platform-row" aria-disabled="true">Android <span class="ol-platform-status">no publicado</span></span>
+          <span class="ol-platform-row" aria-disabled="true">iOS <span class="ol-platform-status">no publicado</span></span>
+          <a href="/download/source" class="ol-platform-row">Source <span class="ol-platform-status">archivo fuente, si está disponible</span></a>
+        </div>
+      <p class="ol-attest-dim">Hay artefactos continuos para Windows Intel/AMD y ARM, macOS Apple Silicon y Linux Intel/AMD y ARM. No hay artefacto para macOS Intel. Android e iOS no están publicados.</p>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Qué puedes verificar hoy</span>
+      <h2>Qué puedes verificar hoy</h2>
+      <div class="ol-grid ol-grid-3">
+        <article class="ol-tile"><h3>Hash local</h3><p>El navegador puede calcular SHA-256 sin subir el archivo. Identifica tus bytes, pero no demuestra quién los produjo.</p></article>
+        <article class="ol-tile"><h3>Firma del artefacto</h3><p>Las compilaciones continuas no publican firma de versión de One Link, Authenticode de Windows ni notarización Apple Developer ID.</p></article>
+        <article class="ol-tile"><h3>Reproducibilidad y procedencia</h3><p>Las compilaciones continuas no publican un resultado reproducible byte a byte ni una atestación vinculada al artefacto.</p></article>
+      </div>
+      <p class="ol-soft-note">Trata estos artefactos como compilaciones de prueba. No ignores avisos del sistema suponiendo que este sitio verificó una firma.</p>
+      <div class="cta-row"><a href="/verify-download/" class="btn btn-primary">Calcular SHA-256 local</a></div>
+    </div>
+  </section>
 </main>
 
 <footer class="site-footer" role="contentinfo">
@@ -315,7 +108,7 @@
           <span class="logo-mark" aria-hidden="true"></span>
           <span>One Link</span>
         </a>
-        <p class="footer-tag">Una red libre y privada para mensajes, archivos y dispositivos. De nadie. De todos.</p>
+        <p class="footer-tag">Software preliminar de código abierto para comunicación privada. Aspira a propiedad comunitaria; los servicios actuales aún dependen de responsables, operadores y proveedores de infraestructura identificables.</p>
         <p class="ol-mt-md ol-soft-text ol-mono">
           <strong>Leer en:</strong>
           <a class="ol-cyan-text" hreflang="en" href="/download/">English</a> &middot;
@@ -326,7 +119,7 @@
           <a class="ol-cyan-text" hreflang="it" href="/it/download/">Italiano</a>
         </p>
       </div>
-      <div><h3>Red</h3><ul><li><a href="/how-it-works/" hreflang="en">Cómo funciona</a></li><li><a href="/features/" hreflang="en">Funciones</a></li><li><a href="/mesh/" hreflang="en">Malla en vivo</a></li></ul></div>
+      <div><h3>Red</h3><ul><li><a href="/how-it-works/" hreflang="en">Cómo funciona</a></li><li><a href="/features/" hreflang="en">Funciones</a></li><li><a href="/mesh/" hreflang="en">Presencia web</a></li></ul></div>
       <div><h3>Para ti</h3><ul><li><a href="/download/" hreflang="en">Obtener One Link</a></li><li><a href="/security/" hreflang="en">Seguridad</a></li><li><a href="/es/verify-download/" hreflang="es">Verificar descarga</a></li><li><a href="/es/roadmap/" hreflang="es">Hoja de ruta</a></li><li><a href="/accessibility/" hreflang="en">Accesibilidad</a></li><li><a href="/transparency/" hreflang="en">Transparencia</a></li><li><a href="/audits/" hreflang="en">Auditorías</a></li></ul></div>
       <div><h3>Para constructores</h3><ul><li><a href="/builders/" hreflang="en">Protocolo y fuente</a></li><li><a href="/changelog/" hreflang="en">Registro de cambios</a></li><li><a href="/releases/" hreflang="en">Versiones</a></li><li><a href="/mirror/" hreflang="en">Replicar este sitio</a></li><li><a href="/download/source" hreflang="en" rel="noopener">Archivo de fuente</a></li><li><a href="https://github.com/IamOneYouAreOneWeAreOne/one-link" rel="noopener external">GitHub</a></li></ul></div>
     </div>
@@ -337,6 +130,6 @@
   </div>
 </footer>
 
-<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r95"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r97"></script>
 </body>
 </html>

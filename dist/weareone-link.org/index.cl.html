@@ -4,19 +4,14 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>One Link  -  we are one</title>
-  <meta name="description" content="Send anything. To anyone. From any device. No accounts. No servers. No middlemen. Only you and they can read it. Free forever.">
+  <meta name="description" content="Private pre-release messaging and file transfer with direct paths where possible, encrypted relay fallback when needed, and explicit infrastructure metadata limits.">
   <link rel="canonical" href="https://weareone-link.org/">
   <meta name="theme-color" content="#04060b">
   <meta name="color-scheme" content="dark">
   <meta name="robots" content="index, follow">
-  <meta name="x-emitted-by" content="coherence-lang/1.0.3 one_link.ssg.build">
-  <link rel="icon" type="image/x-icon" href="/images/favicon.ico"><link rel="icon" type="image/png" sizes="128x128" href="/images/logo-128.png"><link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
-  <link rel="manifest" href="/app.webmanifest">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="One Link">
-  <meta name="mobile-web-app-capable" content="yes">
-  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r95">
+  <meta name="x-truth-rendered-by" content="scripts/apply_release_truth.py">
+  <link rel="icon" href="/images/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r97">
 </head>
   <!-- This page was emitted by coherence-lang/1.0.3 one_link.ssg.build -->
   <!-- Build time: 2026-05-16T00:00:00Z -->
@@ -28,12 +23,14 @@
 <header class="site-header" role="banner">
   <div class="container">
     <a href="/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
-    <input type="checkbox" id="nav-toggle" class="nav-toggle-input">
-    <label for="nav-toggle" class="nav-toggle" aria-label="Open navigation" role="button" tabindex="0">&#9776;</label>
-    <nav class="site-nav" aria-label="Main">
+    <button type="button" id="nav-toggle" class="nav-toggle" aria-label="Open navigation" aria-expanded="false" aria-controls="primary-nav">&#9776;</button>
+    <nav class="site-nav" id="primary-nav" aria-label="Main">
       <a href="/how-it-works/">How it works</a>
       <a href="/features/">Features</a>
       <a href="/security/">Security</a>
+      <a href="/mesh/">Website presence</a>
+      <a href="/builders/">Builders</a>
+      <a href="/about/">About</a>
       <a href="/download/" class="cta-get">Get One Link</a>
     </nav>
   </div>
@@ -42,8 +39,8 @@
 <section class="hero">
   <div class="container">
     <span class="we-are-one">We are one</span>
-    <h1>Send anything.<br>To anyone.<br><span class="grad">Only you and they can read it.</span></h1>
-    <p class="lede">One Link is a free, private network for your messages, files, and devices. No accounts. No servers in the middle. No limits. It just works.</p>
+    <h1>Send messages and files.<br>To your peers.<br><span class="grad">Encrypted on supported paths.</span></h1>
+    <p class="lede">Private pre-release messaging and file transfer. Direct paths where possible; encrypted relay fallback when needed. Infrastructure still observes connection metadata.</p>
     <div class="cta-row">
       <a href="/download/" class="btn btn-primary btn-large">Get One Link <span class="arr">&rarr;</span></a>
       <a href="/how-it-works/" class="btn btn-ghost btn-large">See how it works</a>
@@ -56,11 +53,11 @@
     <div class="footer-grid">
       <div>
         <a href="/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
-        <p class="footer-tag">A free, private network for messages, files, and devices. Owned by no one. Belongs to everyone.</p>
+        <p class="footer-tag">Open-source pre-release software for private communication. Built toward community ownership; current services still depend on identifiable maintainers, operators, and infrastructure providers.</p>
       </div>
-      <div><h4>Network</h4><ul><li><a href="/how-it-works/">How it works</a></li><li><a href="/features/">Features</a></li><li><a href="/mesh/">Live mesh</a></li></ul></div>
-      <div><h4>For you</h4><ul><li><a href="/download/">Get One Link</a></li><li><a href="/security/">Security</a></li><li><a href="/verify-download/">Verify download</a></li><li><a href="/roadmap/">Roadmap</a></li><li><a href="/about/">About</a></li></ul></div>
-      <div><h4>For builders</h4><ul><li><a href="/builders/">Protocol &amp; source</a></li><li><a href="/download/source" rel="noopener">Source archive</a></li></ul></div>
+      <div><h4>Network</h4><ul><li><a href="/how-it-works/">How it works</a></li><li><a href="/features/">Features</a></li><li><a href="/mesh/">Website presence</a></li></ul></div>
+      <div><h4>For you</h4><ul><li><a href="/download/">Get One Link</a></li><li><a href="/security/">Security</a></li><li><a href="/about/">About</a></li></ul></div>
+      <div><h4>For builders</h4><ul><li><a href="/builders/">Protocol &amp; source</a></li><li><a href="https://github.com/IamOneYouAreOneWeAreOne/one-link" rel="noopener">GitHub</a></li><li><a href="/builders/#donate">Donate</a></li></ul></div>
     </div>
     <div class="footer-bottom">
       <span class="built-by">Built in the open. AGPL-3.0. Emitted by Coherence Lang.</span>
@@ -68,6 +65,6 @@
     </div>
   </div>
 </footer>
-<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r95"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r97"></script>
 </body>
 </html>

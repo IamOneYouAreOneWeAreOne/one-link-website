@@ -3,35 +3,30 @@
    =============================================================================
 
    Purpose:
-     1. OFFLINE-FIRST. Every page is cached on first visit. If your network
-        dies, if our DNS goes dark, if Cloudflare disappears, the site you
-        already loaded keeps working from your browser's storage.
+     1. HASH-GATED OFFLINE CACHE. Tracked pages and assets may be cached after
+        their bytes match a manifest authenticated by the pinned Ed25519 key.
 
      2. SIGNED MANIFEST VERIFICATION. The manifest at /manifest.json carries a
         SHA-256 hash for every static asset. Before any cache update, the SW
-        re-fetches the manifest, verifies it against the previously-trusted
-        root hash held in IndexedDB, and refuses to overwrite the cache with
-        anything that does not match. A network attacker cannot poison your
-        cached copy by serving a tampered file on a fresh visit.
+        verifies it against the public key pinned in this Worker, and refuses
+        to install or update when the signature or any required hash fails.
 
-     3. CRYPTOGRAPHIC SITE INTEGRITY. Every asset we serve from cache has had
-        its SHA-256 re-checked against the manifest. A bit-flip in the cache
-        or a CDN-side substitution gets caught before the asset reaches the
-        page.
+     3. FAIL-CLOSED CACHE READS. Every response served by this Worker must be
+        tracked and hash-matched. Navigations and first-time asset fetches are
+        checked too; APIs and sensitive share routes are never cached.
 
    What this is NOT:
-     * Not a tracking surface. The SW logs nothing, fetches nothing third-
-       party, sets no cookies, observes no user activity.
+     * Not an analytics surface. It fetches nothing third-party, sets no
+       cookies, and sends no telemetry. Diagnostic warnings remain local.
      * Not a notification surface. No push API, no Periodic Background Sync.
      * Not a side channel. All state lives in this origin's CacheStorage and
-       IndexedDB, scoped to this origin only.
+       CacheStorage, scoped to this origin only.
 
    License: AGPL-3.0-or-later
    ============================================================================ */
 
-const SW_VERSION = '0.21.0-alpha.0+r95';
+const SW_VERSION = '0.21.0-alpha.0+r97';
 const CACHE_NAME  = `ol-cache-${SW_VERSION}`;
-const META_DB     = 'ol-sw-meta';
 
 // -----------------------------------------------------------------------------
 // MANIFEST SIGNING - pinned ed25519 public key.
@@ -41,8 +36,8 @@ const META_DB     = 'ol-sw-meta';
 // any server, never in CI, never in git). Every manifest fetch is verified
 // against this pinned key BEFORE any cached-asset hash check is allowed to
 // trust it. A network attacker who replaces manifest.json with a tampered
-// version cannot forge a signature, so the SW falls back to the previously
-// verified manifest (or refuses to serve cached assets if there isn't one).
+// version cannot forge a signature. A cached manifest is re-verified before
+// reuse; absent a valid pinned-key manifest, requests fail closed.
 //
 // Rotation: the SW pubkey pin is the trust root. To rotate, ship a new SW
 // version with the new pubkey AND a transition record signed by the old key;
@@ -54,10 +49,7 @@ const MANIFEST_PUBKEY_HEX =
 // Files eagerly precached so the site works on first offline visit.
 // LEAN: only the homepage shell + critical CSS/JS + small icons.
 // Everything else (WASM bundles, secondary pages, shaders) is cached
-// lazily on first request. Drops first-visit precache from ~1.6 MB to
-// under 200 KB so landing on the homepage does not pull binaries the
-// visitor may never use. The integrity layer (signed manifest + SRI)
-// still verifies every cached asset on read, lazy or not.
+// lazily on first request. Every precache and lazy response is hash-gated.
 const PRECACHE_URLS = [
   '/',
   '/css/one-link.css',
@@ -77,6 +69,11 @@ const NEVER_CACHE = [
   '/api/capabilities',
   '/api/topology',
   '/api/session',
+  '/api/share',
+  '/api/presence',
+  '/api/attest',
+  '/download',
+  '/share',
   '/native',
 ];
 
@@ -92,7 +89,18 @@ const isNeverCache = (url) =>
 self.addEventListener('install', (event) => {
   event.waitUntil((async () => {
     const cache = await caches.open(CACHE_NAME);
-    await cache.addAll(PRECACHE_URLS.map(u => new Request(u, { credentials: 'same-origin' })));
+    await loadManifest();
+    for (const url of PRECACHE_URLS) {
+      if (url === '/manifest.json') continue;
+      const request = new Request(url, {
+        credentials: 'same-origin',
+        cache: 'no-store',
+      });
+      const response = await fetch(request);
+      if (!response.ok) throw new Error(`precache fetch failed (${response.status}): ${url}`);
+      await verifyAgainstManifest(response.clone(), request.url);
+      await cache.put(request, response);
+    }
     self.skipWaiting();
   })());
 });
@@ -103,18 +111,17 @@ self.addEventListener('install', (event) => {
 self.addEventListener('activate', (event) => {
   event.waitUntil((async () => {
     const names = await caches.keys();
-    await Promise.all(names.filter(n => n !== CACHE_NAME).map(n => caches.delete(n)));
+    await Promise.all(names
+      .filter(name => name.startsWith('ol-cache-') && name !== CACHE_NAME)
+      .map(name => caches.delete(name)));
     await self.clients.claim();
   })());
 });
 
 // -----------------------------------------------------------------------------
-// fetch: network-first for navigations (so updates land fast), cache-first for
-// versioned static assets (CSS/JS/WASM/images). API endpoints bypass the cache.
-//
-// Integrity: when we read from cache, we verify the byte hash against the
-// manifest. Mismatch == evict + refetch + re-verify. This is the layer that
-// catches bit-rot, cache poisoning, or CDN substitution.
+// fetch: network-first for navigations, cache-first for static assets. Every
+// response handled by this Worker is signature/hash gated before it is served.
+// API, download, native, and share routes bypass CacheStorage entirely.
 // -----------------------------------------------------------------------------
 self.addEventListener('fetch', (event) => {
   const req = event.request;
@@ -127,19 +134,51 @@ self.addEventListener('fetch', (event) => {
   event.respondWith((async () => {
     const cache = await caches.open(CACHE_NAME);
 
-    // 1. HTML navigations: network-first, fall back to cache when offline.
+    if (url.pathname === '/manifest.json') {
+      try {
+        const response = await fetch(new Request(req, { cache: 'no-store' }));
+        if (!response.ok) throw new Error(`manifest returned ${response.status}`);
+        const candidate = await response.clone().json();
+        if (!await verifyManifestSignature(candidate)) throw new Error('manifest signature rejected');
+        MANIFEST_CACHE = candidate;
+        await cache.put('/manifest.json', response.clone());
+        return response;
+      } catch (error) {
+        const cached = await cache.match('/manifest.json');
+        if (cached) {
+          const candidate = await cached.clone().json();
+          if (await verifyManifestSignature(candidate)) {
+            MANIFEST_CACHE = candidate;
+            return cached;
+          }
+        }
+        return integrityFailure(error);
+      }
+    }
+
+    // 1. HTML navigations: verify network bytes before returning or caching;
+    //    if offline, return only a still-valid verified cache entry.
     if (isHtmlNav(req)) {
       try {
-        const fresh = await fetch(req);
-        if (fresh && fresh.ok) {
-          cache.put(req, fresh.clone()).catch(() => {});
+        const fresh = await fetch(new Request(req, { cache: 'no-store' }));
+        if (fresh && (fresh.ok || fresh.status === 404)) {
+          await verifyAgainstManifest(fresh.clone(), req.url);
+          await cache.put(req, fresh.clone());
           return fresh;
         }
-      } catch {
-        // network gone; fall through
+        throw new Error(`navigation returned ${fresh?.status || 'no response'}`);
+      } catch (networkError) {
+        const cached = await cache.match(req) || (url.pathname === '/' ? await cache.match('/') : null);
+        if (cached) {
+          try {
+            await verifyAgainstManifest(cached.clone(), req.url);
+            return cached;
+          } catch {
+            await cache.delete(req);
+          }
+        }
+        return integrityFailure(networkError);
       }
-      const cached = await cache.match(req) || await cache.match('/');
-      return cached || new Response('offline', { status: 503 });
     }
 
     // 2. Static assets: cache-first WITH SYNCHRONOUS integrity verification.
@@ -150,7 +189,7 @@ self.addEventListener('fetch', (event) => {
     if (cached) {
       try {
         await verifyAgainstManifest(cached.clone(), req.url);
-        return cached;          // fresh enough, serve from cache
+        return cached;
       } catch (err) {
         console.warn('[sw] cached integrity mismatch, evicting + refetching', req.url, err.message);
         await cache.delete(req);
@@ -158,16 +197,30 @@ self.addEventListener('fetch', (event) => {
       }
     }
 
-    // 3. First-time fetch OR refetch after stale eviction.
+    // 3. First-time fetch OR refetch after stale eviction. Never expose the
+    //    network response until its bytes match a tracked manifest entry.
     try {
-      const fresh = await fetch(req);
-      if (fresh && fresh.ok) cache.put(req, fresh.clone()).catch(() => {});
+      const fresh = await fetch(new Request(req, { cache: 'no-store' }));
+      if (!fresh || !fresh.ok) throw new Error(`asset returned ${fresh?.status || 'no response'}`);
+      await verifyAgainstManifest(fresh.clone(), req.url);
+      await cache.put(req, fresh.clone());
       return fresh;
-    } catch {
-      return new Response('offline', { status: 503 });
+    } catch (error) {
+      return integrityFailure(error);
     }
   })());
 });
+
+function integrityFailure(error) {
+  console.warn('[sw] fail-closed integrity gate:', error?.message || error);
+  return new Response('site integrity verification unavailable', {
+    status: 503,
+    headers: {
+      'Content-Type': 'text/plain; charset=utf-8',
+      'Cache-Control': 'no-store',
+    },
+  });
+}
 
 // -----------------------------------------------------------------------------
 // MANIFEST VERIFICATION
@@ -189,17 +242,15 @@ self.addEventListener('fetch', (event) => {
 //   4. Only if all three pass do we trust manifest.assets to gate cached
 //      asset hashes.
 //
-// If verification fails the SW falls back to a previously verified manifest
-// (held in IndexedDB) or refuses to serve cached assets if none exists. A
-// network attacker cannot forge a signature so they cannot poison the cache
-// via a tampered manifest.
+// A cached manifest is not trusted merely because it was cached: every Worker
+// lifecycle verifies it against the hardcoded key again. If no valid manifest
+// exists, all cache-managed content requests fail closed.
 // -----------------------------------------------------------------------------
 let MANIFEST_CACHE = null;          // currently-trusted manifest (post-verify)
 let MANIFEST_FETCH_INFLIGHT = null; // dedupe concurrent verifications
 
 function hexToBytes(hex) {
-  if (typeof hex !== 'string') return null;
-  if (hex.length % 2) return null;
+  if (typeof hex !== 'string' || hex.length % 2 || !/^[a-f0-9]+$/i.test(hex)) return null;
   const out = new Uint8Array(hex.length / 2);
   for (let i = 0; i < hex.length; i += 2) {
     const b = parseInt(hex.substr(i, 2), 16);
@@ -234,7 +285,21 @@ function canonicalSigPayload(manifest) {
 }
 
 async function verifyManifestSignature(manifest) {
-  if (!manifest || typeof manifest !== 'object') return false;
+  if (!manifest || typeof manifest !== 'object' || Array.isArray(manifest)) return false;
+  if (typeof manifest.version !== 'string' || manifest.version.length < 1 || manifest.version.length > 128) {
+    return false;
+  }
+  if (!manifest.assets || typeof manifest.assets !== 'object' || Array.isArray(manifest.assets)) {
+    return false;
+  }
+  const entries = Object.entries(manifest.assets);
+  if (entries.length < 1 || entries.length > 2_000) return false;
+  for (const [path, digest] of entries) {
+    if (!/^\/[A-Za-z0-9._~!$&'()*+,;=:@%/-]+$/.test(path)
+        || path.includes('..')
+        || typeof digest !== 'string'
+        || !/^sha256-[a-f0-9]{64}$/.test(digest)) return false;
+  }
 
   const signedBy = manifest.signed_by || '';
   const sigField = manifest.signature || '';
@@ -264,12 +329,9 @@ async function verifyManifestSignature(manifest) {
     return await crypto.subtle.verify({ name: 'Ed25519' }, key, sigBytes, payload);
   } catch (e) {
     // Path B: older browsers without Ed25519 in WebCrypto. We do NOT ship a
-    // pure-JS fallback (it would defeat the integrity guarantee since the
-    // verifier code itself would need to be trusted). On those browsers the
-    // SW integrity layer degrades to a no-op for cached assets - but the
-    // page is still protected by SRI integrity attributes on every <script>
-    // and <link> tag, which the browser enforces natively.
-    console.warn('[sw] WebCrypto Ed25519 not available, manifest verification skipped (SRI still enforced by browser):', e?.message || e);
+    // pure-JS fallback. Without native Ed25519 this Worker refuses to install
+    // or serve cache-managed content; it never degrades to an unsigned cache.
+    console.warn('[sw] WebCrypto Ed25519 unavailable; integrity gate remains closed:', e?.message || e);
     return false;
   }
 }
@@ -281,15 +343,16 @@ async function loadManifest() {
   MANIFEST_FETCH_INFLIGHT = (async () => {
     const cache = await caches.open(CACHE_NAME);
 
-    // Always re-fetch from network when possible so we pick up new signed
-    // versions. Fall back to the cached copy when offline.
+    // Always re-fetch from network when possible. Cache only after signature
+    // verification; fall back to a cached copy that is re-verified below.
     let candidate = null;
+    let freshResponse = null;
     try {
       const fresh = await fetch('/manifest.json', { cache: 'no-store' });
-      if (fresh && fresh.ok) candidate = await fresh.clone().json();
-      // Stash the raw response in cache so an offline SW can still verify
-      // last-known-good on the next install.
-      if (fresh && fresh.ok) cache.put('/manifest.json', fresh.clone()).catch(() => {});
+      if (fresh && fresh.ok) {
+        freshResponse = fresh.clone();
+        candidate = await fresh.json();
+      }
     } catch {
       // network gone
     }
@@ -306,6 +369,7 @@ async function loadManifest() {
       console.warn('[sw] manifest signature verification FAILED, refusing to trust assets dict');
       return null;
     }
+    if (freshResponse) await cache.put('/manifest.json', freshResponse);
     MANIFEST_CACHE = candidate;
     return MANIFEST_CACHE;
   })();
@@ -319,10 +383,21 @@ async function loadManifest() {
 
 async function verifyAgainstManifest(response, url) {
   const manifest = await loadManifest();
-  if (!manifest || !manifest.assets) return; // no trusted manifest -> skip silently
-  const path = new URL(url).pathname;
+  if (!manifest || !manifest.assets) throw new Error('no trusted site manifest');
+  const requestPath = new URL(url).pathname;
+  let path = requestPath;
+  if (response.status === 404) {
+    const locale = requestPath.match(/^\/(es|fr|de|pt|it)(?:\/|$)/)?.[1];
+    path = locale ? `/${locale}/404.html` : '/404.html';
+  } else if (requestPath === '/') {
+    path = '/index.html';
+  } else if (requestPath.endsWith('/')) {
+    path = `${requestPath}index.html`;
+  }
   const expected = manifest.assets[path];
-  if (!expected) return; // asset not tracked in manifest
+  if (!expected || !/^sha256-[a-f0-9]{64}$/.test(expected)) {
+    throw new Error(`asset is not tracked by the signed manifest: ${path}`);
+  }
   const expectedHex = expected.replace(/^sha256-/, '');
   const buf = await response.arrayBuffer();
   const digest = await crypto.subtle.digest('SHA-256', buf);

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>One Link - wir sind eins</title>
-  <meta name="description" content="Sende alles. An jeden. Von jedem Gerät. Keine Konten. Keine Server. Keine Mittelsmänner. Nur du und sie können es lesen. Für immer kostenlos.">
+  <meta name="description" content="Private Nachrichten und Dateiübertragung in der Vorabversion. Direkte Pfade, wenn möglich; verschlüsseltes Relay als Rückfall, wenn nötig. Die Infrastruktur sieht weiterhin Verbindungsmetadaten.">
   <link rel="canonical" href="https://weareone-link.org/de/">
   <link rel="alternate" hreflang="en" href="https://weareone-link.org/">
   <link rel="alternate" hreflang="es" href="https://weareone-link.org/es/">
@@ -23,12 +23,12 @@
   <meta property="og:locale" content="de_DE">
   <meta property="og:locale:alternate" content="en_US">
   <meta property="og:title" content="One Link">
-  <meta property="og:description" content="Sende alles. An jeden. Nur du und sie können es lesen.">
+  <meta property="og:description" content="Private Nachrichten und Dateiübertragung in der Vorabversion. Direkte Pfade, wenn möglich; verschlüsseltes Relay als Rückfall, wenn nötig. Die Infrastruktur sieht weiterhin Verbindungsmetadaten.">
   <meta property="og:url" content="https://weareone-link.org/de/">
   <meta property="og:image" content="https://weareone-link.org/og/one-link-de.png">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="One Link">
-  <meta name="twitter:description" content="Sende alles. An jeden. Nur du und sie können es lesen.">
+  <meta name="twitter:description" content="Private Nachrichten und Dateiübertragung in der Vorabversion. Direkte Pfade, wenn möglich; verschlüsseltes Relay als Rückfall, wenn nötig. Die Infrastruktur sieht weiterhin Verbindungsmetadaten.">
   <meta name="twitter:image" content="https://weareone-link.org/og/one-link-de.png">
 
   <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
@@ -42,16 +42,16 @@
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
 
-  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r95">
-  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r95">
-  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r95">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r97">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r97">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r97">
 
   <script type="application/ld+json">{
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
     "name": "One Link",
     "inLanguage": "de",
-    "operatingSystem": "Windows, macOS, Linux, Android, iOS",
+    "operatingSystem": "Windows, macOS, Linux",
     "applicationCategory": "CommunicationApplication",
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
     "url": "https://weareone-link.org/de/",
@@ -62,20 +62,20 @@
 <a href="#main" class="skip-link">Zum Inhalt springen</a>
 
 <canvas class="ol-field-canvas" aria-hidden="true" hidden></canvas>
-<div class="ol-peer-overlay" id="ol-peer-overlay" aria-label="Andere Besucher, die jetzt zusehen"></div>
+<div class="ol-peer-overlay" id="ol-peer-overlay" aria-label="Derzeit sichtbare Website-Sitzungen; Identitäten nicht verifiziert"></div>
 <div class="ol-peer-hint" id="ol-peer-hint" hidden>
-  <span>tippe auf einen leuchtenden Punkt, um einen anonymen Chat zu starten</span>
+  <span>tippe auf einen leuchtenden Punkt, um einen pseudonymen Chat zu beginnen</span>
 </div>
 <div class="ol-ping-toast" id="ol-ping-toast" aria-live="polite" hidden>
   <span class="ol-ping-glyph" aria-hidden="true">&#9883;</span>
   <span class="ol-ping-text">jemand hat hallo gesagt</span>
 </div>
-<div class="ol-chat-panel" id="ol-chat-panel" hidden role="dialog" aria-label="Anonymer Chat mit einer fremden Person">
+<div class="ol-chat-panel" id="ol-chat-panel" hidden role="dialog" aria-label="Pseudonymer Chat mit Fremden">
   <div class="ol-chat-head">
     <span class="ol-chat-dot" id="ol-chat-dot"></span>
     <span class="ol-chat-title" id="ol-chat-title">unbekannt</span>
     <span class="ol-chat-state" id="ol-chat-state">verbinde</span>
-    <a href="#" class="ol-chat-on-mesh-link" id="ol-chat-on-mesh-link" aria-label="Diesen Chat auf der Live-Mesh-Seite öffnen">im Mesh ansehen &rarr;</a>
+    <a href="#" class="ol-chat-on-mesh-link" id="ol-chat-on-mesh-link" aria-label="Diesen Chat auf der Live-Mesh-Seite öffnen">see presence view &rarr;</a>
     <button type="button" class="ol-chat-close" id="ol-chat-close" aria-label="Chat schließen">&times;</button>
   </div>
   <div class="ol-chat-log" id="ol-chat-log" aria-live="polite"></div>
@@ -83,9 +83,7 @@
     <input type="text" id="ol-chat-input" maxlength="280" placeholder="sag etwas Nettes..." autocomplete="off" aria-label="Nachricht">
     <button type="submit" class="ol-chat-send" aria-label="Senden">&rarr;</button>
   </form>
-  <div class="ol-chat-foot">
-    flüchtig &middot; anonym &middot; Ende-zu-Ende-verschlüsselt
-  </div>
+  <div class="ol-chat-foot">flüchtig &middot; keine dauerhafte Peer-Identität &middot; Eingabe erst, wenn beide Seiten den Vergleich aller fünf SAS-Wörter über einen getrennten vertrauenswürdigen Kanal melden &middot; Authentifizierung hängt von diesem ehrlichen Vergleich ab &middot; Cloudflare leitet Chiffretext weiter und sieht Metadaten &middot; der Peer kann Nachrichten behalten</div>
 </div>
 <div class="ol-chat-request-toast" id="ol-chat-request-toast" hidden role="alert">
   <div class="ol-chat-request-dot" id="ol-chat-request-dot"></div>
@@ -105,8 +103,7 @@
       <span class="logo-mark" aria-hidden="true"></span>
       <span>One Link</span>
     </a>
-    <input type="checkbox" id="nav-toggle" class="nav-toggle-input" aria-hidden="true">
-    <label for="nav-toggle" class="nav-toggle" aria-label="Navigation öffnen" role="button" tabindex="0">&#9776;</label>
+    <button type="button" id="nav-toggle" class="nav-toggle" aria-label="Navigation öffnen" aria-expanded="false" aria-controls="primary-nav">&#9776;</button>
     <nav class="site-nav" id="primary-nav" aria-label="Haupt">
       <a href="/how-it-works/" hreflang="en">Wie es funktioniert</a>
       <a href="/features/" hreflang="en">Funktionen</a>
@@ -126,23 +123,18 @@
         <span>wir sind eins</span>
       </p>
 
-      <h1 class="ol-immersive-title" aria-label="Sende alles. An jeden. Nur du und sie können es lesen.">
-        <span class="ol-line"><span class="ol-w ol-d-04">Sende</span> <span class="ol-w ol-d-16">alles.</span></span>
-        <span class="ol-line"><span class="ol-w ol-d-36">An</span> <span class="ol-w ol-d-46">jeden.</span></span>
+      <h1 class="ol-immersive-title" aria-label="Nachrichten und Dateien senden. An deine Kontakte. Auf unterstützten Pfaden verschlüsselt.">
+        <span class="ol-line"><span class="ol-w ol-d-04">Sende</span> <span class="ol-w ol-d-16">Nachrichten und Dateien.</span></span>
+        <span class="ol-line"><span class="ol-w ol-d-36">An</span> <span class="ol-w ol-d-46">deine Kontakte.</span></span>
         <span class="ol-line ol-line-grad">
-          <span class="ol-w ol-d-70">Nur</span>
-          <span class="ol-w ol-d-78">du</span>
-          <span class="ol-w ol-d-86">und</span>
-          <span class="ol-w ol-d-94">sie</span>
-          <span class="ol-w ol-d-102">können</span>
-          <span class="ol-w ol-d-110">es lesen.</span>
+          <span class="ol-w ol-d-70">Verschlüsselt</span>
+          <span class="ol-w ol-d-78">auf</span>
+          <span class="ol-w ol-d-86">unterstützten</span>
+          <span class="ol-w ol-d-94">Pfaden.</span>
         </span>
       </h1>
 
-      <p class="ol-immersive-lede">
-        Ein freies, privates Netzwerk für deine Nachrichten, Dateien und Geräte.
-        Keine Konten. Keine Server dazwischen. Keine Grenzen. Bereit in dem Moment, in dem du es öffnest.
-      </p>
+      <p class="ol-immersive-lede">Private Nachrichten und Dateiübertragung in der Vorabversion. Direkte Pfade, wenn möglich; verschlüsseltes Relay als Rückfall, wenn nötig. Die Infrastruktur sieht weiterhin Verbindungsmetadaten.</p>
 
       <div class="ol-immersive-cta">
         <a href="/download/auto" hreflang="en" id="ol-hero-cta" class="btn btn-primary btn-large ol-cta-primary">
@@ -154,20 +146,20 @@
       <p id="ol-hero-cta-hint" class="ol-hero-cta-hint" aria-live="polite"></p>
 
       <div class="ol-immersive-status">
-        <span class="ol-status" id="ol-mesh-here" title="Live-Zähler der Besucher auf dieser Seite im Moment (anonym, flüchtig, aus dem MeshPresence Durable Object).">
+        <span class="ol-status" id="ol-mesh-here" title="Live-Präsenzsitzungen der Website. Andere Besucher sehen wechselnde Kennungen; Cloudflare erhält gewöhnliche Verbindungsmetadaten.">
           <span class="dot"></span>
-          <span class="number" id="ol-node-count">1</span>
+          <span class="number" id="ol-node-count">&hellip;</span>
           <span>jetzt hier</span>
         </span>
-        <span class="ol-status" id="ol-site-integrity" title="Der Service Worker prüft jede Ressource gegen das signierte Manifest, bevor er sie ausliefert.">
-          <span class="dot ol-swatch-cyan"></span>
-          <span>Seite verifiziert</span>
-          <span class="number" id="ol-sw-status">prüfe</span>
-        </span>
-        <span class="ol-status" id="ol-pq-status" title="X25519 heute, mit ML-KEM-768-Hybrid-Slot im Drahtformat reserviert. Vollständiger Hybrid-Handshake wird in v0.22 aktiviert. Im Tab berechnet.">
+        <span class="ol-status" id="ol-site-integrity" title="Das enthaltene signierte Website-Manifest ist veraltet. Die Service-Worker-Vorprüfung muss fehlschlagen, bis ein neues offline signiertes Manifest zu allen Assets passt.">
           <span class="dot ol-swatch-amber"></span>
-          <span>pq-Sitzung</span>
-          <span class="number" id="ol-pq-status-text">leite ab</span>
+          <span>Website-Integrität</span>
+          <span class="number" id="ol-sw-status">Manifest veraltet</span>
+        </span>
+        <span class="ol-status" id="ol-pq-status" title="Lokaler X25519- und ML-KEM-768-Primitiv-Selbsttest in diesem Tab. Die Browser-zu-Worker-Sitzung ist heute nicht PQ-gesichert.">
+          <span class="dot ol-swatch-amber"></span>
+          <span>PQ-Selbsttest</span>
+          <span class="number" id="ol-pq-status-text">läuft</span>
         </span>
       </div>
     </div>
@@ -177,31 +169,29 @@
   <section class="section">
     <div class="container">
       <span class="kicker">Drei Versprechen</span>
-      <h2>Drei Versprechen, gehalten von der Architektur.</h2>
-      <p class="lede">
-        So gebaut, dass du nie eine Datenschutzerklärung lesen musst. Die Architektur ist das Versprechen.
-      </p>
+      <h2>Aktuelle Nachweise, Demos und Fähigkeitsanforderungen.</h2>
+      <p class="lede">Sicherheitsaussagen auf dieser Seite gelten nur für benannte Implementierungen und Nachweise. Browser-Selbsttests demonstrieren Primitive, nicht jeden Daemon-Pfad, jedes Deployment, Endgerät oder jede Anbietergrenze.</p>
       <div class="ol-grid ol-grid-3">
         <article class="ol-tile">
           <span class="ol-icon" aria-hidden="true">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v6"/><path d="M12 22v-6"/><path d="M2 12h6"/><path d="M22 12h-6"/><circle cx="12" cy="12" r="3"/></svg>
           </span>
-          <h3>Keine Konten. Niemals.</h3>
-          <p>Keine E-Mail. Keine Telefonnummer. Keine Anmeldung. Öffne die App und sie funktioniert. Dein Gerät ist deine Identität. Nichts über dich verlässt deine Hände.</p>
+          <h3>Kein Konto erforderlich.</h3>
+          <p>Für eine lokale Geräteidentität sind weder E-Mail-Adresse noch Telefonnummer erforderlich. Peers und Netzinfrastruktur können dennoch die beim Kommunizieren unvermeidbaren Verbindungsmetadaten sehen.</p>
         </article>
         <article class="ol-tile">
           <span class="ol-icon" aria-hidden="true">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
           </span>
-          <h3>Keine Server dazwischen.</h3>
-          <p>Nachrichten und Dateien gehen direkt von einem Gerät zum anderen. Nichts wird irgendwo gespeichert. Wenn wir morgen verschwänden, würde dein One Link weiterhin funktionieren.</p>
+          <h3>Ende-zu-Ende-Verschlüsselung auf unterstützten, versionierten Pfaden.</h3>
+          <p>Auf unterstützten, versionierten Nachrichten- und Dateipfaden werden Inhalte vor der direkten Übertragung oder der Nutzung von Relay- bzw. Rendezvous-Infrastruktur auf dem Endgerät verschlüsselt. Relays leiten Chiffretext weiter; nicht unterstützte, reine Demo- und fähigkeitsabhängige Pfade sind gesondert dokumentiert, und Internet-Erkennung sowie Verfügbarkeit hängen weiterhin von betriebenen Diensten ab.</p>
         </article>
         <article class="ol-tile">
           <span class="ol-icon" aria-hidden="true">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2H3v18h18V2z"/><path d="M3 7h18"/><path d="M9 2v5"/></svg>
           </span>
-          <h3>Kostenlos. Für immer.</h3>
-          <p>Keine Stufen. Kein Abonnement. Kein Enterprise-Plan. Kein Premium. Der Quellcode ist offen. Du kannst jede Zeile lesen. Du kannst deinen eigenen betreiben.</p>
+          <h3>Heute kostenlos und quelloffen.</h3>
+          <p>Heute gibt es keine kostenpflichtige Stufe. Der AGPL-3.0-Quellcode ist öffentlich, prüfbar, baubar und selbst hostbar. Diese Seite verspricht keine nicht überprüfbare zukünftige Preisgestaltung.</p>
         </article>
       </div>
     </div>
@@ -210,19 +200,19 @@
   <section class="section">
     <div class="container">
       <span class="kicker">Probiere es jetzt</span>
-      <h2>Verbinde dein Telefon in <span class="grad">fünf Sekunden.</span></h2>
+      <h2>Prüfe das Pairing-Primitiv <span class="grad">im Browser.</span></h2>
       <p class="lede">
-        Scanne diesen Code mit One Link auf deinem Telefon. Lies die fünf Wörter zurück. Du bist verbunden. Noch kein Download, keine Anmeldung, keine Berechtigungen. Nur ein echter Handshake, hier und jetzt.
+        Diese Seite führt beide Seiten des Pairing-Primitivs lokal aus und zeigt den echten Einladungs-QR-Code samt Fünf-Wort-SAS. Das ist ein kryptografischer Selbsttest, keine aktive Kopplung mit deinem Telefon.
       </p>
 
       <div class="ol-pair-card">
-        <div class="ol-qr" id="ol-pair-qr" aria-label="Pairing-QR-Code">
+        <div class="ol-qr" id="ol-pair-qr" role="img" aria-label="Pairing-QR-Code">
           <span class="corner tl" aria-hidden="true"></span>
           <span class="corner tr" aria-hidden="true"></span>
           <span class="corner bl" aria-hidden="true"></span>
         </div>
         <div>
-          <h3>Prüfe, ob diese fünf Wörter mit dem übereinstimmen, was dein Telefon zeigt.</h3>
+          <h3>Prüfe, ob diese fünf Wörter im lokalen Rundlauf übereinstimmen.</h3>
           <div class="ol-sas" id="ol-pair-sas" aria-label="Fünf-Wort-Verifikation">
             <span class="word">orbit</span>
             <span class="word">amber</span>
@@ -230,22 +220,20 @@
             <span class="word">candle</span>
             <span class="word">harbor</span>
           </div>
-          <p>Die fünf Wörter bleiben auf Englisch, weil die Wortliste die ist, die der Daemon ausliefert. Eine Übersetzung würde den Wortabgleich zwischen den beiden Enden brechen. Das ist der gesamte Pairing-Ablauf. Kein Passwort. Keine Wiederherstellungsphrase. Die fünf Wörter bedeuten, dass die Mathematik an beiden Enden übereinstimmt. Wenn jemand versuchte, sich in die Mitte zu setzen, würden die Wörter nicht übereinstimmen.</p>
+          <p>Die fünf Wörter bleiben auf Englisch, weil der Daemon dieselbe feste Wortliste nutzt. Der Selbsttest erzeugt in diesem Tab frischen Einlader- und Scanner-Zustand und bestätigt dasselbe SAS und denselben Kettenschlüssel. Eine echte Gerätekopplung benötigt zusätzlich ein zweites Gerät, Transport, Benutzervergleich und die ausgelieferte Anwendung.</p>
           <p>
-            <a href="#" class="ol-tab-pair-link" id="ol-tab-pair-link">
-              oder verbinde dich jetzt mit einem anderen Browser-Tab &rarr;
-            </a>
+            <a href="#" class="ol-tab-pair-link" id="ol-tab-pair-link">lokalen Transport-Selbsttest in zweitem Tab starten &rarr;</a>
           </p>
           <div class="ol-tab-pair-result" id="ol-tab-pair-result" hidden></div>
           <details class="ol-proof">
             <summary>Was gerade unter der Haube passiert ist</summary>
             <div class="ol-proof-body">
               <dl>
-                <dt>Handshake</dt><dd>X25519 heute (ML-KEM-768-Hybrid-Slot im Drahtformat reserviert; vollständiger Hybrid kommt in v0.22)</dd>
-                <dt>Verifikation</dt><dd>5-Wort-SAS, abgeleitet vom geteilten Geheimnis</dd>
-                <dt>Identität</dt><dd>Ed25519 + ML-DSA-65 hybride Signatur</dd>
-                <dt>Feldzeuge</dt><dd>Umgebungszeuge eingemischt, um an den physischen Kontext zu binden</dd>
-                <dt>Crate</dt><dd>ol_pair_qr (zu WASM kompiliert für den Handshake im Browser)</dd>
+                <dt>Umfang</dt><dd>Lokaler Inviter/Scanner-Selbsttest in einem Tab; kein Telefon, keine Kamera, kein Daemon und kein Netztransport.</dd>
+                <dt>Schlüsselaustausch</dt><dd>Flüchtiges X25519 im aktuellen ol_pair_qr-Pfad; dieser Kopplungs-Wrapper verwendet kein ML-KEM.</dd>
+                <dt>Signaturen</dt><dd>Neue lokale Ed25519-Schlüssel signieren die Frames; hier entsteht keine ML-DSA-Signatur.</dd>
+                <dt>SAS und Schlüssel</dt><dd>Ein Fünfwort-SAS mit 30 Bit und ein 32-Byte-Kettenschlüssel werden lokal abgeleitet und verglichen.</dd>
+                <dt>nicht enthalten</dt><dd>Kein Feldzeuge, keine dauerhafte Identität, kein Zweitgerätenachweis und kein menschlicher externer Vergleich.</dd>
               </dl>
             </div>
           </details>
@@ -260,12 +248,10 @@
       <h2>
         Eine Verbindung, die <span class="grad">dir gehört.</span>
       </h2>
-      <p class="lede">
-        Jede Nachricht, jede Datei, jedes Gespräch, deins. Von dir gehalten, von dir gesendet, von den Menschen geöffnet, die du wählst. One Link ist das Netzwerk, wie es immer hätte sein sollen: frei, direkt und gebaut, um uns näher zu bringen.
-      </p>
+      <p class="lede">Das dauerhafte Versprechen ist das AGPL-3.0-Recht, Quellcode zu prüfen, auszuführen, zu ändern und zu teilen. Datenschutz, Verfügbarkeit, Kosten und kryptografische Eigenschaften hängen weiterhin vom konkreten Build, der Konfiguration, den Endgeräten, dem Transport und den Anbietern ab.</p>
       <div class="cta-row">
         <a href="/download/" hreflang="en" class="btn btn-primary btn-large">
-          Dem Netzwerk beitreten
+          Vorabversion holen
           <span class="arr" aria-hidden="true">&rarr;</span>
         </a>
         <a href="/about/" hreflang="en" class="btn btn-ghost">Den Bund lesen</a>
@@ -283,9 +269,7 @@
           <span class="logo-mark" aria-hidden="true"></span>
           <span>One Link</span>
         </a>
-        <p class="footer-tag">
-          Ein freies, privates Netzwerk für Nachrichten, Dateien und Geräte. Niemandem gehörend. Allen zugehörig.
-        </p>
+        <p class="footer-tag">Quelloffene Vorabsoftware für private Kommunikation. Auf gemeinschaftliche Trägerschaft ausgerichtet; heutige Dienste hängen noch von identifizierbaren Betreuern, Betreibern und Infrastrukturprovidern ab.</p>
         <p class="ol-mt-md ol-soft-text ol-mono">
           <strong>Lesen in:</strong>
           <a class="ol-cyan-text" hreflang="en" href="/">English</a> &middot;
@@ -302,7 +286,7 @@
         <ul>
           <li><a href="/how-it-works/" hreflang="en">Wie es funktioniert</a></li>
           <li><a href="/features/" hreflang="en">Funktionen</a></li>
-          <li><a href="/mesh/" hreflang="en">Live-Mesh</a></li>
+          <li><a href="/mesh/" hreflang="en">Website-Präsenz</a></li>
         </ul>
       </div>
       <div>
@@ -329,7 +313,7 @@
     </div>
     <div class="footer-bottom">
       <span class="built-by">
-        &copy; 2026 One Link-Beitragende. <a href="/terms/" hreflang="en">AGPL-3.0</a>. <a href="/security/" hreflang="en">Kein Tracking.</a> <a href="mailto:weareone@oneunity.earth">weareone@oneunity.earth</a>
+        &copy; 2026 One Link-Beitragende. <a href="/terms/" hreflang="en">AGPL-3.0</a>. <a href="/security/" hreflang="en">Keine eigene Analyse oder Tracking-Cookies; Infrastrukturmetadaten sind offengelegt.</a> <a href="mailto:weareone@oneunity.earth">weareone@oneunity.earth</a>
       </span>
       <span class="built-by">wir sind eins</span>
     </div>
@@ -352,6 +336,6 @@
 </aside>
 <span class="ol-telemetry-hint" id="ol-telemetry-hint">drücke <kbd>?</kbd> für Systemtelemetrie</span>
 
-<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r95"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r97"></script>
 </body>
 </html>

@@ -138,20 +138,18 @@ pub fn live_demo_round_trip(root_bytes: &[u8]) -> Result<JsValue, JsError> {
     // "site-visitor" label. The TofuStore (with the original key registered)
     // must reject via TofuMismatch (constant-time compare under the hood).
     let mut attacker = [0u8; 32];
-    getrandom::getrandom(&mut attacker)
-        .map_err(|e| JsError::new(&format!("rng: {e:?}")))?;
+    getrandom::getrandom(&mut attacker).map_err(|e| JsError::new(&format!("rng: {e:?}")))?;
     let attacker_hex: String = attacker.iter().map(|b| format!("{:02x}", b)).collect();
     let attacker_pk = PublicKey(attacker);
-    let reject_attack = match store.check_tofu("site-visitor", &attacker_pk) {
-        Err(_) => true, // TofuMismatch (or NotFound but we already registered)
-        Ok(_) => false, // BUG
-    };
+    // TofuMismatch is the expected result. NotFound would also reject, but the
+    // original key was registered immediately above.
+    let reject_attack = store.check_tofu("site-visitor", &attacker_pk).is_err();
 
     let obj = js_sys::Object::new();
-    set(&obj, "pkLen",            &JsValue::from_f64(32.0))?;
-    set(&obj, "pkHex",            &JsValue::from_str(&pk_hex))?;
-    set(&obj, "rederiveMatch",    &JsValue::from_bool(rederive_match))?;
-    set(&obj, "attackerKeyHex",   &JsValue::from_str(&attacker_hex))?;
+    set(&obj, "pkLen", &JsValue::from_f64(32.0))?;
+    set(&obj, "pkHex", &JsValue::from_str(&pk_hex))?;
+    set(&obj, "rederiveMatch", &JsValue::from_bool(rederive_match))?;
+    set(&obj, "attackerKeyHex", &JsValue::from_str(&attacker_hex))?;
     set(&obj, "tofuRejectAttack", &JsValue::from_bool(reject_attack))?;
     Ok(obj.into())
 }

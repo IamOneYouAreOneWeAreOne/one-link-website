@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Cosa fa One Link - e cosa non fa</title>
-  <meta name="description" content="Ogni funzionalità che One Link pubblicizza, generata dal vivo dalla tabella delle capability del daemon. Niente copy di marketing inventato dopo. La pagina è la verità.">
+  <meta name="description" content="Anteprima statica e revisionata manualmente di capacità preliminari, demo locali, dipendenze e obiettivi.">
   <link rel="canonical" href="https://weareone-link.org/it/features/">
   <link rel="alternate" hreflang="en" href="https://weareone-link.org/features/">
   <link rel="alternate" hreflang="es" href="https://weareone-link.org/es/features/">
@@ -20,12 +20,12 @@
   <meta property="og:locale" content="it_IT">
   <meta property="og:site_name" content="One Link">
   <meta property="og:title" content="Cosa fa One Link - e cosa non fa">
-  <meta property="og:description" content="Ogni funzionalità che One Link pubblicizza, generata dal vivo dalla tabella delle capability del daemon. Niente copy di marketing inventato dopo. La pagina è la verità.">
+  <meta property="og:description" content="Anteprima statica e revisionata manualmente di capacità preliminari, demo locali, dipendenze e obiettivi.">
   <meta property="og:url" content="https://weareone-link.org/it/features/">
   <meta property="og:image" content="https://weareone-link.org/og/one-link-it.png">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Cosa fa One Link - e cosa non fa">
-  <meta name="twitter:description" content="Ogni funzionalità che One Link pubblicizza, generata dal vivo dalla tabella delle capability del daemon. Niente copy di marketing inventato dopo. La pagina è la verità.">
+  <meta name="twitter:description" content="Anteprima statica e revisionata manualmente di capacità preliminari, demo locali, dipendenze e obiettivi.">
   <meta name="twitter:image" content="https://weareone-link.org/og/one-link-it.png">
   <link rel="icon" type="image/x-icon" href="/images/favicon.ico"><link rel="icon" type="image/png" sizes="128x128" href="/images/logo-128.png"><link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
   <link rel="manifest" href="/app.webmanifest">
@@ -33,9 +33,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r95">
-  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r95">
-  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r95">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r97">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r97">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r97">
 </head>
 <body>
 <a href="#main" class="skip-link">Salta al contenuto</a>
@@ -60,14 +60,9 @@
   <section class="hero ol-pb-sm">
     <div class="container">
       <span class="we-are-one">Funzionalità</span>
-      <h1>Tutto ciò che One Link sa fare, <span class="grad">raccontato da One Link.</span></h1>
-      <p class="lede">Questa pagina è generata dall'annuncio di capability dal vivo del daemon di One Link in <code class="ol-inline-code-em">/api/status</code>. Non possiamo mentire su questa pagina. Se una funzionalità è qui, il daemon la consegna. Se non c'è, non la consegna.</p>
-      <span class="ol-status">
-        <span class="dot"></span>
-        <span>dal vivo da</span>
-        <span class="number">/api/status</span>
-        <span>aggiornato 2s fa</span>
-      </span>
+      <h1>Evidenza attuale, dimostrazioni e requisiti di capacità.</h1>
+      <p class="lede">Questa anteprima statica è revisionata manualmente. /api/capabilities è un elenco fisso, non firmato e gestito dal Worker; non è inventario live del daemon né prova indipendente di rilascio.</p>
+      <span class="ol-status"><span class="dot"></span><span>revisione manuale &middot; non è telemetria del daemon</span></span>
     </div>
   </section>
 
@@ -79,27 +74,27 @@
 
         <article class="ol-tile">
           <h3>Messaggi</h3>
-          <p>Solo tu e l'altra persona potete leggerli. Segretezza in avanti. Modifica, elimina, reagisci. Conferme di lettura che controlli tu.</p>
+          <p>Le schede seguenti sono obiettivi o demo di primitive, non trasporto daemon rilasciato senza una versione corrente e un test di accettazione.</p>
         </article>
 
         <article class="ol-tile">
-          <h3>File di qualsiasi dimensione</h3>
-          <p>Trascina una cartella, un film, un intero disco. Peer-to-peer con AEAD per blocco e ripristino delle perdite con codifica fountain. Riprende alla riconnessione. Mai copiato su un server. 10 GB verificati nel simulatore di tortura.</p>
+          <h3>File grandi e riprendibili</h3>
+          <p>I client nativi mirano a trasferimenti a blocchi riprendibili. I percorsi diretti evitano storage server; i relay cifrati possono conservare temporaneamente testo cifrato. Limiti e prestazioni dipendono da build, disco, relay e rete; nessuna garanzia illimitata o da 10 GB.</p>
         </article>
 
         <article class="ol-tile">
           <h3>Chiamate voce e video</h3>
-          <p>Cifrate end-to-end. Direttamente peer-to-peer quando possibile, instradate solo quando no. Nessun server misterioso nel percorso.</p>
+          <p>Le chiamate sono preliminari. I percorsi cifrati preferiscono trasporto diretto e possono usare relay o rendezvous identificati, che osservano metadati di connessione, tempi e dimensioni.</p>
         </article>
 
         <article class="ol-tile">
           <h3>Cartelle condivise</h3>
-          <p>Trascini un file dentro, appare dall'altra parte. Versionate, CRDT senza conflitti, archiviate sui tuoi dispositivi. Funziona in LAN e tra reti isolate (con mDNS e Bluetooth).</p>
+          <p>Le schede seguenti sono obiettivi o demo di primitive, non trasporto daemon rilasciato senza una versione corrente e un test di accettazione.</p>
         </article>
 
         <article class="ol-tile">
           <h3>I tuoi dispositivi agiscono come uno</h3>
-          <p>Telefono, portatile, tablet, secondo portatile. Abbini una volta con QR e cinque parole. Ogni dispositivo vede le stesse conversazioni, end-to-end tra ciascuna coppia.</p>
+          <p>Abbinamento fra due dispositivi e sincronizzazione richiedono client distribuiti, trasporto e confronto umano del SAS. Il sito esegue entrambi i ruoli localmente e non prova abbinamento al telefono o sincronizzazione reale.</p>
         </article>
 
       </div>
@@ -109,49 +104,43 @@
   <section class="section">
     <div class="container">
       <span class="kicker">Le promesse, mantenute dall'architettura</span>
-      <h2>Cosa la matematica <span class="grad">garantisce.</span></h2>
-      <p class="lede">Ogni riga è una proprietà che l'architettura impone, non una policy che qualcuno potrebbe cambiare dopo. Il crate o la prova dietro ciascuna è nominata e pronta per l'audit.</p>
+      <h2>Le proprietà di sicurezza richiedono evidenza versionata.</h2>
+      <p class="lede ol-mw-64ch">Questa anteprima statica è revisionata manualmente. /api/capabilities è un elenco fisso, non firmato e gestito dal Worker; non è inventario live del daemon né prova indipendente di rilascio.</p>
 
       <div class="ol-grid ol-grid-2">
 
         <article class="ol-tile">
           <h3>Niente account, niente email, niente numero di telefono.</h3>
-          <p>L'identità è una coppia di chiavi sul tuo dispositivo. Non c'è alcun database utenti che potrebbe essere richiesto per via giudiziaria. <span class="ol-soft-text">Crate: <code class="ol-inline-code">ol_pair_qr</code>. Abbinamento QR con SAS a 5 parole.</span></p>
+          <p>Oggi non serve un account ospitato. Gli endpoint conservano identità locale; Cloudflare, GitHub, relay e servizi elaborano lo stato descritto in /transparency/. Non significa che non esista alcun database.</p>
         </article>
 
         <article class="ol-tile">
-          <h3>Cifrato end-to-end per default.</h3>
-          <p>Il testo in chiaro non lascia mai il tuo dispositivo. Ogni messaggio, ogni blocco. Il Double Ratchet per messaggio e la catena KDF a segretezza in avanti per blocco sono entrambi attivi oggi tra peer capaci. <span class="ol-soft-text">Crate: <code class="ol-inline-code">ol_ratchet</code>, <code class="ol-inline-code">ol_transfer</code>.</span></p>
+          <h3>Cifratura end-to-end sui percorsi supportati.</h3>
+          <p>I percorsi E2EE implementati cifrano il contenuto prima del trasporto. Gli endpoint decifrano; relay e servizi possono elaborare testo cifrato e metadati di rotta, tempo, dimensione, sessione e connessione.</p>
         </article>
 
         <article class="ol-tile">
-          <h3>Nessun server centrale nel percorso.</h3>
-          <p>Direttamente peer-to-peer quando possibile, inoltro tramite relay cifrato quando no. I relay che gestiamo sono solo nodi; la rete continua a funzionare anche se tutti i nostri spariscono. Chiunque può far girare un relay.</p>
+          <h3>Percorsi diretti preferiti, relay quando necessari.</h3>
+          <p>Si preferiscono percorsi diretti. Relay cifrato, rendezvous, scoperta e disponibilità sono usati quando necessari; dipendenze e conservazione sono in /transparency/.</p>
         </article>
 
         <article class="ol-tile">
-          <h3>Chiavi e firme ibride post-quantistiche.</h3>
-          <p>Firme ibride Ed25519 + ML-DSA-65 attive ovunque oggi. Le chiavi ibride X25519 + ML-KEM-768 vivono oggi sugli hop Sphinx onion; l'handshake di abbinamento e la radice di canale attivano la metà ML-KEM nella v0.22 (il formato wire riserva già lo slot). Se una metà si rompe, l'altra tiene. <span class="ol-soft-text">Crate: <code class="ol-inline-code">ol_pqkem</code>, <code class="ol-inline-code">ol_pqsig</code>, <code class="ol-inline-code">ol_onion</code>.</span></p>
+          <h3>Primitive post-quantistiche in integrazione.</h3>
+          <p>Il browser esegue autotest locali di primitive post-quantum. /api/session registra solo la sessione e pubblicizza una chiave X25519 effimera del Worker; non completa ECDH o ML-KEM-768 e non stabilisce una sessione browser-Worker protetta PQ.</p>
         </article>
 
-        <article class="ol-tile">
-          <h3>Build firmati e riproducibili, con attestazione.</h3>
-          <p>Ogni versione costruita in un ambiente sigillato con documento di attestazione firmato Ed25519. Chiunque può ricompilare dal sorgente e verificare l'uguaglianza byte per byte. Verifica nella tua scheda dalla <a href="/download/" hreflang="en" class="ol-cyan-text">pagina di download</a>. <span class="ol-soft-text">Crate: <code class="ol-inline-code">ol_confidential</code>. Base software oggi, TPM su Windows in lavorazione, SE / SGX / SEV-SNP / TrustZone tramite lo stesso trait.</span></p>
-        </article>
+        <article class="ol-tile"><h3>Riproducibilità e provenienza</h3><p>Le build continue non pubblicano un risultato riproducibile byte per byte né un'attestazione legata all'artefatto.</p></article>
 
         <article class="ol-tile">
           <h3>Recupero a soglia.</h3>
-          <p>Suddividi la tua identità tra k su n share fidate. Sopravvivi alla perdita di un dispositivo senza sopravvivere a una fuga. <span class="ol-soft-text">Crate: <code class="ol-inline-code">ol_threshold_recovery</code>. Multi-firma BN con valori R per firmatario.</span></p>
+          <p>Solo dimostrazione locale browser/WASM. Non prova integrazione nel daemon rilasciato, recupero reale, protezione hardware persistente o ogni percorso dei messaggi. L’ambito più ampio resta requisito fino a un test di accettazione versionato.</p>
         </article>
 
-        <article class="ol-tile">
-          <h3>Gratuito per sempre, nessun modello di business.</h3>
-          <p>Niente piani. Niente abbonamento. Niente "pro". Niente upsell. La rete è gestita dalla comunità, il progetto è gestito dalla comunità, il costo per usarlo è zero per sempre.</p>
-        </article>
+        <article class="ol-tile"><h3>Gratuito oggi; costi e accesso futuro non garantiti.</h3><p>Oggi non c’è piano a pagamento. Il sorgente AGPL-3.0 è pubblico e auto-ospitabile. Non promette prezzi, hosting, connettività, hardware, capacità relay o costi futuri.</p></article>
 
         <article class="ol-tile">
           <h3>Sorgente aperto e verificabile.</h3>
-          <p>AGPL-3.0. Ogni crate, ogni shader, ogni parola di questo sito. <a href="https://github.com/IamOneYouAreOneWeAreOne/one-link" rel="noopener external" class="ol-cyan-text">github.com/IamOneYouAreOneWeAreOne/one-link</a>.</p>
+          <p>Il sorgente AGPL è pubblico. Il software è gratuito oggi, ma hosting, rete, hardware e relay hanno costi e prezzi futuri non sono garantiti.</p>
         </article>
 
       </div>
@@ -161,27 +150,27 @@
   <section class="section">
     <div class="container">
       <span class="kicker">Prossimamente</span>
-      <h2>Cosa arriva nella <span class="grad">v0.22.</span></h2>
-      <p class="lede">I crate sono consegnati oggi come primitive verificabili in WASM. Gli interruttori a livello di daemon si collegano nella v0.22.</p>
+      <h2>Capacità proposte; non disponibilità attuale.</h2>
+      <p class="lede ol-mw-64ch">Le schede seguenti sono obiettivi o demo di primitive, non trasporto daemon rilasciato senza una versione corrente e un test di accettazione.</p>
       <div class="ol-grid ol-grid-3">
 
         <article class="ol-tile">
           <h3>Routing privato a tre hop</h3>
-          <p>Un solo interruttore. Instradato in Sphinx attraverso relay volontari. Blinding post-quantistico a ogni hop. Nessuno (noi inclusi) vede chi ha inviato cosa a chi.</p>
+          <p>Il routing Sphinx a tre hop è un’integrazione futura. WASM locale prova primitive, ma traffico attuale e sessione browser-Worker non usano questa rotta. Più hop non garantiscono anonimato.</p>
         </article>
 
         <article class="ol-tile">
           <h3>Modalità sotto coercizione</h3>
-          <p>Una seconda passphrase apre un account vuoto credibile. La matematica ti dà una via d'uscita sotto coercizione. Crate primitivo consegnato; cablaggio del daemon nella v0.22.</p>
+          <p>Solo dimostrazione locale browser/WASM. Non prova integrazione nel daemon rilasciato, recupero reale, protezione hardware persistente o ogni percorso dei messaggi. L’ambito più ampio resta requisito fino a un test di accettazione versionato.</p>
         </article>
 
         <article class="ol-tile">
           <h3>Campo di coerenza su GPU</h3>
-          <p>Il campo di routing τ_c risolve già 10k peer in 1,74 ms su un singolo core CPU. Il percorso GPU lo porta al tempo reale su dispositivo portatile su scala di milioni di peer.</p>
+          <p>Le schede seguenti sono obiettivi o demo di primitive, non trasporto daemon rilasciato senza una versione corrente e un test di accettazione.</p>
         </article>
 
       </div>
-      <p class="ol-right-foot">Ultima revisione 2026-05-19.</p>
+      <p class="ol-right-foot">Affermazioni riviste il 2026-07-22.</p>
     </div>
   </section>
 
@@ -201,7 +190,7 @@
     <div class="footer-grid">
       <div>
         <a href="/it/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
-        <p class="footer-tag">Una rete libera e privata per messaggi, file e dispositivi. Di nessuno. Di tutti.</p>
+        <p class="footer-tag">Software open source preliminare per comunicazioni private. Costruito verso la proprietà comunitaria; i servizi attuali dipendono ancora da manutentori, operatori e fornitori identificabili.</p>
         <p class="ol-mt-md ol-soft-text ol-mono">
           <strong>Leggi in:</strong>
           <a class="ol-cyan-text" hreflang="en" href="/features/">English</a> &middot;
@@ -212,7 +201,7 @@
           <a class="ol-cyan-text" hreflang="it" href="/it/features/">Italiano</a>
         </p>
       </div>
-      <div><h3>Rete</h3><ul><li><a href="/how-it-works/" hreflang="en">Come funziona</a></li><li><a href="/features/" hreflang="en">Funzionalità</a></li><li><a href="/mesh/" hreflang="en">Mesh dal vivo</a></li></ul></div>
+      <div><h3>Rete</h3><ul><li><a href="/how-it-works/" hreflang="en">Come funziona</a></li><li><a href="/features/" hreflang="en">Funzionalità</a></li><li><a href="/mesh/" hreflang="en">Presenza web</a></li></ul></div>
       <div><h3>Per te</h3><ul><li><a href="/download/" hreflang="en">Ottieni One Link</a></li><li><a href="/security/" hreflang="en">Sicurezza</a></li><li><a href="/it/verify-download/" hreflang="it">Verifica download</a></li><li><a href="/it/roadmap/" hreflang="it">Tabella di marcia</a></li><li><a href="/accessibility/" hreflang="en">Accessibilità</a></li><li><a href="/transparency/" hreflang="en">Trasparenza</a></li><li><a href="/audits/" hreflang="en">Audit</a></li></ul></div>
       <div><h3>Per i costruttori</h3><ul><li><a href="/builders/" hreflang="en">Protocollo e sorgente</a></li><li><a href="/changelog/" hreflang="en">Registro modifiche</a></li><li><a href="/releases/" hreflang="en">Versioni</a></li><li><a href="/mirror/" hreflang="en">Replica questo sito</a></li><li><a href="/download/source" hreflang="en" rel="noopener">Archivio sorgente</a></li><li><a href="https://github.com/IamOneYouAreOneWeAreOne/one-link" rel="noopener external">GitHub</a></li></ul></div>
     </div>
@@ -223,6 +212,6 @@
   </div>
 </footer>
 
-<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r95"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r97"></script>
 </body>
 </html>

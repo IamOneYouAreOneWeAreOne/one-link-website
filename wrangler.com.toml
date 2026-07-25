@@ -1,6 +1,17 @@
 name = "weareone-link-com-redirect"
-compatibility_date = "2024-12-01"
+compatibility_date = "2026-07-22"
+compatibility_flags = ["nodejs_compat"]
 main = "src/redirect.js"
+
+[observability]
+enabled = true
+
+[observability.logs]
+head_sampling_rate = 1
+
+[observability.traces]
+enabled = true
+head_sampling_rate = 0.01
 
 # weareone-link.com -> 301 redirect to weareone-link.org canonical equivalent.
 # Preserves path + query string so deep links survive the migration.

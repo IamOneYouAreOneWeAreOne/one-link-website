@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Verifica il tuo download - One Link</title>
-  <meta name="description" content="Trascina il binario di One Link che hai scaricato nella tua scheda. Il browser ne calcola l'hash localmente e lo confronta con il valore firmato in diretta. Il file non lascia mai il tuo dispositivo.">
+  <title>Calcola l'hash localmente - One Link</title>
+  <meta name="description" content="Calcola SHA-256 localmente e verifica se esiste davvero un riferimento autenticato.">
   <link rel="canonical" href="https://weareone-link.org/it/verify-download/">
   <link rel="alternate" hreflang="en" href="https://weareone-link.org/verify-download/">
   <link rel="alternate" hreflang="es" href="https://weareone-link.org/es/verify-download/">
@@ -20,12 +20,12 @@
   <meta property="og:site_name" content="One Link">
   <meta property="og:locale" content="it_IT">
   <meta property="og:title" content="Verifica il tuo download - One Link">
-  <meta property="og:description" content="Calcola l'hash del binario nel tuo browser. Il file non lascia mai la tua scheda.">
+  <meta property="og:description" content="Calcola SHA-256 localmente e verifica se esiste davvero un riferimento autenticato.">
   <meta property="og:url" content="https://weareone-link.org/it/verify-download/">
   <meta property="og:image" content="https://weareone-link.org/og/one-link-it.png">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Verifica il tuo download - One Link">
-  <meta name="twitter:description" content="Calcola l'hash del binario nel tuo browser. Il file non lascia mai la tua scheda.">
+  <meta name="twitter:description" content="Calcola SHA-256 localmente e verifica se esiste davvero un riferimento autenticato.">
   <meta name="twitter:image" content="https://weareone-link.org/og/one-link-it.png">
   <link rel="icon" type="image/x-icon" href="/images/favicon.ico"><link rel="icon" type="image/png" sizes="128x128" href="/images/logo-128.png"><link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
   <link rel="manifest" href="/app.webmanifest">
@@ -33,9 +33,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r95">
-  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r95">
-  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r95">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r97">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r97">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r97">
 </head>
 <body>
 <a href="#main" class="skip-link">Vai al contenuto</a>
@@ -57,34 +57,27 @@
 <main id="main">
   <section class="hero ol-pb-sm">
     <div class="container">
-      <span class="we-are-one">Verifica il tuo download</span>
-      <h1>Calcola l'hash del binario <span class="grad">nel tuo browser.</span></h1>
-      <p class="lede">Trascina il file One Link che hai scaricato nel riquadro. Il tuo browser calcola lo SHA-256 localmente con Web Crypto. Il file non lascia mai il tuo dispositivo. Poi recuperiamo il valore firmato in diretta dal relay delle versioni e confrontiamo. Se corrispondono, il binario è byte per byte quello che abbiamo pubblicato.</p>
+      <span class="we-are-one">Strumento checksum locale</span>
+      <h1>Calcola l'hash nel browser.</h1>
+      <p class="lede">Il browser calcola SHA-256 localmente e il file non lascia mai il dispositivo. Il risultato è autenticato solo con un riferimento firmato e legato all'artefatto. Il canale continuo attuale non lo pubblica.</p>
     </div>
   </section>
-
   <section class="section-tight">
-    <div class="container ol-mw-680">
+    <div class="container">
       <label for="ol-verify-file" class="ol-verify-drop" id="ol-verify-drop">
-        <p class="ol-verify-drop-headline">Trascina qui il tuo file, o clicca per sceglierlo.</p>
-        <p class="ol-verify-drop-sub">Funziona con tutti i download che offriamo &mdash; installer .exe, immagini disco .dmg, file unici .AppImage, pacchetti .zip portatili, archivi sorgenti. Solo lato browser; non viene caricato nulla.</p>
-        <input type="file" id="ol-verify-file" accept="*/*">
+        <p class="ol-verify-drop-headline">Trascina qui il file o fai clic per sceglierlo.</p>
+        <p class="ol-verify-drop-sub">Il file resta in questa scheda. Non viene caricato.</p>
+        <input type="file" id="ol-verify-file" class="ol-visually-hidden">
       </label>
-
-      <div class="ol-verify-result" id="ol-verify-result" aria-live="polite"></div>
-
-      <p class="ol-prose-mt">
-        <strong>Cosa fa:</strong> legge i byte del tuo file localmente, esegue SHA-256 su di essi tramite <code>crypto.subtle.digest</code> (Web Crypto), poi recupera l'hash firmato in diretta da <code>HEAD /download/&lt;os&gt;</code> sul relay delle versioni. Entrambe le cose avvengono nella tua scheda; nessun caricamento, nessuna elaborazione lato server. Il controllo di corrispondenza è byte-uguale.
-      </p>
-      <p class="ol-prose">
-        <strong>Perché conta:</strong> Windows SmartScreen e macOS Gatekeeper ti avvisano perché il binario è nuovo, non perché ci sia qualcosa che non va. Questa pagina dimostra che i byte che hai corrispondono ai byte che il manutentore ha firmato. Se gli hash corrispondono, il file è esattamente quello che abbiamo pubblicato, anche se il tuo sistema operativo non ha ancora imparato a fidarsi.
-      </p>
-      <p class="ol-prose">
-        <strong>Se gli hash non corrispondono:</strong> qualcosa tra te e noi ha alterato il file. Non eseguirlo. Riprova il download, oppure scarica l'archivio del codice sorgente e compilalo tu stesso.
-      </p>
-      <p class="ol-prose-mt ol-soft-text">
-        Per la ricevuta crittografica completa (firma Ed25519, attestazione dell'ambiente di build, commit sorgente) vedi <a class="ol-cyan-text" href="/security/" hreflang="en">/security/</a> e l'endpoint della catena di attestazione su <code>/api/attest/&lt;sha&gt;</code>.
-      </p>
+      <div class="ol-verify-result" id="ol-verify-result" role="status" aria-live="polite"></div>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container ol-mw-72ch">
+      <h2>Leggi il verdetto alla lettera</h2>
+      <p>Un SHA-256 locale identifica il file e aiuta a rilevare corruzione durante il trasferimento.</p>
+      <p>Senza hash di riferimento, lo strumento indica NON VERIFICATO. Non suggerisce di aver controllato firme o attestazioni.</p>
+      <p>Anche una corrispondenza con un checksum non firmato non prova l'autore. Un verdetto autenticato richiede un artefatto versionato, un manifesto firmato e una firma verificata.</p>
     </div>
   </section>
 </main>
@@ -94,7 +87,7 @@
     <div class="footer-grid">
       <div>
         <a href="/it/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
-        <p class="footer-tag">Una rete libera e privata per messaggi, file e dispositivi. Di nessuno. Di tutti.</p>
+        <p class="footer-tag">Software open source preliminare per comunicazioni private. Costruito verso la proprietà comunitaria; i servizi attuali dipendono ancora da manutentori, operatori e fornitori identificabili.</p>
         <p class="ol-mt-md ol-soft-text ol-mono">
           <strong>Leggi in:</strong>
           <a class="ol-cyan-text" hreflang="en" href="/verify-download/">English</a> &middot;
@@ -105,7 +98,7 @@
           <a class="ol-cyan-text" hreflang="it" href="/it/verify-download/">Italiano</a>
         </p>
       </div>
-      <div><h3>Rete</h3><ul><li><a href="/how-it-works/" hreflang="en">Come funziona</a></li><li><a href="/features/" hreflang="en">Funzionalità</a></li><li><a href="/mesh/" hreflang="en">Mesh dal vivo</a></li></ul></div>
+      <div><h3>Rete</h3><ul><li><a href="/how-it-works/" hreflang="en">Come funziona</a></li><li><a href="/features/" hreflang="en">Funzionalità</a></li><li><a href="/mesh/" hreflang="en">Presenza web</a></li></ul></div>
       <div><h3>Per te</h3><ul><li><a href="/download/" hreflang="en">Ottieni One Link</a></li><li><a href="/security/" hreflang="en">Sicurezza</a></li><li><a href="/it/verify-download/" hreflang="it">Verifica download</a></li><li><a href="/it/roadmap/" hreflang="it">Tabella di marcia</a></li><li><a href="/it/accessibility/" hreflang="it">Accessibilità</a></li><li><a href="/it/transparency/" hreflang="it">Trasparenza</a></li><li><a href="/audits/" hreflang="en">Audit</a></li></ul></div>
       <div><h3>Per i costruttori</h3><ul><li><a href="/builders/" hreflang="en">Protocollo e sorgente</a></li><li><a href="/changelog/" hreflang="en">Registro modifiche</a></li><li><a href="/releases/" hreflang="en">Versioni</a></li><li><a href="/mirror/" hreflang="en">Replica questo sito</a></li><li><a href="/download/source" hreflang="en" rel="noopener">Archivio sorgente</a></li><li><a href="https://github.com/IamOneYouAreOneWeAreOne/one-link" rel="noopener external">GitHub</a></li></ul></div>
     </div>
@@ -116,6 +109,6 @@
   </div>
 </footer>
 
-<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r95"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r97"></script>
 </body>
 </html>

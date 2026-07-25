@@ -1,11 +1,11 @@
-# One Link Website - Complete Specification
+# One Link Website - Living Specification and Evidence Ledger
 
-**Version**: 0.21.0-alpha + r34
-**Status**: Living document. Reflects shipped code as of 2026-05-17.
+**Version**: 0.21.0-alpha.0 + r95 manifest baseline; working tree ahead
+**Status**: Living document reviewed 2026-07-22. “Implemented,” “demo,” and “deferred” are kept distinct; production release closure is not claimed.
 **Domains**: `weareone-link.org` (primary) + `weareone-link.com` (301 redirect)
 **License**: AGPL-3.0-or-later
 
-This document governs the public website for the One Link network. It is the source of truth. If the code and this spec disagree, the discrepancy is a bug in one of them. Open a PR against whichever needs fixing.
+This document records intended and observed website behavior. Executable code and passing tests establish current behavior; this document must be corrected when it disagrees and must never upgrade a demo or intent into production evidence.
 
 ---
 
@@ -13,9 +13,9 @@ This document governs the public website for the One Link network. It is the sou
 
 - [0. Quick start for a new contributor](#0-quick-start)
 - [1. Vision and doctrine](#1-vision-and-doctrine)
-- [2. The alien-tech surface (22 items, status)](#2-alien-tech-surface)
+- [2. The alien-tech surface (status ledger)](#2-alien-tech-surface)
 - [3. Architecture](#3-architecture)
-- [4. Wire protocols (every endpoint)](#4-wire-protocols)
+- [4. Reviewed wire protocols](#4-reviewed-wire-protocols)
 - [5. WASM crates](#5-wasm-crates)
 - [6. Pages](#6-pages)
 - [7. Security model](#7-security-model)
@@ -54,6 +54,10 @@ wasm-bindgen --version    # must print: wasm-bindgen 0.2.95
 #   ol_pqkem.js + ol_pqkem_bg.wasm               (~191 KB)
 #   ol_onion.js + ol_onion_bg.wasm               (~161 KB)
 #   ol_coherence_field.js + ol_coherence_field_bg.wasm  (~77 KB)
+#   ol_pqsig.js + ol_pqsig_bg.wasm               (~257 KB)
+#   ol_threshold_recovery.js + ol_threshold_recovery_bg.wasm (~80 KB)
+#   ol_ratchet.js + ol_ratchet_bg.wasm           (~81 KB)
+#   ol_hwkey.js + ol_hwkey_bg.wasm               (~94 KB)
 
 # 4. Emit the WGSL shader via the Coherence Lang compiler
 python scripts/emit-wgsl.py
@@ -63,7 +67,9 @@ python scripts/emit-wgsl.py
 python tools/clc.py run pipeline/ssg/src/one_link_build.cl
 
 # 6. Recompute manifest hashes (any time a tracked asset changes)
-#   See section 7.4 for the helper script. For now this is a manual step.
+python scripts/rehash-manifest.py
+# This mutates the manifest/version and chains into signing when the offline
+# manifest key is present. See section 10.4; do not run it during a docs-only edit.
 
 # 7. Local dev server (Cloudflare Worker + static assets + DO + WebSocket)
 wrangler dev --config wrangler.toml
@@ -82,23 +88,25 @@ If any of those steps surprises you, read the relevant section of this spec befo
 
 ## 1.1 What this site is
 
-One Link is a free, private, peer-to-peer network for messages, files, and devices. The website is its public face. The website's job is to:
+One Link is pre-release software for private messaging and file transfer. It prefers direct peer paths and uses encrypted relay or rendezvous infrastructure where required. The website is its public face. The website's job is to:
 
 1. Convince a first-time visitor that One Link is real, useful, and trustworthy.
 2. Hand them a binary they can install in one tap.
-3. Show them, with running code in their browser, that the protocol works exactly as we describe.
-4. Earn their trust through architecture (we collect nothing) rather than promises (we promise not to collect anything).
+3. Show selected cryptographic primitives with local browser self-tests, while clearly separating those tests from device-to-device and network-path proof.
+4. Earn trust through a precise data inventory: no application accounts or analytics, with Cloudflare, GitHub, relay, R2, and feature-specific processing disclosed.
 
-The site is not a marketing brochure. The site is a working demonstration of the network. Visiting the site is the first time you use One Link.
+The site is a pre-release product and protocol surface. It contains local primitive self-tests and infrastructure-backed demos; visiting it does not make the browser a production One Link node.
 
 ## 1.2 What this site is NOT
 
 - **Not a SaaS product.** No accounts, no tiers, no enterprise pitch.
 - **Not a venture-backed startup site.** No "trusted by," no investor logos, no pricing.
 - **Not a marketing surveillance funnel.** No tracking pixels, no email capture, no remarketing.
-- **Not a wrapper around someone else's auth/CMS/CDN.** Every byte is first-party.
+- **Not an auth/CMS wrapper.** The checked-in site runtime has no third-party
+  auth or CMS SDK; Cloudflare hosting and GitHub/R2 artifact delivery remain
+  named infrastructure dependencies.
 - **Not an "AI app."** No LLM integration anywhere on the public surface.
-- **Not a single-developer demo.** It runs in production on the same protocol the daemon uses.
+- **Not presented as production-proven.** The public surface is pre-release; local WASM self-tests reuse daemon crates but do not prove the network path or deployed daemon behavior.
 
 ## 1.3 Voice doctrine (binding)
 
@@ -114,10 +122,10 @@ The voice across every page, every copy block, every meta description, every err
 
 Sample tone, locked across the site:
 
-> "Send a 50GB file to your sister. No upload. No server. No limit."
-> "If we vanish tomorrow, your One Link still works."
+> "Use a direct path when available; otherwise encrypted relay infrastructure may carry or temporarily store ciphertext."
+> "The source and static site are mirrorable. Discovery, relay delivery, downloads, sharing, and updates still have explicit infrastructure dependencies."
 > "Just install. It just works. It's already yours."
-> "Nothing leaves your hands without your key."
+> "Content intended for recipients is encrypted before relay or share storage. Connection and request metadata still exist at the named infrastructure providers."
 
 ## 1.4 UX doctrine (binding)
 
@@ -125,10 +133,10 @@ Sample tone, locked across the site:
 
 - No settings on the visible surface. Defaults are correct. No "Advanced." No "Configure." No "Options."
 - No jargon. "Only you and they can read it" beats "end-to-end encrypted."
-- Every action is one gesture. Install = one button. Pair = scan. Send = drag.
+- Keep actions simple, but distinguish the website's same-tab pairing self-test from a real scan, second device, transport, SAS comparison, and confirmation.
 - No setup wizard. No first-run questionnaire. No signup. No email collection.
-- Failure is invisible. Relay down? Try the next silently. WASM unsupported? Fall back silently.
-- Every interaction visibly completes in under five seconds.
+- Failure is visible, specific, and fail-closed for security-sensitive actions. A retry must not conceal missing proof or a changed transport.
+- Publish measured latency targets only with a reproducible environment and acceptance gate; do not guarantee every interaction completes within a fixed time.
 
 Corollary: **the alien tech is the engine, not the UI**. The UI is one tap. The engine is unspeakable.
 
@@ -142,50 +150,52 @@ Corollary: **the alien tech is the engine, not the UI**. The UI is one tap. The 
    weareone-link.org  (canonical)
 ```
 
-The `.com` Worker is a 60-line stateless 301 redirect ([src/redirect.js](src/redirect.js)). The `.org` Worker holds the entire site ([src/worker.js](src/worker.js)). No content lives at `.com` ever.
+The `.com` Worker is a stateless 301 redirect ([src/redirect.js](src/redirect.js)).
+The `.org` Worker serves the website and API surface ([src/worker.js](src/worker.js));
+the repository defines no separate `.com` content surface.
 
 ---
 
 # 2. Alien-tech surface
 
-The "blow socks off" feature set, with shipped status as of 2026-05-17 + r7.
+Implementation ledger reviewed 2026-07-22. “Shipped” below means the exact scoped behavior is present in this repository; it does not promote mutable artifacts to a production release.
 
 | # | Item | Status | Crate / file | Section |
 |---|---|---|---|---|
-| 1 | Download IS the protocol (browser becomes a One Link node) | **shipped (verifying, Windows + Linux)** | bridge.js `runVerifyingDownload` (streams + SHA-256 verifies against signed attestation; transport-layer ol_transfer still pending) | §6.2 |
-| 2 | Pair-by-QR with real handshake in 5 seconds | **shipped** | `ol_pair_qr` WASM | §5.1, §6.1 |
-| 3 | Optional Sphinx onion-routed download (preview button) | **shipped** | `ol_onion` WASM + /download/ button | §5.3, §6.2 |
+| 1 | Download IS the protocol (browser becomes a One Link node) | **deferred** | current routes are explicit GitHub/R2 artifact delivery; native transfer remains a future gate | §6.2 |
+| 2 | Pairing primitive self-test (both roles in one tab) | **shipped as demo** | `ol_pair_qr` WASM; no camera, second device, or device transport | §5.1, §6.1 |
+| 3 | Sphinx onion primitive self-test | **shipped as demo; download integration deferred** | `ol_onion` WASM; ordinary download routes do not use it | §5.3, §6.2 |
 | 4 | Coherence-field background = real Helmholtz on GPU | **shipped** | WGSL emitted from `wgsl_emitter` | §3.6, §6.1 |
-| 5 | Live global mesh map | **partial (synthetic + animated)** | presence DO + real Helmholtz field solver coloring + 1.4s ripple animation on peer join/leave; `ol_routing`/`ol_homology` still not WASM | §6.6 |
-| 6 | Reproducible-build attestation UI | **shipped** (schema, sample) | `ol_pqsig`, `ol_confidential` (schema only) | §4.5, §6.2, App C |
-| 7 | Two-tab browser daemon demo | **shipped** | `BroadcastChannel` + `ol_pair_qr` WASM | §6.1 |
+| 5 | Website-presence mesh visualization | **implemented for connected website sessions; network topology deferred** | `MeshPresence` sessions + illustrative regional anchors/halos + local Helmholtz coloring; no daemon, relay, or routing telemetry | §6.6 |
+| 6 | Reproducible-build attestation UI | **deferred** (schema fixtures only) | fixtures are not current artifact proof; API fails closed until a versioned release is promoted | §4.5, §6.2, App C |
+| 7 | Two-tab browser pairing demo | **shipped as demo** | same-origin `BroadcastChannel` + `ol_pair_qr` WASM; no daemon or independent device | §6.1 |
 | 8 | Threshold recovery demo on page | **shipped** | `ol_threshold_recovery` WASM + /security/ | §6.5 |
-| 9 | Feature matrix generated from live capability advert | **shipped** | worker.js `/api/capabilities` + `startCapAdvertSync` | §4.2 |
-| 10 | Cryptographic site integrity (signed manifest, SW verify) | **shipped** | [sw.js](dist/weareone-link.org/sw.js), [manifest.json](dist/weareone-link.org/manifest.json) | §7.4 |
-| 11 | Site IS a One Link node (PQ-hybrid session on load) | **shipped (X25519 server-real, ML-KEM browser-real)** | `ol_pqkem` browser WASM + Worker `crypto.subtle.generateKey({name:'X25519'})` on /api/session; ML-KEM-768 server half deferred until WASM-in-Worker bundler dance | §5.2, §4.4 |
-| 12 | Zero accounts / cookies / analytics / tracking | **shipped** (architectural) | worker.js, sw.js | §7.1 |
+| 9 | Capability banner from Worker-maintained advert | **partial** | `/api/capabilities` is hard-coded and unsigned; the static feature matrix is manually authored | §4.2 |
+| 10 | Signed site-manifest and cached-asset verification | **implemented; bundle must pass the release-time verifier** | same-origin pinned Ed25519 key in [sw.js](dist/weareone-link.org/sw.js) + [manifest.json](dist/weareone-link.org/manifest.json); not artifact signing | §7.4 |
+| 11 | Local PQ primitive self-test + browser session registration | **partial; not a secured network session** | local `ol_pqkem` round trip; `/api/session` only advertises a Worker X25519 key | §5.2, §4.4 |
+| 12 | No application accounts, analytics, ads, or tracking cookies | **implemented with infrastructure disclosures** | Cloudflare and artifact hosts process request metadata; feature state is listed in §7.1 | §7.1 |
 | 13 | "Rebuild this site from source" button | deferred | future CI surface | §11 |
 | 14 | Website ships INSIDE the product (daemon serves it) | deferred | daemon work | §11 |
 | 15 | Hardware-key TOFU recognition (software fallback) | **shipped** | `ol_hwkey` WASM (TofuStore) + /security/ "mint or recognize this device" | §6.5 |
-| 16 | Feature page generated live from cap advert | **shipped** | live capability banner above static matrix | §4.2 |
-| 17 | Self-defending site (in-browser bundle verifier) | **shipped** | [sw.js](dist/weareone-link.org/sw.js) + ed25519-signed manifest | §7.4 |
-| 18 | Stranger-pair right now (two visitors, real chat) | **shipped** | `MeshPresence` DO + `ol_pair_qr` WASM + E2EE chat panel | §3.2.2, §4.6, §6.1 |
-| 19 | Default-private mesh delivery for downloads | deferred | `ol_onion` UI wiring | §11 |
-| 20 | No business model surface anywhere | **shipped** (architectural) | repo audit | §1.2 |
+| 16 | Feature-page capability banner | **partial** | unsigned hard-coded list above a static matrix; not a live daemon truth source | §4.2 |
+| 17 | In-browser site-bundle verifier | **implemented; same-origin trust scope** | [sw.js](dist/weareone-link.org/sw.js) + Ed25519-signed manifest; no independent artifact/release trust root | §7.4 |
+| 18 | Pseudonymous stranger chat between current visitors | **shipped as opportunistically encrypted site demo** | `MeshPresence` relay + `ol_pair_qr` exchange + AES-GCM; no required out-of-band SAS comparison or durable peer identity, and Cloudflare sees connection metadata | §3.2.2, §4.6, §6.1 |
+| 19 | Onion-routed delivery for downloads | deferred | the local `ol_onion` preview does not carry download bytes | §11 |
+| 20 | No paid tier on the current public surface | **implemented today; no future-pricing promise** | repo audit | §1.2 |
 | 21 | "You just became 1 of N" live counter ticks up on connect | **shipped** | `MeshPresence` DO + presence bar | §4.6, §6.1 |
 | 22 | Tor onion mirror with cross-consistency proof | deferred | infra work | §11 |
 | 23 | In-browser PQ-hybrid signing (Ed25519 + ML-DSA-65) | **shipped** | `ol_pqsig` WASM + /security/ demo | §6.5 |
-| 24 | One-shot encrypted file share via URL fragment | **shipped** | worker.js `/api/share` + R2 + /share/ page | §6.11 |
-| 25 | CSP + HSTS + SRI + signed-manifest defense-in-depth | **shipped** | worker.js `PRIVACY_HEADERS` + scripts/inject-sri.py | §7.5, §7.7 |
-| 26 | Per-IP token-bucket rate limit on /api/share | **shipped** | `ShareRate` Durable Object | §3.2.3 |
+| 24 | Encrypted URL-fragment share demo | **implemented with retention caveats** | browser uploads ciphertext to R2; deletion is best-effort and expiry is enforced on read | §3.2.3 |
+| 25 | CSP + HSTS + signed site-manifest defense-in-depth | **implemented with same-origin trust scope; browser SRI not injected in the current HTML** | Worker `PRIVACY_HEADERS` and Service Worker manifest checks are distinct; `inject-sri.py` exists but the release rehash path intentionally skips it | §7.4-§7.6 |
+| 26 | Upload token-bucket rate limit on `/api/share` | **implemented with keying caveat** | recognized IPv4/IPv6 inputs use /24-/48-derived names; unfamiliar input falls back to the full raw string; `ShareRate` state has no application TTL | §3.2.3 |
 | 27 | Per-chunk forward-secret ratchet demo | **shipped** | `ol_ratchet` WASM + /security/ "walk the ratchet" | §6.5 |
-| 28 | In-browser attestation verifier (Ed25519 against pinned key) | **shipped** | `wireAttestationVerify` + WebCrypto Ed25519 on /download/ | §6.2 |
-| 29 | Streaming + verifying download (chunk-by-chunk SHA-256 against signed attestation) | **shipped** (Windows + Linux) | `runVerifyingDownload` on /download/ | §6.2 |
-| 30 | PWA install (Add to Home Screen launches site as standalone app) | **shipped** | `/app.webmanifest` + iOS/Android meta tags on all 13 pages | §6.1 |
-| 31 | Real X25519 server handshake (classical half of /api/session) | **shipped** | Worker WebCrypto `generateKey({name:'X25519'})` + in-memory keypair | §4.4 |
-| 32 | Linux signed release | **shipped** | PyInstaller onedir + gzip, 72 MB, glibc 2.28+, R2 + signed attestation | §6.2 |
+| 28 | In-browser release-attestation verifier | **deferred** | verifier is disabled until a current artifact-bound attestation is published | §6.2 |
+| 29 | Authenticated artifact verification | **deferred** | local SHA-256 works; no signed artifact-bound reference is published for the rolling channel | §6.2 |
+| 30 | PWA install metadata (Add to Home Screen can launch standalone) | **implemented on declared HTML surfaces** | `/app.webmanifest` + iOS/Android meta tags; browser installability remains platform-dependent | §6.1 |
+| 31 | Worker X25519 public-key advertisement | **partial** | no client ECDH, shared secret, transcript authentication, or traffic key | §4.4 |
+| 32 | Linux signed release | **deferred** | rolling AppImage/zip artifacts exist; artifact signing and attestation are not published | §6.2 |
 
-**Summary as of r34**: 26 fully shipped, 1 partial (item 5), 6 deferred (13, 14, 19, 22, plus macOS/iOS native builds and ML-KEM-768 server half).
+**Release-truth correction (2026-07-22):** counts in older revisions conflated schema fixtures, local crypto demos, and mutable CI artifacts with production release proof. The table above is authoritative; production release closure remains deferred until the immutable-version gates in §6.2 pass.
 
 **Deferred items + why each is deferred:**
 
@@ -193,7 +203,7 @@ The "blow socks off" feature set, with shipped status as of 2026-05-17 + r7.
 |---|---|---|
 | 13 | "Rebuild this site from source" button | needs CI surface; doable without external blockers, just hasn't shipped |
 | 14 | Website ships INSIDE the product (daemon serves it) | daemon-side work; needs the daemon to bundle the static dist/ and serve it on localhost |
-| 19 | Default-private mesh delivery for downloads | needs `ol_onion` UI wiring into the actual download path (currently preview-only) |
+| 19 | Onion-routed delivery for downloads | needs transport integration that carries the requested artifact bytes; the current button runs only a local wrap/peel preview |
 | 22 | Tor onion mirror with cross-consistency proof | needs separate hosting setup |
 | - | macOS .dmg (signed) | Apple Developer enrollment ($99/yr + cert setup); only you can do this |
 | - | iOS TestFlight | same Apple Developer block |
@@ -234,7 +244,10 @@ GC: when the WT session closes, the DO is evicted (CF default).
 
 ### 3.2.2 `MeshPresence`
 
-Holds the in-flight set of visitor sessions for the live "N here right now" counter and the peer-dot overlay. **This is the only DO doing real work today.**
+Holds the in-flight set of visitor sessions for the live "N here right now"
+counter and peer-dot overlay. It is load-bearing for presence and browser chat.
+`ShareRate` is separately load-bearing for upload rate limiting; `NativeSession`
+remains a stub.
 
 State per session, in-memory only:
 
@@ -251,28 +264,60 @@ sessions: Map<sessionId, Session>;
 
 Throttled broadcast: peer-snapshot rebroadcast no more than once per 1500 ms (`PRESENCE_BROADCAST_THROTTLE_MS`). Idle sweep runs every 30 seconds and evicts any session whose `lastSeen` is more than 90 seconds old.
 
-**What this DO never sees**: IP address, User-Agent, cookies (there are none), browser-geolocation. The visitor's `geo` is derived client-side from `Intl.DateTimeFormat().resolvedOptions().timeZone` mapped to an approximate longitude bucket.
+**Application-state boundary**: the session map retains a random id, client-supplied approximate `geo`, a socket, and a last-seen timestamp. The Worker forwards the upgrade request to the Durable Object, so do not claim the infrastructure never receives request headers or IP metadata. The application does not intentionally persist those headers. The approximate longitude is derived client-side from `Intl.DateTimeFormat().resolvedOptions().timeZone`, not from precise geolocation.
 
 Wire protocol: §4.6.
+
+### 3.2.3 `ShareRate` and encrypted share storage
+
+`/api/share` is an infrastructure-backed convenience demo, not a peer-to-peer
+transfer. The browser encrypts up to 25 MiB of plaintext and uploads the
+ciphertext to the `RELEASES` R2 bucket. The decryption key and IV are placed in
+the URL fragment and are not sent in the HTTP request.
+
+The Worker reads `CF-Connecting-IP`. Recognized IPv4 inputs become a `/24`-style
+key and recognized IPv6 inputs use the first three textual hextets as a
+`/48`-style key. Missing input becomes `unknown`; any unfamiliar non-IP string
+falls back to `raw:<full-string>`. The selected literal is passed to
+`SHARE_RATE.idFromName()` without application-level hashing. The resulting
+`ShareRate` Durable Object persists only token count and refill timestamp; the
+application defines no deletion/TTL for that state. It does not store the R2
+object, expiry, or deletion state. Cloudflare still processes the full
+connection IP at the edge.
+
+Each R2 share object carries an expiry timestamp in custom metadata; `ShareRate`
+does not own share lifetime or deletion. The current code checks R2 expiry only
+on GET and then attempts deletion; it has no in-repository background cleanup
+or atomic consume operation. First-GET deletion is best-effort, and concurrent
+reads can race while deletion failures are ignored. Public copy must say
+“encrypted temporary storage with best-effort first retrieval,” not “never
+stored,” “24-hour maximum retention,” or guaranteed one-shot deletion, until
+R2 lifecycle enforcement and an atomic-consume acceptance test exist.
 
 ## 3.3 KV + R2 bindings
 
 ```
 [[r2_buckets]]
-binding = "RELEASES"        # signed binary artifacts, served by /download/:os
-[[r2_buckets]]
-binding = "ATTESTATIONS"    # reproducible-build attestation JSONs, served by /api/attest/:sha
-[[kv_namespaces]]
-binding = "RELAY_KV"        # live relay registry for /api/topology (future)
+binding = "RELEASES"        # configured: source artifacts + share ciphertext
+
+# Not currently configured in wrangler.toml:
+# ATTESTATIONS R2             # future promoted artifact-bound documents
+# RELAY_KV                    # future authenticated relay registry
 ```
 
-Today the worker prefers R2 for attestation lookups and **falls back to the static asset at `/attestations/<sha>.json`** if R2 misses. This lets us seed the chain with sample/historical attestations before R2 is provisioned.
+Today the public attestation endpoint is fail-closed. Static files under
+`dist/.../attestations/` are schema fixtures only and are never served as
+current release proof. The endpoint is enabled only when
+`RELEASE_ATTESTATIONS_READY=true`, the `ATTESTATIONS` R2 binding exists, and a
+small structurally valid document is bound to the requested artifact SHA-256.
+The browser still verifies the document's Ed25519 signature against its pinned
+release public key before showing an authenticated verdict.
 
 ## 3.4 Static `dist/` layout
 
 ```
 dist/weareone-link.org/
-  index.html                       Programmatically composed by .cl SSG
+  index.html                       Hand-authored canonical page; provenance-folded by .cl SSG
   index.cl.html                    Phase-1 SSG sample output (proof of life)
   about/index.html                 .cl SSG folds provenance meta in
   builders/index.html              "
@@ -289,16 +334,14 @@ dist/weareone-link.org/
   sitemap.xml
   robots.txt                       Blocks GPTBot/ClaudeBot/PerplexityBot/...
   feed.xml                         RSS for release announcements
-  _headers                         Cloudflare Pages-style header overrides
-
   css/
-    one-link.css                   ~1000 lines: visual identity, all routes
-    immersive.css                  ~440 lines: home-only immersive layer
+    one-link.css                   Visual identity, all routes
+    immersive.css                  Home-only immersive layer
 
   live/
-    bridge.js                      ~1100 lines vanilla ES module
+    bridge.js                      Multi-feature vanilla ES module
     shaders/
-      coherence-field.wgsl         292 lines, emitted by wgsl_emitter
+      coherence-field.wgsl         Emitted by wgsl_emitter
     wasm/
       ol_pair_qr.js                wasm-bindgen JS glue
       ol_pair_qr_bg.wasm           250 KB
@@ -308,6 +351,14 @@ dist/weareone-link.org/
       ol_onion_bg.wasm             161 KB
       ol_coherence_field.js
       ol_coherence_field_bg.wasm   77 KB
+      ol_pqsig.js
+      ol_pqsig_bg.wasm             257 KB
+      ol_threshold_recovery.js
+      ol_threshold_recovery_bg.wasm 80 KB
+      ol_ratchet.js
+      ol_ratchet_bg.wasm           81 KB
+      ol_hwkey.js
+      ol_hwkey_bg.wasm             94 KB
 
   images/favicon.svg
   og/one-link.svg + one-link.png + download.png
@@ -321,27 +372,34 @@ dist/weareone-link.org/
   .provenance.json                 Auditable JSON of every route touched
 ```
 
-The `.cl` SSG owns every HTML file in this tree. The home page is programmatically composed; the other ten routes are folded in (read source HTML, inject provenance meta, write back). See §8.
+The canonical HTML pages are hand-authored. The `.cl` SSG emits the separate
+`index.cl.html` programmatic sample and folds provenance into 11 baseline
+canonical routes, including `index.html`; provenance fold-in is not full page
+generation or ownership. See §8.
 
 ## 3.5 The Cloudflare Worker
 
-[src/worker.js](src/worker.js), 479 lines. Single `fetch` handler dispatching by path:
+[src/worker.js](src/worker.js) uses a single `fetch` handler that dispatches by path:
 
 ```
 /api/health           GET   -> heartbeat JSON
-/api/capabilities     GET   -> live cap advert (truth source for /features)
-/api/topology         GET   -> aggregated mesh data, no PII
-/api/session          POST  -> server-side hybrid handshake init
-/api/attest/:sha      GET   -> attestation chain (R2 -> static fallback)
+/api/capabilities     GET   -> unsigned hard-coded Worker capability list
+/api/topology         GET   -> non-authoritative status with null topology fields
+/api/session          POST  -> session registration + X25519 public-key advertisement
+/api/attest/:sha      GET   -> readiness-gated artifact attestation from R2
 /api/presence         GET (Upgrade: websocket) -> MeshPresence DO
-/native               GET   -> WebTransport handshake stub
-/download/:os         GET   -> signed binary from R2 (currently 503 placeholder)
+/api/share            POST  -> rate-limited R2 ciphertext upload
+/api/share/:id        GET   -> expiry-on-read + best-effort, non-atomic deletion
+/native               GET   -> JSON advertisement for a future WebTransport path
+/download/:os         GET   -> explicit rolling/version-pinned artifact route + proof status
 <everything else>     GET   -> env.ASSETS.fetch (static dist/)
 ```
 
-Every response goes through `applyHeaders()` which sets the privacy header pack defined in `PRIVACY_HEADERS`:
+The Worker applies the header pack defined in `PRIVACY_HEADERS` to its routed
+responses and static-asset fallback. There is no checked-in `_headers` file:
 
 ```js
+// Selected entries; §7.5 records the CSP and conditional behavior.
 Permissions-Policy: camera=(), microphone=(), geolocation=(), interest-cohort=(),
                     browsing-topics=(), join-ad-interest-group=(), run-ad-auction=()
 Cross-Origin-Embedder-Policy: require-corp
@@ -351,7 +409,12 @@ X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
 ```
 
-**The Worker never logs requests.** No `console.log(request)`, no analytics tap, no third-party fetch. The only outbound network call the Worker ever makes is to R2 / KV / DO bindings, all of which are scoped to this account and contain no visitor PII.
+The Worker source has no explicit request-logging or analytics call. That is not a
+no-logs guarantee for the deployment: Cloudflare processes ordinary request and
+connection metadata. The application also writes the documented pseudonymous
+presence state, literal truncated-subnet rate state, and share ciphertext to its
+Durable Object/R2 paths. Provider retention and operator access must be documented
+and verified independently of this source review.
 
 ## 3.6 The WGSL emission path
 
@@ -377,7 +440,7 @@ The same source path the daemon uses for GPU dispatch produces this shader. The 
 
 ## 3.7 The WASM build pipeline
 
-[scripts/build-wasm.sh](scripts/build-wasm.sh) drives `cargo build --release --target wasm32-unknown-unknown` over the four wrapper crates, then runs `wasm-bindgen --target web` on each to emit JS glue.
+[scripts/build-wasm.sh](scripts/build-wasm.sh) drives `cargo build --release --target wasm32-unknown-unknown` over eight wrapper crates, then runs `wasm-bindgen --target web` on each to emit JS glue.
 
 Workspace at [live/wasm/Cargo.toml](live/wasm/Cargo.toml) pins dependency versions to **match the One Link daemon workspace exactly** so member crates inherit production versions without modifying the daemon repo:
 
@@ -413,23 +476,27 @@ panic         = "abort"
 
 ## 3.8 The .cl SSG
 
-[pipeline/ssg/src/one_link_build.cl](pipeline/ssg/src/one_link_build.cl), ~250 lines of Coherence Language. Type-checks clean via `python tools/clc.py check`, runs via `python tools/clc.py run`.
+[pipeline/ssg/src/one_link_build.cl](pipeline/ssg/src/one_link_build.cl) is
+Coherence Language source. Type-check it via `python tools/clc.py check` and run
+it via `python tools/clc.py run`.
 
-Phase-1 coverage (shipped):
-- Home page programmatically composed: head + provenance block + body + header + hero + footer.
-- 10 other routes folded in: SSG reads the existing dist HTML, injects `<meta name="x-emitted-by" content="coherence-lang/1.0.3 one_link.ssg.build">` after `<head>`, writes back.
+Phase-1 coverage:
+- A separate `index.cl.html` home-page sample is programmatically composed.
+- All 11 canonical baseline routes, including `index.html`, are read from existing dist HTML and rewritten only to inject `<meta name="x-emitted-by" content="coherence-lang/1.0.3 one_link.ssg.build">` after `<head>`.
 - Emits `.build-stamp` and `.provenance.json` (auditable JSON listing every route touched).
 
 Phase-2 plan (§11):
 - Full programmatic composition of all 11 routes from .cl source.
 - SiteWorld-node-driven content model (nodes/edges/lenses like CEL).
-- Build-time fetch of `/api/capabilities` so /features regenerates from the live cap advert at build time too.
+- Generate `/features/` from either an authenticated, fresh daemon advert or a manually reviewed, version-pinned evidence record. The unsigned Worker endpoint cannot promote marketing claims.
 
 ---
 
-# 4. Wire protocols
+# 4. Reviewed wire protocols
 
-Every endpoint, request shape, response shape, error modes.
+This section records the reviewed public endpoint contracts relevant to the
+current website surface. `src/worker.js` remains authoritative, and this section
+must be updated whenever its route table or failure behavior changes.
 
 ## 4.1 `GET /api/health`
 
@@ -450,7 +517,7 @@ No auth required. `Cache-Control: no-store`.
 
 ## 4.2 `GET /api/capabilities`
 
-Live capability advertisement. The /features page is the rendered form of this data. **The page cannot lie about features because it pulls from this endpoint.**
+Unsigned Worker-maintained capability list. The `/features/` page shows this list in a banner, but its feature tiles are static HTML. This endpoint is not a live daemon attestation and cannot independently prove that an advertised capability is implemented.
 
 **Response (200, application/json)**:
 ```json
@@ -476,39 +543,51 @@ Live capability advertisement. The /features page is the rendered form of this d
 }
 ```
 
-Current state: hard-coded in the Worker. Next push: Worker dials the live demo daemon and proxies the real `CapabilityAdvert`. `signed: true` once the daemon signs the response with its identity key and the worker forwards the signature.
+Observed implementation: the response is hard-coded and `signed: false` in the
+Worker. It may be displayed only as an unsigned advertisement. A capability may
+be marketed as implemented only from either (a) an authenticated, fresh daemon
+advert with replay/failure tests or (b) a manually reviewed, version-pinned
+evidence record with an executable acceptance gate. The page must not silently
+promote or fall back to this unsigned endpoint as proof.
 
 ## 4.3 `GET /api/topology`
 
-Aggregated mesh-map data feed. **Never returns IPs, never returns individual session data.** Returns shape only until the release relay is provisioned.
+Fail-closed topology availability status. It does not derive data from a relay
+registry and returns `authoritative: false` with null inventory/field values,
+rather than zeros that a client could mislabel as observed topology. The
+response body contains no IPs or individual sessions; that response-body
+property is not a claim that Cloudflare receives no request metadata.
 
 **Response (200, application/json)**:
 ```json
 {
+  "schema": "topology-status-v1",
+  "authoritative": false,
   "issued_at": "...",
-  "active_nodes": 0,
-  "active_relays": 0,
-  "field_snapshot": {
-    "resolution": [64, 64],
-    "tau_c_min": 0.05,
-    "tau_c_max": 0.95,
-    "dt_ms": 16.67
-  },
-  "relay_health": [],
-  "note": "live topology binding lands once RELAY_KV is provisioned"
+  "active_nodes": null,
+  "active_relays": null,
+  "field_snapshot": null,
+  "relay_health": null,
+  "scope": "stub-not-production-inventory",
+  "note": "No authoritative relay registry is deployed for this website build."
 }
 ```
 
 ## 4.4 `POST /api/session`
 
-Server-side X25519 + ML-KEM-768 hybrid handshake init.
+Ephemeral browser-session registration plus an unauthenticated capability
+advertisement. This endpoint does **not** currently establish an X25519 or
+ML-KEM protected browser-to-Worker channel.
 
 **Request (application/json)**:
 ```json
 {
-  "client_pq_pub_hex": "<1216 bytes hex>",
-  "pq_sizes": { "public_key_bytes": 1216, ... },
-  "protocol": "x25519+mlkem768-v1"
+  "local_pq_self_test": {
+    "matched": true,
+    "public_key_bytes": 1216,
+    "ciphertext_bytes": 1088
+  },
+  "protocol": "session-registration-v1"
 }
 ```
 
@@ -516,27 +595,40 @@ Server-side X25519 + ML-KEM-768 hybrid handshake init.
 ```json
 {
   "server_x25519": "<32 bytes hex>",
-  "server_mlkem768_pk": "<1184 bytes hex>",
+  "server_mlkem768_pk": null,
   "session_id": "<32 hex chars>",
-  "handshake_version": "x25519+mlkem768-v1",
-  "note": "hybrid handshake stub: real keys wired once ol_pqkem WASM is bound"
+  "handshake_version": "session-registration-v1+x25519-advertised+mlkem768-pending",
+  "note": "advertisement only; client ECDH and ML-KEM are not completed"
 }
 ```
 
-Current state: placeholder keys; the browser still does a real full Alice <-> Bob round-trip locally via `ol_pqkem_wasm.liveDemoRoundTrip()` so the "PQ session verified" badge tells the truth about the in-browser side. Next push: server returns its real hybrid pubkey; bridge.js calls `encapsulateAgainst(server_pub)` to derive the actual shared secret.
+Current state: the Worker advertises a real, ephemeral X25519 public key, but
+the browser does not derive a shared secret from it and the Worker has no
+ML-KEM key. `ol_pqkem_wasm.liveDemoRoundTrip()` exercises Alice and Bob locally
+inside one tab; the UI labels that result as a primitive self-test. A future
+protocol revision must authenticate the endpoint, complete client ECDH and
+ML-KEM, derive traffic keys, and add transcript-bound tests before this route
+may be called a hybrid session.
 
 ## 4.5 `GET /api/attest/:sha`
 
-Reproducible-build attestation chain for a given artifact hash.
+Artifact-bound release attestation for a given SHA-256, available only after
+the versioned release pipeline explicitly enables and uploads it.
 
 `sha` must match `/^[a-f0-9]{64}$/i` or 400 is returned.
 
-Lookup order:
-1. R2 `ATTESTATIONS` bucket → key `<sha>.json`.
-2. Static asset fallback → `dist/.../attestations/<sha>.json` via `env.ASSETS.fetch`.
-3. 404 with `{ "error": "no attestation on file for this sha", "sha": "..." }`.
+Publication gates:
+1. `RELEASE_ATTESTATIONS_READY` must equal the exact string `true`.
+2. R2 `ATTESTATIONS` bucket must contain key `<sha>.json`.
+3. The object must be valid JSON, no larger than 256 KiB, with
+   `artifact.sha256` equal to the requested SHA and a structurally valid
+   Ed25519 signature entry.
+4. Missing documents return 404; missing bindings, storage failures, malformed
+   JSON, oversized documents, and SHA mismatches return 503. There is no static
+   fallback.
 
-Sample document at [dist/weareone-link.org/attestations/f905eef1...json](dist/weareone-link.org/attestations/). Full schema in Appendix C.
+The sample document under [dist/weareone-link.org/attestations/](dist/weareone-link.org/attestations/)
+is a development fixture, not proof for a routed artifact. Full schema in Appendix C.
 
 ## 4.6 `GET /api/presence` (WebSocket)
 
@@ -563,7 +655,11 @@ All wire messages are JSON, one per frame.
 ```json
 { "type": "hello", "protocol": 1, "geo": { "lat": 0.45, "lng": 0.78 } }
 { "type": "heartbeat" }
-{ "type": "ping", "to": "<peer-session-id>" }
+{ "type": "chat-request", "to": "<peer-session-id>", "invite_hex": "..." }
+{ "type": "chat-accept", "to": "<peer-session-id>", "response_hex": "..." }
+{ "type": "chat-confirm", "to": "<peer-session-id>", "confirm_hex": "..." }
+{ "type": "chat-msg", "to": "<peer-session-id>", "iv_b64": "...", "ct_b64": "..." }
+{ "type": "chat-decline|chat-leave", "to": "<peer-session-id>" }
 ```
 
 **Server -> Client messages**:
@@ -572,16 +668,22 @@ All wire messages are JSON, one per frame.
 { "type": "welcome",    "self_id": "<32 hex chars>", "population": 7 }
 { "type": "population", "n": 8 }
 { "type": "peers", "peers": [ { "id": "...", "lat": 0.5, "lng": 0.5 }, ... ] }
-{ "type": "ping", "from": "<sender-session-id>" }
+{ "type": "chat-request|chat-accept|chat-confirm|chat-decline|chat-leave", "from": "<sender-session-id>", "...": "forwarded handshake field when applicable" }
+{ "type": "chat-msg", "from": "<sender-session-id>", "iv_b64": "...", "ct_b64": "...", "ts": 0 }
 ```
+
+The Worker still accepts a legacy `ping` frame, but peer-dot clicks in the
+current UI initiate the `chat-*` exchange. Handshake payloads are relayed as
+opaque hex. After confirmation, browsers relay AES-GCM ciphertext; there is no
+mandatory out-of-band SAS comparison or durable peer identity authentication.
 
 Throttling: `population` broadcasts fire on every join/leave. `peers` broadcasts are throttled to one per 1500ms server-side. Idle sweep evicts sessions whose `lastSeen` is older than 90 seconds; on eviction, the server pushes a fresh `population` to all remaining sessions.
 
-**Privacy invariant**: the server never sees, stores, or broadcasts anything about the client beyond the random session id and the client-supplied approximate `geo` (timezone-derived, never IP-derived). No Cookie header, no User-Agent logging, no fingerprinting.
+**Application-state invariant**: the presence implementation stores and broadcasts only the fields documented above; it does not intentionally log request headers or set a tracking cookie. Cloudflare receives ordinary connection metadata, the Worker forwards the upgrade request to the Durable Object, and peers receive the client-supplied approximate `geo`. This is pseudonymity within the UI, not network-level anonymity.
 
 ## 4.7 `GET /native` (WebTransport, planned)
 
-Today returns a JSON advertisement of the wire protocol. When Cloudflare Workers' WebTransport support lands stable, this upgrades to a real WT session backed by the `NativeSession` Durable Object.
+Today returns a JSON advertisement of the proposed wire protocol. `NativeSession` is a non-load-bearing stub. A real transport requires runtime support, endpoint authentication, session-key derivation, stream handling, resource limits, and end-to-end tests before this route may be called WebTransport.
 
 **Response (today, 200, application/json)**:
 ```json
@@ -589,39 +691,67 @@ Today returns a JSON advertisement of the wire protocol. When Cloudflare Workers
   "transport": "webtransport-h3",
   "status": "advertised",
   "accepted_caps": [ "NATIVE_TRANSFER_V1", "PAIR_QR_V1", "SPHINX_ONION_V1", "PQ_HYBRID_V1" ],
-  "note": "WebTransport upgrade lands when CF Worker support is stable;
-           the demo daemon at the release relay accepts native dial today"
+  "note": "advertisement only; no WebTransport stream or NativeSession lifecycle is established"
 }
 ```
 
 ## 4.8 `GET /download/:os`
 
-Signed binary fetch. `:os` must be one of: `windows, macos, linux, android, ios, openbsd, freebsd, source`.
+Artifact route. `:os` accepts explicit platform and architecture forms such as
+`windows-x86_64`, `windows-arm64`, `macos-arm64`, `linux-x86_64`, and
+`linux-arm64`. Supported desktop routes redirect to the rolling GitHub
+`auto-latest` prerelease unless `VERSIONED_RELEASE_TAG` pins an explicit v* tag.
+macOS Intel routes return a clear unavailable response and never substitute an
+Apple Silicon artifact.
 
-Returns 503 today (no binaries in R2 yet). When wired:
+Programmatic clients requesting JSON receive the channel, tag, mutability, and
+proof status. The current default is:
 
 ```
-200 OK
-Content-Type: application/octet-stream
-Content-Disposition: attachment; filename="one-link-<os>.bin"
-Cache-Control: public, max-age=86400
-X-Artifact-SHA256: <64 hex chars>
-+ privacy headers
+{
+  "release": { "channel": "continuous", "tag": "auto-latest", "mutable": true },
+  "integrity": {
+    "sha256": null,
+    "signature": "not-published",
+    "attestation": "not-published",
+    "reproducible_build": "not-verified"
+  }
+}
 ```
 
-The body is the real signed binary, streamed from R2.
+R2 source downloads may expose an unsigned transport SHA-256 when object
+metadata contains one. A checksum alone is never described as a signature.
+
+## 4.9 `POST /api/share` and `GET /api/share/:id`
+
+The browser caps plaintext at 25 MiB; `POST /api/share` permits a ciphertext
+body up to the Worker's 26 MiB transport cap after the `ShareRate` Durable
+Object consumes an upload token for the bucket key described in §3.2.3.
+The Worker writes the ciphertext to `RELEASES` under `shares/<id>`
+with `created_at` and nominal 24-hour `expires_at` custom metadata. The browser
+keeps the AES-GCM key and IV in the URL fragment, outside the HTTP request.
+
+`GET /api/share/:id` reads the R2 object, checks `expires_at`, and attempts an R2
+delete both for an expired object and after reading a non-expired body. Delete
+errors are ignored. The read and delete are not an atomic consume operation, so
+concurrent GETs may both obtain a body. No scheduled handler, R2 lifecycle rule,
+or cleanup acceptance evidence is present in this repository. Therefore the
+nominal 24-hour timestamp is an expiry-on-read policy, not proof of a 24-hour
+maximum storage-retention bound or exactly-once retrieval.
 
 ---
 
 # 5. WASM crates
 
-Four wrapper crates compile real production One Link Rust crates to WebAssembly. **The browser runs the same crypto code the daemon runs.**
+Eight wrapper crates compile One Link Rust crates to WebAssembly. Each local
+demo exercises the named crate in the browser; that is primitive-level evidence,
+not proof that current website traffic, downloads, updates, or releases use it.
 
 ## 5.1 `ol_pair_qr_wasm`
 
 **Wraps**: [`ol_pair_qr`](https://github.com/IamOneYouAreOneWeAreOne/one-link/tree/master/native/ol_pair_qr) (Phase F2 of Coherence Mesh Plan)
 **Output**: `ol_pair_qr.js` (25 KB) + `ol_pair_qr_bg.wasm` (250 KB)
-**Demo on site**: home page pair-by-QR card
+**Demo on site**: home-page same-tab pairing primitive self-test. Inviter and Scanner both execute locally; this is not a camera scan, second-device pairing, transport test, or human SAS confirmation.
 
 JS-facing API:
 
@@ -662,7 +792,7 @@ The `qrcode` crate is compiled INTO our WASM (no third-party JS QR encoder). The
 
 **Wraps**: [`ol_pqkem`](https://github.com/IamOneYouAreOneWeAreOne/one-link/tree/master/native/ol_pqkem) (PQ-hybrid KEM per ADR-0017)
 **Output**: `ol_pqkem.js` (21 KB) + `ol_pqkem_bg.wasm` (191 KB)
-**Demo on site**: hero PQ-session status badge ("deriving" -> "verified")
+**Demo on site**: hero PQ primitive self-test badge ("running" -> local result). It proves only that two local WASM roles derived the same secret; it does not authenticate or protect `/api/session`.
 
 JS-facing API:
 
@@ -694,7 +824,8 @@ Hybrid construction per ADR-0017: ML-KEM-768 || X25519 with a BLAKE3 combiner th
 
 **Wraps**: [`ol_onion`](https://github.com/IamOneYouAreOneWeAreOne/one-link/tree/master/native/ol_onion) (Phase F3, Sphinx-style routing)
 **Output**: `ol_onion.js` (16 KB) + `ol_onion_bg.wasm` (161 KB)
-**Demo on site**: /download/ "private route" toggle (UI pending)
+**Demo on site**: the `/download/` private-route demo button runs a local
+three-hop wrap/peel. It does not route the requested download bytes.
 
 JS-facing API:
 
@@ -719,7 +850,7 @@ Generates 3 ephemeral X25519 hops, wraps payload in 3 nested AEAD layers, peels 
 
 **Wraps**: [`ol_coherence_field`](https://github.com/IamOneYouAreOneWeAreOne/one-link/tree/master/native/ol_coherence_field) (Phase E, Helmholtz solver)
 **Output**: `ol_coherence_field.js` (10 KB) + `ol_coherence_field_bg.wasm` (77 KB)
-**Demo on site**: future mesh-page solver (data piping in next push)
+**Demo on site**: local solver visualization. Live relay-derived mesh data remains deferred.
 
 JS-facing API:
 
@@ -738,7 +869,20 @@ ol_coherence_field_version() -> string;
 
 Required a tiny additive upstream fix: `#[cfg(not(target_arch = "wasm32"))]` on the two `matvec_par*` functions in `pde/mod.rs` and moving `rayon` under `[target.'cfg(not(target_arch = "wasm32"))'.dependencies]` in the daemon's `Cargo.toml`. Native builds are byte-identical. wasm32 now compiles clean using the serial matvec path (which is what the daemon chooses for small graphs anyway).
 
-## 5.5 Build and version pinning
+## 5.5 Additional local-demo wrappers
+
+| Wrapper | Production crate | Checked-in WASM | Evidence scope |
+|---|---|---:|---|
+| `ol_pqsig_wasm` | `ol_pqsig` | ~257 KB | Local Ed25519 + ML-DSA-65 sign/verify/tamper demo; not application-release signing |
+| `ol_threshold_recovery_wasm` | `ol_threshold_recovery` | ~80 KB | Local Shamir split/recover demo; not a deployed recovery service |
+| `ol_ratchet_wasm` | `ol_ratchet` | ~81 KB | Local chain-key stepping demo; not evidence that website chat or transfers use the ratchet |
+| `ol_hwkey_wasm` | `ol_hwkey` | ~94 KB | Browser `localStorage` software-TOFU demo; not hardware-backed identity |
+
+Together with §§5.1-5.4, these are the eight members listed in
+[live/wasm/Cargo.toml](live/wasm/Cargo.toml) and built by
+[scripts/build-wasm.sh](scripts/build-wasm.sh).
+
+## 5.6 Build and version pinning
 
 ```bash
 rustup target add wasm32-unknown-unknown
@@ -776,30 +920,32 @@ The most ambitious surface on the site. Drives [index.html](dist/weareone-link.o
 |                                                             |
 |  [Get One Link →]   [See how it works]                      |
 |                                                             |
-|  [● 1,247 nodes]  [● site verified] [● pq verified]         |
+|  [● N sessions]   [● site bundle checked] [● pq self-test] |
 |                                                             |
 |    [v]  click to send a pulse                               |
 +------------------------------------------------------------+
    ↕  full-bleed WebGPU coherence field, mouse-reactive
-      glowing peer dots overlay (real other visitors)
+      glowing peer dots overlay (connected website sessions)
       self dot in amber
    ↕
 
    Three promises, three tiles
-   Pair-by-QR live card (real WASM handshake)
+   Pairing primitive self-test card (both WASM roles in one tab)
    "Why this exists" closer
    Footer
 ```
 
-**Visceral elements**, all real:
+**Observed, scope-limited website behaviors**:
 
 - **WebGPU coherence-field** fills the viewport. Real damped Helmholtz on GPU via compiler-emitted shader (§3.6). Cursor moves ripple the field. Click sends a pulse.
 - **Word-rise hero**: each word in the headline has a staggered `--d` CSS custom-property delay, gets blur(14px) → blur(0) + translateY(18px) → 0 + opacity 0 → 1 over 1.1s. The line "Only you can read it." uses the cyan-violet gradient text.
-- **Live presence ribbon** top-right ticks "N here right now" with the real count from the `MeshPresence` Durable Object.
-- **Glowing peer dots overlay** floats over the field. Each visitor gets a deterministic-per-id hue. Click a dot → anonymous ping sent over the presence WebSocket. Sender sees `is-pinged` ring expansion. Receiver sees `is-ping-source` flash on the sender's dot + field pulse at sender position + "someone said hello" toast.
+- **Live presence ribbon** top-right displays the `MeshPresence` Durable Object's
+  current connected-session count. It is not a count of authenticated people or
+  One Link network nodes.
+- **Glowing peer dots overlay** floats over the field. Each connected website session gets a deterministic-per-session-id hue. Clicking a dot requests a pseudonymous website chat over the Cloudflare-hosted presence WebSocket. It is not a network-node display or network-level anonymity.
 - **Self dot** is amber, larger, crowned with "you" label.
-- **Status pills** under CTAs: nodes online (animated counter), site verified (Service Worker state), pq session (verified when ol_pqkem round-trip matches).
-- **Pair-by-QR card** runs the real `ol_pair_qr` Inviter+Scanner handshake in-browser, renders real SVG QR encoded by the qrcode crate compiled into WASM, displays the real 5-word SAS the daemon would derive.
+- **Status pills** under CTAs: visitors here (presence count), site-bundle check (Service Worker state), and local PQ primitive self-test. None of these is a production-network or release-artifact attestation.
+- **Pairing card** runs both `ol_pair_qr` Inviter and Scanner locally in one tab, renders an SVG QR, and compares the locally derived SAS and chain key. Real-device pairing additionally requires a second device, transport, QR scan, user comparison, and confirmation.
 - **Ambient audio toggle** bottom-right (Web Audio: 55Hz drone + 220Hz triangle shimmer + 0.07Hz LFO). Off by default.
 - **Scroll hint** bottom of hero, smooth scrolls to next section.
 - **Reduced-motion**: word-rise animation collapses to instant readability.
@@ -810,26 +956,33 @@ Get One Link. The destination from every CTA.
 
 Hero: "One tap. It just works."
 
-OS-detected primary CTA. [bridge.js](dist/weareone-link.org/live/bridge.js) reads navigator UA/platform and rewrites the button to the right binary. Detected arch (x86_64 / arm64) shown beneath.
+The page requires an exact platform choice. Windows and Linux architecture can
+be inferred for the convenience route. Ordinary macOS User-Agent strings do
+not reliably distinguish Intel from Apple Silicon, so ambiguous macOS routes
+show a choice instead of guessing.
 
 Alternates row: all 7 platforms + "Source (build it yourself)".
 
-**Attestation strip beneath the button**:
+**Current proof strip beneath the button**:
 ```
-version       0.21.0
-released      2026-05-12
-sha256        <64 hex>
-signature     Ed25519 + ML-DSA-65 hybrid verified
-attestation   ol_confidential + field witness fresh
-build         reproducible, in sealed environment
-verify        [read attestation chain] -> /api/attest/<sha>
+channel       auto-latest (mutable continuous alpha)
+version       not pinned
+sha256        no authenticated artifact-bound reference published
+signature     not published
+attestation   not published
+build         reproducibility not independently verified
+verify        local SHA-256 only; UI must say NOT VERIFIED without a reference
 ```
 
-Three "why proof matters" tiles: signed twice, built in a sealed room, reproducible.
+Three truth tiles distinguish local hashing, artifact signatures, and
+reproducibility/provenance without collapsing them into one claim.
 
-Code block showing the real download wire protocol (1-7 steps from session open through sig verify).
+Current downloads use ordinary GitHub/R2 delivery. Native transfer remains a
+separate future feature and is not claimed by the release route.
 
-"Private download" section explains the Sphinx-routed default. UI hook for `window.olRunOnionPreview()` lands when the toggle ships.
+The private-route button calls `window.olRunOnionPreview()` and displays a
+browser-local Sphinx wrap/peel self-test. Current artifact downloads still use
+ordinary GitHub/R2 delivery; no download route defaults to or traverses Sphinx.
 
 ## 6.3 `/how-it-works/`
 
@@ -840,15 +993,28 @@ Four-step walkthrough in plain verbs:
 3. Send something.
 4. Done.
 
-"If they are offline" tiles: encrypted before it left / held briefly / many relays never one.
+“If they are offline” content must distinguish implemented transport behavior from design goals. Do not claim guaranteed seven-day retention, atomic deletion, volunteer-relay selection, or automatic failover without release-specific acceptance evidence.
 
-"If you want to hide your trail" section: three-hop private routing, with a code block showing wrap stages.
+“If you want to hide your trail” may describe the local three-hop onion primitive self-test. Daemon transport wiring remains deferred. Even when integrated, copy must say the design limits what any single relay learns, not promise full anonymity or defeat of a global observer.
+
+The update section must distinguish an availability/checksum check from
+publisher authentication and installation. Frozen desktop bundles disable
+automatic, silent, and in-place installation at the runtime boundary; replacing
+one is an explicit user or operator action. The current surface must never claim
+that auto-install is enabled by default or that a Settings control can enable it.
+A checksum obtained from the same mutable `auto-latest` channel can detect
+accidental corruption but does not prove who produced the bytes. Historical
+changelog text may record an earlier auto-install experiment only inside an
+explicitly scoped, superseded correction that also states the current frozen
+boundary. Until an immutable version and independently trusted signed manifest
+are verified, update copy must not use “verified,” “authenticated,” or “the
+bytes we signed.”
 
 "The math if you want it" — collapsible `.ol-proof` panel with the full crypto stack:
 
 ```
 identity              Ed25519 + ML-DSA-65 hybrid signature
-session keys          X25519 + ML-KEM-768 hybrid key exchange
+session keys          daemon/protocol design: X25519 + ML-KEM-768; website /api/session does not complete this exchange
 forward secrecy       Double Ratchet over the hybrid root
 per-chunk crypto      ChaCha20-Poly1305 AEAD, rekey every N chunks
 pairing verification  5-word SAS, Levenshtein-audited word list
@@ -863,23 +1029,23 @@ storage               ChunkRatchet at rest, Zeroize on drop
 
 ## 6.4 `/features/`
 
-The capability matrix. Honest comparison vs Signal / WhatsApp / iMessage / Telegram / AirDrop / Magic Wormhole. "Yes" only where the architecture itself guarantees it; policy promises don't count.
+The capability matrix is static, manually reviewed copy. It must use “implemented,” “local demo,” and “planned” per feature and cite an executable acceptance gate. The unsigned hard-coded `/api/capabilities` response is not proof that the daemon ships a feature.
 
 Categories:
 - For people: messages, files, calls, shared folders, pairing, devices-as-one.
 - For privacy: 3-hop routing, hardware-key TOFU, threshold recovery, field-bound binding, duress mode, confidential builds.
 
-Live badge: "live from /api/capabilities updated 2s ago". UI is ready for the dynamic fetch; today the matrix is static.
+Capability badge: “unsigned Worker-maintained list.” Do not label it “live from the daemon” until the Worker verifies an authenticated, fresh daemon advert and the matrix is actually derived from it.
 
 ## 6.5 `/security/`
 
 Honest threat model. Two columns:
 
 **What we defend against**:
-- Passive eavesdropping (PQ-hybrid keys defeat harvest-now-decrypt-later).
+- Passive eavesdropping on specifically identified E2EE paths. The website's browser-to-Worker session is not PQ-protected; do not generalize the local PQ self-test to network traffic.
 - Active impersonation (5-word SAS detects MITM).
-- Server compromise (no archive to steal).
-- Traffic analysis (optional 3-hop routing).
+- Server compromise: servers may hold ciphertext and metadata; the intended property is that they do not hold plaintext keys.
+- Traffic analysis: local onion primitive exists; daemon transport integration and global-observer resistance are not shipped.
 - Lost device (threshold recovery).
 - Coerced unlock (duress mode).
 
@@ -889,11 +1055,15 @@ Honest threat model. Two columns:
 - The other person leaking it.
 - Global passive adversaries on private mode (timing padding helps, doesn't perfect).
 
-**The receipts**: formal verification (TLA+ specs), constant-time crypto with 1M-iter soundness gate, nightly fuzz across 42 binaries, reproducible releases.
+**The receipts**: link each exact claim to current test output. No external audit, artifact-bound reproducibility result, or authenticated rolling release is currently published.
 
 ## 6.6 `/mesh/`
 
-Bigger mesh visualization. Hero count "You are one of N." Wide 21:9 canvas with peer dots + relay halos + visitor "you" marker.
+Bigger website-presence visualization. The hero count and peer dots represent
+connected browser sessions, not authenticated people, daemon nodes, or relays.
+The regional anchors and relay-style halos are illustrative, and the Worker
+topology response remains a non-authoritative status with null fields. No routing decisions or
+relay health are visualized.
 
 "What you are seeing" — explainer for the tau_c routing field. Code block showing the per-frame solver call.
 
@@ -909,7 +1079,7 @@ The covenant. What One Link is, what it is not, who is behind it (anyone who pic
 
 ## 6.9 `/privacy/` and `/terms/`
 
-Short, honest, one-page each. Privacy says "we collect nothing" five different ways. Terms says AGPL-3.0 + "we make no warranty."
+Short, precise, one-page each. Privacy inventories application state and infrastructure processing: Cloudflare request metadata, presence session id/approximate geo/timestamp, truncated-subnet rate state, R2 ciphertext, and redirected GitHub downloads. “No application accounts or analytics” is acceptable; “we collect nothing” is not.
 
 ## 6.10 `/404.html`
 
@@ -921,16 +1091,23 @@ Minimal. "Nothing here. Try the network." with home + download CTAs. Coherence f
 
 ## 7.1 What we collect
 
-**Nothing.** No email, no phone, no name, no analytics, no cookies, no tracking pixels, no fingerprinting, no third-party scripts. The Cloudflare Worker does not write a single thing about who visited or what they downloaded.
+The application has no account database, analytics integration, advertising,
+tracking pixels, or tracking cookies. That is not zero processing: Cloudflare
+receives request metadata, presence holds ephemeral pseudonymous session state,
+`ShareRate` persists a deterministic bucket identity plus rate state (normally
+/24- or /48-derived, with a raw-string fallback), R2 stores share ciphertext,
+and GitHub receives requests after artifact redirects.
 
 This is by construction, not by policy:
 
 - The Worker code (visible at [src/worker.js](src/worker.js)) has no `console.log(request)`, no analytics tap, no fetch to a third party.
 - The Service Worker (visible at [sw.js](dist/weareone-link.org/sw.js)) has no push API, no Periodic Background Sync, no message channel to a server.
-- The presence Durable Object holds opaque session ids only; it never sees IPs (CF terminates TLS; the DO receives WebSocket frames, not the underlying connection).
-- The HTML pages have zero third-party `<script src>` and zero third-party `<img src>`. SubResource Integrity hash verification by the Service Worker enforces this.
+- The presence session map holds a random id, socket, approximate client-supplied geo, and last-seen timestamp. The Worker forwards the original upgrade request to the Durable Object; do not claim the infrastructure never receives IP-bearing headers.
+- The reviewed HTML pages have no third-party `<script src>` or `<img src>`.
+  Worker CSP and the Service Worker's signed-manifest cache checks are separate
+  controls. A Service Worker manifest check is not browser Subresource Integrity.
 
-If a government asked us tomorrow who downloaded One Link, who paired with whom, or what was sent through the network, the honest answer is "we do not know and there is no way to find out."
+The application does not maintain an account-to-download or global pairing database. Infrastructure providers, artifact hosts, peers, and network observers may still hold or infer request and connection metadata; this document makes no impossibility claim.
 
 ## 7.2 What we defend against
 
@@ -943,9 +1120,9 @@ If a government asked us tomorrow who downloaded One Link, who paired with whom,
    |  on the wire         |  |   |  on the wire         |
    '----------------------'  |   '----------------------'
         |                    |        |
-        | sees ciphertext    |        | tries to ride the QR
-        | only (PQ-hybrid    |        | scan; gets caught by
-        | keys)              |        | 5-word SAS mismatch
+        | sees ciphertext on |        | tries to ride a real
+        | implemented E2EE   |        | device QR flow; local
+        | paths              |        | self-test is not proof
         v                    |        v
    .----------------------.  |   .----------------------.
    |   harvested now,     |  |   |   SAS comparison     |
@@ -965,7 +1142,8 @@ If a government asked us tomorrow who downloaded One Link, who paired with whom,
         | derive             |        |
         v                    |        v
    .----------------------.  |   .----------------------.
-   |  no archive to steal |  |   |  signed manifest is  |
+   | ciphertext + metadata|  |   |  signed site manifest|
+   | may still be exposed |  |   | checks site bytes only|
    '----------------------'  |   |  the trust anchor    |
                              |   '----------------------'
                              v
@@ -983,17 +1161,26 @@ We say this on /security/ explicitly.
 
 ## 7.4 Service Worker integrity model
 
-[sw.js](dist/weareone-link.org/sw.js), ~150 lines.
+[sw.js](dist/weareone-link.org/sw.js) implements the cache and manifest checks.
 
 **Three jobs**:
 
-1. **Offline-first**. Precaches every page on install (`PRECACHE_URLS`). Navigations are network-first with cache fallback; static assets are cache-first with integrity verification.
+1. **Offline support**. Precaches the configured core shell in `PRECACHE_URLS`;
+   secondary pages and WASM are cached on demand. Navigations are network-first
+   with cache fallback; static assets are cache-first with manifest verification
+   when a trusted manifest is available.
 
-2. **Signed manifest verification**. Reads [/manifest.json](dist/weareone-link.org/manifest.json) on install + on demand. Every cached asset's bytes are SHA-256-hashed and compared against the manifest entry before being served. Mismatch: evict, refetch, re-verify.
+2. **Signed site-manifest verification**. Reads [/manifest.json](dist/weareone-link.org/manifest.json) on install + on demand, verifies its Ed25519 signature against the public key pinned in the Service Worker, then compares each tracked cached asset's SHA-256 before serving it. Mismatch: evict, refetch, re-verify.
 
-3. **Cryptographic site integrity**. The verifier is in the same origin's Service Worker; it cannot be replaced from off-origin. A bit-flip in CacheStorage or a CDN-side substitution gets caught.
+3. **Cryptographic site-bundle integrity**. A valid manifest signature plus matching
+   asset hashes detects cache corruption and asset substitution relative to the
+   Service Worker's pinned key. The Service Worker and key are delivered by the
+   same origin, so this authenticates only relative to a key delivered and pinned
+   by that same-origin Service Worker. It is not an independent application-release
+   trust root and says nothing about downloadable application artifacts.
 
-**Future signing wire** (placeholder today):
+**Manifest schema (illustrative values; inspect the checked-in manifest for the
+current revision)**:
 
 ```json
 {
@@ -1005,23 +1192,34 @@ We say this on /security/ explicitly.
 }
 ```
 
-When the offline signing rig is provisioned: the pubkey gets pinned in `sw.js` as a constant, and the SW verifies the signature on every manifest fetch using WebCrypto's Ed25519 API. Rotations are chained through previous-key signatures.
+The public key is pinned in `sw.js`, and the Service Worker verifies each candidate
+manifest with WebCrypto Ed25519 before trusting its asset map. Key rotation is not
+implemented. Every asset mutation requires rehashing, re-signing, and a clean
+`scripts/verify-manifest.py` run before the bundle is releasable.
 
 ## 7.5 Headers
 
-The full pack, served on every response by the Worker plus baked into `_headers` (now removed; the Worker is the single source of truth for response headers) for Cloudflare static asset serving:
+The Worker applies this pack to routed responses and to its static-asset
+fallback. No `dist/weareone-link.org/_headers` file is checked in; Worker code is
+the response-header implementation for this deployment:
 
 ```
 Content-Security-Policy:
   default-src 'self';
-  script-src 'self' 'wasm-unsafe-eval';
-  style-src 'self' 'unsafe-inline';
-  img-src 'self' data:;
+  script-src 'self' 'wasm-unsafe-eval' <pinned speculation-rules SHA-256>;
+  style-src 'self';
+  img-src 'self' data: blob:;
   font-src 'self';
   connect-src 'self';
+  worker-src 'self';
+  manifest-src 'self';
+  media-src 'self' blob:;
+  object-src 'none';
   frame-ancestors 'none';
+  frame-src 'none';
   base-uri 'self';
-  form-action 'self'
+  form-action 'self';
+  upgrade-insecure-requests
 
 Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
 X-Content-Type-Options: nosniff
@@ -1032,12 +1230,34 @@ Permissions-Policy: camera=(), microphone=(), geolocation=(),
                     join-ad-interest-group=(), run-ad-auction=()
 Cross-Origin-Embedder-Policy: require-corp
 Cross-Origin-Opener-Policy: same-origin
-Cross-Origin-Resource-Policy: same-origin
+NEL: {"report_to":"","max_age":0,"success_fraction":0,"failure_fraction":0}
+Report-To: {"group":"","max_age":0,"endpoints":[]}
 ```
 
-**COEP: require-corp + COOP: same-origin** enables cross-origin isolation, which gates access to `SharedArrayBuffer` for future multi-thread WASM and gives the highest level of process isolation modern browsers offer.
+The Worker also sets `Access-Control-Allow-Origin: *` on non-HTML responses and
+removes it from HTML in `applyHeaders()`. The exact speculation-rules hash is
+kept in `src/worker.js`; the placeholder above avoids duplicating a volatile
+digest in this document.
 
-## 7.6 Robots and AI scrapers
+**COEP: require-corp + COOP: same-origin** establishes cross-origin isolation in
+compatible browsers when these headers are served, enabling `SharedArrayBuffer`
+for future multi-thread WASM.
+
+## 7.6 Browser SRI versus Service Worker manifest checks
+
+Subresource Integrity (SRI) is enforced by the browser from `integrity="sha384-..."`
+attributes on individual `<script>` and `<link>` tags. The separate
+[scripts/inject-sri.py](scripts/inject-sri.py) utility can add those attributes,
+but the current checked-in HTML has none and `scripts/rehash-manifest.py`
+intentionally skips SRI injection. SRI therefore is not a current bundle claim.
+
+The Service Worker instead verifies an Ed25519-signed same-origin manifest and
+then checks cached assets against that manifest's SHA-256 map. That covers
+tracked dynamic imports and WASM after the Service Worker is installed, but it
+has a different lifecycle and trust boundary from browser SRI. Neither mechanism
+is independent application-artifact signing.
+
+## 7.7 Robots and AI scrapers
 
 [robots.txt](dist/weareone-link.org/robots.txt) explicitly denies GPTBot, ClaudeBot, PerplexityBot, Google-Extended, anthropic-ai, Bytespider, CCBot. We have nothing to hide but we are not your training corpus.
 
@@ -1051,7 +1271,7 @@ The user wrote One Link's daemon in Rust + Python. They wrote the Coherence Lang
 
 ## 8.2 The SSG program
 
-[pipeline/ssg/src/one_link_build.cl](pipeline/ssg/src/one_link_build.cl), ~250 lines.
+[pipeline/ssg/src/one_link_build.cl](pipeline/ssg/src/one_link_build.cl).
 
 Module shape:
 
@@ -1076,7 +1296,8 @@ fn fold_in_page(rel_path: String, route: String, stamp: String) effects [Externa
 
 process main() -> Unit effects [ExternalIO] {
   // 1. write home programmatically composed -> dist/.../index.cl.html
-  // 2. for each of 10 other routes: fold in <meta x-emitted-by ...>
+  // 2. for each of 11 canonical routes, including index.html:
+  //    fold in <meta x-emitted-by ...>
   // 3. write .build-stamp and .provenance.json
 }
 ```
@@ -1090,7 +1311,8 @@ python tools/clc.py run   pipeline/ssg/src/one_link_build.cl
 
 Output:
 - `dist/.../index.cl.html` — programmatic home page sample.
-- All 11 HTML files get `<meta name="x-emitted-by" content="coherence-lang/1.0.3 one_link.ssg.build">` injected after `<head>`.
+- The 11 baseline canonical HTML routes, including `index.html`, are
+  provenance-folded with `<meta name="x-emitted-by" content="coherence-lang/1.0.3 one_link.ssg.build">` after `<head>`. Their page bodies remain hand-authored.
 - `.build-stamp` plain text.
 - `.provenance.json` auditable list of every route touched.
 
@@ -1134,12 +1356,16 @@ To use the system-wide `clc` command (PowerShell aliases `clc` to `Clear-Content
 
 ## 9.1 What we bind
 
-Four production crates from [`https://github.com/IamOneYouAreOneWeAreOne/one-link/tree/master/native/`](https://github.com/IamOneYouAreOneWeAreOne/one-link/tree/master/native/) are pulled by path-dependency into our wasm wrappers:
+Eight production crates from [`https://github.com/IamOneYouAreOneWeAreOne/one-link/tree/master/native/`](https://github.com/IamOneYouAreOneWeAreOne/one-link/tree/master/native/) are pulled by path-dependency into our WASM wrappers:
 
 | Wrapper | Production crate | Daemon role |
 |---|---|---|
 | `ol_pair_qr_wasm` | `ol_pair_qr` | Phase F2 in-person pairing |
 | `ol_pqkem_wasm` | `ol_pqkem` | ADR-0017 PQ-hybrid KEM |
+| `ol_pqsig_wasm` | `ol_pqsig` | Hybrid signature primitive |
+| `ol_threshold_recovery_wasm` | `ol_threshold_recovery` | Threshold recovery primitive |
+| `ol_ratchet_wasm` | `ol_ratchet` | Ratchet primitive |
+| `ol_hwkey_wasm` | `ol_hwkey` | Software TOFU demo surface |
 | `ol_onion_wasm` | `ol_onion` | Phase F3 Sphinx onion routing |
 | `ol_coherence_field_wasm` | `ol_coherence_field` | Phase E tau_c routing field |
 
@@ -1202,7 +1428,11 @@ python scripts/emit-wgsl.py
 python tools/clc.py run pipeline/ssg/src/one_link_build.cl
 
 # Recompute manifest hashes (whenever a tracked asset changes)
-# See §10.4 — this is currently manual. Helper script lands next push.
+python scripts/rehash-manifest.py
+# This bumps the website revision, updates cache-busting URLs and HTML hashes,
+# and invokes sign-manifest.py when the offline manifest key is present.
+# Then verify the exact bundle with scripts/verify-manifest.py. The result is a
+# same-origin pinned-key site-bundle check, not application-release signing.
 
 # Local dev
 wrangler dev --config wrangler.toml
@@ -1231,25 +1461,21 @@ The `[[routes]]` blocks in the wrangler.toml files are commented out so first-ti
 
 ## 10.4 Manifest hash recomputation
 
-Until automation lands, every push that touches a manifest-tracked asset needs a manual rehash:
+The repository includes [scripts/rehash-manifest.py](scripts/rehash-manifest.py).
+It discovers HTML, recomputes tracked hashes, bumps the `+rN` website revision,
+updates cache-busting URLs, rehashes the rewritten HTML, and invokes
+`scripts/sign-manifest.py` when the offline manifest key exists:
 
 ```bash
-cd dist/weareone-link.org
-for f in css/one-link.css css/immersive.css live/bridge.js \
-         live/wasm/ol_pair_qr.js live/wasm/ol_pair_qr_bg.wasm \
-         live/wasm/ol_pqkem.js   live/wasm/ol_pqkem_bg.wasm \
-         live/wasm/ol_onion.js   live/wasm/ol_onion_bg.wasm \
-         live/wasm/ol_coherence_field.js live/wasm/ol_coherence_field_bg.wasm \
-         live/shaders/coherence-field.wgsl images/favicon.svg \
-         sw.js index.html; do
-  h=$(sha256sum "$f" | awk '{print $1}')
-  echo "    \"/$f\": \"sha256-$h\","
-done
+python scripts/rehash-manifest.py
+python scripts/verify-manifest.py
 ```
 
-Paste the output into [manifest.json](dist/weareone-link.org/manifest.json). Bump `version` to `0.21.0-alpha.0+r<N+1>`.
-
-If `sw.js` itself changed, its hash also needs updating (chicken-and-egg: yes, the SW verifies its own integrity entry; CF does an initial fetch of the SW which sidesteps this).
+This is a release mutation, not a read-only check: it rewrites the manifest,
+`sw.js` version, and cache-busted HTML references. Its SRI-injection stage is
+currently disabled by design. Do not run it during an unrelated or docs-only
+change, and do not treat its same-origin manifest signature as independent
+application-release authentication.
 
 ## 10.5 DNS
 
@@ -1263,74 +1489,98 @@ For Tor onion mirror (future, §11): add a `.onion` v3 address, mirror `dist/` t
 
 # 11. Roadmap
 
-Ordering, not calendars. Each step requires the previous one.
+This is a reviewed status ledger, not a release promise. "Implemented" means the
+named code path exists and is directly testable; it does not imply a production
+security audit, release attestation, operational SLO, or end-to-end deployment.
 
-## 11.1 Shipped (verifiable today)
+## 11.1 Implemented or locally demonstrable
 
-1. Static dist/ with 11 routes in the "we are one" voice.
-2. Two Cloudflare Workers (`.org` + `.com` redirect).
-3. Worker endpoints: /api/health, /api/capabilities, /api/topology, /api/session, /api/attest, /api/presence (WS), /native, /download/:os.
-4. `MeshPresence` Durable Object: real other visitors visible in real time, anonymous, ephemeral, zero PII.
-5. `.cl` SSG owning provenance on every page (11 routes).
-6. WGSL coherence-field shader emitted by `coherence_lang.codegen.wgsl_emitter`.
-7. Four WASM crates: ol_pair_qr (250 KB), ol_pqkem (191 KB), ol_onion (161 KB), ol_coherence_field (77 KB). Total 700 KB.
-8. Immersive home page with full-bleed WebGPU compute pipeline, word-rise hero, click-pulse, mouse-reactive ripples.
-9. Live peer-dots overlay with click-to-ping (real anonymous human-to-human interaction).
-10. Service Worker offline-first with signed-manifest hash verification.
-11. Reproducible-build attestation chain schema + sample document.
-12. Privacy headers including COEP + COOP for cross-origin isolation.
+1. Static `dist/` routes and the `.org` Worker, plus the `.com` redirect Worker.
+2. Worker routes for health, presence, encrypted share storage, downloads, and the
+   currently limited capability, topology, session, attestation, and native APIs
+   documented in §§3.2-3.5.
+3. `MeshPresence` real-time pseudonymous browser sessions and click-to-chat. The
+   application state omits account identity and full IP addresses; Cloudflare still
+   processes request metadata, and the browser supplies approximate region data.
+4. Browser-local WASM primitive demonstrations for pairing, ML-KEM, signatures,
+   threshold recovery, ratcheting, TOFU, onion wrapping, and the coherence field.
+   These demonstrations are not evidence that those primitives protect a current
+   browser-to-Worker or browser-to-device transport.
+5. WebGPU/2D coherence-field visuals and the emitted WGSL shader.
+6. Service Worker offline caching with asset hashes checked against the fetched
+   site manifest. This is site-bundle integrity checking, not publisher-signed
+   release authentication.
+7. Release-attestation schema fixtures. They are test material, not proof for a
+   rolling download artifact.
+8. Browser-encrypted URL-fragment sharing with the storage, expiry, deletion, and
+   rate-limit caveats in §3.2.3.
+9. Response security headers, including COEP and COOP where configured.
 
-## 11.2 Next push (dependency-ordered)
+## 11.2 Required production closure (dependency-ordered)
 
-Items 1-7 from earlier revisions have all SHIPPED. New "next push" set, dependency-ordered:
+1. Complete `/api/session`: authenticate the server key material, accept client
+   key material, perform the advertised X25519/ML-KEM exchange, derive traffic
+   keys, bind the transcript, and prove failure behavior with interop tests.
+2. Replace the unsigned hard-coded `/api/capabilities` response and unavailable,
+   non-authoritative `/api/topology` status with authenticated, fresh daemon/relay data
+   and tested stale-data/fallback behavior.
+3. Replace `/native` and `NativeSession` stubs with a real, authenticated,
+   flow-controlled native transport and measurable fallback behavior.
+4. Harden encrypted sharing with an atomic consume policy if one-time semantics are
+   advertised, scheduled expiry cleanup, verified deletion, abuse controls,
+   observability, and retention acceptance tests.
+5. Publish immutable versioned artifacts, an independently trusted signed update
+   manifest, platform code signing, artifact-bound attestations, SBOM/provenance,
+   and reproducible-build evidence before enabling or advertising authenticated
+   automatic updates.
+6. Exercise pairing across two independent devices with camera/manual transfer,
+   a real transport, transcript binding, human SAS comparison, cancellation, and
+   adversarial MITM/replay tests.
+7. Integrate onion routing into an actual transport/download path and document its
+   measured threat-model limits; the local wrap/peel self-test alone is insufficient.
+8. Finish SiteWorld-driven programmatic page composition and prove deterministic
+   generation for every route.
 
-1. **Real `/api/session` hybrid handshake (WASM-in-Worker)**: replace the stub. Compile `ol_pqkem` for the Cloudflare Workers runtime, expose server X25519 + ML-KEM-768 pubkeys at `/api/session`, browser already has the WASM for the other half. Flips the `signed: false` flag in the capability advert.
-2. ~~**Double Ratchet forward-secrecy demo** via new `ol_ratchet` WASM.~~ **SHIPPED r26** (`ol_ratchet_wasm` + /security/ "walk the ratchet six steps").
-3. ~~**Hardware-key TOFU recognition** via new `ol_hwkey` WASM.~~ **SHIPPED r27** (`ol_hwkey_wasm` TofuStore + /security/ "mint or recognize this device"). Software-fallback TOFU; hardware backends (Secure Enclave / StrongBox / TPM) remain daemon-only.
-4. **Live relay registry** in `RELAY_KV`: real (anonymized) node counts replace the topology stub. `/api/topology` returns actual aggregated data from the running One Link demo daemon.
-5. **Real attestation chain documents** for the current Windows release: replace the sample attestation with a real one minted from the offline build rig + `ol_pqsig` hybrid signature over the artifact hash.
-6. **Mesh-page WGSL coloring** beyond steady-state: animate the τ_c field with each new peer joining (uses the existing `solveSteadyHelmholtz` already wired).
-7. **`/download/` private-mode toggle wiring**: when the toggle is on, the download itself routes through `ol_onion` (not just the demo button). Today the button is a preview; the actual download path goes direct.
+## 11.3 Later product goals
 
-## 11.3 Later
-
-1. **WebTransport real download** through `/native` once Cloudflare Workers' WT support is stable. The progress bar shows real protocol state, chunks animate flying through the field.
-2. **Bruno-Simon-tier 3D scene**: true 3D geometry + lighting + camera. The current "immersive 2D with real physics" gets a depth axis.
-3. **Tor onion mirror** with cross-consistency proof. Visitors at `.onion` see "you are reading the same content as .org" with a SHA match.
-4. **Release relay daemon** so `/api/topology` returns real node positions and downloads stream via real native protocol.
-5. **Compile more daemon crates to WASM**: `ol_pqsig`, `ol_threshold_recovery`, `ol_hwkey`, `ol_ratchet`.
-6. **Self-rebuild button**: "Rebuild this site from source" kicks a CI run, attestation streams to your browser, final hash matches what you are viewing.
-7. **Website ships INSIDE the product**: install One Link, it serves this site at `localhost`. If `.org` goes dark forever, your installed copy still works.
-8. **Hardware-key TOFU recognition** via `ol_hwkey`. Same device, recognized; zero server identifier.
-9. **Full programmatic .cl SSG**: replace the fold-in pattern with SiteWorld-node-driven page composition.
+1. A measured native/WebTransport download path once the selected deployment
+   platform supports the required semantics.
+2. A richer 3D coherence-field scene, with accessibility and performance budgets.
+3. A Tor onion mirror with independently verifiable cross-consistency evidence.
+4. A self-rebuild experience backed by a reproducible, isolated build pipeline.
+5. A locally bundled website UI whose offline guarantees explicitly exclude any
+   Worker, relay, rendezvous, update, or artifact-host service it cannot provide.
+6. Hardware-backed device keys with explicit platform fallback and migration rules.
 
 ---
 
 # 12. Claim-and-evidence ledger
 
-Every alien-tech claim made on the public surface, mapped to the code that backs it. **If a claim appears on a page and is not in this ledger, the claim is unverified and should be removed or backed.**
+Reviewed alien-tech claims are mapped below to the code that backs them. This is
+not presumed exhaustive: **if a claim appears on a page and is not in this
+ledger, the claim is unverified and should be removed or backed.**
 
 | Claim on site | Backing code | How to verify |
 |---|---|---|
-| "No accounts. Ever." | [src/worker.js](src/worker.js) (no auth endpoints) | Grep the worker for `login`, `signup`, `account` — zero hits. |
-| "No tracking, no analytics, no cookies." | [src/worker.js](src/worker.js), [sw.js](dist/weareone-link.org/sw.js) | Grep worker + SW for `Set-Cookie`, `analytics`, `track` — zero hits. Open DevTools → Application → Cookies/Storage — empty. |
-| "Real handshake right here" (pair card) | [live/wasm/ol_pair_qr_wasm/src/lib.rs](live/wasm/ol_pair_qr_wasm/src/lib.rs) → `liveDemoRoundTrip` | DevTools → Network → see `ol_pair_qr_bg.wasm` load. Console: `await import('/live/wasm/ol_pair_qr.js').then(m => m.default('/live/wasm/ol_pair_qr_bg.wasm')).then(()=>{}); ` |
-| "PQ session" badge | [live/wasm/ol_pqkem_wasm/src/lib.rs](live/wasm/ol_pqkem_wasm/src/lib.rs) → `liveDemoRoundTrip` | Page load: status pill ticks "deriving" → "verified". Match means `alice_ss == bob_ss` bytewise. |
-| "X25519 + ML-KEM-768 hybrid" | [ol_pqkem](https://github.com/IamOneYouAreOneWeAreOne/one-link/tree/master/native/ol_pqkem) (production daemon crate) | The wasm wrapper has `ol_pqkem = { path = "..." }`. Daemon and browser run the same code. |
+| "No application accounts" | [src/worker.js](src/worker.js) (no account routes) | Review the Worker route table and browser storage use. This claim is scoped to the website application; it says nothing about infrastructure-provider accounts or request logs. |
+| "No first-party analytics, ads, tracking cookies, or profiling" | [src/worker.js](src/worker.js), [sw.js](dist/weareone-link.org/sw.js) | Review response headers, scripts, storage, and outbound requests. Cloudflare and artifact hosts still process ordinary connection/request metadata as disclosed in §§6.4-6.5. |
+| "Pairing primitive self-test" | [live/wasm/ol_pair_qr_wasm/src/lib.rs](live/wasm/ol_pair_qr_wasm/src/lib.rs) → `liveDemoRoundTrip` | Confirm `ol_pair_qr_bg.wasm` loads and the same-tab inviter/scanner round trip passes. This does not test a camera, second device, device transport, or human SAS comparison. |
+| "Local PQ primitive self-test" | [live/wasm/ol_pqkem_wasm/src/lib.rs](live/wasm/ol_pqkem_wasm/src/lib.rs) → `liveDemoRoundTrip` | Confirm the browser-local encapsulation/decapsulation result matches. `/api/session` is a separate registration/X25519-advertisement path and does not establish an ML-KEM session. |
+| "X25519 + ML-KEM-768 hybrid" | [ol_pqkem](https://github.com/IamOneYouAreOneWeAreOne/one-link/tree/master/native/ol_pqkem) and the local WASM wrapper | Verify the primitive implementation and its unit/self-tests. Do not infer that the current website session, Worker, download, share, or presence traffic uses the hybrid exchange. |
 | "Ed25519 + ML-DSA-65 hybrid signatures" | [ol_pqsig](https://github.com/IamOneYouAreOneWeAreOne/one-link/tree/master/native/ol_pqsig) + [ol_pqsig_wasm](live/wasm/ol_pqsig_wasm/) | Visit `/security/` → click "Sign a message with Ed25519 + ML-DSA-65". DevTools → Network → see `ol_pqsig_bg.wasm` load (257 KB). Output shows fresh 1984-byte hybrid pubkey + 3373-byte hybrid signature + verify-clean + reject-tampered-msg + reject-tampered-PQ-half. |
 | "Threshold recovery splits your identity across friends" | [ol_threshold_recovery](https://github.com/IamOneYouAreOneWeAreOne/one-link/tree/master/native/ol_threshold_recovery) + [ol_threshold_recovery_wasm](live/wasm/ol_threshold_recovery_wasm/) | Visit `/security/` → click "Split and recover a secret with 3-of-5 Shamir". Generates fresh 32-byte secret, splits into 5 shares, recovers from any 3, refuses with only 2. Real Shamir over GF(2^8). |
-| "Every message gets a fresh key. Forward secrecy." | [ol_ratchet](https://github.com/IamOneYouAreOneWeAreOne/one-link/tree/master/native/ol_ratchet) + [ol_ratchet_wasm](live/wasm/ol_ratchet_wasm/) | Visit `/security/` → click "Walk the ratchet six steps". Generates fresh chain key, derives 6 sequential message keys (all 32 bytes, all distinct), proves rewind refusal + skip-cap (MAX_SKIP_STEPS = 65,536 DoS guard). |
-| "Your device is recognized without us knowing who you are." | [ol_hwkey](https://github.com/IamOneYouAreOneWeAreOne/one-link/tree/master/native/ol_hwkey) (TofuStore) + [ol_hwkey_wasm](live/wasm/ol_hwkey_wasm/) | Visit `/security/` → click "Mint or recognize this device". First visit mints a 32-byte device root in localStorage; subsequent visits recognize it via deterministic BLAKE3 derivation. Attempted impersonation with random key gets rejected via constant-time `subtle::ConstantTimeEq`. |
-| "Sphinx Coherence onion routing" | [ol_onion](https://github.com/IamOneYouAreOneWeAreOne/one-link/tree/master/native/ol_onion) | `ol_onion_wasm.liveDemoRoundTrip(payload)` runs real 3-hop wrap+peel. |
+| "Local ratchet primitive self-test" | [ol_ratchet](https://github.com/IamOneYouAreOneWeAreOne/one-link/tree/master/native/ol_ratchet) + [ol_ratchet_wasm](live/wasm/ol_ratchet_wasm/) | Run the `/security/` six-step demonstration and its rewind/skip-cap checks. This does not prove that current website messages or transfers use the ratchet. |
+| "Local software TOFU self-test" | [ol_hwkey](https://github.com/IamOneYouAreOneWeAreOne/one-link/tree/master/native/ol_hwkey) (TofuStore) + [ol_hwkey_wasm](live/wasm/ol_hwkey_wasm/) | Run the `/security/` mint/recognize demonstration and inspect its `localStorage` state. It is not hardware-backed identity and does not prove server unlinkability. |
+| "Sphinx Coherence onion primitive self-test" | [ol_onion](https://github.com/IamOneYouAreOneWeAreOne/one-link/tree/master/native/ol_onion) | `ol_onion_wasm.liveDemoRoundTrip(payload)` exercises local three-hop wrap/peel. The website transport and download path are not wired through it. |
 | "Real Helmholtz physics on GPU" | [scripts/emit-wgsl.py](scripts/emit-wgsl.py) → coherence_lang wgsl_emitter | The shader at /live/shaders/coherence-field.wgsl has `coh_oscillator_force`, `coh_tau`, real PDE solver compute pass. |
 | "10,000 peers in 1.08 ms" | [ol_coherence_field](https://github.com/IamOneYouAreOneWeAreOne/one-link/tree/master/native/ol_coherence_field) benchmark output | Cited from daemon benches. Browser runs the same solver via `ol_coherence_field_wasm`. |
-| "5-word SAS, Levenshtein-audited word list" | [ol_pair_qr::sas](https://github.com/IamOneYouAreOneWeAreOne/one-link/tree/master/native/ol_pair_qr/src/sas.rs) | 30-bit entropy, 64-word dictionary, deterministic from transcript hash. |
-| "Live N here right now" | [src/worker.js](src/worker.js) `MeshPresence` DO + [live/bridge.js](dist/weareone-link.org/live/bridge.js) presence client | Open two browser windows; count ticks to 2. |
-| "Anonymous ping between strangers" | Same as above + `sendPing` in [live/bridge.js](dist/weareone-link.org/live/bridge.js) | Two windows; click each other's dots; both see flash. |
-| "Site verified" badge | [sw.js](dist/weareone-link.org/sw.js) `verifyAgainstManifest` | DevTools → Application → Service Workers → confirm active. Modify a cached asset byte; SW evicts. |
-| "Signed twice" (downloads) | [dist/.../attestations/<sha>.json](dist/weareone-link.org/attestations/) schema | Open the JSON, see Ed25519 + ML-DSA-65 entries (placeholders today). |
-| "Reproducible builds" | attestation schema `build.reproducible: true` | Currently `true` in schema; will be verifiable once the offline build rig is provisioned. |
-| "If we vanish tomorrow, your One Link still works" | Service Worker precache + AGPL source | After one visit, disable network → site renders from cache. Daemon doesn't depend on this site. |
+| "5-word SAS primitive" | [ol_pair_qr::sas](https://github.com/IamOneYouAreOneWeAreOne/one-link/tree/master/native/ol_pair_qr/src/sas.rs) | Verify the 30-bit, 64-word deterministic transcript mapping. The same-tab card does not prove that two humans compared the words. |
+| "Live N browser sessions here right now" | [src/worker.js](src/worker.js) `MeshPresence` DO + [live/bridge.js](dist/weareone-link.org/live/bridge.js) presence client | Open two browser windows and confirm the connected-session count changes. It is not a count of authenticated people or network nodes. |
+| "Pseudonymous chat between connected browser sessions" | Same as above + the `chat-*` relay path in [live/bridge.js](dist/weareone-link.org/live/bridge.js) and [src/worker.js](src/worker.js) | Use two windows and click their rotating peer dots. Confirm the invite/accept/confirm flow and encrypted message relay. This does not prove durable peer identity, a required out-of-band SAS comparison, or network anonymity. |
+| "Site bundle checked" badge | [sw.js](dist/weareone-link.org/sw.js) `verifyAgainstManifest` | Confirm the Service Worker verifies the manifest against its same-origin pinned key, checks cached bytes, and evicts mismatches. This trust scope is not an independent application-release root and does not authenticate downloadable artifacts. |
+| "Signed twice" (downloads) | No current artifact-bound proof | Prohibited for the rolling downloads until an immutable artifact has verified Ed25519 and ML-DSA-65 signatures rooted in independently trusted release metadata. Schema fixtures are not evidence. |
+| "Reproducible builds" | independent rebuild evidence + artifact-bound attestation | Deferred. A schema field or stated intent is not verification. |
+| "The previously cached static site may render offline" | Service Worker precache | After one complete visit, disable the network and test cached routes. This does not preserve Worker APIs, presence, relays, rendezvous, updates, artifact hosting, or any other unavailable service. |
 
 ---
 
@@ -1338,15 +1588,19 @@ Every alien-tech claim made on the public surface, mapped to the code that backs
 
 Major architectural decisions, why we made them, what the alternative was.
 
-## ADR-001: Hand-write some dist/ HTML; .cl SSG owns provenance
+## ADR-001: Hand-author canonical HTML; .cl emits a sample and folds provenance
 
 **Context**: Earlier pushes hand-wrote 11 HTML files; the `.cl` SSG existed in scaffold only. User called this out; we corrected.
 
-**Decision**: Phase 1 of the .cl SSG programmatically composes the home page AND folds provenance into the other 10 routes. Phase 2+ moves to full programmatic composition.
+**Decision**: Phase 1 programmatically composes the separate `index.cl.html`
+sample. It folds provenance into all 11 hand-authored canonical baseline routes,
+including `index.html`. Phase 2+ moves canonical pages to full programmatic
+composition.
 
 **Alternative considered**: Throw away the hand-written HTML and regenerate from scratch programmatically. Rejected because the hand-written content is good and rewriting it as `.cl` strings before tooling matures is busywork.
 
-**Status**: shipped. Phase 2 in §11.2.
+**Status**: partial. The sample and provenance fold exist; canonical page
+composition remains in §11.2.
 
 ## ADR-002: WGSL via emit_coherence_field_shaders, not from .cl source
 
@@ -1392,7 +1646,7 @@ Major architectural decisions, why we made them, what the alternative was.
 
 **Context**: wasm-bindgen-cli and the wasm-bindgen library MUST be the same version. The CLI installed on the dev machine is 0.2.95; cargo by default resolves the library to the latest minor.
 
-**Decision**: Each wrapper crate pins `wasm-bindgen = "=0.2.95"` exactly. Lockstep upgrade procedure documented in §5.5.
+**Decision**: Each wrapper crate pins `wasm-bindgen = "=0.2.95"` exactly. Lockstep upgrade procedure documented in §5.6.
 
 **Alternative**: Let cargo resolve and update the CLI to match. Rejected because then a contributor with an older CLI gets surprise mismatch errors.
 
@@ -1473,7 +1727,8 @@ Fix: use plain `effects [ExternalIO]` and rely on the effect-system inference fo
 
 # Appendix A. File inventory
 
-Every file in the repo. Purpose, owner, regenerable Y/N.
+Selected architecture inventory. This is not an exhaustive file listing; use
+`rg --files` for the working tree.
 
 ```
 README.md                          Public README. Manual.
@@ -1487,11 +1742,13 @@ clc.cmd                            Windows shim for python tools/clc.py. Manual.
 clc.ps1                            PowerShell variant. Manual.
 tools/clc.py                       Resolves coherence_lang path + dispatches. Manual.
 
-src/worker.js                      .org main Worker. Manual. ~479 lines.
-src/redirect.js                    .com 301 worker. Manual. ~11 lines.
+src/worker.js                      .org main Worker. Manual.
+src/redirect.js                    .com 301 worker. Manual.
 
-scripts/build-wasm.sh              Compiles + bindgens all 4 wasm crates. Manual.
+scripts/build-wasm.sh              Compiles + bindgens all 8 WASM crates. Manual.
 scripts/emit-wgsl.py               Calls wgsl_emitter, writes coherence-field.wgsl. Manual.
+scripts/rehash-manifest.py         Rehashes/version-bumps/cache-busts and invokes signer. Manual release mutation.
+scripts/inject-sri.py              Optional browser-SRI injector; not called by current rehash path.
 
 pipeline/ssg/src/one_link_build.cl  The .cl SSG. Manual.
 pipeline/ssg/src/build.cl           Forked from CEL. Reference. Not run.
@@ -1510,6 +1767,10 @@ legal/                              Empty placeholder.
 live/wasm/Cargo.toml               Wrapper workspace root. Manual.
 live/wasm/ol_pair_qr_wasm/         Wrapper crate. Manual.
 live/wasm/ol_pqkem_wasm/           Wrapper crate. Manual.
+live/wasm/ol_pqsig_wasm/           Wrapper crate. Manual.
+live/wasm/ol_threshold_recovery_wasm/ Wrapper crate. Manual.
+live/wasm/ol_ratchet_wasm/         Wrapper crate. Manual.
+live/wasm/ol_hwkey_wasm/           Wrapper crate. Manual.
 live/wasm/ol_onion_wasm/           Wrapper crate. Manual.
 live/wasm/ol_coherence_field_wasm/ Wrapper crate. Manual.
 live/wasm/target/                  Cargo build dir. Regenerable.
@@ -1517,17 +1778,16 @@ live/wasm/target/                  Cargo build dir. Regenerable.
 attestations/                      Empty placeholder for source attestations.
 
 dist/weareone-link.org/
-  index.html                       SSG output (Phase 1 fold-in). Regenerable.
+  index.html                       Hand-authored canonical page; SSG provenance fold-in.
   index.cl.html                    SSG programmatic sample. Regenerable.
-  <route>/index.html               SSG fold-in for 10 routes. Regenerable from current content.
+  <route>/index.html               Hand-authored canonical pages; SSG provenance fold-in.
   manifest.json                    Signed asset manifest. Recomputed by §10.4.
   sitemap.xml                      Manual.
   robots.txt                       Manual.
   feed.xml                         Manual; future SSG generator.
-  _headers                         Manual.
   css/one-link.css                 Manual.
   css/immersive.css                Manual (home-only).
-  live/bridge.js                   Manual. ~1100 lines vanilla ES.
+  live/bridge.js                   Manual vanilla ES module.
   live/shaders/coherence-field.wgsl  Emitted by wgsl_emitter. Regenerable.
   live/wasm/*.{js,wasm}            Emitted by wasm-bindgen. Regenerable.
   images/favicon.svg               Manual.
@@ -1565,6 +1825,10 @@ class_name = "NativeSession"
 name = "PRESENCE"
 class_name = "MeshPresence"
 
+[[durable_objects.bindings]]
+name = "SHARE_RATE"
+class_name = "ShareRate"
+
 [[migrations]]
 tag = "v1"
 new_classes = ["NativeSession"]
@@ -1573,24 +1837,22 @@ new_classes = ["NativeSession"]
 tag = "v2"
 new_classes = ["MeshPresence"]
 
+[[migrations]]
+tag = "v3"
+new_classes = ["ShareRate"]
+
 [[r2_buckets]]
 binding = "RELEASES"
 bucket_name = "one-link-releases"
 
-[[r2_buckets]]
-binding = "ATTESTATIONS"
-bucket_name = "one-link-attestations"
-
-[[kv_namespaces]]
-binding = "RELAY_KV"
-id = "REPLACE_WITH_REAL_KV_ID"
+# ATTESTATIONS and RELAY_KV are intentionally commented out until provisioned.
+# The attestation route remains fail-closed, and topology remains synthetic.
 
 [vars]
-SITE_DOMAIN              = "weareone-link.org"
-CANONICAL_ORIGIN         = "https://weareone-link.org"
-RELEASE_RELAY_PUBKEY_HEX = "REPLACE_WITH_RELAY_ED25519_PUBKEY"
-PROTOCOL_VERSION         = "1"
-NATIVE_TRANSFER_CAP      = "NATIVE_TRANSFER_V1"
+SITE_DOMAIN         = "weareone-link.org"
+CANONICAL_ORIGIN    = "https://weareone-link.org"
+PROTOCOL_VERSION    = "1"
+NATIVE_TRANSFER_CAP = "NATIVE_TRANSFER_V1"
 ```
 
 [wrangler.com.toml](wrangler.com.toml) (.com redirect):
@@ -1695,7 +1957,7 @@ CANONICAL_ORIGIN = "https://weareone-link.org"
 - **CoherenceField / coherence-field**: The damped Helmholtz oscillator field used by One Link's routing layer to make tau_c decisions. Implemented in `ol_coherence_field`.
 - **CSR**: Compressed Sparse Row. The graph-Laplacian storage layout used by `ol_coherence_field` for cache-friendly matvec.
 - **Double Ratchet**: Signal-style forward-secret message keying. One Link runs Double Ratchet over the PQ-hybrid root from ol_pqkem.
-- **Durable Object (DO)**: Cloudflare's primitive for stateful single-instance compute. Used here for `MeshPresence` and `NativeSession`.
+- **Durable Object (DO)**: Cloudflare's primitive for stateful single-instance compute. Used here for load-bearing `MeshPresence` and `ShareRate` classes plus the currently stubbed `NativeSession` class.
 - **Ed25519**: Classical-curve signature scheme. One of two halves of the One Link hybrid signature stack.
 - **Field witness**: A short hash of the local tau_c field state, mixed into onion-hop key derivation to bind a hop to the physical-environment context.
 - **GraphLaplacian**: The discrete Laplacian `L = D - A` of a peer graph. Eigenvectors are the modal basis the field expands into.
@@ -1712,12 +1974,12 @@ CANONICAL_ORIGIN = "https://weareone-link.org"
 - **PairConfirm**: The Inviter's final signed message after the user confirms the SAS.
 - **PIR**: Private Information Retrieval (not used today; mentioned in some daemon roadmap docs).
 - **Pippenger MSM**: Multi-scalar multiplication algorithm used by ol_onion for batch Schnorr signature verification.
-- **Provenance meta**: The `<meta name="x-emitted-by" content="coherence-lang/1.0.3 one_link.ssg.build">` tag the .cl SSG injects into every page.
+- **Provenance meta**: The `<meta name="x-emitted-by" content="coherence-lang/1.0.3 one_link.ssg.build">` tag the .cl SSG folds into the 11 baseline canonical routes. It proves that the SSG touched the file, not that it generated the page body.
 - **R2**: Cloudflare's S3-compatible object store.
 - **Ristretto255**: Prime-order group built on Curve25519, used by Sphinx for blinded point operations.
 - **SAS (Short Authentication String)**: 30-bit value derived from the pair-by-QR transcript, rendered as 5 words. Users compare verbally; mismatch reveals a MITM.
 - **Schnorr aggregation**: Schnorr signature scheme variant that allows N signatures over the same message to be combined into one verifiable aggregate. Used by ol_onion::aggsig.
-- **Service Worker (SW)**: Browser-native background script that intercepts fetches. Here used for offline-first caching + signed-manifest integrity verification.
+- **Service Worker (SW)**: Browser-native background script that intercepts fetches. Here used for core-shell caching, on-demand cache fallback, and same-origin signed-manifest verification.
 - **SiteWorld**: The typed content graph model (nodes/edges/lenses/tours) shared with CEL. Phase-2 of our SSG will use it.
 - **Sphinx Coherence**: One Link's onion-routing construction. Standard Sphinx (Ristretto255 + filler bytes Nymtech-pattern) plus PQ-hybrid blinding (ML-KEM-768 mix-in at first hop) plus field-witness binding (tau_c snapshot in hop keyderiv).
 - **Tau_c (τ_c)**: The local "coherence time" scalar at a node, derived from the local field state. Drives routing decisions.

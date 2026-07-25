@@ -1,5 +1,6 @@
 name = "weareone-link-org"
-compatibility_date = "2024-12-01"
+compatibility_date = "2026-07-22"
+compatibility_flags = ["nodejs_compat"]
 main = "src/worker.js"
 
 # Primary public site: weareone-link.org
@@ -33,6 +34,10 @@ class_name = "MeshPresence"
 name = "SHARE_RATE"
 class_name = "ShareRate"
 
+[[durable_objects.bindings]]
+name = "SHARE_OBJECTS"
+class_name = "ShareObject"
+
 [[migrations]]
 tag = "v1"
 new_classes = ["NativeSession"]
@@ -44,6 +49,20 @@ new_classes = ["MeshPresence"]
 [[migrations]]
 tag = "v3"
 new_classes = ["ShareRate"]
+
+[[migrations]]
+tag = "v4"
+new_sqlite_classes = ["ShareObject"]
+
+[observability]
+enabled = true
+
+[observability.logs]
+head_sampling_rate = 1
+
+[observability.traces]
+enabled = true
+head_sampling_rate = 0.01
 
 # =============================================================================
 # R2 BUCKETS  (uncomment after you create them in the Cloudflare dashboard)
@@ -95,3 +114,11 @@ SITE_DOMAIN         = "weareone-link.org"
 CANONICAL_ORIGIN    = "https://weareone-link.org"
 PROTOCOL_VERSION    = "1"
 NATIVE_TRANSFER_CAP = "NATIVE_TRANSFER_V1"
+
+# Release promotion is fail-closed and intentionally inactive today.
+# Keep downloads on the explicitly labelled rolling ``auto-latest`` channel
+# until an immutable version has artifact-bound hashes, signatures, SBOM, and
+# provenance. At that point set the exact tag and enable attestations only
+# after matching documents have been uploaded to the ATTESTATIONS R2 binding:
+# VERSIONED_RELEASE_TAG       = "v1.0.0"
+# RELEASE_ATTESTATIONS_READY  = "true"

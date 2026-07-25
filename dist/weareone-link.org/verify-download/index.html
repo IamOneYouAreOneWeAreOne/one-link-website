@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Verify your download - One Link</title>
-  <meta name="description" content="Drop your downloaded One Link binary into your tab. Your browser hashes it locally and compares against the live signed value. The file never leaves your device.">
+  <title>Hash a download locally - One Link</title>
+  <meta name="description" content="Compute a One Link artifact SHA-256 locally and see whether an authenticated reference is actually available.">
   <link rel="canonical" href="https://weareone-link.org/verify-download/">
   <link rel="alternate" hreflang="en" href="https://weareone-link.org/verify-download/">
   <link rel="alternate" hreflang="es" href="https://weareone-link.org/es/verify-download/">
@@ -19,12 +19,12 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="One Link">
   <meta property="og:title" content="Verify your download - One Link">
-  <meta property="og:description" content="Hash the binary in your browser. The file never leaves your tab.">
+  <meta property="og:description" content="Compute a One Link artifact SHA-256 locally and see whether an authenticated reference is actually available.">
   <meta property="og:url" content="https://weareone-link.org/verify-download/">
   <meta property="og:image" content="https://weareone-link.org/og/one-link.png">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Verify your download - One Link">
-  <meta name="twitter:description" content="Hash the binary in your browser. The file never leaves your tab.">
+  <meta name="twitter:description" content="Compute a One Link artifact SHA-256 locally and see whether an authenticated reference is actually available.">
   <meta name="twitter:image" content="https://weareone-link.org/og/one-link.png">
   <link rel="icon" type="image/x-icon" href="/images/favicon.ico"><link rel="icon" type="image/png" sizes="128x128" href="/images/logo-128.png"><link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
   <link rel="manifest" href="/app.webmanifest">
@@ -32,9 +32,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r95">
-  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r95">
-  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r95">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r97">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r97">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r97">
 </head>
 <body>
 <a href="#main" class="skip-link">Skip to content</a>
@@ -56,34 +56,27 @@
 <main id="main">
   <section class="hero ol-pb-sm">
     <div class="container">
-      <span class="we-are-one">Verify your download</span>
-      <h1>Hash the binary <span class="grad">in your browser.</span></h1>
-      <p class="lede">Drop your downloaded One Link file into the box. Your browser computes the SHA-256 locally with Web Crypto. The file never leaves your device. We then fetch the live signed value from the release relay and compare. Match means the binary is byte-for-byte what we shipped.</p>
+      <span class="we-are-one">Local checksum tool</span>
+      <h1>Hash the file in your browser.</h1>
+      <p class="lede">Your browser computes SHA-256 locally. The file never leaves your device. The result is only an authenticated verification when a separate, artifact-bound signed reference is available. The current rolling channel does not publish one.</p>
     </div>
   </section>
-
   <section class="section-tight">
-    <div class="container ol-mw-680">
+    <div class="container">
       <label for="ol-verify-file" class="ol-verify-drop" id="ol-verify-drop">
         <p class="ol-verify-drop-headline">Drop your file here, or click to choose.</p>
-        <p class="ol-verify-drop-sub">Works on every download we ship — .exe installers, .dmg disk images, .AppImage single-files, portable .zip bundles, source archives. Browser-side only; nothing is uploaded.</p>
-        <input type="file" id="ol-verify-file" accept="*/*">
+        <p class="ol-verify-drop-sub">The file stays in this tab. No upload occurs.</p>
+        <input type="file" id="ol-verify-file" class="ol-visually-hidden">
       </label>
-
-      <div class="ol-verify-result" id="ol-verify-result" aria-live="polite"></div>
-
-      <p class="ol-prose-mt">
-        <strong>What this does:</strong> reads your file's bytes locally, runs SHA-256 over them via <code>crypto.subtle.digest</code> (Web Crypto), then fetches the live signed hash from <code>HEAD /download/&lt;os&gt;</code> on the release relay. Both happen in your tab; no upload, no server-side processing. The match check is byte-equal.
-      </p>
-      <p class="ol-prose">
-        <strong>Why this matters:</strong> Windows SmartScreen and macOS Gatekeeper warn you because the binary is new, not because anything is wrong with it. This page proves the bytes you have match the bytes the maintainer signed. If the hashes match, the file is exactly what we shipped, even if your OS has not learned to trust it yet.
-      </p>
-      <p class="ol-prose">
-        <strong>If the hashes do not match:</strong> something between you and us altered the file. Do not run it. Try the download again, or download the source archive and build it yourself.
-      </p>
-      <p class="ol-prose-mt ol-soft-text">
-        For the full cryptographic receipt (Ed25519 signature, build environment attestation, source commit) see <a class="ol-cyan-text" href="/security/">/security/</a> and the attestation chain endpoint at <code>/api/attest/&lt;sha&gt;</code>.
-      </p>
+      <div class="ol-verify-result" id="ol-verify-result" role="status" aria-live="polite"></div>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container ol-mw-72ch">
+      <h2>Read the verdict literally</h2>
+      <p>A local SHA-256 is useful for identifying a file and checking transfer corruption.</p>
+      <p>If no reference hash is published, the tool reports NOT VERIFIED. It will not imply that a signature or attestation was checked.</p>
+      <p>Even an unsigned checksum match does not prove authorship. A future authenticated verdict requires a version-pinned artifact, a signed checksum manifest, and a verified release signature.</p>
     </div>
   </section>
 </main>
@@ -93,19 +86,19 @@
     <div class="footer-grid">
       <div>
         <a href="/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
-        <p class="footer-tag">A free, private network for messages, files, and devices. Owned by no one. Belongs to everyone.</p>
+        <p class="footer-tag">Open-source pre-release software for private communication. Built toward community ownership; current services still depend on identifiable maintainers, operators, and infrastructure providers.</p>
       </div>
-      <div><h3>Network</h3><ul><li><a href="/how-it-works/">How it works</a></li><li><a href="/features/">Features</a></li><li><a href="/mesh/">Live mesh</a></li></ul></div>
+      <div><h3>Network</h3><ul><li><a href="/how-it-works/">How it works</a></li><li><a href="/features/">Features</a></li><li><a href="/mesh/">Website presence</a></li></ul></div>
       <div><h3>For you</h3><ul><li><a href="/download/">Get One Link</a></li><li><a href="/security/">Security</a></li><li><a href="/verify-download/">Verify download</a></li><li><a href="/roadmap/">Roadmap</a></li><li><a href="/accessibility/">Accessibility</a></li><li><a href="/transparency/">Transparency</a></li><li><a href="/audits/">Audits</a></li></ul></div>
       <div><h3>For builders</h3><ul><li><a href="/builders/">Protocol &amp; source</a></li><li><a href="/changelog/">Changelog</a></li><li><a href="/releases/">Releases</a></li><li><a href="/mirror/">Mirror this site</a></li><li><a href="/download/source" rel="noopener">Source archive</a></li><li><a href="https://github.com/IamOneYouAreOneWeAreOne/one-link" rel="noopener external">GitHub</a></li></ul></div>
     </div>
     <div class="footer-bottom">
-      <span class="built-by">&copy; 2026 One Link contributors. <a href="/terms/">AGPL-3.0</a>. <a href="/security/">No tracking.</a> <a href="mailto:weareone@oneunity.earth">weareone@oneunity.earth</a></span>
+      <span class="built-by">&copy; 2026 One Link contributors. <a href="/terms/">AGPL-3.0</a>. <a href="/security/">No first-party analytics or tracking cookies; infrastructure metadata disclosed.</a> <a href="mailto:weareone@oneunity.earth">weareone@oneunity.earth</a></span>
       <span class="built-by">we are one</span>
     </div>
   </div>
 </footer>
 
-<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r95"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r97"></script>
 </body>
 </html>

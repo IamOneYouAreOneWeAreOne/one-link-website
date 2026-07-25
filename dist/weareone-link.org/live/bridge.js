@@ -1,20 +1,25 @@
 /* =============================================================================
    One Link  -  Live Mode bridge
    =============================================================================
-   ~500 lines of vanilla ES modules, zero dependencies.
+   Browser-side integration code plus locally hosted WASM wrappers.
    What it does, in order of how visitors notice:
 
      1. Detect the visitor's OS, rewrite the download button if present.
      2. Light up the coherence-field background canvas (WebGPU if available,
         graceful animated 2D canvas fallback otherwise).
-     3. Render the mesh-viz canvas with live (or stub) node positions.
-     4. Open a hybrid session against /api/session and surface "you are
-        connected" in the counter pill + "you" line on the mesh page.
-     5. Poll /api/topology every 12 seconds and update the live counters
+     3. Render validated website-presence sessions in an illustrative field;
+        never label the topology stub as daemon nodes or relays.
+     4. Register with /api/session and run a separate local PQ primitive
+        self-test. No browser-to-Worker shared key is derived there.
+     5. Poll /api/topology for an explicitly authoritative registry payload;
+        otherwise keep topology counters unavailable
         across the page.
 
-   No tracking. No cookies. No third-party calls. All state lives in tab memory
-   and dies when the tab closes.
+   No first-party analytics or tracking cookies are intentionally embedded.
+   Same-origin Worker calls and release redirects still expose ordinary network
+   metadata to Cloudflare or GitHub. Most live state is tab-scoped; the hardware
+   TOFU demo intentionally uses localStorage and widget preferences use
+   sessionStorage, as disclosed on the relevant surfaces.
    ========================================================================== */
 
 /* eslint-disable no-console */
@@ -54,56 +59,62 @@ function detectOS() {
 
 // Per-OS download artifact summary shown beneath the homepage CTA.
 // Keeps visitors honest about what they're about to receive on click.
-// Sizes are intentionally omitted because the continuous build's
-// artifact sizes change with every dep update — pinning a specific
-// MB number would silently go stale within days. The verify-download
-// page reports the live size + hash.
+// Sizes are intentionally omitted because the continuous build's artifact
+// sizes change. The verification page computes a local hash and states
+// clearly when no trusted reference or artifact signature is published.
 const HOMEPAGE_CTA_HINT = {
-  windows: '.exe installer, per-user, no admin prompt',
-  linux:   '.AppImage, single file, runs on every distro',
-  macos:   '.dmg, drag to Applications',
+  windows: 'rolling .exe test installer',
+  linux:   'rolling portable AppImage',
+  macos:   'Apple Silicon .dmg only; choose architecture',
   android: 'Android: in flight - source build works today',
   ios:     'iOS: in flight - source build works today',
   openbsd: 'OpenBSD: build from source today',
   freebsd: 'FreeBSD: build from source today',
-  source:  'AGPL source archive, signed',
+  source:  'AGPL source; release signature not published',
 };
 
 function rewriteDownloadButton() {
   const { os, label } = detectOS();
-  const arch = /arm|aarch64/i.test(navigator.userAgent) ? 'arm64' : 'x86_64';
+  const arch = os === 'macos'
+    ? 'architecture not exposed by browser'
+    : (/arm|aarch64/i.test(navigator.userAgent) ? 'arm64' : 'x86_64');
 
-  // /download/ page primary button (already on that page only).
+  const directBinary = os === 'windows' || os === 'linux';
+  const target = directBinary ? `/download/${os}` : '/download/';
+  const action = directBinary
+    ? `Download for ${label} `
+    : (os === 'macos' ? 'Choose a macOS build ' : 'View available builds ');
+
+  // /download/ page primary button (present only on legacy variants).
   const btn = $('#ol-download-button');
   if (btn) {
-    btn.href = `/download/${os}`;
-    btn.firstChild.nodeValue = `Download for ${label} `;
+    btn.href = target;
+    btn.firstChild.nodeValue = action;
     const line = $('#ol-detected-os');
     if (line) line.textContent = `Detected: ${label} - ${arch}`;
-    wireVerifyingDownloadOn(btn, os);
   }
 
-  // Homepage hero CTA: rewrites "Get One Link" -> "Get One Link for <OS>"
-  // and points at /download/<os> so the streaming verifying-download flow
-  // kicks in immediately on click for OSes that have a real signed binary.
+  // Only advertise a direct download when a compatible artifact family is
+  // published. Mobile/BSD clients and macOS browsers (which do not expose CPU
+  // architecture reliably) go to the availability/architecture picker.
   const cta = $('#ol-hero-cta');
   if (cta) {
-    cta.href = `/download/${os}`;
-    cta.firstChild.nodeValue = `Get One Link for ${label} `;
+    cta.href = target;
+    cta.firstChild.nodeValue = directBinary ? `Get One Link for ${label} ` : action;
     const hint = $('#ol-hero-cta-hint');
     if (hint) {
       hint.textContent = `auto-detected: ${label} ${arch} · ${HOMEPAGE_CTA_HINT[os] || 'click for source'}`;
       hint.style.opacity = '1';
     }
-    wireVerifyingDownloadOn(cta, os);
   }
 }
 
 // ---------------------------------------------------------------------------
-// 2-bis. STREAMING + VERIFYING DOWNLOAD
+// 2-bis. INACTIVE STREAMING + VERIFYING DOWNLOAD PROTOTYPE
 //
-// For OSes that have a real signed binary on file (Windows today), intercept
-// the download click and:
+// No current artifact has the required signed reference, so this path is not
+// wired to any button. If a future immutable release publishes one, it can
+// intercept an explicitly enabled OS and:
 //   1. Open a streaming fetch.
 //   2. Show a live progress bar + bytes counter.
 //   3. Accumulate the bytes; on completion, SHA-256 the full buffer with
@@ -339,13 +350,29 @@ async function startCoherenceField() {
   const saveData = navigator.connection && navigator.connection.saveData;
   if (!isCapable || saveData) return;
 
-  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  let resizeFrame = 0;
   const resize = () => {
-    canvas.width = Math.floor(window.innerWidth * dpr);
-    canvas.height = Math.floor(window.innerHeight * dpr);
+    // Snapshot all layout-dependent inputs before mutating the canvas. Reading
+    // innerHeight after assigning canvas.width forced a synchronous full-page
+    // layout during cold start. Avoid resetting either drawing buffer when its
+    // physical size is already correct; each assignment also clears the canvas.
+    const cssWidth = window.innerWidth;
+    const cssHeight = window.innerHeight;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const width = Math.floor(cssWidth * dpr);
+    const height = Math.floor(cssHeight * dpr);
+    if (canvas.width !== width) canvas.width = width;
+    if (canvas.height !== height) canvas.height = height;
+  };
+  const scheduleResize = () => {
+    if (resizeFrame) return;
+    resizeFrame = window.requestAnimationFrame(() => {
+      resizeFrame = 0;
+      resize();
+    });
   };
   resize();
-  window.addEventListener('resize', resize);
+  window.addEventListener('resize', scheduleResize, { passive: true });
 
   // Try WebGPU first. When it runs, the canvas's compositor-layer
   // background is occluded by the real shader output (drawingBufferStorage
@@ -721,7 +748,7 @@ function startMeshViz() {
       const jitterR = 0.05 + Math.random() * 0.09;
       const jitterTheta = Math.random() * Math.PI * 2;
       nodes.push({
-        id: undefined,                          // anonymous filler node
+        id: undefined,                          // synthetic filler node
         x: a.x + Math.cos(jitterTheta) * jitterR,
         y: a.y + Math.sin(jitterTheta) * jitterR,
         phase: Math.random() * Math.PI * 2,
@@ -1054,12 +1081,12 @@ function startMeshViz() {
 }
 
 // ---------------------------------------------------------------------------
-// 4. SESSION HANDSHAKE  (POST /api/session)
+// 4. SESSION REGISTRATION + LOCAL PQ PRIMITIVE SELF-TEST  (POST /api/session)
 //
-// In-browser hybrid handshake stub: requests server keys, stores a session
-// id in tab memory only. Real X25519 + ML-KEM-768 wire-up lands when the
-// ol_pqkem WASM build is bound. Until then this just proves the round trip
-// works and surfaces "you are connected" to the visitor.
+// The WASM round trip below exercises both sides locally in this tab. It does
+// not establish a PQ-secured browser-to-Worker session. The Worker endpoint
+// currently registers an ephemeral session and advertises an X25519 public
+// key; no client ECDH or ML-KEM exchange is completed on that network path.
 // ---------------------------------------------------------------------------
 
 const session = {
@@ -1068,16 +1095,15 @@ const session = {
 };
 
 async function openSession() {
-  // Real X25519 + ML-KEM-768 hybrid KEM via ol_pqkem WASM. The browser
-  // runs the SAME ol_pqkem Rust code the daemon uses to derive a
-  // post-quantum session shared secret with the relay.
+  // Local X25519 + ML-KEM-768 wrapper self-test. Both roles run in this tab;
+  // no result or secret from this round trip participates in the Worker
+  // registration request below.
   try {
     const kemModule = await import('/live/wasm/ol_pqkem.js');
     await kemModule.default({ module_or_path: '/live/wasm/ol_pqkem_bg.wasm' });
-    const sizes = kemModule.pqKemSizes();
 
-    // Stage 1: full Alice<->Bob round trip locally so the SAS-style "math
-    // matched" indicator turns green even before the relay responds.
+    // Stage 1: full Alice<->Bob primitive round trip locally. This is a
+    // self-test signal, not a statement about the Worker link.
     const local = kemModule.liveDemoRoundTrip();
     session.localKem = {
       matched: local.matched,
@@ -1087,21 +1113,26 @@ async function openSession() {
       version: kemModule.ol_pqkem_version(),
     };
 
-    // Stage 2: ping the relay session endpoint with our identity so the
-    // worker can record the session in its Durable Object. Stub returns
-    // placeholder bytes today; the real relay daemon will return its
-    // hybrid pubkey + we'll call kemModule.encapsulateAgainst(peerPub).
+    // Stage 2: register an ephemeral browser session. Do not send the local
+    // self-test public key as if it participated in a network handshake.
     const res = await fetch('/api/session', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        client_pq_pub_hex: bytesToHex(local.alicePub),
-        pq_sizes: sizes,
-        protocol: 'x25519+mlkem768-v1',
+        protocol: 'session-registration-v1',
       }),
     });
     if (!res.ok) throw new Error(`session ${res.status}`);
     const data = await res.json();
+    if (data?.schema !== 'website-session-registration-v1'
+        || data?.registered !== true
+        || typeof data?.session_id !== 'string'
+        || !/^[a-f0-9]{32}$/.test(data.session_id)
+        || typeof data?.server_x25519 !== 'string'
+        || !/^[a-f0-9]{64}$/.test(data.server_x25519)
+        || data?.server_mlkem768_pk !== null) {
+      throw new Error('session registration response failed schema validation');
+    }
     session.id = data.session_id;
     session.connected = true;
     return data;
@@ -1122,17 +1153,23 @@ async function pollTopology(meshVizApi) {
       const res = await fetch('/api/topology', { headers: { Accept: 'application/json' } });
       if (res.ok) {
         const data = await res.json();
-        const relays = data?.active_relays ?? 0;
         const r = $('#ol-mesh-relays');
-        if (r) r.textContent = fmtCount(relays);
-        // Population counts come from the presence WebSocket (real
-        // visitor count), not from /api/topology (which is the relay-
-        // population stub and currently returns 0). We do NOT overwrite
-        // population counts from this poller anymore.
-        if (meshVizApi) meshVizApi.setTopology(data);
+        const authoritative = data?.authoritative === true
+          && data?.schema === 'relay-topology-v1'
+          && Number.isInteger(data?.active_relays)
+          && data.active_relays >= 0;
+        if (r) r.textContent = authoritative ? fmtCount(data.active_relays) : '—';
+        // Website-presence population is validated independently over the
+        // WebSocket. Never turn a stub or unsigned shape-compatible payload
+        // into apparent daemon/relay telemetry.
+        if (authoritative && meshVizApi) meshVizApi.setTopology(data);
+      } else {
+        const r = $('#ol-mesh-relays');
+        if (r) r.textContent = '—';
       }
     } catch (e) {
-      // network blip; quiet
+      const r = $('#ol-mesh-relays');
+      if (r) r.textContent = '—';
     }
     setTimeout(tick, 12000);
   }
@@ -1162,20 +1199,20 @@ function markYou(meshVizApi) {
   const you = $('#ol-mesh-you');
   meshVizApi.markYou();
   if (you) {
-    you.textContent = session.connected ? 'connected' : 'offline (still works)';
-    you.style.color = session.connected ? 'var(--ol-green)' : 'var(--ol-amber)';
+    you.textContent = presence.validated ? 'website presence connected' : 'local illustration only';
+    you.style.color = presence.validated ? 'var(--ol-green)' : 'var(--ol-amber)';
   }
 }
 
 // ---------------------------------------------------------------------------
-// 7. REAL PAIR-BY-QR DEMO  (loads ol_pair_qr WASM, runs Inviter+Scanner)
+// 7. LOCAL PAIR-BY-QR SELF-TEST  (loads ol_pair_qr WASM, runs both roles)
 //
 // What this proves on the home page:
-//   * The QR rendered in the pair card is encoded by the same toolchain the
-//     daemon would use (qrcode crate compiled to WASM alongside ol_pair_qr).
-//   * The 5-word SAS shown beneath is the actual SAS the daemon would derive
-//     from the handshake transcript - byte-identical, not theater.
-//   * A "live" badge flips green once the handshake completes round-trip.
+//   * This checked-in browser wrapper can encode its invite bytes as a QR.
+//   * Its local Inviter and Scanner roles derive the same five-word SAS and
+//     chain key in one tab.
+// It does not prove camera scanning, two-device transport, daemon integration,
+// released-client interoperability, or human SAS comparison.
 //
 // If WASM fails to load (very old browser / disabled), we leave the static
 // placeholder markup in place rather than break the page.
@@ -1189,8 +1226,8 @@ async function startPairDemo() {
     const wasmModule = await import('/live/wasm/ol_pair_qr.js');
     await wasmModule.default({ module_or_path: '/live/wasm/ol_pair_qr_bg.wasm' });
 
-    // One full Inviter <-> Scanner round-trip in-browser, no network.
-    // The bytes + SAS produced are wire-identical to what the daemon emits.
+    // One Inviter <-> Scanner round-trip in-browser, with no second device or
+    // network transport.
     const result = wasmModule.liveDemoRoundTrip();
 
     // Real SVG QR of the real invite bytes.
@@ -1211,14 +1248,14 @@ async function startPairDemo() {
         .join('');
     }
 
-    // Live-handshake status badge on the pair card.
+    // Explicitly scoped self-test status badge on the pair card.
     const card = qrHost.closest('.ol-pair-card');
     if (card && !card.querySelector('.ol-live-pill')) {
       const pill = document.createElement('div');
       pill.className = 'ol-live-pill';
       pill.innerHTML = `
         <span class="dot"></span>
-        <span>real handshake</span>
+        <span>local two-role self-test</span>
         <span class="key">v${wasmModule.ol_pair_qr_version()}</span>
       `;
       card.prepend(pill);
@@ -1232,11 +1269,11 @@ async function startPairDemo() {
         <dt>response size</dt><dd>${result.responseBytes.length} bytes</dd>
         <dt>confirm size</dt><dd>${result.confirmBytes.length} bytes</dd>
         <dt>chain key</dt><dd>${bytesToHex(result.chainKey).slice(0, 16)}... (32 bytes)</dd>
-        <dt>round trip</dt><dd class="ol-green-text">verified, sas matched</dd>
+        <dt>round trip</dt><dd class="ol-green-text">local SAS values matched</dd>
       `);
     }
 
-    console.debug('[ol_pair_qr] real handshake completed in-browser', {
+    console.debug('[ol_pair_qr] local two-role self-test completed in-browser', {
       sas: result.sasInviter,
       matched: result.matched,
       keyLen: result.chainKey.length,
@@ -1257,22 +1294,45 @@ function bytesToHex(u8) {
 }
 
 // ---------------------------------------------------------------------------
-// 7b. STRANGER-PAIR TWO-TAB DEMO  (BroadcastChannel + real ol_pair_qr)
+// 7b. TWO-TAB LOCAL TRANSPORT SELF-TEST  (BroadcastChannel + ol_pair_qr)
 //
-// Click the "or pair with another browser tab" link on the home page.
-// We open a second tab to /?pair=1, the two tabs discover each other on
-// a same-origin BroadcastChannel, run a REAL Inviter <-> Scanner round
-// trip (each in its own browser tab, fresh ed25519/x25519 keypairs),
-// confirm both sides arrive at the same 5-word SAS + same 32-byte
-// chain key, and display the result.
-//
-// This is "two real devices paired" with two browser tabs as the two
-// devices. The crypto is the same crypto. The protocol is the same
-// protocol. The transport (BroadcastChannel) is a same-origin pipe,
-// not the wire, so don't trust it for actual privacy. The demo just
-// proves the handshake works end-to-end.
+// This exercises two isolated wrapper instances over a same-origin browser
+// primitive. It automatically completes both roles and compares outputs. It
+// is NOT real-device pairing, an authenticated out-of-band SAS comparison,
+// daemon interoperability, or a private network transport.
 // ---------------------------------------------------------------------------
-const TAB_PAIR_CHANNEL = 'ol-tab-pair-v1';
+const TAB_PAIR_CHANNEL_PREFIX = 'ol-tab-pair-v2';
+const TAB_PAIR_TIMEOUT_MS = 60_000;
+
+function freshTabPairToken() {
+  return hexEncode(crypto.getRandomValues(new Uint8Array(16)));
+}
+
+function validTabPairToken(value) {
+  return typeof value === 'string' && /^[a-f0-9]{32}$/.test(value);
+}
+
+function waitForTabPairMessage(channel, predicate, timeoutMs = TAB_PAIR_TIMEOUT_MS) {
+  return new Promise((resolve, reject) => {
+    const timer = setTimeout(() => {
+      channel.removeEventListener('message', onMessage);
+      reject(new Error('two-tab self-test timed out'));
+    }, timeoutMs);
+    const onMessage = (event) => {
+      try {
+        if (!predicate(event.data)) return;
+        clearTimeout(timer);
+        channel.removeEventListener('message', onMessage);
+        resolve(event.data);
+      } catch (error) {
+        clearTimeout(timer);
+        channel.removeEventListener('message', onMessage);
+        reject(error);
+      }
+    };
+    channel.addEventListener('message', onMessage);
+  });
+}
 
 function wireTabPairButton() {
   const link = $('#ol-tab-pair-link');
@@ -1281,12 +1341,20 @@ function wireTabPairButton() {
 
   link.addEventListener('click', (ev) => {
     ev.preventDefault();
+    if (!('BroadcastChannel' in window) || !crypto?.getRandomValues) {
+      if (result) {
+        result.hidden = false;
+        result.textContent = 'This browser does not support the isolated two-tab self-test.';
+      }
+      return;
+    }
     // CRITICAL: window.open must be called SYNCHRONOUSLY inside the click
     // handler to stay inside the user-gesture context. Any `await` before
     // it lets the browser silently block the popup. Open the tab first
     // (which is fine — the second tab waits for the BroadcastChannel msg
     // before doing anything), then load WASM and start the handshake.
-    const second = window.open('/?pair=1', '_blank');
+    const token = freshTabPairToken();
+    const second = window.open(`/?pair=1#pair=${token}`, '_blank');
     if (!second) {
       if (result) {
         result.hidden = false;
@@ -1294,17 +1362,18 @@ function wireTabPairButton() {
       }
       return;
     }
-    runTabPairAsInviter(result, second);
+    runTabPairAsInviter(result, second, token);
   });
 
   // If we landed on the page with ?pair=1, this tab is the Scanner.
   if (new URLSearchParams(location.search).get('pair') === '1') {
     document.body.classList.add('ol-pair-scanner-tab');
-    runTabPairAsScanner();
+    const token = new URLSearchParams(location.hash.slice(1)).get('pair');
+    if (validTabPairToken(token)) runTabPairAsScanner(token);
   }
 }
 
-async function runTabPairAsInviter(resultEl, secondTab) {
+async function runTabPairAsInviter(resultEl, secondTab, token) {
   if (resultEl) {
     resultEl.hidden = false;
     resultEl.innerHTML = '<span class="ol-soft-text">opening second tab and waiting for handshake...</span>';
@@ -1319,76 +1388,77 @@ async function runTabPairAsInviter(resultEl, secondTab) {
     return;
   }
 
-  // Inviter side: build invite, open channel, wait for scanner.
-  // expiry_unix is u64 on the Rust side → BigInt on the JS boundary.
-  // Passing a Number throws "Cannot convert N to a BigInt" at wasm-bindgen.
-  const inviter = new wasmModule.OlInviter(1_900_000_000n, 'tab-pair');
-  const inviteBytes = inviter.inviteBytes;
+  const channel = new BroadcastChannel(`${TAB_PAIR_CHANNEL_PREFIX}:${token}`);
+  try {
+    const inviter = new wasmModule.OlInviter(
+      BigInt(Math.floor(Date.now() / 1000) + 300),
+      'website:two-tab-self-test'
+    );
+    const inviteBytes = inviter.inviteBytes;
+    const t0 = performance.now();
 
-  const channel = new BroadcastChannel(TAB_PAIR_CHANNEL);
-
-  const t0 = performance.now();
-
-  channel.onmessage = (ev) => {
-    const msg = ev.data;
-    if (!msg || msg.type !== 'scanner-hello') return;
-    // Scanner is ready; send it the invite.
+    await waitForTabPairMessage(channel, msg => msg?.type === 'scanner-hello');
+    const responseWait = waitForTabPairMessage(
+      channel,
+      msg => msg?.type === 'scanner-error' || (
+        msg?.type === 'response'
+        && msg.responseBytes instanceof Uint8Array
+        && msg.responseBytes.byteLength > 0
+        && msg.responseBytes.byteLength <= 64 * 1024
+      )
+    );
     channel.postMessage({ type: 'invite', inviteBytes });
-  };
+    const response = await responseWait;
+    if (response.type === 'scanner-error') throw new Error(response.error || 'scanner rejected invite');
+    const sasInviter = inviter.receiveResponse(response.responseBytes);
+    const [confirmBytes, chainKey] = inviter.confirm();
 
-  // Wait for the response.
-  const responsePromise = new Promise((resolve) => {
-    const orig = channel.onmessage;
-    channel.onmessage = (ev) => {
-      const msg = ev.data;
-      if (orig) orig(ev);
-      if (msg?.type === 'response') resolve(msg.responseBytes);
-    };
-  });
-
-  const responseBytes = await responsePromise;
-  const sasInviter = inviter.receiveResponse(responseBytes);
-  const [confirmBytes, chainKey] = inviter.confirm();
-  channel.postMessage({ type: 'confirm', confirmBytes });
-
-  // Wait for scanner to acknowledge with its chain key.
-  const ackPromise = new Promise((resolve) => {
-    channel.onmessage = (ev) => {
-      const msg = ev.data;
-      if (msg?.type === 'ack') resolve(msg);
-    };
-  });
-  const ack = await ackPromise;
-  const dt = (performance.now() - t0).toFixed(1);
-  channel.close();
-
-  // Render the result.
-  const keysMatch = bytesEqual(chainKey, ack.chainKey);
-  const sasMatch = sasInviter === ack.sas;
-  if (resultEl) {
-    resultEl.innerHTML = `
-      <div class="ol-proof ol-proof-mt-md" open>
-        <details open>
-          <summary>two-tab pair completed in ${dt} ms</summary>
-          <div class="ol-proof-body">
-            <dl>
-              <dt>SAS (inviter)</dt><dd>${escapeHtml(sasInviter)}</dd>
-              <dt>SAS (scanner)</dt><dd>${escapeHtml(ack.sas)}</dd>
-              <dt>SAS match</dt><dd class="${sasMatch ? 'ol-green-text' : 'ol-rose-text'}">${sasMatch ? 'yes' : 'no'}</dd>
-              <dt>chain key (inviter)</dt><dd>${bytesToHex(chainKey).slice(0, 16)}...</dd>
-              <dt>chain key (scanner)</dt><dd>${bytesToHex(ack.chainKey).slice(0, 16)}...</dd>
-              <dt>keys match</dt><dd class="${keysMatch ? 'ol-green-text' : 'ol-rose-text'}">${keysMatch ? 'yes' : 'no'}</dd>
-              <dt>transport</dt><dd>BroadcastChannel (same-origin pipe between tabs)</dd>
-              <dt>protocol</dt><dd>ol_pair_qr v${wasmModule.ol_pair_qr_version()}</dd>
-            </dl>
-          </div>
-        </details>
-      </div>
-    `;
+    const ackWait = waitForTabPairMessage(
+      channel,
+      msg => msg?.type === 'ack'
+        && msg.chainKey instanceof Uint8Array
+        && msg.chainKey.byteLength === 32
+        && typeof msg.sas === 'string'
+        && msg.sas.length <= 256
+    );
+    channel.postMessage({ type: 'confirm', confirmBytes });
+    const ack = await ackWait;
+    const dt = (performance.now() - t0).toFixed(1);
+    const keysMatch = bytesEqual(chainKey, ack.chainKey);
+    const sasMatch = sasInviter === ack.sas;
+    if (resultEl) {
+      resultEl.innerHTML = `
+        <div class="ol-proof ol-proof-mt-md" open>
+          <details open>
+            <summary>local two-tab self-test completed in ${dt} ms</summary>
+            <div class="ol-proof-body">
+              <p>This automatically exercised both roles over a same-origin BroadcastChannel. It did not perform a human out-of-band SAS comparison or pair real devices.</p>
+              <dl>
+                <dt>SAS (inviter)</dt><dd>${escapeHtml(sasInviter)}</dd>
+                <dt>SAS (scanner)</dt><dd>${escapeHtml(ack.sas)}</dd>
+                <dt>local SAS equality</dt><dd class="${sasMatch ? 'ol-green-text' : 'ol-rose-text'}">${sasMatch ? 'yes' : 'no'}</dd>
+                <dt>local chain-key equality</dt><dd class="${keysMatch ? 'ol-green-text' : 'ol-rose-text'}">${keysMatch ? 'yes' : 'no'}</dd>
+                <dt>transport</dt><dd>isolated same-origin BroadcastChannel; not network transport</dd>
+                <dt>wrapper</dt><dd>ol_pair_qr v${escapeHtml(wasmModule.ol_pair_qr_version())}</dd>
+              </dl>
+            </div>
+          </details>
+        </div>
+      `;
+    }
+  } catch (error) {
+    if (resultEl) {
+      resultEl.innerHTML = `<span class="ol-rose-text">two-tab self-test failed: ${escapeHtml(error?.message || error)}</span>`;
+    }
+  } finally {
+    channel.close();
+    if (secondTab && !secondTab.closed) {
+      try { secondTab.postMessage({ type: 'self-test-finished' }, location.origin); } catch {}
+    }
   }
 }
 
-async function runTabPairAsScanner() {
+async function runTabPairAsScanner(token) {
   let wasmModule;
   try {
     wasmModule = await import('/live/wasm/ol_pair_qr.js');
@@ -1399,15 +1469,24 @@ async function runTabPairAsScanner() {
     return;
   }
 
-  const channel = new BroadcastChannel(TAB_PAIR_CHANNEL);
+  const channel = new BroadcastChannel(`${TAB_PAIR_CHANNEL_PREFIX}:${token}`);
+  const helloTimer = setInterval(() => channel.postMessage({ type: 'scanner-hello' }), 500);
   channel.postMessage({ type: 'scanner-hello' });
+  const expiryTimer = setTimeout(() => {
+    clearInterval(helloTimer);
+    channel.close();
+  }, TAB_PAIR_TIMEOUT_MS);
 
   let scanner = null;
   channel.onmessage = (ev) => {
     const msg = ev.data;
-    if (msg?.type === 'invite' && !scanner) {
+    if (msg?.type === 'invite'
+        && !scanner
+        && msg.inviteBytes instanceof Uint8Array
+        && msg.inviteBytes.byteLength > 0
+        && msg.inviteBytes.byteLength <= 64 * 1024) {
       try {
-        // now_unix is u64 → BigInt on JS boundary (same trap as OlInviter ctor).
+        clearInterval(helloTimer);
         scanner = wasmModule.OlScanner.scan(msg.inviteBytes, BigInt(Math.floor(Date.now() / 1000)));
         channel.postMessage({ type: 'response', responseBytes: scanner.responseBytes });
       } catch (e) {
@@ -1424,12 +1503,13 @@ async function runTabPairAsScanner() {
         // as raw unstyled text in the top-left as a result.
         document.body.insertAdjacentHTML('afterbegin', `
           <div class="ol-tab-pair-toast">
-            <strong>paired with the other tab.</strong><br>
+            <strong>local two-tab self-test completed.</strong><br>
             SAS: ${escapeHtml(sas)}<br>
-            chain key: ${bytesToHex(chainKey).slice(0, 16)}...<br>
-            <small>you can close this tab</small>
+            <small>This was automatic and same-origin; no real device was paired and no human SAS authentication occurred.</small>
           </div>
         `);
+        clearTimeout(expiryTimer);
+        setTimeout(() => channel.close(), 250);
       } catch (e) {
         channel.postMessage({ type: 'scanner-error', error: e?.message || String(e) });
       }
@@ -1446,11 +1526,94 @@ function bytesEqual(a, b) {
 // ---------------------------------------------------------------------------
 // 8. SERVICE WORKER REGISTRATION
 //
-// Offline-first: every visit precaches the core route set so the next visit
-// works without a network. The SW also verifies every cached asset against
-// the signed /manifest.json before serving it. See /sw.js for the full
-// integrity model.
+// Registration is gated by a pinned-key signature check plus hashes for the
+// current page and critical runtime assets. A stale or attacker-selected
+// manifest retires existing One Link caches and leaves the Service Worker
+// disabled. The Worker performs an on-demand hash gate for every cached asset.
 // ---------------------------------------------------------------------------
+const SITE_MANIFEST_PUBKEY_HEX =
+  '79c4c8da1ed485541a03057a588bfd88cd6530b407d524866842ec004498464c';
+
+function manifestPathForPage(pathname) {
+  if (pathname === '/') return '/index.html';
+  if (/^\/share\/[A-Za-z0-9_-]{16}\/?$/.test(pathname)) return '/share/index.html';
+  if (pathname.endsWith('/')) return `${pathname}index.html`;
+  return pathname;
+}
+
+async function verifyPinnedSiteManifest(manifest) {
+  if (!manifest || typeof manifest !== 'object' || Array.isArray(manifest)) {
+    throw new Error('manifest is not an object');
+  }
+  if (!manifest.assets || typeof manifest.assets !== 'object' || Array.isArray(manifest.assets)) {
+    throw new Error('manifest assets are missing');
+  }
+  const entries = Object.entries(manifest.assets);
+  if (entries.length < 1 || entries.length > 2_000) throw new Error('manifest asset count is invalid');
+  for (const [path, digest] of entries) {
+    if (!/^\/[A-Za-z0-9._~!$&'()*+,;=:@%/-]+$/.test(path)
+        || path.includes('..')
+        || typeof digest !== 'string'
+        || !/^sha256-[a-f0-9]{64}$/.test(digest)) {
+      throw new Error('manifest contains an invalid asset entry');
+    }
+  }
+  const signedBy = String(manifest.signed_by || '').replace(/^ed25519-pub-/, '');
+  const signatureHex = String(manifest.signature || '').replace(/^ed25519-/, '');
+  if (signedBy !== SITE_MANIFEST_PUBKEY_HEX) throw new Error('manifest signer is not the pinned site key');
+  if (!/^[a-f0-9]{128}$/.test(signatureHex)) throw new Error('manifest signature encoding is invalid');
+  const key = await crypto.subtle.importKey(
+    'raw', hexToBytes(SITE_MANIFEST_PUBKEY_HEX), { name: 'Ed25519' }, false, ['verify']
+  );
+  const payload = new TextEncoder().encode(canonicalManifestSignedPayload(manifest));
+  const valid = await crypto.subtle.verify(
+    { name: 'Ed25519' }, key, hexToBytes(signatureHex), payload
+  );
+  if (!valid) throw new Error('manifest signature does not verify');
+  return manifest;
+}
+
+async function siteIntegrityPreflight() {
+  const nonce = `${Date.now()}-${crypto.randomUUID?.() || Math.random().toString(16).slice(2)}`;
+  const manifestResponse = await fetch(`/manifest.json?integrity-preflight=${encodeURIComponent(nonce)}`, {
+    cache: 'no-store', credentials: 'same-origin',
+  });
+  if (!manifestResponse.ok) throw new Error(`manifest returned ${manifestResponse.status}`);
+  const manifest = await verifyPinnedSiteManifest(await manifestResponse.json());
+  const critical = new Set([
+    manifestPathForPage(location.pathname),
+    '/live/bridge.js',
+    '/sw.js',
+    '/css/one-link.css',
+    '/css/immersive.css',
+  ]);
+  for (const path of critical) {
+    const expected = manifest.assets[path];
+    if (!expected) throw new Error(`critical asset is untracked: ${path}`);
+    const separator = path.includes('?') ? '&' : '?';
+    const response = await fetch(`${path}${separator}integrity-preflight=${encodeURIComponent(nonce)}`, {
+      cache: 'no-store', credentials: 'same-origin',
+    });
+    if (!response.ok) throw new Error(`critical asset returned ${response.status}: ${path}`);
+    const actual = await bytesToSha256Hex(new Uint8Array(await response.arrayBuffer()));
+    if (`sha256-${actual}` !== expected) throw new Error(`stale manifest hash: ${path}`);
+  }
+  return manifest;
+}
+
+async function retireStaleSiteWorker() {
+  try {
+    const registrations = await navigator.serviceWorker.getRegistrations();
+    await Promise.all(registrations
+      .filter(registration => new URL(registration.scope).origin === location.origin)
+      .map(registration => registration.unregister()));
+  } catch {}
+  try {
+    const names = await caches.keys();
+    await Promise.all(names.filter(name => name.startsWith('ol-cache-')).map(name => caches.delete(name)));
+  } catch {}
+}
+
 function registerServiceWorker() {
   if (!('serviceWorker' in navigator)) {
     setSwStatus('unsupported', 'amber');
@@ -1461,16 +1624,18 @@ function registerServiceWorker() {
     setSwStatus('insecure context', 'amber');
     return;
   }
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js', { scope: '/' })
-      .then(reg => {
-        setSwStatus(reg.active ? 'active' : 'installing', 'green');
-        reg.addEventListener?.('updatefound', () => setSwStatus('updating', 'cyan'));
-      })
-      .catch((e) => {
-        setSwStatus('offline only', 'amber');
-        console.debug('[sw] registration failed (page still works)', e?.message);
-      });
+  window.addEventListener('load', async () => {
+    setSwStatus('checking pinned manifest', 'cyan');
+    try {
+      await siteIntegrityPreflight();
+      const reg = await navigator.serviceWorker.register('/sw.js', { scope: '/', updateViaCache: 'none' });
+      setSwStatus(reg.active ? 'active; hash-gated cache' : 'installing hash gate', 'green');
+      reg.addEventListener?.('updatefound', () => setSwStatus('updating hash gate', 'cyan'));
+    } catch (error) {
+      await retireStaleSiteWorker();
+      setSwStatus('disabled: manifest stale', 'amber');
+      console.warn('[sw] fail-closed integrity preflight:', error?.message || error);
+    }
   });
 }
 function setSwStatus(text, color) {
@@ -1906,8 +2071,10 @@ function wireHwkeyDemo() {
 const RELEASE_PUBKEY_HEX =
   '68c961f1ce26faa39acdf66d457e49126d1498aecbbce15ab49fe192d715cb2e';
 
-const ATTESTATION_TARGET_SHA =
-  'ea4efc8bf92f5ddd911e10f940a46899fda6fa786755ce797429b8fd62c05aed';
+// No current release attestation is published. Historical fixture documents
+// remain useful for schema development, but must never be selected as the
+// default proof for whatever bytes the rolling download channel serves.
+const ATTESTATION_TARGET_SHA = null;
 
 function canonicalAttestationPayload(doc) {
   // MUST byte-match scripts/build-attestation.py canonical_attestation_payload:
@@ -1936,6 +2103,12 @@ async function sha256Hex(bytes) {
 
 async function verifyAttestation(sha) {
   const target = sha || ATTESTATION_TARGET_SHA;
+  if (!target || !/^[a-f0-9]{64}$/i.test(target)) {
+    return {
+      ok: false,
+      error: 'no current artifact attestation is published',
+    };
+  }
   const t0 = performance.now();
   const __opT0 = performance.now();
 
@@ -2016,6 +2189,11 @@ function wireAttestationVerify() {
   const out = $('#ol-attest-out');
   const status = $('#ol-attest-status');
   if (!btn || !out) return;
+  if (btn.disabled || btn.dataset.releaseAttestation === 'unavailable') {
+    out.style.display = 'block';
+    out.textContent = 'No current artifact attestation is published.';
+    return;
+  }
 
   btn.addEventListener('click', async () => {
     btn.disabled = true;
@@ -2077,8 +2255,8 @@ function wireAttestationVerify() {
 //      every cached asset against).
 //   2. Verify the Ed25519 signature on the canonical {version, assets}
 //      subset using Web Crypto's Ed25519 (Chrome 113+, Firefox 130+,
-//      Safari 17+). Pinned pubkey is whatever signed_by declares;
-//      mismatch with the SW's hardcoded pin would show up there too.
+//      Safari 17+). The declared key must exactly match the same hardcoded
+//      site-manifest pin used by Service Worker preflight.
 //   3. For every asset in the manifest, fetch it from the SAME origin
 //      and recompute SHA-256 via crypto.subtle.digest. Compare against
 //      the recorded hash. Any mismatch fails the bundle.
@@ -2118,6 +2296,9 @@ function canonicalManifestSignedPayload(manifest) {
 }
 
 function hexToBytes(hex) {
+  if (typeof hex !== 'string' || hex.length % 2 !== 0 || !/^[a-f0-9]+$/i.test(hex)) {
+    throw new Error('invalid hexadecimal input');
+  }
   const out = new Uint8Array(hex.length / 2);
   for (let i = 0; i < out.length; i++) out[i] = parseInt(hex.substr(i * 2, 2), 16);
   return out;
@@ -2162,8 +2343,12 @@ async function runVerifyThisSite() {
 
     const signedBy = (manifest.signed_by || "").replace(/^ed25519-pub-/, "");
     const signature = (manifest.signature || "").replace(/^ed25519-/, "");
-    if (!signedBy || !signature) {
-      fail("manifest is missing signed_by or signature field");
+    if (signedBy !== SITE_MANIFEST_PUBKEY_HEX) {
+      fail("manifest signer does not match the pinned site-manifest key");
+      btn.disabled = false; return;
+    }
+    if (!/^[a-f0-9]{128}$/.test(signature)) {
+      fail("manifest signature is missing or malformed");
       btn.disabled = false; return;
     }
     info(`signer:    ed25519 pub ${signedBy.slice(0, 16)}...`);
@@ -2180,7 +2365,7 @@ async function runVerifyThisSite() {
     try {
       key = await crypto.subtle.importKey(
         "raw",
-        hexToBytes(signedBy),
+        hexToBytes(SITE_MANIFEST_PUBKEY_HEX),
         { name: "Ed25519" },
         false,
         ["verify"]
@@ -2262,26 +2447,35 @@ function wireVerifyThisSite() {
 }
 
 // ---------------------------------------------------------------------------
-// /verify-download/ - drop a downloaded One Link binary, compute SHA-256
-// locally via Web Crypto, fetch the live signed value from the release
-// relay, compare byte-equal. The file never leaves the tab.
+// /verify-download/ - drop a downloaded One Link artifact and compute SHA-256
+// locally via Web Crypto. Comparison only occurs when the release metadata
+// endpoint actually publishes an artifact-bound reference hash.
 //
 // Hash output format MUST match the worker's X-Artifact-SHA256 header
 // (hex, lowercase, no prefix). The header is opt-in CORS-exposed via
 // Access-Control-Expose-Headers so the fetch below can read it.
 //
 // On mismatch we render a red panel + an explicit "do not run" line.
-// On success we render a green panel + the matching hash + a link to
-// the attestation chain.
+// A checksum match is not presented as a signature. The UI reaches a green
+// authenticated verdict only if the metadata explicitly marks the signature
+// verified; the current rolling channel does not.
 // ---------------------------------------------------------------------------
-function osFromFilename(name) {
+function platformSpecFromFilename(name) {
   const n = (name || "").toLowerCase();
-  if (n.endsWith(".exe"))                          return "windows";
-  if (n.endsWith(".dmg") || n.includes("macos"))   return "macos";
-  if (n.endsWith(".apk") || n.includes("android")) return "android";
-  if (n.endsWith(".tar.gz") && n.includes("source")) return "source";
-  if (n.endsWith(".tar.gz") || n.endsWith(".appimage") ||
-      n.endsWith(".deb")    || n.endsWith(".rpm"))     return "linux";
+  if (/^one-link-setup-(x86_64|arm64)\.exe$/.test(n)) {
+    return `windows-${n.includes('arm64') ? 'arm64' : 'x86_64'}`;
+  }
+  if (/^one-link-windows-(x86_64|arm64)\.zip$/.test(n)) {
+    return `windows-${n.includes('arm64') ? 'arm64' : 'x86_64'}-zip`;
+  }
+  if (/^one-link-macos-(arm64)\.(dmg|zip)$/.test(n)) {
+    return `macos-arm64${n.endsWith('.zip') ? '-zip' : ''}`;
+  }
+  if (/^one-link-linux-(x86_64|arm64)\.(appimage|zip)$/.test(n)) {
+    const arch = n.includes('arm64') ? 'arm64' : 'x86_64';
+    return `linux-${arch}${n.endsWith('.zip') ? '-zip' : ''}`;
+  }
+  if (/^one-link-source\.(?:zip|tar\.gz)$/.test(n)) return "source";
   return null;
 }
 
@@ -2295,16 +2489,38 @@ async function sha256HexFile(file) {
   return sha256Hex(new Uint8Array(buf));
 }
 
-async function fetchPublishedHash(os) {
-  if (!os) return null;
+async function fetchReleaseIntegrity(platformSpec) {
+  if (!platformSpec) {
+    return { available: false, reason: 'filename does not identify an exact published artifact' };
+  }
   try {
-    const r = await fetch(`/download/${os}`, { method: "HEAD" });
-    if (!r.ok) return null;
-    const h = r.headers.get("X-Artifact-SHA256") || "";
-    // Strip optional "sha256-" or "0x" prefix; normalize to lowercase hex.
-    return h.replace(/^sha256-/i, "").replace(/^0x/i, "").toLowerCase() || null;
-  } catch {
-    return null;
+    const r = await fetch(`/download/${encodeURIComponent(platformSpec)}`, {
+      headers: { Accept: 'application/json' },
+    });
+    if (!r.ok) {
+      return { available: false, reason: `release metadata returned ${r.status}` };
+    }
+    const data = await r.json();
+    const raw = typeof data?.integrity?.sha256 === 'string'
+      ? data.integrity.sha256
+      : '';
+    const sha256 = raw.replace(/^sha256[-:]/i, '').replace(/^0x/i, '').toLowerCase();
+    if (!/^[a-f0-9]{64}$/.test(sha256)) {
+      return {
+        available: false,
+        reason: 'no artifact-bound reference hash is published for this channel',
+        release: data?.release || null,
+      };
+    }
+    return {
+      available: true,
+      sha256,
+      signature: data?.integrity?.signature || 'not-published',
+      attestation: data?.integrity?.attestation || 'not-published',
+      release: data?.release || null,
+    };
+  } catch (e) {
+    return { available: false, reason: `release metadata unavailable: ${e?.message || e}` };
   }
 }
 
@@ -2318,8 +2534,9 @@ function renderVerifyResult(state, payload) {
 
 async function runVerifyDownload(file) {
   if (!file) return;
+  const safeName = escapeHtml(file.name);
   renderVerifyResult("pending",
-    `<div><span class="label">file</span> ${file.name} <span class="ol-soft-text">(${(file.size / 1048576).toFixed(2)} MB)</span></div>` +
+    `<div><span class="label">file</span> ${safeName} <span class="ol-soft-text">(${(file.size / 1048576).toFixed(2)} MB)</span></div>` +
     `<div><span class="label">status</span> hashing locally with SHA-256 (no upload)...</div>`
   );
 
@@ -2328,39 +2545,49 @@ async function runVerifyDownload(file) {
     localHex = await sha256HexFile(file);
   } catch (e) {
     renderVerifyResult("fail",
-      `<div><span class="label">file</span> ${file.name}</div>` +
-      `<div><span class="label">status</span> <span class="fail">could not hash file: ${e?.message || e}</span></div>`
+      `<div><span class="label">file</span> ${safeName}</div>` +
+      `<div><span class="label">status</span> <span class="fail">could not hash file: ${escapeHtml(e?.message || e)}</span></div>`
     );
     return;
   }
 
-  const os = osFromFilename(file.name);
-  const publishedHex = await fetchPublishedHash(os);
+  const platformSpec = platformSpecFromFilename(file.name);
+  const integrity = await fetchReleaseIntegrity(platformSpec);
 
-  if (!publishedHex) {
+  if (!integrity.available) {
     renderVerifyResult("pending",
-      `<div><span class="label">file</span> ${file.name} <span class="ol-soft-text">(${(file.size / 1048576).toFixed(2)} MB)</span></div>` +
+      `<div><span class="label">file</span> ${safeName} <span class="ol-soft-text">(${(file.size / 1048576).toFixed(2)} MB)</span></div>` +
       `<div><span class="label">your hash</span> <span class="hash">${localHex}</span></div>` +
-      `<div><span class="label">status</span> we could not auto-fetch the published hash for this filename. Compare your hash against the value on <a class="ol-cyan-text" href="/download/">/download/</a> by hand.</div>`
+      `<div><span class="label">verdict</span> <span class="ol-soft-text">NOT VERIFIED. ${escapeHtml(integrity.reason)}.</span></div>` +
+      `<div><span class="label">meaning</span> The local hash above identifies your bytes, but no trusted comparison or artifact signature was performed. Do not treat this result as proof of origin.</div>`
     );
     return;
   }
 
+  const publishedHex = integrity.sha256;
   const match = localHex === publishedHex;
-  if (match) {
+  const signatureVerified = integrity.signature === 'verified';
+  if (match && signatureVerified) {
     renderVerifyResult("ok",
-      `<div><span class="label">file</span> ${file.name} <span class="ol-soft-text">(${(file.size / 1048576).toFixed(2)} MB)</span></div>` +
+      `<div><span class="label">file</span> ${safeName} <span class="ol-soft-text">(${(file.size / 1048576).toFixed(2)} MB)</span></div>` +
       `<div><span class="label">your hash</span> <span class="hash ok">${localHex}</span></div>` +
-      `<div><span class="label">signed hash</span> <span class="hash ok">${publishedHex}</span></div>` +
-      `<div><span class="label">verdict</span> <span class="ok">MATCH. This is byte-for-byte the binary we signed.</span></div>` +
-      `<div><span class="label">next</span> Read the attestation chain at <a class="ol-cyan-text" href="/api/attest/${localHex}">/api/attest/${localHex}</a> if you want the source-commit + build-environment receipt.</div>`
+      `<div><span class="label">verified reference</span> <span class="hash ok">${publishedHex}</span></div>` +
+      `<div><span class="label">verdict</span> <span class="ok">AUTHENTICATED MATCH. The published signature and byte hash both verified.</span></div>`
     );
-    if (window.olFieldPulse) window.olFieldPulse("verify", 1.0);
+    if (window.olFieldPulse) window.olFieldPulse(1000);
+  } else if (match) {
+    renderVerifyResult("pending",
+      `<div><span class="label">file</span> ${safeName} <span class="ol-soft-text">(${(file.size / 1048576).toFixed(2)} MB)</span></div>` +
+      `<div><span class="label">your hash</span> <span class="hash">${localHex}</span></div>` +
+      `<div><span class="label">reference hash</span> <span class="hash">${publishedHex}</span></div>` +
+      `<div><span class="label">verdict</span> CHECKSUM MATCH ONLY. The reference is not backed by a published artifact signature.</div>` +
+      `<div><span class="label">meaning</span> This can detect transfer corruption. It does not prove who produced the file.</div>`
+    );
   } else {
     renderVerifyResult("fail",
-      `<div><span class="label">file</span> ${file.name} <span class="ol-soft-text">(${(file.size / 1048576).toFixed(2)} MB)</span></div>` +
+      `<div><span class="label">file</span> ${safeName} <span class="ol-soft-text">(${(file.size / 1048576).toFixed(2)} MB)</span></div>` +
       `<div><span class="label">your hash</span> <span class="hash fail">${localHex}</span></div>` +
-      `<div><span class="label">signed hash</span> <span class="hash">${publishedHex}</span></div>` +
+      `<div><span class="label">reference hash</span> <span class="hash">${publishedHex}</span></div>` +
       `<div><span class="label">verdict</span> <span class="fail">MISMATCH. Do not run this file.</span></div>` +
       `<div><span class="label">next</span> Re-download from <a class="ol-cyan-text" href="/download/">/download/</a>, or build from source.</div>`
     );
@@ -2563,22 +2790,24 @@ window.addEventListener('keydown', (ev) => {
 });
 
 // ---------------------------------------------------------------------------
-// 9a-sept. REBUILD-FROM-SOURCE VERIFIER  (/builders/ page)
+// 9a-sept. SOURCE-ARCHIVE AUTHENTICATOR  (/builders/ page)
 //
-// Downloads the signed source tar.gz, computes its SHA-256 in the browser,
-// fetches the matching attestation, verifies the ed25519 signature against
-// the pinned release pubkey, and confirms the downloaded bytes match the
-// attestation's declared sha256. Anyone with a network connection and a
-// browser can now reproduce-and-verify in one click.
+// Future path: if an artifact-bound source attestation is published, verify
+// its Ed25519 signature against the pinned release key and compare the archive
+// hash. This does not rebuild the software and is not a reproducibility check.
 // ---------------------------------------------------------------------------
-const SOURCE_ATTESTATION_SHA =
-  '08bf8205571093f62cd4ea99e3e6ef086a2e497fde12538ff03c350c402b4a35';
+const SOURCE_ATTESTATION_SHA = null;
 
 function wireRebuildFromSource() {
   const btn = $('#ol-rebuild-btn');
   const out = $('#ol-rebuild-out');
   const status = $('#ol-rebuild-status');
   if (!btn || !out) return;
+  if (btn.disabled || btn.dataset.releaseAttestation === 'unavailable' || !SOURCE_ATTESTATION_SHA) {
+    out.style.display = 'block';
+    out.textContent = 'No current artifact-bound source attestation is published.';
+    return;
+  }
 
   btn.addEventListener('click', async () => {
     btn.disabled = true;
@@ -2631,7 +2860,7 @@ function wireRebuildFromSource() {
 
     if (!shaMatches || !sizeMatches) {
       out.innerHTML = [
-        `<span class="d">// VERIFICATION FAILED. the bytes you received do not match the signed source.</span>`,
+        `<span class="d">// VERIFICATION FAILED. the archive does not match the signed artifact reference.</span>`,
         ``,
         `<span class="c">expected sha</span>  ${escapeHtml(expectedSha)}`,
         `<span class="c">computed sha</span>  <span class="ol-rose">${escapeHtml(actualSha)}</span>`,
@@ -2640,7 +2869,7 @@ function wireRebuildFromSource() {
       ].join('\n');
     } else {
       out.innerHTML = [
-        `<span class="d">// reproducibility check passed in ${dtTotal.toFixed(0)} ms</span>`,
+        `<span class="d">// source archive authentication passed in ${dtTotal.toFixed(0)} ms</span>`,
         `<span class="c">artifact</span>           ${escapeHtml(attest.doc.artifact.filename || 'one-link-source.tar.gz')}`,
         `<span class="c">version</span>            ${escapeHtml(attest.doc.artifact.version || '?')}`,
         `<span class="c">size</span>               ${bytes.length.toLocaleString()} bytes (${(bytes.length / 1024 / 1024).toFixed(2)} MB)`,
@@ -2730,15 +2959,18 @@ function wirePrivateRouteDemo() {
 // 10. LIVE PRESENCE WEBSOCKET  (other visitors on the page right now)
 //
 // Connects to /api/presence (WebSocket) and joins the ephemeral session
-// pool held in the MeshPresence Durable Object. The DO keeps zero PII:
-// just a per-session ephemeral id, an approximate geo bucket derived from
-// timezone (no IP geolocation), and a heartbeat ts. Disconnect = forgotten.
+// pool held in the MeshPresence Durable Object. Application state contains a
+// random per-session id, a coarse region supplied by the tab, and activity
+// timestamps. Cloudflare still receives ordinary connection metadata, and no
+// claim is made about provider logs. Closed or idle entries leave the DO's
+// in-memory session map; that is narrower than a universal deletion guarantee.
 //
 // What the visitor sees:
 //   * "N here right now" counter ticks live (presence bar top-right)
 //   * Visible visitor dots overlay the field background
-//   * Click a dot -> send an anonymous one-shot "ping" glyph to that
-//     visitor (Phase 2; the wire is here but no UI yet)
+//   * Click a dot -> request a pseudonymous website chat. Cloudflare relays
+//     handshake frames and ciphertext, sees connection metadata, and the peer
+//     can retain anything received.
 // ---------------------------------------------------------------------------
 
 const presence = {
@@ -2746,7 +2978,122 @@ const presence = {
   selfId: null,
   peers: new Map(),   // id -> { lat, lng, tsLastSeen }
   geoHint: null,
+  validated: false,
+  status: 'connecting',
+  welcomeTimer: null,
+  heartbeatTimer: null,
 };
+
+const PRESENCE_UI = {
+  en: {
+    connecting: 'connecting', unavailable: 'unavailable',
+    checking: 'checking website presence', unavailableLong: 'website presence unavailable',
+    here: n => n === 1 ? '1 here right now' : `${n} here right now`,
+    noPeers: 'open another tab or wait for someone', tapPeer: 'tap any glowing dot to chat',
+    startChat: 'Start a pseudonymous website chat',
+    chatAria: 'Pseudonymous website chat',
+    chatFoot: 'ephemeral &middot; no durable peer identity &middot; typing unlocks only after both sides report comparing all five SAS words over a separate trusted channel &middot; authentication depends on that honest external comparison &middot; Cloudflare relays ciphertext and sees metadata &middot; the peer can retain messages',
+  },
+  es: {
+    connecting: 'conectando', unavailable: 'no disponible',
+    checking: 'comprobando presencia del sitio', unavailableLong: 'presencia del sitio no disponible',
+    here: n => `${n} aquí ahora mismo`,
+    noPeers: 'abre otra pestaña o espera a alguien', tapPeer: 'toca un punto brillante para chatear',
+    startChat: 'Iniciar un chat seudónimo del sitio',
+    chatAria: 'Chat seudónimo del sitio',
+    chatFoot: 'efímero &middot; sin identidad duradera &middot; escribir solo se habilita cuando ambos declaran comparar las cinco palabras SAS por un canal de confianza separado &middot; la autenticación depende de esa comparación honesta &middot; Cloudflare retransmite el cifrado y ve metadatos &middot; el par puede conservar mensajes',
+  },
+  fr: {
+    connecting: 'connexion', unavailable: 'indisponible',
+    checking: 'vérification de la présence du site', unavailableLong: 'présence du site indisponible',
+    here: n => `${n} ici maintenant`,
+    noPeers: 'ouvrez un autre onglet ou attendez quelqu’un', tapPeer: 'touchez un point lumineux pour discuter',
+    startChat: 'Démarrer une discussion pseudonyme du site',
+    chatAria: 'Discussion pseudonyme du site',
+    chatFoot: 'éphémère &middot; aucune identité durable &middot; la saisie ne s’ouvre qu’après déclaration des deux côtés d’une comparaison des cinq mots SAS par un canal de confiance séparé &middot; l’authentification dépend de cette comparaison honnête &middot; Cloudflare relaie le chiffré et voit les métadonnées &middot; le pair peut conserver les messages',
+  },
+  de: {
+    connecting: 'verbindet', unavailable: 'nicht verfügbar',
+    checking: 'Website-Präsenz wird geprüft', unavailableLong: 'Website-Präsenz nicht verfügbar',
+    here: n => `${n} gerade hier`,
+    noPeers: 'öffne einen weiteren Tab oder warte', tapPeer: 'tippe auf einen leuchtenden Punkt zum Chatten',
+    startChat: 'Pseudonymen Website-Chat starten',
+    chatAria: 'Pseudonymer Website-Chat',
+    chatFoot: 'flüchtig &middot; keine dauerhafte Peer-Identität &middot; Eingabe erst, wenn beide Seiten den Vergleich aller fünf SAS-Wörter über einen getrennten vertrauenswürdigen Kanal melden &middot; Authentifizierung hängt von diesem ehrlichen Vergleich ab &middot; Cloudflare leitet Chiffretext weiter und sieht Metadaten &middot; der Peer kann Nachrichten behalten',
+  },
+  pt: {
+    connecting: 'a ligar', unavailable: 'indisponível',
+    checking: 'a verificar presença do site', unavailableLong: 'presença do site indisponível',
+    here: n => `${n} aqui agora`,
+    noPeers: 'abra outro separador ou aguarde alguém', tapPeer: 'toque num ponto luminoso para conversar',
+    startChat: 'Iniciar conversa pseudónima do site',
+    chatAria: 'Conversa pseudónima do site',
+    chatFoot: 'efémero &middot; sem identidade duradoura &middot; a escrita só abre após ambos declararem comparar as cinco palavras SAS por um canal de confiança separado &middot; a autenticação depende dessa comparação honesta &middot; Cloudflare retransmite o cifrado e vê metadados &middot; o par pode guardar mensagens',
+  },
+  it: {
+    connecting: 'connessione', unavailable: 'non disponibile',
+    checking: 'verifica della presenza del sito', unavailableLong: 'presenza del sito non disponibile',
+    here: n => `${n} qui adesso`,
+    noPeers: 'apri un’altra scheda o attendi qualcuno', tapPeer: 'tocca un punto luminoso per chattare',
+    startChat: 'Avvia una chat pseudonima del sito',
+    chatAria: 'Chat pseudonima del sito',
+    chatFoot: 'effimera &middot; nessuna identità durevole &middot; la scrittura si abilita solo quando entrambe le parti dichiarano di aver confrontato tutte le cinque parole SAS su un canale fidato separato &middot; l’autenticazione dipende da tale confronto onesto &middot; Cloudflare inoltra il cifrato e vede i metadati &middot; il peer può conservare i messaggi',
+  },
+};
+
+const PRESENCE_PEER_FRAME_TYPES = new Set([
+  'ping', 'chat-request', 'chat-accept', 'chat-confirm',
+  'chat-decline', 'chat-leave', 'chat-msg',
+]);
+
+function presenceUi() {
+  const language = (document.documentElement.lang || 'en').toLowerCase().split('-')[0];
+  return PRESENCE_UI[language] || PRESENCE_UI.en;
+}
+
+function clearPresenceTimers() {
+  if (presence.welcomeTimer) clearTimeout(presence.welcomeTimer);
+  if (presence.heartbeatTimer) clearInterval(presence.heartbeatTimer);
+  presence.welcomeTimer = null;
+  presence.heartbeatTimer = null;
+}
+
+function setPresenceStatus(status) {
+  presence.status = status;
+  const ui = presenceUi();
+  const bar = $('#ol-presence-bar');
+  const count = $('#ol-presence-count');
+  if (bar) bar.classList.remove('is-live');
+  if (count) count.textContent = status === 'connecting' ? ui.connecting : ui.unavailable;
+  for (const sel of ['#ol-hero-count', '#ol-mesh-count', '#ol-mesh-nodes', '#ol-node-count']) {
+    const el = $(sel);
+    if (el) el.textContent = '…';
+  }
+  const widgetCount = $('#ol-mesh-widget-count');
+  if (widgetCount) {
+    widgetCount.textContent = status === 'connecting' ? ui.checking : ui.unavailableLong;
+  }
+}
+
+function resetPresence(status = 'unavailable') {
+  clearPresenceTimers();
+  presence.validated = false;
+  presence.selfId = null;
+  presence.peers.clear();
+  setPresenceStatus(status);
+  renderPeerDots();
+  if (_meshVizApi && typeof _meshVizApi.setRealPeers === 'function') {
+    _meshVizApi.setRealPeers(null, null, new Map());
+  }
+}
+
+function validPresenceId(value) {
+  return typeof value === 'string' && /^[0-9a-f]{16}$/i.test(value);
+}
+
+function validPopulation(value) {
+  return Number.isInteger(value) && value >= 1 && value <= 100000;
+}
 
 function presenceGeoHint() {
   // Approximate longitude from timezone offset. NO IP geolocation. NO
@@ -2766,6 +3113,7 @@ function presenceGeoHint() {
 let _meshVizApi = null;
 
 function setPresenceCount(n) {
+  if (!presence.validated || !validPopulation(n)) return;
   const text = String(n);
   // Top-right ribbon on home page.
   const bar = $('#ol-presence-bar');
@@ -2793,25 +3141,23 @@ function setPresenceCount(n) {
 }
 
 function startPresence() {
-  // OPTIMISTIC SELF: show "1 here right now" + the self dot immediately on
-  // page load, before the WebSocket has connected. If the WS handshake fails
-  // (rare but happens on aggressive corporate firewalls / privacy extensions),
-  // the visitor still sees themselves in the widget. The local self id gets
-  // replaced with the real one when the welcome message arrives.
-  if (!presence.selfId) {
-    presence.selfId = 'local-' + Math.random().toString(16).slice(2, 10);
-    presence.geoHint = presenceGeoHint();
-    setPresenceCount(1);
-    renderPeerDots();
-  }
+  resetPresence('connecting');
+  presence.geoHint = presenceGeoHint();
 
-  if (!('WebSocket' in window)) return;
+  if (!('WebSocket' in window)) {
+    resetPresence('unavailable');
+    return;
+  }
   const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
   const url = `${proto}//${location.host}/api/presence`;
   try {
     const ws = new WebSocket(url);
     presence.ws = ws;
-    presence.geoHint = presenceGeoHint();
+    presence.welcomeTimer = setTimeout(() => {
+      if (presence.ws !== ws || presence.validated) return;
+      resetPresence('unavailable');
+      try { ws.close(1008, 'welcome timeout'); } catch {}
+    }, 8000);
 
     ws.addEventListener('open', () => {
       ws.send(JSON.stringify({
@@ -2824,22 +3170,44 @@ function startPresence() {
     ws.addEventListener('message', (ev) => {
       let msg;
       try { msg = JSON.parse(ev.data); } catch { return; }
+      const peerFrame = PRESENCE_PEER_FRAME_TYPES.has(msg?.type);
+      if (peerFrame && (
+        !presence.validated
+        || !validPresenceId(msg.from)
+        || !presence.peers.has(msg.from)
+      )) return;
       switch (msg.type) {
         case 'welcome': {
+          if (!validPresenceId(msg.self_id) || !validPopulation(msg.population)) {
+            resetPresence('unavailable');
+            try { ws.close(1008, 'invalid welcome'); } catch {}
+            return;
+          }
+          clearPresenceTimers();
+          presence.validated = true;
           presence.selfId = msg.self_id;
-          setPresenceCount(msg.population || 1);
+          presence.status = 'live';
+          presence.heartbeatTimer = setInterval(() => {
+            if (presence.ws === ws && ws.readyState === WebSocket.OPEN) {
+              try { ws.send(JSON.stringify({ type: 'heartbeat' })); } catch {}
+            }
+          }, 25000);
+          setPresenceCount(msg.population);
           renderPeerDots();        // render self the moment we have an id
           break;
         }
         case 'population': {
-          setPresenceCount(msg.n || 0);
+          if (presence.validated && validPopulation(msg.n)) setPresenceCount(msg.n);
           break;
         }
         case 'peers': {
+          if (!presence.validated || !Array.isArray(msg.peers)) break;
           presence.peers.clear();
-          for (const p of (msg.peers || [])) {
+          for (const p of msg.peers.slice(0, 5000)) {
+            if (!p || !validPresenceId(p.id) || !Number.isFinite(p.lat) || !Number.isFinite(p.lng)) continue;
+            if (p.lat < 0 || p.lat > 1 || p.lng < 0 || p.lng > 1) continue;
             if (p.id === presence.selfId) continue;
-            presence.peers.set(p.id, p);
+            presence.peers.set(p.id, { id: p.id, lat: p.lat, lng: p.lng });
           }
           renderPeerDots();        // re-render widget dot overlay
           // Also push to the /mesh/ big canvas so the dots are real peers
@@ -2850,7 +3218,7 @@ function startPresence() {
           break;
         }
         case 'ping': {
-          // someone sent us an anonymous ping
+          // A pseudonymous session id sent a ping through Cloudflare.
           const sender = presence.peers.get(msg.from);
           if (sender && typeof window.olPulseField === 'function') {
             window.olPulseField(sender.lng, 1 - sender.lat, 1.4);
@@ -2868,18 +3236,25 @@ function startPresence() {
     });
 
     ws.addEventListener('close', () => {
-      const bar = $('#ol-presence-bar');
-      if (bar) bar.classList.remove('is-live');
+      if (presence.ws !== ws) return;
+      presence.ws = null;
+      resetPresence('unavailable');
     });
-    ws.addEventListener('error', () => { /* silent; presence is optional */ });
+    ws.addEventListener('error', () => {
+      if (presence.ws === ws && !presence.validated) setPresenceStatus('unavailable');
+    });
   } catch (e) {
+    presence.ws = null;
+    resetPresence('unavailable');
     console.debug('[presence] offline (page still works)', e?.message);
   }
 }
 
 // ---------------------------------------------------------------------------
 // 10b. PEER-DOTS OVERLAY  (render real other visitors as glowing DOM dots
-// over the WebGPU field; clickable to send anonymous ephemeral pings)
+// over the WebGPU field; clickable to request pseudonymous website chat.
+// Cloudflare relays handshake frames and ciphertext, sees connection metadata,
+// and the receiving peer can retain messages.)
 // ---------------------------------------------------------------------------
 
 const TZ_REGION_LABELS = [
@@ -2915,20 +3290,20 @@ function mountMeshWidgetHead() {
   const title = document.createElement('a');
   title.className = 'ol-mesh-title';
   title.href = '/mesh/';
-  title.textContent = 'live mesh';
-  title.setAttribute('aria-label', 'Open the full live mesh page');
+  title.textContent = 'website presence';
+  title.setAttribute('aria-label', 'Open the website presence illustration');
 
   const count = document.createElement('span');
   count.className = 'ol-mesh-count';
   count.id = 'ol-mesh-widget-count';
-  count.textContent = '0 here right now';
+  count.textContent = presenceUi().checking;
 
   const toggle = document.createElement('button');
   toggle.type = 'button';
   toggle.className = 'ol-mesh-toggle';
   toggle.setAttribute('aria-controls', 'ol-peer-overlay');
   toggle.setAttribute('aria-expanded', 'true');
-  toggle.setAttribute('aria-label', 'Minimize live mesh widget');
+  toggle.setAttribute('aria-label', 'Minimize website presence widget');
   toggle.innerHTML = '<span aria-hidden="true">&minus;</span>';
 
   // Per-tab persistence (sessionStorage, not localStorage — disappears when
@@ -2941,7 +3316,7 @@ function mountMeshWidgetHead() {
     overlay.classList.toggle('is-collapsed', next);
     toggle.setAttribute('aria-expanded', next ? 'false' : 'true');
     toggle.setAttribute('aria-label',
-      next ? 'Expand live mesh widget' : 'Minimize live mesh widget');
+      next ? 'Expand website presence widget' : 'Minimize website presence widget');
     toggle.innerHTML = next
       ? '<span aria-hidden="true">+</span>'
       : '<span aria-hidden="true">&minus;</span>';
@@ -2992,20 +3367,24 @@ function renderPeerDots() {
 
   // The widget is bounded; dots live INSIDE its rect. We render them
   // positioned in the widget's own coordinate space (% of widget size),
-  // not % of viewport. The "live mesh" header sits at the top so we
+  // not % of viewport. The website-presence header sits at the top so we
   // reserve the upper ~26px for it.
-  const totalPeers = presence.peers.size + (presence.selfId ? 1 : 0);
+  const totalPeers = presence.validated
+    ? presence.peers.size + (presence.selfId ? 1 : 0)
+    : 0;
   overlay.dataset.count = String(totalPeers);
   overlay.classList.toggle('is-empty', totalPeers === 0);
 
   // Real DOM count (the ::after pseudo is suppressed once the head bar mounts).
   const countEl = document.getElementById('ol-mesh-widget-count');
   if (countEl) {
-    countEl.textContent =
-      totalPeers === 1 ? '1 here right now' : `${totalPeers} here right now`;
+    const ui = presenceUi();
+    countEl.textContent = presence.validated
+      ? ui.here(totalPeers)
+      : (presence.status === 'connecting' ? ui.checking : ui.unavailableLong);
   }
 
-  // Top margin (for the "live mesh / N here" header) and bottom margin
+  // Top margin (for the website-presence header) and bottom margin
   // (for the "tap a dot to chat" hint). Dots cluster in the middle.
   const yMin = 18;   // % inside the widget
   const yMax = 82;
@@ -3042,7 +3421,7 @@ function renderPeerDots() {
       dot.className = 'ol-peer-dot' + (isSelf ? ' is-self' : '');
       dot.dataset.peerId = id;
       if (!isSelf) {
-        dot.setAttribute('aria-label', 'Start anonymous chat with a stranger');
+        dot.setAttribute('aria-label', presenceUi().startChat);
         dot.dataset.label = regionForLng(p.lng);
         dot.addEventListener('click', () => sendPing(id, dot));
       }
@@ -3073,9 +3452,10 @@ function renderPeerDots() {
     hint.className = 'ol-peer-hint-inline';
     overlay.appendChild(hint);
   }
-  hint.textContent = presence.peers.size === 0
-    ? 'open another tab or wait for someone'
-    : 'tap any glowing dot to chat';
+  const ui = presenceUi();
+  hint.textContent = !presence.validated
+    ? (presence.status === 'connecting' ? ui.checking : ui.unavailableLong)
+    : (presence.peers.size === 0 ? ui.noPeers : ui.tapPeer);
 
   // Hide the old standalone peer-hint pill if present (legacy element).
   const oldHint = $('#ol-peer-hint');
@@ -3124,28 +3504,34 @@ function flashIncomingPing(fromId) {
 }
 
 // ---------------------------------------------------------------------------
-// STRANGER CHAT  (anonymous, ephemeral, server-relayed)
+// STRANGER CHAT  (pseudonymous, ephemeral, Cloudflare-relayed)
 // ---------------------------------------------------------------------------
 //
 // State machine per peer:
-//   idle -> requesting -> open -> closed
-//                  \--> declined
+//   idle -> requesting -> handshake -> sas-pending -> open -> closed
+//                  \-------------------------------> declined
 //
 // We hold at most one active chat at a time (the panel is singleton).
 // Closing the panel sends chat-leave to the other side and resets to idle.
 //
-// All messages flow through the MeshPresence Durable Object. The DO
-// forwards but never stores. Messages are NOT end-to-end encrypted in
-// this version; the chat panel surfaces that fact in the footer.
+// Handshake frames and ciphertext flow through the MeshPresence Durable
+// Object. Its application code forwards rather than deliberately persisting
+// them. Chat content is sealed in-browser after an ephemeral ol_pair_qr key
+// agreement. Typing remains locked until both clients send an encrypted
+// confirmation that their users compared all five SAS words through a separate
+// trusted channel. The chat has no durable peer identity; authentication is
+// only as strong as that external comparison. Cloudflare still sees connection
+// metadata and the peer can retain messages.
 // ---------------------------------------------------------------------------
 
 const chat = {
   active: null,           // { peerId, state, hue, label, role, key, sas, inviter, scanner, inviteHex }
   pendingRequest: null,   // { peerId, hue, label, inviteHex }
   pqModule: null,         // lazy-loaded ol_pair_qr WASM module
+  sasTimer: null,
 };
 
-// ---------- E2EE helpers (WebCrypto AES-GCM-256 over the ol_pair_qr chain key) ----------
+// ---------- Content-encryption helpers over an ephemeral, SAS-gated key ----------
 
 async function ensurePqModule() {
   if (chat.pqModule) return chat.pqModule;
@@ -3190,17 +3576,54 @@ function hexDecode(s) {
   return out;
 }
 
-async function sealChatText(key, plaintext) {
+function validHexFrame(value, maxBytes = 64 * 1024) {
+  return typeof value === 'string'
+    && value.length >= 2
+    && value.length <= maxBytes * 2
+    && value.length % 2 === 0
+    && /^[0-9a-f]+$/i.test(value);
+}
+
+function validBase64Frame(value, maxChars) {
+  return typeof value === 'string'
+    && value.length > 0
+    && value.length <= maxChars
+    && value.length % 4 === 0
+    && /^[A-Za-z0-9+/]*={0,2}$/.test(value);
+}
+
+const CHAT_AEAD_CONTEXT = new TextEncoder().encode('one-link-website-chat-v1');
+
+async function sealChatPayload(key, payload) {
   const iv = crypto.getRandomValues(new Uint8Array(12));
-  const pt = new TextEncoder().encode(plaintext);
-  const ct = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, pt);
+  const pt = new TextEncoder().encode(JSON.stringify({ v: 1, ...payload }));
+  if (pt.byteLength > 640) throw new Error('chat payload too large');
+  const ct = await crypto.subtle.encrypt(
+    { name: 'AES-GCM', iv, additionalData: CHAT_AEAD_CONTEXT, tagLength: 128 },
+    key,
+    pt
+  );
   return { iv_b64: b64encode(iv), ct_b64: b64encode(new Uint8Array(ct)) };
 }
-async function openChatText(key, iv_b64, ct_b64) {
+
+async function openChatPayload(key, iv_b64, ct_b64) {
   const iv = b64decode(iv_b64);
   const ct = b64decode(ct_b64);
-  const pt = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, ct);
-  return new TextDecoder().decode(pt);
+  if (iv.length !== 12 || ct.length < 16 || ct.length > 1024) {
+    throw new Error('invalid encrypted chat frame');
+  }
+  const pt = await crypto.subtle.decrypt(
+    { name: 'AES-GCM', iv, additionalData: CHAT_AEAD_CONTEXT, tagLength: 128 },
+    key,
+    ct
+  );
+  if (pt.byteLength > 640) throw new Error('decrypted chat payload too large');
+  const decoded = new TextDecoder('utf-8', { fatal: true }).decode(pt);
+  const payload = JSON.parse(decoded);
+  if (!payload || payload.v !== 1 || typeof payload.type !== 'string') {
+    throw new Error('invalid encrypted chat payload');
+  }
+  return payload;
 }
 
 function mountChatPanelIfMissing() {
@@ -3210,18 +3633,19 @@ function mountChatPanelIfMissing() {
   // /features/, etc. silently returned (panel === null inside openChatPanel).
   // Inject the markup once at boot if it's missing, so chat works everywhere.
   if (document.getElementById('ol-chat-panel')) return;
+  const ui = presenceUi();
   const wrap = document.createElement('div');
   wrap.innerHTML = `
 <div class="ol-ping-toast" id="ol-ping-toast" aria-live="polite" hidden>
   <span class="ol-ping-glyph" aria-hidden="true">⚓</span>
   <span class="ol-ping-text">someone said hello</span>
 </div>
-<div class="ol-chat-panel" id="ol-chat-panel" hidden role="dialog" aria-label="Anonymous stranger chat">
+<div class="ol-chat-panel" id="ol-chat-panel" hidden role="dialog" aria-label="${ui.chatAria}">
   <div class="ol-chat-head">
     <span class="ol-chat-dot" id="ol-chat-dot"></span>
     <span class="ol-chat-title" id="ol-chat-title">stranger</span>
     <span class="ol-chat-state" id="ol-chat-state">connecting</span>
-    <a href="#" class="ol-chat-on-mesh-link" id="ol-chat-on-mesh-link" aria-label="Open this chat on the live mesh page">see on the mesh &rarr;</a>
+    <a href="#" class="ol-chat-on-mesh-link" id="ol-chat-on-mesh-link" aria-label="Open this chat on the website presence illustration">see presence view &rarr;</a>
     <button type="button" class="ol-chat-close" id="ol-chat-close" aria-label="Close chat">&times;</button>
   </div>
   <div class="ol-chat-log" id="ol-chat-log" aria-live="polite"></div>
@@ -3229,7 +3653,7 @@ function mountChatPanelIfMissing() {
     <input type="text" id="ol-chat-input" maxlength="280" placeholder="say something kind..." autocomplete="off" aria-label="Message">
     <button type="submit" class="ol-chat-send" aria-label="Send">&rarr;</button>
   </form>
-  <div class="ol-chat-foot">ephemeral &middot; anonymous &middot; end-to-end encrypted</div>
+  <div class="ol-chat-foot">${ui.chatFoot}</div>
 </div>
 <div class="ol-chat-request-toast" id="ol-chat-request-toast" hidden role="alert">
   <div class="ol-chat-request-dot" id="ol-chat-request-dot"></div>
@@ -3305,6 +3729,8 @@ function openChatPanel(peerId) {
 function closeChatPanelLocal() {
   const els = chatPanelEls();
   if (els.panel) els.panel.hidden = true;
+  clearTimeout(chat.sasTimer);
+  chat.sasTimer = null;
   chat.active = null;
   // Clear the partner highlight on the canvas.
   if (_meshVizApi && typeof _meshVizApi.setChatPartner === 'function') {
@@ -3314,6 +3740,7 @@ function closeChatPanelLocal() {
 }
 
 function sendChatFrame(type, peerId, extra) {
+  if (!presence.validated || !validPresenceId(peerId) || !presence.peers.has(peerId)) return false;
   if (!presence.ws || presence.ws.readyState !== WebSocket.OPEN) return false;
   try {
     presence.ws.send(JSON.stringify({ type, to: peerId, ...(extra || {}) }));
@@ -3322,6 +3749,7 @@ function sendChatFrame(type, peerId, extra) {
 }
 
 async function startChatWith(peerId) {
+  if (!presence.validated || !validPresenceId(peerId) || !presence.peers.has(peerId)) return;
   if (peerId === presence.selfId) return;
   if (chat.active && chat.active.peerId !== peerId) {
     sendChatFrame('chat-leave', chat.active.peerId);
@@ -3333,6 +3761,7 @@ async function startChatWith(peerId) {
   chat.active = {
     peerId, state: 'connecting', hue: peerHue(peerId), label: peerLabel(peerId),
     role: 'inviter', inviter: null, key: null, sas: null,
+    localSasConfirmed: false, remoteSasConfirmed: false,
   };
   openChatPanel(peerId);
   // Collapse the live-mesh widget so the chat panel (same bottom-right
@@ -3343,19 +3772,19 @@ async function startChatWith(peerId) {
     const toggle = meshWidget.querySelector('.ol-mesh-toggle');
     if (toggle) {
       toggle.setAttribute('aria-expanded', 'false');
-      toggle.setAttribute('aria-label', 'Expand live mesh widget');
+      toggle.setAttribute('aria-label', 'Expand website presence widget');
       toggle.innerHTML = '<span aria-hidden="true">+</span>';
     }
     try { sessionStorage.setItem('ol.mesh.collapsed', '1'); } catch {}
   }
 
   // Inviter side. Build a real ol_pair_qr Invite + send invite bytes
-  // alongside the chat-request so the recipient can scan immediately
-  // and complete a real handshake instead of agreeing in plaintext.
+  // alongside the chat-request so the recipient can complete the ephemeral
+  // key exchange before the mandatory external SAS gate.
   let inviter;
   try {
     const m = await ensurePqModule();
-    inviter = new m.OlInviter(1_900_000_000n, `chat:${presence.selfId?.slice(0, 8) || 'anon'}`);
+    inviter = new m.OlInviter(1_900_000_000n, `chat:${presence.selfId?.slice(0, 8) || 'pending'}`);
   } catch (e) {
     const errMsg = (e && (e.message || String(e))) || 'unknown error';
     console.warn('[chat] inviter init failed:', errMsg, e);
@@ -3388,7 +3817,8 @@ async function startChatWith(peerId) {
     note.style.cssText = 'color: var(--ol-text-soft); font-family: var(--ol-mono); font-size: 0.82rem; padding: 0.7rem 0.2rem; line-height: 1.5;';
     note.innerHTML =
       'request sent. they will see a <strong class="ol-cyan-text">someone wants to talk</strong> toast in their top-right corner.' +
-      '<br><br>they click <strong class="ol-cyan-text">say hi</strong> &rarr; both panels flip to <strong class="ol-green-text">live</strong> &rarr; typing is enabled.';
+      '<br><br>after they accept, compare all five SAS words over a <strong class="ol-cyan-text">separate trusted channel</strong>. ' +
+      'typing unlocks only after both sides confirm that external comparison.';
     els.log.appendChild(note);
   }
 }
@@ -3398,7 +3828,7 @@ async function handleChatRequest(fromId, msg) {
     sendChatFrame('chat-decline', fromId);
     return;
   }
-  if (!msg || typeof msg.invite_hex !== 'string') {
+  if (!msg || !validHexFrame(msg.invite_hex)) {
     sendChatFrame('chat-decline', fromId);
     return;
   }
@@ -3461,6 +3891,7 @@ async function acceptOrDeclineRequest(accept) {
   chat.active = {
     peerId: req.peerId, state: 'handshake', hue: req.hue, label: req.label,
     role: 'scanner', scanner, key: null, sas: scanner.sas,
+    localSasConfirmed: false, remoteSasConfirmed: false,
   };
   openChatPanel(req.peerId);
   setChatState('handshake', 'is-pending');
@@ -3470,16 +3901,13 @@ async function acceptOrDeclineRequest(accept) {
 
 async function handleChatAccept(fromId, msg) {
   if (!chat.active || chat.active.peerId !== fromId || chat.active.role !== 'inviter') return;
-  if (!msg || typeof msg.response_hex !== 'string' || !chat.active.inviter) return;
+  if (!msg || !validHexFrame(msg.response_hex) || !chat.active.inviter) return;
   try {
     const sas = chat.active.inviter.receiveResponse(hexDecode(msg.response_hex));
     chat.active.sas = sas;
     const [confirmBytes, chainKey] = chat.active.inviter.confirm();
     chat.active.key = await importChatKey(chainKey);
-    chat.active.state = 'open';
-    setChatState(sasShort(sas), 'is-live');
-    appendChatMsg('end-to-end encrypted. SAS: ' + sas, 'system');
-    enableChatInput(true);
+    beginSasVerification(sas);
     sendChatFrame('chat-confirm', fromId, { confirm_hex: hexEncode(confirmBytes) });
   } catch (e) {
     appendChatMsg('handshake failed: ' + (e?.message || String(e)), 'system');
@@ -3489,26 +3917,140 @@ async function handleChatAccept(fromId, msg) {
 
 async function handleChatConfirm(fromId, msg) {
   if (!chat.active || chat.active.peerId !== fromId || chat.active.role !== 'scanner') return;
-  if (!msg || typeof msg.confirm_hex !== 'string' || !chat.active.scanner) return;
+  if (!msg || !validHexFrame(msg.confirm_hex) || !chat.active.scanner) return;
   try {
     const chainKey = chat.active.scanner.receiveConfirm(hexDecode(msg.confirm_hex));
     chat.active.key = await importChatKey(chainKey);
-    chat.active.state = 'open';
     const sas = chat.active.sas; // already known scanner-side
-    setChatState(sasShort(sas), 'is-live');
-    appendChatMsg('end-to-end encrypted. SAS: ' + sas, 'system');
-    enableChatInput(true);
+    beginSasVerification(sas);
   } catch (e) {
     appendChatMsg('handshake failed: ' + (e?.message || String(e)), 'system');
     setChatState('failed', 'is-closed');
   }
 }
 
-function sasShort(sas) {
-  // Truncate to first 3 of 5 words for the header pill (full SAS in system msg).
-  if (typeof sas !== 'string') return 'open';
-  const words = sas.split(' ').slice(0, 3).join(' ');
-  return words || 'open';
+function beginSasVerification(sas) {
+  if (!chat.active || !chat.active.key || typeof sas !== 'string') return;
+  const words = sas.trim().split(/\s+/);
+  if (words.length !== 5 || !words.every(word => /^[a-z][a-z-]{1,31}$/i.test(word))) {
+    setChatState('invalid SAS', 'is-closed');
+    appendChatMsg('handshake returned an invalid SAS; chat remains locked.', 'system');
+    chat.active.state = 'closed';
+    chat.active.key = null;
+    return;
+  }
+  const normalizedSas = words.join(' ');
+  chat.active.state = 'sas-pending';
+  chat.active.sas = normalizedSas;
+  enableChatInput(false);
+  setChatState('verify all 5 SAS words', 'is-pending');
+  appendChatMsg(
+    'content is encrypted to an ephemeral handshake key, but typing stays locked until both sides '
+    + 'report comparing all five words over a separate trusted channel. No durable peer identity is created.',
+    'system'
+  );
+  appendSasGate(normalizedSas);
+  clearTimeout(chat.sasTimer);
+  const peerId = chat.active.peerId;
+  chat.sasTimer = setTimeout(() => {
+    if (!chat.active || chat.active.peerId !== peerId || chat.active.state === 'open') return;
+    setChatState('SAS verification timed out', 'is-closed');
+    appendChatMsg('chat closed because both sides did not confirm the SAS comparison in time.', 'system');
+    enableChatInput(false);
+    sendChatFrame('chat-leave', peerId);
+    chat.active.state = 'closed';
+    chat.active.key = null;
+  }, 120_000);
+  maybeOpenSasVerifiedChat();
+}
+
+function appendSasGate(sas) {
+  const { log } = chatPanelEls();
+  if (!log) return;
+  log.querySelector('.ol-chat-sas-gate')?.remove();
+  const gate = document.createElement('div');
+  gate.className = 'ol-chat-sas-gate';
+  gate.style.cssText = 'border:1px solid var(--ol-cyan); border-radius:10px; padding:0.8rem; margin:0.6rem 0; font-family:var(--ol-mono); font-size:0.78rem; line-height:1.5;';
+
+  const code = document.createElement('strong');
+  code.className = 'ol-cyan-text';
+  code.textContent = sas;
+  gate.appendChild(code);
+
+  const instruction = document.createElement('p');
+  instruction.textContent = 'Compare all five words with the peer using a separate trusted channel. Do not confirm from this relayed chat alone.';
+  gate.appendChild(instruction);
+
+  const confirm = document.createElement('button');
+  confirm.type = 'button';
+  confirm.className = 'btn btn-primary';
+  confirm.textContent = 'I compared all five words separately';
+  confirm.addEventListener('click', async () => {
+    confirm.disabled = true;
+    try {
+      await confirmSasLocally();
+    } catch (error) {
+      setChatState('SAS confirmation failed', 'is-closed');
+      appendChatMsg(`could not authenticate SAS confirmation: ${error?.message || error}`, 'system');
+      if (chat.active) {
+        chat.active.state = 'closed';
+        chat.active.key = null;
+      }
+    }
+  });
+  gate.appendChild(confirm);
+
+  const abort = document.createElement('button');
+  abort.type = 'button';
+  abort.className = 'btn btn-ghost';
+  abort.textContent = 'words differ / close';
+  abort.addEventListener('click', () => {
+    if (chat.active) sendChatFrame('chat-leave', chat.active.peerId);
+    closeChatPanelLocal();
+  });
+  gate.appendChild(abort);
+  log.appendChild(gate);
+  log.scrollTop = log.scrollHeight;
+}
+
+async function confirmSasLocally() {
+  if (!chat.active || chat.active.state !== 'sas-pending' || !chat.active.key) return;
+  const sealed = await sealChatPayload(chat.active.key, { type: 'sas-confirmed' });
+  if (!sendChatFrame('chat-msg', chat.active.peerId, sealed)) {
+    setChatState('presence socket unavailable', 'is-closed');
+    chat.active.state = 'closed';
+    chat.active.key = null;
+    return;
+  }
+  chat.active.localSasConfirmed = true;
+  setChatState(
+    chat.active.remoteSasConfirmed ? 'opening verified chat' : 'waiting for peer SAS confirmation',
+    'is-pending'
+  );
+  maybeOpenSasVerifiedChat();
+}
+
+function handleChatSasConfirmed(fromId) {
+  if (!chat.active || chat.active.peerId !== fromId) return;
+  if (chat.active.state !== 'sas-pending' || !chat.active.key) return;
+  chat.active.remoteSasConfirmed = true;
+  maybeOpenSasVerifiedChat();
+}
+
+function maybeOpenSasVerifiedChat() {
+  if (!chat.active || !chat.active.key) return;
+  if (!chat.active.localSasConfirmed || !chat.active.remoteSasConfirmed) return;
+  clearTimeout(chat.sasTimer);
+  chat.sasTimer = null;
+  chat.active.state = 'open';
+  chatPanelEls().log?.querySelector('.ol-chat-sas-gate')?.remove();
+  setChatState('SAS confirmed', 'is-live');
+  appendChatMsg(
+    'both sides reported an out-of-band comparison of all five SAS words. '
+    + 'This authenticates this ephemeral chat only to the extent that comparison was honest and used a trusted channel.',
+    'system'
+  );
+  enableChatInput(true);
 }
 
 function handleChatDecline(fromId) {
@@ -3530,10 +4072,26 @@ function handleChatLeave(fromId) {
 }
 async function handleChatMsg(fromId, msg) {
   if (!chat.active || chat.active.peerId !== fromId) return;
-  if (!chat.active.key || !msg?.iv_b64 || !msg?.ct_b64) return;
+  if (!chat.active.key
+      || !validBase64Frame(msg?.iv_b64, 24)
+      || !validBase64Frame(msg?.ct_b64, 1024)) return;
   try {
-    const text = await openChatText(chat.active.key, msg.iv_b64, msg.ct_b64);
-    appendChatMsg(text.slice(0, 280), 'other');
+    const payload = await openChatPayload(chat.active.key, msg.iv_b64, msg.ct_b64);
+    if (payload.type === 'sas-confirmed') {
+      handleChatSasConfirmed(fromId);
+      return;
+    }
+    if (payload.type !== 'message'
+        || chat.active.state !== 'open'
+        || !chat.active.localSasConfirmed
+        || !chat.active.remoteSasConfirmed
+        || typeof payload.text !== 'string'
+        || payload.text.length < 1
+        || payload.text.length > 280) {
+      return;
+    }
+    const text = payload.text;
+    appendChatMsg(text, 'other');
     // Fire a visible packet on the mesh canvas: peer -> self.
     // Hue scaled to message length so longer messages glow warmer.
     firePacketOnMesh(fromId, presence.selfId, text.length);
@@ -3580,7 +4138,7 @@ function wireChat() {
       const text = (els.input.value || '').trim().slice(0, 280);
       if (!text) return;
       try {
-        const sealed = await sealChatText(chat.active.key, text);
+        const sealed = await sealChatPayload(chat.active.key, { type: 'message', text });
         if (sendChatFrame('chat-msg', chat.active.peerId, sealed)) {
           appendChatMsg(text, 'self');
           els.input.value = '';
@@ -3601,8 +4159,9 @@ function wireChat() {
   if (els.toastAccept) els.toastAccept.addEventListener('click', () => acceptOrDeclineRequest(true));
   if (els.toastDecline) els.toastDecline.addEventListener('click', () => acceptOrDeclineRequest(false));
 
-  // "see on the mesh →" — open /mesh/?chat=peerId in same tab so the visitor
-  // watches their own messages animate as packets on the live mesh canvas.
+  // Open /mesh/?chat=peerId in the same tab so the visitor can use the larger
+  // illustrative website-presence canvas. Packet animation is illustrative,
+  // not measured routing telemetry.
   if (els.onMesh) {
     els.onMesh.addEventListener('click', (e) => {
       e.preventDefault();
@@ -3742,14 +4301,14 @@ function wireScrollHint() {
 }
 
 // ---------------------------------------------------------------------------
-// 13. PQ-SESSION STATUS BADGE  (drives the "deriving / verified" pill)
+// 13. LOCAL PQ SELF-TEST STATUS BADGE
 // ---------------------------------------------------------------------------
 function reportPqStatus() {
   const el = $('#ol-pq-status-text');
   if (!el) return;
   const tick = setInterval(() => {
     if (session.localKem) {
-      el.textContent = session.localKem.matched ? 'verified' : 'mismatch';
+      el.textContent = session.localKem.matched ? 'passed' : 'failed';
       el.style.color = session.localKem.matched ? 'var(--ol-green)' : 'var(--ol-rose)';
       clearInterval(tick);
     }
@@ -3913,7 +4472,9 @@ async function startMeshSolverColoring() {
 //   * Live tau_c, perturb_energy, total_energy from the storage buffer
 //     (if WebGPU is initialized) -- proves the compute pass is running
 //   * Crate versions of every loaded WASM module
-//   * Active capability advertisement from /api/capabilities
+//   * Capability requirement metadata from /api/capabilities, kept visibly
+//     non-authoritative unless a future signed daemon inventory passes schema
+//     validation
 //   * Service Worker status, presence count, session id
 //   * Mesh peer count
 // ---------------------------------------------------------------------------
@@ -3966,6 +4527,25 @@ async function fetchCapabilities() {
   } catch {}
 }
 
+function isCapabilityId(value) {
+  return typeof value === 'string' && /^[A-Z][A-Z0-9_]{1,63}$/.test(value);
+}
+
+function isAuthoritativeCapabilityAdvert(data) {
+  return Boolean(
+    data
+    && data.schema === 'daemon-capability-advert-v1'
+    && data.authoritative === true
+    && data.signed === true
+    && Array.isArray(data.capabilities)
+    && data.capabilities.length <= 256
+    && data.capabilities.every(isCapabilityId)
+    && typeof data.release_id === 'string'
+    && data.release_id.length > 0
+    && data.release_id.length <= 128
+  );
+}
+
 function renderTelemetry() {
   const el = $('#ol-tel-content');
   if (!el) return;
@@ -3989,9 +4569,20 @@ function renderTelemetry() {
     ['service worker',  $('#ol-sw-status')?.textContent || 'unknown'],
     ['presence count',  $('#ol-presence-count')?.textContent || 'offline'],
     ['peers visible',   String($$('#ol-peer-overlay .ol-peer-dot').length)],
-    ['__SECTION__',     'capability advert'],
-    ...(telemetry.caps?.capabilities || []).slice(0, 8).map(c => ['cap', c]),
-    ['issued at',       telemetry.caps?.issued_at?.split('.')[0]?.replace('T', ' ') || 'pending'],
+    ['__SECTION__',     'capability evidence'],
+    ['advert status',   isAuthoritativeCapabilityAdvert(telemetry.caps)
+      ? 'signed authoritative daemon inventory'
+      : 'unsigned website requirements; not daemon evidence'],
+    ...(
+      isAuthoritativeCapabilityAdvert(telemetry.caps)
+        ? telemetry.caps.capabilities
+        : (Array.isArray(telemetry.caps?.requirements)
+          ? telemetry.caps.requirements.filter(isCapabilityId)
+          : [])
+    ).slice(0, 8).map(c => [
+      isAuthoritativeCapabilityAdvert(telemetry.caps) ? 'cap' : 'requirement', c,
+    ]),
+    ['reviewed at',     telemetry.caps?.reviewed_at || 'pending'],
   ];
 
   el.innerHTML = rows.map(([k, v]) => {
@@ -4045,53 +4636,54 @@ function wireTelemetry() {
 }
 
 // ---------------------------------------------------------------------------
-// 16. CAP-ADVERT TRUTH ON /features/
+// 16. CAPABILITY-EVIDENCE BOUNDARY ON /features/
 //
-// Replaces the static feature tiles on /features/ with live data from
-// /api/capabilities. The page becomes the truth source for what the
-// daemon advertises right now, with a visible "as of HH:MM:SS" timestamp.
-// Falls back silently if /api/capabilities is offline.
+// The current endpoint publishes unsigned website requirements. It must never
+// be promoted as live daemon inventory. A future authoritative branch is
+// deliberately fail-closed behind a signed, versioned schema check.
 // ---------------------------------------------------------------------------
 async function startCapAdvertSync() {
   if (!location.pathname.startsWith('/features')) return;
-  const liveBadge = $('.ol-status .number');
-  // Find any container we can inject into; the page has a static matrix
-  // already so we surface live data as a banner ABOVE it without ripping
-  // out the static content (keeps SEO + non-JS readers covered).
   try {
-    const res = await fetch('/api/capabilities');
-    if (!res.ok) return;
+    const res = await fetch('/api/capabilities', { cache: 'no-store' });
+    if (!res.ok) throw new Error(`capability metadata returned ${res.status}`);
     const data = await res.json();
-    if (!data.capabilities) return;
-
-    // Find a tasteful slot: the "live from /api/capabilities" pill in the
-    // hero status. Replace its number text with the real count, and append
-    // a collapsed <details> at the BOTTOM of /features/ for anyone who
-    // wants to see the raw cap list. No more heavy banner above the hero.
+    const authoritative = isAuthoritativeCapabilityAdvert(data);
+    const requirements = Array.isArray(data?.requirements)
+      ? data.requirements.filter(isCapabilityId).slice(0, 256)
+      : [];
+    const visible = authoritative ? data.capabilities : requirements;
     const liveBadgePill = document.querySelector('.ol-status .number');
     const liveBadgeTime = document.querySelector('.ol-status > span:last-child');
-    if (liveBadgePill) liveBadgePill.textContent = `${data.capabilities.length} caps`;
+    if (liveBadgePill) {
+      liveBadgePill.textContent = authoritative
+        ? `${visible.length} signed caps`
+        : `${visible.length} requirements`;
+    }
     if (liveBadgeTime) {
-      const issued = data.issued_at?.split('.')[0]?.replace('T', ' ') || 'unknown';
-      liveBadgeTime.textContent = `as of ${issued} UTC`;
+      liveBadgeTime.textContent = authoritative
+        ? `release ${data.release_id}`
+        : 'unsigned website metadata; not live daemon telemetry';
     }
 
-    // Tiny collapsed details at the bottom of the page for the curious.
     const main = document.querySelector('main') || document.body;
     const det = document.createElement('section');
     det.className = 'section';
     det.style.cssText = 'padding-top: 0;';
-    const issued = data.issued_at?.split('.')[0]?.replace('T', ' ') || 'unknown';
+    const reviewed = typeof data.reviewed_at === 'string' ? data.reviewed_at : 'not stated';
     det.innerHTML = `
       <div class="container ol-tel-container">
         <details class="ol-tel-details">
           <summary class="ol-tel-summary">
-            <span class="ol-cyan-text">&#x25cf;</span>
-            raw capability advert
-            <span class="ol-tel-summary-meta">${data.capabilities.length} caps &middot; signed=${data.signed ? 'yes' : 'no'} &middot; ${issued} UTC</span>
+            <span class="${authoritative ? 'ol-green-text' : 'ol-cyan-text'}">&#x25cf;</span>
+            ${authoritative ? 'signed daemon capability inventory' : 'website capability requirements'}
+            <span class="ol-tel-summary-meta">${visible.length} entries &middot; authoritative=${authoritative ? 'yes' : 'no'} &middot; reviewed ${escapeHtml(reviewed)}</span>
           </summary>
+          <p class="ol-soft-note">${authoritative
+            ? 'This response passed the client schema gate. Release-bound acceptance evidence is still required for broad product claims.'
+            : 'These identifiers are unsigned, hard-coded product requirements. They are not proof that a daemon, release, relay, or transport implements them.'}</p>
           <div class="ol-tel-caps">
-            ${data.capabilities.map(c => `
+            ${visible.map(c => `
               <span class="ol-tel-cap-chip">${escapeHtml(c)}</span>
             `).join('')}
           </div>
@@ -4099,7 +4691,13 @@ async function startCapAdvertSync() {
       </div>
     `;
     main.appendChild(det);
-  } catch {}
+  } catch (error) {
+    const liveBadgePill = document.querySelector('.ol-status .number');
+    const liveBadgeTime = document.querySelector('.ol-status > span:last-child');
+    if (liveBadgePill) liveBadgePill.textContent = 'evidence unavailable';
+    if (liveBadgeTime) liveBadgeTime.textContent = 'no capability claim loaded';
+    console.debug('[capabilities] fail-closed:', error?.message || error);
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -4143,7 +4741,7 @@ function wireNavToggle() {
   markYou(meshVizApi);
   olTimed('pair-by-QR demo init', () => startPairDemo()); // parallel
   registerServiceWorker(); // offline-first kicks in on next visit
-  startPresence();         // live "N here right now"
+  startPresence();         // count is shown only after a validated welcome
   wireAmbientAudioToggle();
   wireScrollHint();
   reportPqStatus();
@@ -4155,12 +4753,12 @@ function wireNavToggle() {
   wireHwkeyDemo();             // /security/ TOFU device-fingerprint demo
   wireAttestationVerify();     // /download/ "verify this binary's attestation"
   wireVerifyThisSite();        // /security/ "verify this site, in your tab"
-  wireVerifyDownload();        // /verify-download/ drag-and-drop SHA-256 vs signed
-  wireRebuildFromSource();     // /builders/ "rebuild this site in your tab"
+  wireVerifyDownload();        // local SHA-256; authenticated only with a verified signed reference
+  wireRebuildFromSource();     // disabled until a current source attestation is published
   startMeshSolverColoring();   // /mesh/ peer-dot coloring via real solver
   wireTelemetry();             // ?-key system-telemetry overlay
   startCapAdvertSync();        // /features/ live cap-advert banner
   mountChatPanelIfMissing();   // ensure chat dialog HTML exists on every page
-  wireChat();                  // anonymous stranger chat overlay
+  wireChat();                  // pseudonymous, Cloudflare-relayed chat overlay
   startMouseReactiveField();   // cursor adds energy to the coherence field
 })();

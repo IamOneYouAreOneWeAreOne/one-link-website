@@ -33,9 +33,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r95">
-  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r95">
-  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r95">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r97">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r97">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r97">
 </head>
 <body>
 <a href="#main" class="skip-link">Aller au contenu</a>
@@ -73,8 +73,8 @@
   <section class="section">
     <div class="container">
       <span class="kicker">Les crates</span>
-      <h2>One Link, c'est <span class="grad">41 petits crates.</span></h2>
-      <p class="lede">Chacun fait une chose. Chacun est auditable de façon indépendante. Chacun compile en natif, en WASM, ou les deux. Réunis par le daemon.</p>
+      <h2>Pistes de preuve ; pas la preuve de chaque affirmation.</h2>
+      <p class="lede ol-mw-64ch">Preuve interne déclarée par les contributeurs uniquement. Aucun audit indépendant, artefact versionné, relevé exact de commande actuelle ni reproduction externe n’est publié ici ; vérification formelle, mesures temporelles et fuzz restent à étayer.</p>
 
       <div class="ol-grid ol-grid-2">
         <article class="ol-tile">
@@ -87,11 +87,11 @@
         </article>
         <article class="ol-tile">
           <h3>ol_coherence_field</h3>
-          <p>Solveur de Helmholtz amorti pour le champ de routage tau_c. 10 000 pairs en 1,74 ms sur un seul cœur CPU (bench criterion). Couple à l'homologie et au ratchet. La voie GPU arrive en v0.22.</p>
+          <p>Preuve interne déclarée par les contributeurs uniquement. Aucun audit indépendant, artefact versionné, relevé exact de commande actuelle ni reproduction externe n’est publié ici ; vérification formelle, mesures temporelles et fuzz restent à étayer.</p>
         </article>
         <article class="ol-tile">
           <h3>ol_transfer</h3>
-          <p>Le pipeline natif de transfert par morceaux. AEAD par morceau, rotation de clé tous les N, repli en codage fontaine pour les liens avec pertes.</p>
+          <p>Moteur intégré de récupération de morceaux sur QUIC : lectures locales idempotentes, lots bornés, échange d’inventaire Bloom et Bloom limité, et symboles fontaine facultatifs. Il déplace des octets ChunkRecord déjà formés ; l’AEAD des morceaux et le renouvellement de clés appartiennent à d’autres couches. Les tests de la crate ne prouvent pas à eux seuls le parcours complet de l’application.</p>
         </article>
         <article class="ol-tile">
           <h3>ol_ratchet</h3>
@@ -99,23 +99,23 @@
         </article>
         <article class="ol-tile">
           <h3>ol_capability</h3>
-          <p>Capacités à base de macaroons. Vérification en temps constant. Porte de solidité à 1M d'itérations. Portée granulaire par ressource.</p>
+          <p>Preuve interne déclarée par les contributeurs uniquement. Aucun audit indépendant, artefact versionné, relevé exact de commande actuelle ni reproduction externe n’est publié ici ; vérification formelle, mesures temporelles et fuzz restent à étayer.</p>
         </article>
         <article class="ol-tile">
           <h3>ol_threshold_recovery</h3>
-          <p>Partage k-parmi-n avec multi-signature BN, valeurs R par signataire. Survivre à un appareil perdu sans survivre à une fuite.</p>
+          <p>Partage de secret Shamir k-parmi-n sur GF(2^8), rafraîchissement proactif des parts et masquage facultatif lié à un témoin de champ. Il n’implémente ni multi-signature BN ni valeur R par signataire. Les bindings Python exposent les primitives ; la récupération entre appareils réels exige encore une preuve d’intégration versionnée.</p>
         </article>
         <article class="ol-tile">
           <h3>ol_confidential</h3>
-          <p>Trait de fournisseur de calcul confidentiel. Base logicielle (ChaCha20-Poly1305 avec Zeroize). Les backends matériels (TPM, Secure Enclave, SGX, SEV-SNP, TrustZone) se branchent.</p>
+          <p>Trait de fournisseur et base de scellement logiciel ChaCha20-Poly1305. Une fonction Windows TPM facultative ajoute une clé d’attestation ancrée dans le TPM, tandis que le scellement de la clé maître reste logiciel. Les backends Secure Enclave, SGX, SEV-SNP et TrustZone ne sont pas implémentés ; l’usage par le daemon et les garanties de plateforme exigent des preuves de build et d’exécution.</p>
         </article>
         <article class="ol-tile">
           <h3>ol_routing</h3>
-          <p>Sélection de chemin pilotée par tau_c. Les décisions de routage suivent le gradient du champ, elles ne parcourent pas une table de lookup.</p>
+          <p>Primitives de coût pondéré par tau et de Dijkstra sur RTT, gigue, débit et pertes observés, avec aides de corroboration. Un binding Python expose le calcul de graphe ; cette crate ne prouve pas que le trafic d’un daemon publié suit un gradient de champ.</p>
         </article>
         <article class="ol-tile">
           <h3>ol_homology</h3>
-          <p>Détection topologique de partitions. Repère un découpage de réseau en une seule ronde de gossip. 0% de faux positifs sur le fuzz de partition 4-régulier.</p>
+          <p>Preuve interne déclarée par les contributeurs uniquement. Aucun audit indépendant, artefact versionné, relevé exact de commande actuelle ni reproduction externe n’est publié ici ; vérification formelle, mesures temporelles et fuzz restent à étayer.</p>
         </article>
         <article class="ol-tile">
           <h3>ol_pqsig + ol_pqkem</h3>
@@ -123,7 +123,7 @@
         </article>
         <article class="ol-tile">
           <h3>ol_duress</h3>
-          <p>Une phrase secrète secondaire ouvre un compte vide crédible. Les maths vous donnent une issue en cas de contrainte.</p>
+          <p>Les primitives de politique DuressGate classent des phrases pré-calculées comme réelles, leurres ou rejetées, dérivent des secrets de volume et émettent un marqueur discret. Ce ne sont ni un système de fichiers, ni une interface de compte, ni une intégration au daemon publié, et elles ne prouvent pas qu’un leurre soit crédible sous contrainte.</p>
         </article>
       </div>
 
@@ -133,22 +133,12 @@
 
   <section class="section">
     <div class="container">
-      <span class="kicker">Reproductible par vous</span>
-      <h2>Reconstruisez ce site <span class="grad">dans votre onglet.</span></h2>
-      <p class="lede ol-mw-64ch">
-        Un clic télécharge l'archive source signée, calcule son SHA-256 localement, et la compare à la chaîne d'attestation. Si vous et nous arrivons au même hash, aucun humain n'a touché le résultat. Chaque version devrait être reproductible par quiconque dispose d'une connexion réseau et d'un navigateur. La voici.
-      </p>
-
+      <span class="kicker">Preuve de version indisponible</span>
+      <h2>Le code peut être inspecté, mais cette version n'est pas attestée.</h2>
+      <p class="lede ol-mw-64ch">L'archive source continue n'a ni signature liée à l'artefact ni attestation reproductible publiée. Vous pouvez cloner, compiler et calculer un hash local, mais cette page ne le présentera pas comme une vérification de version.</p>
       <div class="ol-private-demo ol-mt">
-        <button type="button" id="ol-rebuild-btn" class="btn btn-primary">
-          Vérifier l'archive source de ce site
-          <span class="arr" aria-hidden="true">&rarr;</span>
-        </button>
-        <span class="ol-status ol-status-inline" id="ol-rebuild-status">
-          <span class="dot"></span>
-          <span>téléchargement et hachage</span>
-        </span>
-        <pre class="ol-code ol-output-pre" id="ol-rebuild-out"></pre>
+        <button type="button" id="ol-rebuild-btn" class="btn btn-primary" data-release-attestation="unavailable" disabled aria-disabled="true">Attestation source non publiée</button>
+        <pre class="ol-code ol-output-pre" id="ol-rebuild-out">L'archive source continue n'a ni signature liée à l'artefact ni attestation reproductible publiée. Vous pouvez cloner, compiler et calculer un hash local, mais cette page ne le présentera pas comme une vérification de version.</pre>
       </div>
     </div>
   </section>
@@ -157,14 +147,9 @@
     <div class="container">
       <span class="kicker">Faites tourner votre propre relais</span>
       <h2>Devenez une partie du réseau.</h2>
-      <p class="lede">Un relais est un seul binaire qui détient et transmet des paquets chiffrés. Il ne peut rien lire. Il n'a pas besoin de compte. N'importe qui peut en faire tourner un.</p>
-      <pre class="ol-code"><span class="d"># sur un petit VPS, un Raspberry Pi, ou votre vieux portable</span>
-<span class="c">curl</span> <span class="a">https://weareone-link.org/relay/install.sh</span> | sh
-<span class="c">one-link-relay</span> start
-
-<span class="d"># c'est tout. votre relais apparaît sur le mesh en direct</span>
-<span class="d"># en quelques secondes, et commence à aider le réseau</span></pre>
-      <p class="ol-footnote-soft">Pas d'inscription. Pas de système de réputation que nous contrôlons. Le détecteur de topologie du réseau choisit les relais en bonne santé et contourne automatiquement ceux qui sont malades.</p>
+      <p class="lede">Le logiciel de relais est destiné à transmettre des paquets chiffrés sans clés de contenu, mais un opérateur peut observer les métadonnées de connexion, routage, durée et taille. Aucun installateur public en une ligne ni annuaire de relais de production n’est actuellement publié.</p>
+      <pre class="ol-code"># Aucun installateur public de relais. Compilez et examinez le code source du relais avant tout usage expérimental.</pre>
+      <p class="ol-footnote-soft">Un relais n’apparaît pas automatiquement sur cette carte de présence du site. Découverte, réputation, sélection selon l’état et basculement exigent une infrastructure déployée et testée.</p>
     </div>
   </section>
 
@@ -175,7 +160,7 @@
     <div class="footer-grid">
       <div>
         <a href="/fr/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
-        <p class="footer-tag">Un réseau libre et privé pour les messages, les fichiers et les appareils. À personne. À tout le monde.</p>
+        <p class="footer-tag">Logiciel libre en préversion pour la communication privée. Conçu vers une gouvernance communautaire ; les services actuels dépendent encore de mainteneurs, opérateurs et fournisseurs identifiables.</p>
         <p class="ol-mt-md ol-soft-text ol-mono">
           <strong>Lire en :</strong>
           <a class="ol-cyan-text" hreflang="en" href="/builders/">English</a> &middot;
@@ -186,7 +171,7 @@
           <a class="ol-cyan-text" hreflang="it" href="/it/builders/">Italiano</a>
         </p>
       </div>
-      <div><h3>Réseau</h3><ul><li><a href="/how-it-works/" hreflang="en">Comment ça marche</a></li><li><a href="/features/" hreflang="en">Fonctionnalités</a></li><li><a href="/mesh/" hreflang="en">Maillage en direct</a></li></ul></div>
+      <div><h3>Réseau</h3><ul><li><a href="/how-it-works/" hreflang="en">Comment ça marche</a></li><li><a href="/features/" hreflang="en">Fonctionnalités</a></li><li><a href="/mesh/" hreflang="en">Présence web</a></li></ul></div>
       <div><h3>Pour vous</h3><ul><li><a href="/download/" hreflang="en">Obtenir One Link</a></li><li><a href="/security/" hreflang="en">Sécurité</a></li><li><a href="/fr/verify-download/" hreflang="fr">Vérifier le téléchargement</a></li><li><a href="/fr/roadmap/" hreflang="fr">Feuille de route</a></li><li><a href="/accessibility/" hreflang="en">Accessibilité</a></li><li><a href="/transparency/" hreflang="en">Transparence</a></li><li><a href="/audits/" hreflang="en">Audits</a></li></ul></div>
       <div><h3>Pour les bâtisseurs</h3><ul><li><a href="/builders/" hreflang="en">Protocole et source</a></li><li><a href="/changelog/" hreflang="en">Journal des modifications</a></li><li><a href="/releases/" hreflang="en">Versions</a></li><li><a href="/mirror/" hreflang="en">Mettre en miroir ce site</a></li><li><a href="/download/source" hreflang="en" rel="noopener">Archive source</a></li><li><a href="https://github.com/IamOneYouAreOneWeAreOne/one-link" rel="noopener external">GitHub</a></li></ul></div>
     </div>
@@ -197,6 +182,6 @@
   </div>
 </footer>
 
-<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r95"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r97"></script>
 </body>
 </html>

@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta name="x-emitted-by" content="coherence-lang/1.0.3 one_link.ssg.build">
-  <!-- Route: /privacy/ / build: 2026-05-16T00:00:00Z / source: pipeline/ssg/src/one_link_build.cl -->
+  <meta name="x-truth-rendered-by" content="scripts/apply_release_truth.py">
+  <!-- Release-truth copy reviewed 2026-07-22; historical SSG byte provenance is not asserted. -->
+  <meta name="x-truth-rendered-by" content="scripts/apply_release_truth.py">
+  <!-- Release-truth copy reviewed 2026-07-22; historical SSG byte provenance is not asserted. -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Privacy - One Link collects nothing</title>
-  <meta name="description" content="We collect nothing. No email. No phone. No analytics. No cookies. No tracking. The architecture is the policy.">
+  <title>Privacy and data processing - One Link</title>
+  <meta name="description" content="One Link has no application signup or advertising analytics, while Cloudflare, GitHub, relays, Durable Objects, and R2 still process scoped network and service data.">
   <link rel="canonical" href="https://weareone-link.org/privacy/">
   <link rel="alternate" hreflang="en" href="https://weareone-link.org/privacy/">
   <link rel="alternate" hreflang="es" href="https://weareone-link.org/es/privacy/">
@@ -21,9 +23,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r95">
-  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r95">
-  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r95">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r97">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r97">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r97">
   <meta name="theme-color" content="#04060b" media="(prefers-color-scheme: dark)">
   <meta name="theme-color" content="#f0f4f8" media="(prefers-color-scheme: light)">
 </head>
@@ -48,33 +50,19 @@
   <section class="hero ol-pb">
     <div class="container">
       <span class="we-are-one">Privacy</span>
-      <h1>We collect <span class="grad">nothing.</span></h1>
+      <h1>What this site processes.</h1>
     </div>
   </section>
   <section class="section-tight">
     <div class="container ol-mw-680">
-      <p class="ol-prose">
-        No email. No phone number. No name. No analytics. No cookies. No tracking pixels. No fingerprinting. No third-party scripts. The Cloudflare Worker that serves this page does not log who visited or what they downloaded. The relays do not log anything about the people using the network.
-      </p>
-      <p class="ol-prose">
-        For complete honesty about the edge runtime: this site runs on Cloudflare Workers as our CDN. Cloudflare sees the IP of every request the way any CDN does. The "N here right now" pill uses a Cloudflare Durable Object that holds nothing but a per-session random ID for the lifetime of your tab. The /share/ Worker holds your ciphertext for up to 24 hours so the recipient can fetch it once. See <a class="ol-cyan-text" href="/transparency/">/transparency/</a> for the full sub-processor disclosure.
-      </p>
-      <p class="ol-prose">
-        Asked tomorrow who downloaded One Link or who paired with whom, the honest answer is "the information lives only on the devices the people own, where it belongs." That is by design. The architecture is the policy.
-      </p>
+      <p class="ol-prose">The site has no application signup, advertising analytics, cookies, tracking pixels, fingerprinting code, or third-party browser scripts. That does not mean no data is processed: hosting and transfer providers receive ordinary network requests.</p>
+      <p class="ol-prose">Cloudflare receives request metadata including IP addresses. MeshPresence holds a random per-tab ID, client-supplied approximate region, and activity time; ShareRate keys limits by a truncated subnet; R2 holds /share/ ciphertext; GitHub receives redirected artifact downloads.</p>
+      <p class="ol-prose">We do not operate an email, phone, or username account database. Pairing state normally lives on endpoints, but providers, relays, recipients, and network observers may hold or infer metadata. The project cannot promise that identifying a downloader or correspondent is impossible.</p>
       <p class="ol-prose">
         For the avoidance of doubt:
       </p>
-      <ul class="ol-list-prose">
-        <li>Your identity lives on your device. There is no user database.</li>
-        <li>The protocol is the business model. There is no advertising surface.</li>
-        <li>The work is free, forever. There is no transaction to record.</li>
-        <li>Your data stays with you. There is nothing to transfer because everything is yours from the start.</li>
-        <li>Your connections live between you and the people you chose. The relays carry sealed envelopes they cannot open.</li>
-      </ul>
-      <p class="ol-prose-mt">
-        Last updated 2026-05-18. <a class="ol-cyan-text" href="/security/">See the full security model</a>.
-      </p>
+      <ul class="ol-list-prose"><li>Identity and pairing material are primarily endpoint state; exports, backups, and recovery can create additional copies.</li><li>No advertising or behavioral analytics are intentionally embedded in the site.</li><li>The software is free to use today, not a guarantee of zero future hosting, network, hardware, or operator cost.</li><li>Share and relay services can temporarily hold ciphertext; recipients keep what they receive.</li><li>Connection providers can observe network metadata even when correctly implemented encryption protects content.</li></ul>
+      <p class="ol-prose-mt">Privacy inventory reviewed 2026-07-22.</p>
     </div>
   </section>
 </main>
@@ -83,9 +71,9 @@
     <div class="footer-grid">
       <div>
         <a href="/" class="site-logo"><span class="logo-mark"></span><span>One Link</span></a>
-        <p class="footer-tag">A free, private network for messages, files, and devices. Owned by no one. Belongs to everyone.</p>
+        <p class="footer-tag">Open-source pre-release software for private communication. Built toward community ownership; current services still depend on identifiable maintainers, operators, and infrastructure providers.</p>
       </div>
-      <div><h3>Network</h3><ul><li><a href="/how-it-works/">How it works</a></li><li><a href="/features/">Features</a></li><li><a href="/mesh/">Live mesh</a></li></ul></div>
+      <div><h3>Network</h3><ul><li><a href="/how-it-works/">How it works</a></li><li><a href="/features/">Features</a></li><li><a href="/mesh/">Website presence</a></li></ul></div>
       <div><h3>For you</h3><ul><li><a href="/download/">Get One Link</a></li><li><a href="/security/">Security</a></li><li><a href="/verify-download/">Verify download</a></li><li><a href="/roadmap/">Roadmap</a></li><li><a href="/accessibility/">Accessibility</a></li><li><a href="/transparency/">Transparency</a></li><li><a href="/audits/">Audits</a></li></ul></div>
       <div><h3>For builders</h3><ul><li><a href="/builders/">Protocol &amp; source</a></li><li><a href="/changelog/">Changelog</a></li><li><a href="/releases/">Releases</a></li><li><a href="/mirror/">Mirror this site</a></li><li><a href="/download/source" rel="noopener">Source archive</a></li><li><a href="https://github.com/IamOneYouAreOneWeAreOne/one-link" rel="noopener external">GitHub</a></li></ul></div>
     </div>
@@ -95,6 +83,6 @@
     </div>
   </div>
 </footer>
-<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r95"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r97"></script>
 </body>
 </html>
