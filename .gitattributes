@@ -1,0 +1,7 @@
+# This repository ships a SIGNED static bundle: scripts/rehash-manifest.py
+# hashes the exact working-tree bytes and scripts/sign-manifest.py signs that
+# manifest with the offline key. Git line-ending normalization silently
+# rewrites blobs (CRLF -> LF) between the signing machine and CI/deploy
+# checkouts, which breaks every signed hash. Content here is therefore
+# byte-exact: no text conversion, ever, on any platform.
+* -text
