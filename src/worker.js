@@ -373,7 +373,15 @@ async function attestation(env, sha) {
         error: "release attestation unavailable",
         sha: normalizedSha,
         status: "not-published",
-        note: "No attestation is published for the current rolling build.",
+        // Say WHICH attestation is missing. GitHub build provenance IS
+        // published for the rolling artifacts, so a bare "no attestation"
+        // understates what a user can check, while this endpoint's stronger
+        // claim (an Ed25519-signed document bound to the artifact and verified
+        // against a pinned key) genuinely does not exist yet.
+        note:
+          "No One Link signed artifact-bound attestation is published for the "
+          + "current rolling build. A GitHub build-provenance attestation is "
+          + "published separately: verify it with gh attestation verify.",
       },
       { status: 404 }
     );
