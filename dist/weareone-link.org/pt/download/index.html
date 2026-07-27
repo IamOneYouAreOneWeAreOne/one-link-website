@@ -31,9 +31,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r97">
-  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r97">
-  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r97">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r98">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r98">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r98">
 </head>
 <body>
 <a href="#main" class="skip-link">Saltar para o conteúdo</a>
@@ -61,7 +61,7 @@
     <div class="container">
       <span class="we-are-one">Canal de build atual</span>
       <h1>Descarregue com o estado das provas visível.</h1>
-      <p class="lede">Os artefactos de desktop são builds alfa contínuos e mutáveis do canal auto-latest do GitHub. Não são uma versão imutável. Não estão publicadas assinaturas de artefacto, assinatura do editor, provas de build reproduzível ou atestações de proveniência.</p>
+      <p class="lede">Os artefactos de desktop são builds alfa contínuos e mutáveis do canal auto-latest do GitHub. Não são uma versão imutável. Cada artefacto inclui uma atestação de proveniência de build do GitHub, verificável com gh attestation verify, que prova que o ficheiro saiu do fluxo de publicação deste projecto e não de terceiros. Não estão publicadas assinaturas de artefacto, assinatura do editor ou provas de build reproduzível.</p>
       <div class="cta-row">
         <a href="#platforms" class="btn btn-primary btn-large">Escolha a plataforma exata <span class="arr" aria-hidden="true">&rarr;</span></a>
         <a href="https://github.com/IamOneYouAreOneWeAreOne/one-link/releases/tag/auto-latest" class="btn btn-ghost" rel="noopener external">Inspecionar artefactos no GitHub</a>
@@ -92,7 +92,7 @@
       <div class="ol-grid ol-grid-3">
         <article class="ol-tile"><h3>Hash local</h3><p>O navegador pode calcular SHA-256 sem enviar o ficheiro. Isso identifica os seus bytes, mas não prova quem os produziu.</p></article>
         <article class="ol-tile"><h3>Assinatura do artefacto</h3><p>Os builds contínuos não publicam assinatura de versão One Link, Authenticode do Windows nem notarização Apple Developer ID.</p></article>
-        <article class="ol-tile"><h3>Reprodutibilidade e proveniência</h3><p>Os builds contínuos não publicam resultado reproduzível byte a byte nem atestação vinculada ao artefacto.</p></article>
+        <article class="ol-tile"><h3>Reprodutibilidade e proveniência</h3><p>Os builds contínuos não publicam resultado reproduzível byte a byte. Cada artefacto inclui uma atestação de proveniência de build do GitHub, verificável com gh attestation verify neste repositório: liga esses bytes exactos ao fluxo de publicação que os emitiu, pelo que o envio de terceiros não pode passar pelo nosso. Não é um documento de atestação assinado e ligado ao artefacto da One Link e não permite reconstruir os bytes para comparar.</p></article>
       </div>
       <p class="ol-soft-note">Trate estes artefactos como builds de teste. Não contorne avisos do sistema supondo que este site verificou uma assinatura.</p>
       <div class="cta-row"><a href="/verify-download/" class="btn btn-primary">Calcular SHA-256 local</a></div>
@@ -130,6 +130,6 @@
   </div>
 </footer>
 
-<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r97"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r98"></script>
 </body>
 </html>

@@ -31,9 +31,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r97">
-  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r97">
-  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r97">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r98">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r98">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r98">
 </head>
 <body>
 <a href="#main" class="skip-link">Zum Inhalt springen</a>
@@ -61,7 +61,7 @@
     <div class="container">
       <span class="we-are-one">Aktueller Build-Kanal</span>
       <h1>Download mit sichtbarem Nachweisstatus.</h1>
-      <p class="lede">Die Desktop-Artefakte sind veränderliche kontinuierliche Alpha-Builds aus GitHubs auto-latest-Kanal. Sie sind keine unveränderliche versionierte Veröffentlichung. Artefaktsignaturen, Herausgebersignaturen, reproduzierbare Build-Nachweise und Herkunftsattestierungen sind nicht veröffentlicht.</p>
+      <p class="lede">Die Desktop-Artefakte sind veränderliche kontinuierliche Alpha-Builds aus GitHubs auto-latest-Kanal. Sie sind keine unveränderliche versionierte Veröffentlichung. Jedes Artefakt trägt eine GitHub-Build-Herkunftsattestierung, prüfbar mit gh attestation verify, die belegt, dass die Datei aus dem Veröffentlichungs-Workflow dieses Projekts stammt und nicht von Dritten. Artefaktsignaturen, Herausgebersignaturen und reproduzierbare Build-Nachweise sind nicht veröffentlicht.</p>
       <div class="cta-row">
         <a href="#platforms" class="btn btn-primary btn-large">Genaue Plattform wählen <span class="arr" aria-hidden="true">&rarr;</span></a>
         <a href="https://github.com/IamOneYouAreOneWeAreOne/one-link/releases/tag/auto-latest" class="btn btn-ghost" rel="noopener external">GitHub-Artefakte prüfen</a>
@@ -92,7 +92,7 @@
       <div class="ol-grid ol-grid-3">
         <article class="ol-tile"><h3>Lokaler Hash</h3><p>Der Browser kann SHA-256 ohne Upload berechnen. Das identifiziert Ihre Bytes, beweist aber nicht, wer sie erzeugt hat.</p></article>
         <article class="ol-tile"><h3>Artefaktsignatur</h3><p>Für die kontinuierlichen Builds sind keine One-Link-Releasesignatur, Windows-Authenticode-Signatur oder Apple-Developer-ID-Notarisierung veröffentlicht.</p></article>
-        <article class="ol-tile"><h3>Reproduzierbarkeit und Herkunft</h3><p>Für die kontinuierlichen Builds sind weder ein bytegleiches Reproduktionsergebnis noch eine artefaktgebundene Build-Attestierung veröffentlicht.</p></article>
+        <article class="ol-tile"><h3>Reproduzierbarkeit und Herkunft</h3><p>Für die kontinuierlichen Builds ist kein bytegleiches Reproduktionsergebnis veröffentlicht. Jedes Artefakt trägt jedoch eine GitHub-Build-Herkunftsattestierung, prüfbar mit gh attestation verify gegen dieses Repository: Sie bindet genau diese Bytes an den Veröffentlichungs-Workflow, der sie erzeugt hat, sodass der Upload eines Dritten nicht als unserer gelten kann. Es ist keine signierte, artefaktgebundene One-Link-Attestierung und erlaubt keinen Neubau der Bytes zum Vergleich.</p></article>
       </div>
       <p class="ol-soft-note">Behandeln Sie diese Artefakte als Test-Builds. Umgehen Sie keine Systemwarnung in der Annahme, diese Website habe eine Signatur geprüft.</p>
       <div class="cta-row"><a href="/verify-download/" class="btn btn-primary">Lokalen SHA-256 berechnen</a></div>
@@ -130,6 +130,6 @@
   </div>
 </footer>
 
-<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r97"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r98"></script>
 </body>
 </html>

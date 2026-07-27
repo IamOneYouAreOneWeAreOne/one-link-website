@@ -31,9 +31,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r97">
-  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r97">
-  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r97">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r98">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r98">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r98">
 </head>
 <body>
 <a href="#main" class="skip-link">Salta al contenuto</a>
@@ -61,7 +61,7 @@
     <div class="container">
       <span class="we-are-one">Canale build attuale</span>
       <h1>Scarica con lo stato delle prove visibile.</h1>
-      <p class="lede">Gli artefatti desktop sono build alfa continue e modificabili del canale auto-latest di GitHub. Non sono una release immutabile. Non sono pubblicate firme degli artefatti, firme dell'editore, prove di build riproducibile o attestazioni di provenienza.</p>
+      <p class="lede">Gli artefatti desktop sono build alfa continue e modificabili del canale auto-latest di GitHub. Non sono una release immutabile. Ogni artefatto porta un'attestazione di provenienza di build GitHub, verificabile con gh attestation verify, che dimostra che il file proviene dal flusso di pubblicazione di questo progetto e non da terzi. Non sono pubblicate firme degli artefatti, firme dell'editore o prove di build riproducibile.</p>
       <div class="cta-row">
         <a href="#platforms" class="btn btn-primary btn-large">Scegli la piattaforma esatta <span class="arr" aria-hidden="true">&rarr;</span></a>
         <a href="https://github.com/IamOneYouAreOneWeAreOne/one-link/releases/tag/auto-latest" class="btn btn-ghost" rel="noopener external">Ispeziona gli artefatti GitHub</a>
@@ -92,7 +92,7 @@
       <div class="ol-grid ol-grid-3">
         <article class="ol-tile"><h3>Hash locale</h3><p>Il browser può calcolare SHA-256 senza caricare il file. Identifica i byte in tuo possesso, ma non prova chi li ha prodotti.</p></article>
         <article class="ol-tile"><h3>Firma dell'artefatto</h3><p>Le build continue non pubblicano una firma di release One Link, Authenticode Windows o notarizzazione Apple Developer ID.</p></article>
-        <article class="ol-tile"><h3>Riproducibilità e provenienza</h3><p>Le build continue non pubblicano un risultato riproducibile byte per byte né un'attestazione legata all'artefatto.</p></article>
+        <article class="ol-tile"><h3>Riproducibilità e provenienza</h3><p>Le build continue non pubblicano un risultato riproducibile byte per byte. Ogni artefatto porta però un'attestazione di provenienza di build GitHub, verificabile con gh attestation verify su questo repository: lega quei byte esatti al flusso di pubblicazione che li ha emessi, così il caricamento di terzi non può spacciarsi per il nostro. Non è un documento di attestazione One Link firmato e legato all'artefatto e non consente di ricostruire i byte per confrontarli.</p></article>
       </div>
       <p class="ol-soft-note">Tratta questi artefatti come build di test. Non aggirare gli avvisi del sistema supponendo che questo sito abbia verificato una firma.</p>
       <div class="cta-row"><a href="/verify-download/" class="btn btn-primary">Calcola SHA-256 locale</a></div>
@@ -130,6 +130,6 @@
   </div>
 </footer>
 
-<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r97"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r98"></script>
 </body>
 </html>
