@@ -66,6 +66,52 @@ jobs:
         # checks this uses the verifier's own canonicalization function.
         run: node --test tests/release-attestation.test.mjs
 
+      - name: Refuse to publish proof for artifacts nobody can download
+        # The signed documents are minted offline against ONE set of artifact
+        # digests. Every rolling republish changes those digests, so a document
+        # set that was correct when minted goes stale the moment the download
+        # moves -- which it did within hours the first time. Publishing stale
+        # proof is worse than publishing none: a visitor hashing today's binary
+        # gets "no attestation on file", and a visitor hashing an OLD binary
+        # gets a valid-looking verdict for something we no longer ship.
+        #
+        # So compare the committed set against the LIVE release manifest and
+        # fail closed on any drift. Re-mint with scripts/build-attestation.py
+        # for the current release, then re-run this workflow.
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          curl -fsSL -o /tmp/live-manifest.txt \
+            https://github.com/IamOneYouAreOneWeAreOne/one-link/releases/download/auto-latest/manifest.txt
+          node -e "
+            const fs = require('fs');
+            const index = require('./dist/weareone-link.org/attestations/current-release.json');
+            const live = new Map(
+              fs.readFileSync('/tmp/live-manifest.txt', 'utf8')
+                .split(/\r?\n/).filter(Boolean)
+                .map(line => { const [d, n] = line.trim().split(/\s+/); return [n, d]; })
+            );
+            const problems = [];
+            for (const a of index.artifacts) {
+              const actual = live.get(a.filename);
+              if (!actual) problems.push(\`\${a.filename}: no longer published\`);
+              else if (actual !== a.sha256) problems.push(\`\${a.filename}: digest drifted\`);
+            }
+            for (const [name] of live) {
+              if (!index.artifacts.some(a => a.filename === name)) {
+                problems.push(\`\${name}: published but has no attestation\`);
+              }
+            }
+            if (problems.length) {
+              console.error('STALE ATTESTATION SET -- refusing to publish:');
+              for (const p of problems) console.error('  ' + p);
+              console.error('Re-mint against the current release, then retry.');
+              process.exit(1);
+            }
+            console.log(\`attestation set matches the live release (\${index.artifacts.length} artifacts)\`);
+          "
+
       - name: Create the bucket
         if: inputs.create_bucket
         env:
