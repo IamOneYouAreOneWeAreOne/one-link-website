@@ -1,0 +1,49 @@
+{
+  "release_tag": "auto-latest",
+  "channel": "rolling-prerelease",
+  "build_commit": "52f5b103bcce135f64a2814d464c2503cf8f88be",
+  "build_run_url": "https://github.com/IamOneYouAreOneWeAreOne/one-link/actions/runs/30229421588",
+  "note": "The attestation documents for EXACTLY these digests are the current release set. Other documents under /attestations/ are older or schema fixtures and must never be served as proof for what the download button ships today.",
+  "artifacts": [
+    {
+      "filename": "one-link-linux-arm64.AppImage",
+      "sha256": "6c1a49ae2f5a3bc92e417afc37419b861995d3e05393355f8acc388dc15e0b58"
+    },
+    {
+      "filename": "one-link-linux-arm64.zip",
+      "sha256": "2f066fe42defdca7060b9ecd9fdac4fc34b90e68957645a9abff85691766bb55"
+    },
+    {
+      "filename": "one-link-linux-x86_64.AppImage",
+      "sha256": "d0d19d8328c4fc5dbe4a91f7738bf9a3e2fce101299934dcd0630abce0a6b789"
+    },
+    {
+      "filename": "one-link-linux-x86_64.zip",
+      "sha256": "40fac62c0b49374b18e94d05c8cf5b282cda10f0097af41df902c4114a03db7e"
+    },
+    {
+      "filename": "one-link-macos-arm64.dmg",
+      "sha256": "e8125ab0622834e0d792bd0b830cb67857901d768efc238b4d4da20307d2fffd"
+    },
+    {
+      "filename": "one-link-macos-arm64.zip",
+      "sha256": "65c0e0d6473a09a8b1ea4d828b482fb48af838f63ccf767492b01acfcec8ced0"
+    },
+    {
+      "filename": "one-link-setup-arm64.exe",
+      "sha256": "98436468d883ecc1a29de9df6434ab472d3de5d3c4858b8f072ff2b1314fa8f3"
+    },
+    {
+      "filename": "one-link-setup-x86_64.exe",
+      "sha256": "cfe6dc7fedc408d66a74ce31bca47bb153e9a8f16384adb6975f6e713fae4247"
+    },
+    {
+      "filename": "one-link-windows-arm64.zip",
+      "sha256": "1b2319f84c14f80b96f6eb016f81a6a98640d15a8b28c81f0cb9097183213574"
+    },
+    {
+      "filename": "one-link-windows-x86_64.zip",
+      "sha256": "2af90397d6b130738438e66c09085c4dec342ca1d435c0a1508a14074e5c79b7"
+    }
+  ]
+}

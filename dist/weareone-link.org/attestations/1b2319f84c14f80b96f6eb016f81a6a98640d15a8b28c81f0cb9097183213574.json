@@ -1,0 +1,67 @@
+{
+  "$schema": "https://weareone-link.org/schemas/attestation-v2.json",
+  "artifact": {
+    "name": "one-link",
+    "version": "0.21.0-alpha.0",
+    "os": "windows",
+    "filename": "one-link-windows-arm64.zip",
+    "sha256": "1b2319f84c14f80b96f6eb016f81a6a98640d15a8b28c81f0cb9097183213574",
+    "blake3": "4d54851b2e9e70210f42550c8e4e30dfeeab341559a0d31228d9e28520586ffc",
+    "size_bytes": 59452418
+  },
+  "source": {
+    "repo": "https://github.com/IamOneYouAreOneWeAreOne/one-link",
+    "commit": "52f5b103bcce135f64a2814d464c2503cf8f88be",
+    "describe": "0.21.0-alpha.0+r98-rolling",
+    "license": "AGPL-3.0-or-later"
+  },
+  "build": {
+    "reproducible": "not-verified",
+    "builder": "github-actions",
+    "runner_environment": "github-hosted",
+    "workflow": "auto-build standalone binary",
+    "run_url": "https://github.com/IamOneYouAreOneWeAreOne/one-link/actions/runs/30229421588",
+    "started_at": "2026-07-27T01:16:18Z",
+    "finished_at": "2026-07-27T01:32:08Z",
+    "notes": [
+      "Built by the repository's GitHub Actions build matrix at the source commit recorded above, not on a maintainer machine.",
+      "reproducible=not-verified: nobody has rebuilt these exact bytes and compared them. This document attests WHO produced the artifact and WHAT its digests are, not that the build is reproducible."
+    ]
+  },
+  "corroboration": {
+    "github_build_provenance": {
+      "available": true,
+      "repo": "IamOneYouAreOneWeAreOne/one-link",
+      "verify": "gh attestation verify <file> --repo IamOneYouAreOneWeAreOne/one-link",
+      "note": "Independent of this document and signed by a different trust root (GitHub's Sigstore identity, not the One Link release key). It binds the bytes to the publishing workflow; this document binds them to the release key."
+    }
+  },
+  "verifier_url": "https://weareone-link.org/api/attest/1b2319f84c14f80b96f6eb016f81a6a98640d15a8b28c81f0cb9097183213574",
+  "chain": {
+    "previous_release_sha256": null,
+    "previous_signed_by": null,
+    "note": "this is the first signed release for this artifact line"
+  },
+  "deferred_signatures": [
+    {
+      "scheme": "ml-dsa-65",
+      "status": "deferred",
+      "note": "Real ML-DSA-65 signing requires the Rust offline release rig that has not yet been provisioned. The schema slot is intentionally absent rather than placeholder-filled."
+    }
+  ],
+  "notes": [
+    "Schema v2: every artifact field is REAL. Signature is real Ed25519 over the canonical JSON (sort_keys, no whitespace, excluding the signatures array).",
+    "Hybrid post-quantum signature path is deferred to the next offline-rig build cycle; the signed_payload_spec records exactly what bytes were signed so anyone can independently re-verify with the public key.",
+    "To verify: hex-decode the signature, hex-decode the pubkey, ed25519.verify(sig, canonical_attestation_payload(doc), pk)."
+  ],
+  "signed_payload_spec": "json(doc with 'signatures' key removed) sort_keys=True separators=(',',':') -> ed25519 sign(raw 32-byte release key) -> 64-byte sig",
+  "signed_payload_sha256": "sha256-852119d79d186f14c0cc1a3347dd9fb74635f4fe0a0a2489e4cde9b3a4b624ee",
+  "signatures": [
+    {
+      "scheme": "ed25519",
+      "signer": "release-signer-ed25519@weareone-link.org",
+      "public_key_hex": "68c961f1ce26faa39acdf66d457e49126d1498aecbbce15ab49fe192d715cb2e",
+      "signature_hex": "1138f535caf460dd296775a99fc318800767218aea0e31fbd84ee9fc69eeb55edb91a583c7c2bfaafb0f84696f39de40c8efe2b7c51368086cc094f946e40f0a"
+    }
+  ]
+}

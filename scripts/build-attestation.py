@@ -8,7 +8,13 @@ and write it to dist/weareone-link.org/attestations/<sha256>.json. Replaces
 the placeholder schema doc with one that carries:
 
   - REAL artifact SHA-256 + BLAKE3 + byte size
-  - REAL git commit + describe-tag of the source daemon repo
+  - REAL source commit (``--commit``, or local git when building locally)
+  - REAL build provenance, supplied explicitly and FAIL-CLOSED: the script
+    refuses to sign unless told where the bytes were built. It previously
+    hardcoded "Built locally with PyInstaller" plus fixed timestamps into a
+    document it then signed, which made the signature cover a false statement
+    for every CI-built artifact (that is, every artifact the download button
+    serves). A signature over invented metadata is worse than no attestation.
   - REAL Ed25519 signature over the canonical attestation bytes, using
     the offline release-signing key in .keys/release-ed25519.sk
   - HONEST "ml-dsa-65: deferred until Rust signer rig wired" marker
@@ -133,7 +139,44 @@ def main() -> int:
                         help="path to One_link source repo for git metadata")
     parser.add_argument("--name", default="one-link", help="artifact display name")
     parser.add_argument("--version", default="0.21.0", help="artifact version")
+    # Build provenance is FAIL-CLOSED. This script used to hardcode "Built
+    # locally with PyInstaller" and fixed 2026-05-17 timestamps into a document
+    # it then SIGNED. For any artifact built anywhere else -- every artifact the
+    # download button actually serves is built by GitHub Actions -- that made
+    # the signature cover a false statement, which is worse than publishing no
+    # attestation at all. The build block is now supplied explicitly, and the
+    # script refuses to sign if it was not told where the bytes came from.
+    parser.add_argument("--build-run-url", default=None,
+                        help="CI run URL that produced the artifact (implies github-actions)")
+    parser.add_argument("--build-started-at", default=None, help="RFC3339 build start")
+    parser.add_argument("--build-finished-at", default=None, help="RFC3339 build end")
+    parser.add_argument("--build-workflow", default=None, help="workflow that built it")
+    parser.add_argument("--commit", default=None,
+                        help="source commit the artifact was BUILT from (overrides local git)")
+    parser.add_argument("--describe", default=None, help="source describe/version label")
+    parser.add_argument("--build-local", action="store_true",
+                        help="the artifact was built on this machine (legacy path)")
+    parser.add_argument("--github-provenance-repo", default=None,
+                        help="repo whose GitHub build-provenance attestation corroborates this artifact")
     args = parser.parse_args()
+
+    if not args.build_local and not args.build_run_url:
+        print(
+            "!! refusing to sign: no build provenance supplied.\n"
+            "   Pass --build-run-url (with --build-started-at/--build-finished-at\n"
+            "   and --commit) for a CI build, or --build-local to assert this\n"
+            "   machine built it. A signature over invented build metadata is\n"
+            "   worse than no attestation."
+        )
+        return 2
+    if args.build_run_url and not (
+        args.build_started_at and args.build_finished_at and args.commit
+    ):
+        print(
+            "!! refusing to sign: --build-run-url requires --build-started-at, "
+            "--build-finished-at, and --commit"
+        )
+        return 2
 
     artifact = args.artifact.resolve()
     if not artifact.exists():
@@ -173,6 +216,62 @@ def main() -> int:
 
     os_label = args.os or infer_os(artifact.name)
 
+    # Reproducibility is reported as "not-verified", not "intent". No
+    # independent rebuild of these bytes exists, and a word like "intent"
+    # invites a reader to hear a property that was never measured.
+    if args.build_run_url:
+        build_block = {
+            "reproducible": "not-verified",
+            "builder": "github-actions",
+            "runner_environment": "github-hosted",
+            "workflow": args.build_workflow or "unknown",
+            "run_url": args.build_run_url,
+            "started_at": args.build_started_at,
+            "finished_at": args.build_finished_at,
+            "notes": [
+                "Built by the repository's GitHub Actions build matrix at the "
+                "source commit recorded above, not on a maintainer machine.",
+                "reproducible=not-verified: nobody has rebuilt these exact "
+                "bytes and compared them. This document attests WHO produced "
+                "the artifact and WHAT its digests are, not that the build is "
+                "reproducible.",
+            ],
+        }
+    else:
+        build_block = {
+            "reproducible": "not-verified",
+            "builder": "local-maintainer-machine",
+            "runner_environment": "untrusted-workstation",
+            "started_at": args.build_started_at or "unknown",
+            "finished_at": args.build_finished_at or "unknown",
+            "notes": [
+                "Built locally with PyInstaller --collect-all one_link_native.",
+                "reproducible=not-verified: no independent rebuild has "
+                "confirmed these bytes.",
+            ],
+        }
+
+    corroboration = {
+        "github_build_provenance": (
+            {
+                "available": True,
+                "repo": args.github_provenance_repo,
+                "verify": (
+                    "gh attestation verify <file> --repo "
+                    f"{args.github_provenance_repo}"
+                ),
+                "note": (
+                    "Independent of this document and signed by a different "
+                    "trust root (GitHub's Sigstore identity, not the One Link "
+                    "release key). It binds the bytes to the publishing "
+                    "workflow; this document binds them to the release key."
+                ),
+            }
+            if args.github_provenance_repo
+            else {"available": False}
+        ),
+    }
+
     doc = {
         "$schema": "https://weareone-link.org/schemas/attestation-v2.json",
         "artifact": {
@@ -184,20 +283,12 @@ def main() -> int:
         },
         "source": {
             "repo": "https://github.com/IamOneYouAreOneWeAreOne/one-link",
-            "commit": git_info["commit"],
-            "describe": git_info["describe"],
+            "commit": args.commit or git_info["commit"],
+            "describe": args.describe or git_info["describe"],
             "license": "AGPL-3.0-or-later",
         },
-        "build": {
-            "reproducible": "intent",
-            "compiler": "rustc 1.95+",
-            "started_at": "2026-05-17T00:00:00Z",
-            "finished_at": "2026-05-17T00:00:00Z",
-            "notes": [
-                "Built locally with PyInstaller --collect-all one_link_native.",
-                "Reproducibility property is an INTENT until the offline confidential-compute build rig is provisioned.",
-            ],
-        },
+        "build": build_block,
+        "corroboration": corroboration,
         "verifier_url": f"https://weareone-link.org/api/attest/{hashes['sha256']}",
         "chain": prev_link or {
             "previous_release_sha256": None,

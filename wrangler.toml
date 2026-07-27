@@ -76,7 +76,19 @@ head_sampling_rate = 0.01
 binding = "RELEASES"
 bucket_name = "one-link-releases"
 
-# attestations bucket: create when first signed release is published.
+# Attestations bucket. The signed documents now EXIST: every artifact the
+# download button serves has a real Ed25519 attestation under
+# dist/weareone-link.org/attestations/, verified against the key pinned in
+# live/bridge.js by tests/release-attestation.test.mjs.
+#
+# ORDER MATTERS. Uncommenting this binding before the bucket exists makes every
+# `wrangler deploy` fail, which takes the whole live site down with it. So:
+#   1. run the `publish release attestations` workflow with create_bucket=true
+#      (it uploads exactly the digests in attestations/current-release.json);
+#   2. only then uncomment the binding below AND set
+#      RELEASE_ATTESTATIONS_READY = "true" in [vars];
+#   3. only then update download-page copy, once /api/attest/<sha> really
+#      returns a document.
 # [[r2_buckets]]
 # binding = "ATTESTATIONS"
 # bucket_name = "one-link-attestations"

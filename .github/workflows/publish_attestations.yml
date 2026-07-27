@@ -1,0 +1,117 @@
+name: publish release attestations
+
+# Uploads the CURRENT release's signed attestation documents to the R2 bucket
+# that /api/attest/:sha reads, so the endpoint can stop reporting
+# "not-published" and the browser verifier can check a real signature against
+# the key pinned in live/bridge.js.
+#
+# Why this is a separate, dispatch-only workflow rather than part of the site
+# deploy:
+#   * uncommenting the ATTESTATIONS binding in wrangler.toml before the bucket
+#     exists makes `wrangler deploy` fail, which would take the whole live site
+#     deploy down with it. Publication must therefore happen BEFORE the binding
+#     is enabled, and that ordering has to be explicit rather than implied;
+#   * it needs an R2-scoped token. The site deploy token may not have that
+#     scope, and a missing scope must fail this job alone, not every push;
+#   * publishing release proof is a deliberate act. Nothing here signs anything
+#     -- the signatures are made offline by scripts/build-attestation.py with a
+#     key that never enters CI -- but it does decide WHICH signed documents the
+#     public verifier will serve.
+#
+# It uploads exactly the digests listed in attestations/current-release.json.
+# The directory also retains older documents that are still validly signed for
+# artifacts we no longer ship; uploading those would let a visitor hash a stale
+# binary and receive a "verified" verdict for it.
+
+on:
+  workflow_dispatch:
+    inputs:
+      create_bucket:
+        description: "Create the R2 bucket if it does not exist yet"
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+concurrency:
+  group: publish-release-attestations
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: upload current-release attestations to R2
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Require Cloudflare credentials
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
+            echo "::error::CLOUDFLARE_API_TOKEN is required to publish attestations"
+            exit 1
+          fi
+
+      - name: Verify signatures BEFORE publishing anything
+        # Publishing a document that does not verify would put a permanent
+        # "signature invalid" verdict in front of every visitor. The gate that
+        # checks this uses the verifier's own canonicalization function.
+        run: node --test tests/release-attestation.test.mjs
+
+      - name: Create the bucket
+        if: inputs.create_bucket
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: npx --yes wrangler@4 r2 bucket create one-link-attestations
+
+      - name: Upload exactly the current release set
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          DIR=dist/weareone-link.org/attestations
+          count=0
+          for sha in $(node -e "
+            const i = require('./$DIR/current-release.json');
+            console.log(i.artifacts.map(a => a.sha256).join('\n'));
+          "); do
+            file="$DIR/$sha.json"
+            if [ ! -f "$file" ]; then
+              echo "::error::current-release.json lists $sha but $file is missing"
+              exit 1
+            fi
+            npx --yes wrangler@4 r2 object put "one-link-attestations/$sha.json" \
+              --file="$file" --content-type=application/json --remote
+            count=$((count + 1))
+          done
+          echo "uploaded $count attestation documents"
+
+      - name: Next steps to make the endpoint serve them
+        run: |
+          cat <<'NOTE'
+          Documents are now in R2. /api/attest/:sha still fails closed until BOTH
+          of these land in wrangler.toml and the Worker is redeployed:
+
+            [[r2_buckets]]
+            binding = "ATTESTATIONS"
+            bucket_name = "one-link-attestations"
+
+            [vars]
+            RELEASE_ATTESTATIONS_READY = "true"
+
+          Enable them only after this job has succeeded. Enabling the binding
+          before the bucket exists makes every `wrangler deploy` fail.
+
+          Do not update any download-page copy to claim artifact-bound
+          attestation until /api/attest/<sha> actually returns a document.
+          NOTE
