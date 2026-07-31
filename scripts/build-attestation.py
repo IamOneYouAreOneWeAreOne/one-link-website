@@ -282,7 +282,7 @@ def main() -> int:
             **hashes,
         },
         "source": {
-            "repo": "https://github.com/IamOneYouAreOneWeAreOne/one-link",
+            "repo": "https://github.com/coherence-energy-labs/one-link",
             "commit": args.commit or git_info["commit"],
             "describe": args.describe or git_info["describe"],
             "license": "AGPL-3.0-or-later",

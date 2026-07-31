@@ -83,7 +83,7 @@ jobs:
         run: |
           set -euo pipefail
           curl -fsSL -o /tmp/live-manifest.txt \
-            https://github.com/IamOneYouAreOneWeAreOne/one-link/releases/download/auto-latest/manifest.txt
+            https://github.com/coherence-energy-labs/one-link/releases/download/auto-latest/manifest.txt
           node -e "
             const fs = require('fs');
             const index = require('./dist/weareone-link.org/attestations/current-release.json');

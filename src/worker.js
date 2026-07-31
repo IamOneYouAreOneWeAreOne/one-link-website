@@ -605,7 +605,7 @@ function nativeAdvert() {
 // release and is not evidence of artifact signing, attestation, or
 // reproducibility. VERSIONED_RELEASE_TAG is deliberately opt-in so a future
 // version can be promoted without changing the public download URLs.
-const GITHUB_REPO = "https://github.com/IamOneYouAreOneWeAreOne/one-link";
+const GITHUB_REPO = "https://github.com/coherence-energy-labs/one-link";
 const VERSIONED_RELEASE_TAG_RE = /^v\d+\.\d+\.\d+(?:-[0-9A-Za-z](?:[0-9A-Za-z.-]*[0-9A-Za-z])?)?$/;
 
 function releaseDescriptor(env) {
@@ -1140,7 +1140,7 @@ const COMING_SOON_CHROME = {
 };
 
 function downloadComingSoonPage(os, lang = "en", overrideBlock = null, status = 200) {
-  const repo = "https://github.com/IamOneYouAreOneWeAreOne/one-link";
+  const repo = "https://github.com/coherence-energy-labs/one-link";
   const L = COMING_SOON_BLOCKS[lang] || COMING_SOON_BLOCKS.en;
   const C = COMING_SOON_CHROME[lang] || COMING_SOON_CHROME.en;
   const b = overrideBlock || L[os] || L.source;

@@ -921,7 +921,7 @@ def download_main(c: dict[str, object]) -> str:
       <p class="lede">{c['download_lede']}</p>
       <div class="cta-row">
         <a href="#platforms" class="btn btn-primary btn-large">{c['choose']} <span class="arr" aria-hidden="true">&rarr;</span></a>
-        <a href="https://github.com/IamOneYouAreOneWeAreOne/one-link/releases/tag/auto-latest" class="btn btn-ghost" rel="noopener external">{c['github_cta']}</a>
+        <a href="https://github.com/coherence-energy-labs/one-link/releases/tag/auto-latest" class="btn btn-ghost" rel="noopener external">{c['github_cta']}</a>
       </div>
     </div>
   </section>
@@ -988,7 +988,7 @@ def release_main(c: dict[str, object]) -> str:
       <p class="lede">{c['release_lede']}</p>
       <div class="cta-row">
         <a href="/download/" class="btn btn-primary">{c['downloads_cta']} <span class="arr" aria-hidden="true">&rarr;</span></a>
-        <a href="https://github.com/IamOneYouAreOneWeAreOne/one-link/releases" class="btn btn-ghost" rel="noopener external">{c['releases_cta']}</a>
+        <a href="https://github.com/coherence-energy-labs/one-link/releases" class="btn btn-ghost" rel="noopener external">{c['releases_cta']}</a>
       </div>
     </div>
   </section>
@@ -1146,8 +1146,8 @@ Acknowledgments: https://weareone-link.org/audits/
 # ----------------------------------------------------------------------
 # Sources
 # ----------------------------------------------------------------------
-# Daemon:  https://github.com/IamOneYouAreOneWeAreOne/one-link
-# Website: https://github.com/IamOneYouAreOneWeAreOne/one-link-website
+# Daemon:  https://github.com/coherence-energy-labs/one-link
+# Website: https://github.com/coherence-energy-labs/one-link-website
 '''
 
 

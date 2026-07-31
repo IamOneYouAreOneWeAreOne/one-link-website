@@ -47,7 +47,7 @@ safe-harbor and bounty program are documented on the public security page.
 ## What is out of scope
 
 - The One Link daemon itself - report at the
-  [daemon repo's SECURITY.md](https://github.com/IamOneYouAreOneWeAreOne/one-link/blob/master/SECURITY.md).
+  [daemon repo's SECURITY.md](https://github.com/coherence-energy-labs/one-link/blob/master/SECURITY.md).
 - Cloudflare infrastructure (report directly to Cloudflare).
 - Browser bugs (report to the relevant vendor).
 - "You shouldn't use AGPL" or other policy disagreements.

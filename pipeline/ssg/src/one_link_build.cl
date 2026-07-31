@@ -91,7 +91,7 @@ fn site_footer() -> String @ L0 {
     "      </div>\n" +
     "      <div><h4>Network</h4><ul><li><a href=\"/how-it-works/\">How it works</a></li><li><a href=\"/features/\">Features</a></li><li><a href=\"/mesh/\">Website presence</a></li></ul></div>\n" +
     "      <div><h4>For you</h4><ul><li><a href=\"/download/\">Get One Link</a></li><li><a href=\"/security/\">Security</a></li><li><a href=\"/about/\">About</a></li></ul></div>\n" +
-    "      <div><h4>For builders</h4><ul><li><a href=\"/builders/\">Protocol &amp; source</a></li><li><a href=\"https://github.com/IamOneYouAreOneWeAreOne/one-link\" rel=\"noopener\">GitHub</a></li><li><a href=\"/builders/#donate\">Donate</a></li></ul></div>\n" +
+    "      <div><h4>For builders</h4><ul><li><a href=\"/builders/\">Protocol &amp; source</a></li><li><a href=\"https://github.com/coherence-energy-labs/one-link\" rel=\"noopener\">GitHub</a></li><li><a href=\"/builders/#donate\">Donate</a></li></ul></div>\n" +
     "    </div>\n" +
     "    <div class=\"footer-bottom\">\n" +
     "      <span class=\"built-by\">Built in the open. AGPL-3.0. Emitted by Coherence Lang.</span>\n" +

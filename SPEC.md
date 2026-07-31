@@ -749,7 +749,7 @@ not proof that current website traffic, downloads, updates, or releases use it.
 
 ## 5.1 `ol_pair_qr_wasm`
 
-**Wraps**: [`ol_pair_qr`](https://github.com/IamOneYouAreOneWeAreOne/one-link/tree/master/native/ol_pair_qr) (Phase F2 of Coherence Mesh Plan)
+**Wraps**: [`ol_pair_qr`](https://github.com/coherence-energy-labs/one-link/tree/master/native/ol_pair_qr) (Phase F2 of Coherence Mesh Plan)
 **Output**: `ol_pair_qr.js` (25 KB) + `ol_pair_qr_bg.wasm` (250 KB)
 **Demo on site**: home-page same-tab pairing primitive self-test. Inviter and Scanner both execute locally; this is not a camera scan, second-device pairing, transport test, or human SAS confirmation.
 
@@ -790,7 +790,7 @@ The `qrcode` crate is compiled INTO our WASM (no third-party JS QR encoder). The
 
 ## 5.2 `ol_pqkem_wasm`
 
-**Wraps**: [`ol_pqkem`](https://github.com/IamOneYouAreOneWeAreOne/one-link/tree/master/native/ol_pqkem) (PQ-hybrid KEM per ADR-0017)
+**Wraps**: [`ol_pqkem`](https://github.com/coherence-energy-labs/one-link/tree/master/native/ol_pqkem) (PQ-hybrid KEM per ADR-0017)
 **Output**: `ol_pqkem.js` (21 KB) + `ol_pqkem_bg.wasm` (191 KB)
 **Demo on site**: hero PQ primitive self-test badge ("running" -> local result). It proves only that two local WASM roles derived the same secret; it does not authenticate or protect `/api/session`.
 
@@ -822,7 +822,7 @@ Hybrid construction per ADR-0017: ML-KEM-768 || X25519 with a BLAKE3 combiner th
 
 ## 5.3 `ol_onion_wasm`
 
-**Wraps**: [`ol_onion`](https://github.com/IamOneYouAreOneWeAreOne/one-link/tree/master/native/ol_onion) (Phase F3, Sphinx-style routing)
+**Wraps**: [`ol_onion`](https://github.com/coherence-energy-labs/one-link/tree/master/native/ol_onion) (Phase F3, Sphinx-style routing)
 **Output**: `ol_onion.js` (16 KB) + `ol_onion_bg.wasm` (161 KB)
 **Demo on site**: the `/download/` private-route demo button runs a local
 three-hop wrap/peel. It does not route the requested download bytes.
@@ -848,7 +848,7 @@ Generates 3 ephemeral X25519 hops, wraps payload in 3 nested AEAD layers, peels 
 
 ## 5.4 `ol_coherence_field_wasm`
 
-**Wraps**: [`ol_coherence_field`](https://github.com/IamOneYouAreOneWeAreOne/one-link/tree/master/native/ol_coherence_field) (Phase E, Helmholtz solver)
+**Wraps**: [`ol_coherence_field`](https://github.com/coherence-energy-labs/one-link/tree/master/native/ol_coherence_field) (Phase E, Helmholtz solver)
 **Output**: `ol_coherence_field.js` (10 KB) + `ol_coherence_field_bg.wasm` (77 KB)
 **Demo on site**: local solver visualization. Live relay-derived mesh data remains deferred.
 
@@ -1356,7 +1356,7 @@ To use the system-wide `clc` command (PowerShell aliases `clc` to `Clear-Content
 
 ## 9.1 What we bind
 
-Eight production crates from [`https://github.com/IamOneYouAreOneWeAreOne/one-link/tree/master/native/`](https://github.com/IamOneYouAreOneWeAreOne/one-link/tree/master/native/) are pulled by path-dependency into our WASM wrappers:
+Eight production crates from [`https://github.com/coherence-energy-labs/one-link/tree/master/native/`](https://github.com/coherence-energy-labs/one-link/tree/master/native/) are pulled by path-dependency into our WASM wrappers:
 
 | Wrapper | Production crate | Daemon role |
 |---|---|---|
@@ -1566,15 +1566,15 @@ ledger, the claim is unverified and should be removed or backed.**
 | "No first-party analytics, ads, tracking cookies, or profiling" | [src/worker.js](src/worker.js), [sw.js](dist/weareone-link.org/sw.js) | Review response headers, scripts, storage, and outbound requests. Cloudflare and artifact hosts still process ordinary connection/request metadata as disclosed in §§6.4-6.5. |
 | "Pairing primitive self-test" | [live/wasm/ol_pair_qr_wasm/src/lib.rs](live/wasm/ol_pair_qr_wasm/src/lib.rs) → `liveDemoRoundTrip` | Confirm `ol_pair_qr_bg.wasm` loads and the same-tab inviter/scanner round trip passes. This does not test a camera, second device, device transport, or human SAS comparison. |
 | "Local PQ primitive self-test" | [live/wasm/ol_pqkem_wasm/src/lib.rs](live/wasm/ol_pqkem_wasm/src/lib.rs) → `liveDemoRoundTrip` | Confirm the browser-local encapsulation/decapsulation result matches. `/api/session` is a separate registration/X25519-advertisement path and does not establish an ML-KEM session. |
-| "X25519 + ML-KEM-768 hybrid" | [ol_pqkem](https://github.com/IamOneYouAreOneWeAreOne/one-link/tree/master/native/ol_pqkem) and the local WASM wrapper | Verify the primitive implementation and its unit/self-tests. Do not infer that the current website session, Worker, download, share, or presence traffic uses the hybrid exchange. |
-| "Ed25519 + ML-DSA-65 hybrid signatures" | [ol_pqsig](https://github.com/IamOneYouAreOneWeAreOne/one-link/tree/master/native/ol_pqsig) + [ol_pqsig_wasm](live/wasm/ol_pqsig_wasm/) | Visit `/security/` → click "Sign a message with Ed25519 + ML-DSA-65". DevTools → Network → see `ol_pqsig_bg.wasm` load (257 KB). Output shows fresh 1984-byte hybrid pubkey + 3373-byte hybrid signature + verify-clean + reject-tampered-msg + reject-tampered-PQ-half. |
-| "Threshold recovery splits your identity across friends" | [ol_threshold_recovery](https://github.com/IamOneYouAreOneWeAreOne/one-link/tree/master/native/ol_threshold_recovery) + [ol_threshold_recovery_wasm](live/wasm/ol_threshold_recovery_wasm/) | Visit `/security/` → click "Split and recover a secret with 3-of-5 Shamir". Generates fresh 32-byte secret, splits into 5 shares, recovers from any 3, refuses with only 2. Real Shamir over GF(2^8). |
-| "Local ratchet primitive self-test" | [ol_ratchet](https://github.com/IamOneYouAreOneWeAreOne/one-link/tree/master/native/ol_ratchet) + [ol_ratchet_wasm](live/wasm/ol_ratchet_wasm/) | Run the `/security/` six-step demonstration and its rewind/skip-cap checks. This does not prove that current website messages or transfers use the ratchet. |
-| "Local software TOFU self-test" | [ol_hwkey](https://github.com/IamOneYouAreOneWeAreOne/one-link/tree/master/native/ol_hwkey) (TofuStore) + [ol_hwkey_wasm](live/wasm/ol_hwkey_wasm/) | Run the `/security/` mint/recognize demonstration and inspect its `localStorage` state. It is not hardware-backed identity and does not prove server unlinkability. |
-| "Sphinx Coherence onion primitive self-test" | [ol_onion](https://github.com/IamOneYouAreOneWeAreOne/one-link/tree/master/native/ol_onion) | `ol_onion_wasm.liveDemoRoundTrip(payload)` exercises local three-hop wrap/peel. The website transport and download path are not wired through it. |
+| "X25519 + ML-KEM-768 hybrid" | [ol_pqkem](https://github.com/coherence-energy-labs/one-link/tree/master/native/ol_pqkem) and the local WASM wrapper | Verify the primitive implementation and its unit/self-tests. Do not infer that the current website session, Worker, download, share, or presence traffic uses the hybrid exchange. |
+| "Ed25519 + ML-DSA-65 hybrid signatures" | [ol_pqsig](https://github.com/coherence-energy-labs/one-link/tree/master/native/ol_pqsig) + [ol_pqsig_wasm](live/wasm/ol_pqsig_wasm/) | Visit `/security/` → click "Sign a message with Ed25519 + ML-DSA-65". DevTools → Network → see `ol_pqsig_bg.wasm` load (257 KB). Output shows fresh 1984-byte hybrid pubkey + 3373-byte hybrid signature + verify-clean + reject-tampered-msg + reject-tampered-PQ-half. |
+| "Threshold recovery splits your identity across friends" | [ol_threshold_recovery](https://github.com/coherence-energy-labs/one-link/tree/master/native/ol_threshold_recovery) + [ol_threshold_recovery_wasm](live/wasm/ol_threshold_recovery_wasm/) | Visit `/security/` → click "Split and recover a secret with 3-of-5 Shamir". Generates fresh 32-byte secret, splits into 5 shares, recovers from any 3, refuses with only 2. Real Shamir over GF(2^8). |
+| "Local ratchet primitive self-test" | [ol_ratchet](https://github.com/coherence-energy-labs/one-link/tree/master/native/ol_ratchet) + [ol_ratchet_wasm](live/wasm/ol_ratchet_wasm/) | Run the `/security/` six-step demonstration and its rewind/skip-cap checks. This does not prove that current website messages or transfers use the ratchet. |
+| "Local software TOFU self-test" | [ol_hwkey](https://github.com/coherence-energy-labs/one-link/tree/master/native/ol_hwkey) (TofuStore) + [ol_hwkey_wasm](live/wasm/ol_hwkey_wasm/) | Run the `/security/` mint/recognize demonstration and inspect its `localStorage` state. It is not hardware-backed identity and does not prove server unlinkability. |
+| "Sphinx Coherence onion primitive self-test" | [ol_onion](https://github.com/coherence-energy-labs/one-link/tree/master/native/ol_onion) | `ol_onion_wasm.liveDemoRoundTrip(payload)` exercises local three-hop wrap/peel. The website transport and download path are not wired through it. |
 | "Real Helmholtz physics on GPU" | [scripts/emit-wgsl.py](scripts/emit-wgsl.py) → coherence_lang wgsl_emitter | The shader at /live/shaders/coherence-field.wgsl has `coh_oscillator_force`, `coh_tau`, real PDE solver compute pass. |
-| "10,000 peers in 1.08 ms" | [ol_coherence_field](https://github.com/IamOneYouAreOneWeAreOne/one-link/tree/master/native/ol_coherence_field) benchmark output | Cited from daemon benches. Browser runs the same solver via `ol_coherence_field_wasm`. |
-| "5-word SAS primitive" | [ol_pair_qr::sas](https://github.com/IamOneYouAreOneWeAreOne/one-link/tree/master/native/ol_pair_qr/src/sas.rs) | Verify the 30-bit, 64-word deterministic transcript mapping. The same-tab card does not prove that two humans compared the words. |
+| "10,000 peers in 1.08 ms" | [ol_coherence_field](https://github.com/coherence-energy-labs/one-link/tree/master/native/ol_coherence_field) benchmark output | Cited from daemon benches. Browser runs the same solver via `ol_coherence_field_wasm`. |
+| "5-word SAS primitive" | [ol_pair_qr::sas](https://github.com/coherence-energy-labs/one-link/tree/master/native/ol_pair_qr/src/sas.rs) | Verify the 30-bit, 64-word deterministic transcript mapping. The same-tab card does not prove that two humans compared the words. |
 | "Live N browser sessions here right now" | [src/worker.js](src/worker.js) `MeshPresence` DO + [live/bridge.js](dist/weareone-link.org/live/bridge.js) presence client | Open two browser windows and confirm the connected-session count changes. It is not a count of authenticated people or network nodes. |
 | "Pseudonymous chat between connected browser sessions" | Same as above + the `chat-*` relay path in [live/bridge.js](dist/weareone-link.org/live/bridge.js) and [src/worker.js](src/worker.js) | Use two windows and click their rotating peer dots. Confirm the invite/accept/confirm flow and encrypted message relay. This does not prove durable peer identity, a required out-of-band SAS comparison, or network anonymity. |
 | "Site bundle checked" badge | [sw.js](dist/weareone-link.org/sw.js) `verifyAgainstManifest` | Confirm the Service Worker verifies the manifest against its same-origin pinned key, checks cached bytes, and evicts mismatches. This trust scope is not an independent application-release root and does not authenticate downloadable artifacts. |
@@ -1887,7 +1887,7 @@ CANONICAL_ORIGIN = "https://weareone-link.org"
   },
 
   "source": {
-    "repo":    "https://github.com/IamOneYouAreOneWeAreOne/one-link",
+    "repo":    "https://github.com/coherence-energy-labs/one-link",
     "commit":  "<git sha>",
     "tag":     "v0.21.0-alpha.0",
     "license": "AGPL-3.0-or-later"

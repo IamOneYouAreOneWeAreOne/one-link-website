@@ -299,7 +299,7 @@ test('supported desktop artifacts remain downloadable on rolling channel', async
     assert.equal(response.status, 302, route);
     assert.equal(
       response.headers.get('Location'),
-      `https://github.com/IamOneYouAreOneWeAreOne/one-link/releases/download/auto-latest/${asset}`,
+      `https://github.com/coherence-energy-labs/one-link/releases/download/auto-latest/${asset}`,
       route,
     );
     assert.equal(response.headers.get('X-One-Link-Release-Channel'), 'continuous');
@@ -334,7 +334,7 @@ test('an explicit version tag pins routes but does not invent proof', async () =
   });
   assert.equal(response.status, 200);
   const body = await response.json();
-  assert.equal(body.url, 'https://github.com/IamOneYouAreOneWeAreOne/one-link/releases/download/v1.2.3-rc.1/one-link-linux-x86_64.AppImage');
+  assert.equal(body.url, 'https://github.com/coherence-energy-labs/one-link/releases/download/v1.2.3-rc.1/one-link-linux-x86_64.AppImage');
   assert.equal(body.release.channel, 'versioned');
   assert.equal(body.release.version_pinned, true);
   assert.equal(body.release.mutable, true);

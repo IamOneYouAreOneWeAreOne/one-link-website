@@ -127,7 +127,7 @@ auto-creates the DNS records.
 ## Reporting bugs / vulnerabilities
 
 - Functional bugs: open an issue at
-  https://github.com/IamOneYouAreOneWeAreOne/one-link-website/issues
+  https://github.com/coherence-energy-labs/one-link-website/issues
 - Security issues: see [SECURITY.md](SECURITY.md).
 
 ## License
