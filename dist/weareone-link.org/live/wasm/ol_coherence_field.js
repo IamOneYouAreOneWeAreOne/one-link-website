@@ -82,9 +82,20 @@ function getDataViewMemory0() {
     }
     return cachedDataViewMemory0;
 }
-
-export function _init() {
-    wasm._init();
+/**
+ * @returns {string}
+ */
+export function ol_coherence_field_version() {
+    let deferred1_0;
+    let deferred1_1;
+    try {
+        const ret = wasm.ol_coherence_field_version();
+        deferred1_0 = ret[0];
+        deferred1_1 = ret[1];
+        return getStringFromWasm0(ret[0], ret[1]);
+    } finally {
+        wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
+    }
 }
 
 let cachedUint32ArrayMemory0 = null;
@@ -165,20 +176,8 @@ export function solveSteadyHelmholtz(n_nodes, edges_flat, edge_weights, source, 
     return v4;
 }
 
-/**
- * @returns {string}
- */
-export function ol_coherence_field_version() {
-    let deferred1_0;
-    let deferred1_1;
-    try {
-        const ret = wasm.ol_coherence_field_version();
-        deferred1_0 = ret[0];
-        deferred1_1 = ret[1];
-        return getStringFromWasm0(ret[0], ret[1]);
-    } finally {
-        wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
-    }
+export function _init() {
+    wasm._init();
 }
 
 async function __wbg_load(module, imports) {

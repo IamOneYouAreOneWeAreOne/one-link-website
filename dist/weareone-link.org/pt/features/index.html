@@ -33,9 +33,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r99">
-  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r99">
-  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r99">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r102">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r102">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r102">
 </head>
 <body>
 <a href="#main" class="skip-link">Saltar para o conteúdo</a>
@@ -129,7 +129,7 @@
           <p>O navegador executa autotestes locais de primitivas pós-quânticas. /api/session apenas regista a sessão e anuncia uma chave X25519 efémera do Worker; não completa ECDH nem ML-KEM-768 e não estabelece uma sessão navegador-Worker protegida por PQ.</p>
         </article>
 
-        <article class="ol-tile"><h3>Reprodutibilidade e proveniência</h3><p>Os builds contínuos não publicam resultado reproduzível byte a byte nem atestação vinculada ao artefacto.</p></article>
+        <article class="ol-tile"><h3>Reprodutibilidade e proveniência</h3><p>Os builds contínuos não publicam resultado reproduzível byte a byte. Cada artefacto inclui uma atestação de proveniência de build do GitHub, verificável com gh attestation verify neste repositório: liga esses bytes exactos ao fluxo de publicação que os emitiu, pelo que o envio de terceiros não pode passar pelo nosso. Não é um documento de atestação assinado e ligado ao artefacto da One Link e não permite reconstruir os bytes para comparar.</p></article>
 
         <article class="ol-tile">
           <h3>Recuperação por limiar.</h3>
@@ -212,6 +212,6 @@
   </div>
 </footer>
 
-<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r99"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r102"></script>
 </body>
 </html>

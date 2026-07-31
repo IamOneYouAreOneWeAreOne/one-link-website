@@ -33,9 +33,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r99">
-  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r99">
-  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r99">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r102">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r102">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r102">
 </head>
 <body>
 <a href="#main" class="skip-link">Aller au contenu</a>
@@ -119,7 +119,7 @@
       <h2><span class="grad">site</span> v0.21.0-alpha.0+r34 .. r47 - aperçu public</h2>
       <ul>
         <li>Passe de cadrage positif sur toutes les pages : zéro copy « ce que nous ne faisons pas » / « cinq entreprises » / « ce que nous ne pouvons pas régler ».</li>
-        <li><strong>Correction:</strong> Aucun résultat reproductible octet par octet ni attestation liée à l'artefact n'est publié pour les builds continus.</li>
+        <li><strong>Correction:</strong> Aucun résultat reproductible octet par octet n'est publié pour les builds continus. Chaque artefact porte toutefois une attestation de provenance de build GitHub, vérifiable avec gh attestation verify sur ce dépôt : elle lie ces octets exacts au flux de publication qui les a émis, si bien que l'envoi d'un tiers ne peut pas passer pour le nôtre. Ce n'est pas un document d'attestation One Link signé et lié à l'artefact, et cela ne permet pas de reconstruire les octets pour les comparer.</li>
         <li>Cloudflare Durable Object MeshPresence en direct : vraie pastille « N ici en ce moment » (remplace le compteur codé en dur).</li>
         <li>Détection d'OS sur le CTA du hero d'accueil et les CTAs de la page /download/.</li>
         <li>Service Worker qui vérifie contre un manifeste signé avant de servir ; un mismatch d'intégrité en cache est expulsé et re-téléchargé.</li>
@@ -206,6 +206,6 @@
   </div>
 </footer>
 
-<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r99"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r102"></script>
 </body>
 </html>

@@ -167,6 +167,10 @@ function debugString(val) {
     return className;
 }
 
+export function _init() {
+    wasm._init();
+}
+
 function takeFromExternrefTable0(idx) {
     const value = wasm.__wbindgen_export_2.get(idx);
     wasm.__externref_table_dealloc(idx);
@@ -186,10 +190,6 @@ export function liveDemoRoundTrip(n_keys) {
         throw takeFromExternrefTable0(ret[1]);
     }
     return takeFromExternrefTable0(ret[0]);
-}
-
-export function _init() {
-    wasm._init();
 }
 
 /**

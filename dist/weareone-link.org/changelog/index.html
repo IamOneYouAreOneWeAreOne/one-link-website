@@ -32,9 +32,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r99">
-  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r99">
-  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r99">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r102">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r102">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r102">
 </head>
 <body>
 <a href="#main" class="skip-link">Skip to content</a>
@@ -82,7 +82,7 @@
       <h2><span class="grad">site</span> SmartScreen + Gatekeeper friction softened end-to-end</h2>
       <ul>
         <li>New heads-up panel above the download button on <a class="ol-cyan-text" href="/download/">/download/</a>: sets expectations before the click. Four tiles cover the two click-through paths (Windows "More info" then "Run anyway"; macOS right-click + Open or System Settings + Open Anyway with the exact localized dialog strings per language), the in-browser verify path, and the build-from-source alternative.</li>
-        <li><strong>Correction:</strong> If no reference hash is published, the tool reports NOT VERIFIED. It will not imply that a signature or attestation was checked.</li>
+        <li><strong>Correction:</strong> No byte-for-byte reproducibility result is published for the rolling builds. Every artifact does carry a GitHub build-provenance attestation, verifiable with gh attestation verify against this repository: it binds those exact bytes to the publishing workflow that emitted them, so nobody else's upload can pass as ours. It is not a One Link signed artifact-bound attestation document, and it does not let you rebuild the bytes and compare.</li>
         <li>Worker now publishes X-Artifact-SHA256 on every R2-served download path (Windows, Linux, macOS, source, generic) with Access-Control-Expose-Headers so the verify page can read it. New attachArtifactHash() helper tries R2 auto-checksums first, falls back to customMetadata.sha256.</li>
         <li>Translated into all 5 shipped languages with native Windows + macOS dialog labels (es "Más información" / "Ejecutar de todas formas", fr "Informations complémentaires" / "Exécuter quand même", de "Weitere Informationen" / "Trotzdem ausführen", pt "Mais informações" / "Executar mesmo assim", it "Ulteriori informazioni" / "Esegui comunque"). 100 translated pages footer-swept to add the Verify-download link.</li>
         <li><strong>Current correction:</strong> The tab computes a local hash; without an authenticated reference it does not verify publisher identity.</li>
@@ -159,7 +159,7 @@
       <h2><span class="grad">site</span> v0.21.0-alpha.0+r34 .. r47 - public preview</h2>
       <ul>
         <li>Positive-forward framing sweep across all pages: zero "what we do not do" / "five companies" / "what we cannot fix" copy.</li>
-        <li><strong>Correction:</strong> No byte-for-byte reproducibility result or artifact-bound build attestation is published for the rolling builds.</li>
+        <li><strong>Correction:</strong> No byte-for-byte reproducibility result is published for the rolling builds. Every artifact does carry a GitHub build-provenance attestation, verifiable with gh attestation verify against this repository: it binds those exact bytes to the publishing workflow that emitted them, so nobody else's upload can pass as ours. It is not a One Link signed artifact-bound attestation document, and it does not let you rebuild the bytes and compare.</li>
         <li>Live MeshPresence Durable Object: real "N here right now" pill (replaces hardcoded counter).</li>
         <li>OS detection on home hero CTA + /download/ page CTAs.</li>
         <li>Service Worker with verify-against-signed-manifest before serve; cached integrity mismatch evicts + refetches.</li>
@@ -237,6 +237,6 @@
   </div>
 </footer>
 
-<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r99"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r102"></script>
 </body>
 </html>

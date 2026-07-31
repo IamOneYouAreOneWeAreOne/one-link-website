@@ -179,23 +179,6 @@ function takeFromExternrefTable0(idx) {
     wasm.__externref_table_dealloc(idx);
     return value;
 }
-/**
- * Full "split-five, recover-from-three, fail-with-two" demo, all locally.
- * Returns a JS object the /security/ page can render directly.
- * @param {Uint8Array} secret
- * @param {number} k
- * @param {number} n
- * @returns {any}
- */
-export function liveDemoRoundTrip(secret, k, n) {
-    const ptr0 = passArray8ToWasm0(secret, wasm.__wbindgen_malloc);
-    const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.liveDemoRoundTrip(ptr0, len0, k, n);
-    if (ret[2]) {
-        throw takeFromExternrefTable0(ret[1]);
-    }
-    return takeFromExternrefTable0(ret[0]);
-}
 
 function getArrayU8FromWasm0(ptr, len) {
     ptr = ptr >>> 0;
@@ -226,19 +209,21 @@ export function reconstructSecret(xs, streams_flat, secret_len, k) {
 }
 
 /**
- * @returns {string}
+ * Full "split-five, recover-from-three, fail-with-two" demo, all locally.
+ * Returns a JS object the /security/ page can render directly.
+ * @param {Uint8Array} secret
+ * @param {number} k
+ * @param {number} n
+ * @returns {any}
  */
-export function ol_threshold_recovery_version() {
-    let deferred1_0;
-    let deferred1_1;
-    try {
-        const ret = wasm.ol_threshold_recovery_version();
-        deferred1_0 = ret[0];
-        deferred1_1 = ret[1];
-        return getStringFromWasm0(ret[0], ret[1]);
-    } finally {
-        wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
+export function liveDemoRoundTrip(secret, k, n) {
+    const ptr0 = passArray8ToWasm0(secret, wasm.__wbindgen_malloc);
+    const len0 = WASM_VECTOR_LEN;
+    const ret = wasm.liveDemoRoundTrip(ptr0, len0, k, n);
+    if (ret[2]) {
+        throw takeFromExternrefTable0(ret[1]);
     }
+    return takeFromExternrefTable0(ret[0]);
 }
 
 /**
@@ -262,6 +247,22 @@ export function splitSecret(secret, k, n) {
 
 export function _init() {
     wasm._init();
+}
+
+/**
+ * @returns {string}
+ */
+export function ol_threshold_recovery_version() {
+    let deferred1_0;
+    let deferred1_1;
+    try {
+        const ret = wasm.ol_threshold_recovery_version();
+        deferred1_0 = ret[0];
+        deferred1_1 = ret[1];
+        return getStringFromWasm0(ret[0], ret[1]);
+    } finally {
+        wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
+    }
 }
 
 async function __wbg_load(module, imports) {

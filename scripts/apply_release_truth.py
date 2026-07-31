@@ -1478,6 +1478,22 @@ def replace_review_date(text: str, body: str) -> str:
     return date_pattern.sub(lambda m: f'<p{m.group("attrs")}>{body}</p>', text)
 
 
+def repro_tile_by_heading(c: dict[str, object]):
+    """Match the reproducibility tile by its heading, in any locale.
+
+    Body wording changes; the heading is emitted from this same truth model,
+    so it is the stable identity of the tile. Binding the transform to it
+    keeps a later rewrite from silently escaping enforcement.
+    """
+
+    needle = f"<h3>{c['repro_h']}</h3>"
+
+    def predicate(block: str) -> bool:
+        return needle in block
+
+    return predicate
+
+
 def release_claim_transform(slug: str, c: dict[str, object]):
     """Return a transform for stale release assertions outside core pages."""
 
@@ -1506,7 +1522,15 @@ def release_claim_transform(slug: str, c: dict[str, object]):
                 f"<h3>{c['repro_h']}</h3><p>{c['repro_p']}</p>"
                 "</article>"
             )
-            return replace_matching_blocks(text, ARTICLE_RE, stale_feature, replacement)
+            text = replace_matching_blocks(text, ARTICLE_RE, stale_feature, replacement)
+
+            # Own the tile by its HEADING. The predicate above matches one
+            # historical body ("ol_confidential"), and once that tile was
+            # rewritten it stopped matching anything at all -- so --check kept
+            # passing while the page went on denying an attestation that the
+            # download page, and `gh attestation verify`, both confirm exists.
+            # A transform that matches nothing is not enforcement.
+            return replace_matching_blocks(text, ARTICLE_RE, repro_tile_by_heading(c), replacement)
 
         if slug == "security":
             text = replace_descriptions(text, str(c["release_desc"]))
@@ -1548,6 +1572,9 @@ def release_claim_transform(slug: str, c: dict[str, object]):
                 "</article>"
             )
             text = replace_matching_blocks(text, ARTICLE_RE, stale_repro, repro_replacement)
+            text = replace_matching_blocks(
+                text, ARTICLE_RE, repro_tile_by_heading(c), repro_replacement
+            )
 
             def stale_updater(block: str) -> bool:
                 lower = block.lower()
@@ -1583,7 +1610,11 @@ def release_claim_transform(slug: str, c: dict[str, object]):
 
             def stale_attestation_entry(block: str) -> bool:
                 lower = block.lower()
-                return "windows" in lower and "linux" in lower and ("attest" in lower or "atest" in lower)
+                if "attest" not in lower and "atest" not in lower:
+                    return False
+                # Either the original platform-list phrasing, or any later
+                # rewrite of the same correction entry.
+                return ("windows" in lower and "linux" in lower) or "correction" in lower
 
             text = replace_matching_blocks(
                 text,

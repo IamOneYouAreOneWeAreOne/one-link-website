@@ -167,26 +167,6 @@ function debugString(val) {
     return className;
 }
 
-export function _init() {
-    wasm._init();
-}
-
-/**
- * @returns {string}
- */
-export function ol_onion_version() {
-    let deferred1_0;
-    let deferred1_1;
-    try {
-        const ret = wasm.ol_onion_version();
-        deferred1_0 = ret[0];
-        deferred1_1 = ret[1];
-        return getStringFromWasm0(ret[0], ret[1]);
-    } finally {
-        wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
-    }
-}
-
 function passArray8ToWasm0(arg, malloc) {
     const ptr = malloc(arg.length * 1, 1) >>> 0;
     getUint8ArrayMemory0().set(arg, ptr / 1);
@@ -214,19 +194,39 @@ export function liveDemoRoundTrip(payload) {
 }
 
 /**
+ * @returns {number}
+ */
+export function onionPacketSize() {
+    const ret = wasm.onionPacketSize();
+    return ret >>> 0;
+}
+
+export function _init() {
+    wasm._init();
+}
+
+/**
+ * @returns {string}
+ */
+export function ol_onion_version() {
+    let deferred1_0;
+    let deferred1_1;
+    try {
+        const ret = wasm.ol_onion_version();
+        deferred1_0 = ret[0];
+        deferred1_1 = ret[1];
+        return getStringFromWasm0(ret[0], ret[1]);
+    } finally {
+        wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
+    }
+}
+
+/**
  * Constants exposed for the UI to display.
  * @returns {number}
  */
 export function onionMaxUserPayload() {
     const ret = wasm.onionMaxUserPayload();
-    return ret >>> 0;
-}
-
-/**
- * @returns {number}
- */
-export function onionPacketSize() {
-    const ret = wasm.onionPacketSize();
     return ret >>> 0;
 }
 

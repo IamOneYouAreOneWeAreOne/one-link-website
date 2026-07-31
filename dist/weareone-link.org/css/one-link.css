@@ -682,6 +682,14 @@ main { position: relative; z-index: 1; }
   display: flex !important;
   align-items: center;
   justify-content: space-between;
+  /* Stack deterministically: label, then status pill. Letting it depend on
+     whether a given label plus pill happens to fit produced a ragged grid
+     where some cards read across and others read down. Every card now has
+     the same shape at every width. */
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0.4rem;
   padding: 0.55rem 0.85rem;
   background: rgba(8, 12, 20, 0.5);
   border: 1px solid var(--ol-line);
@@ -698,6 +706,12 @@ main { position: relative; z-index: 1; }
   background: rgba(255, 212, 121, 0.08);
   border: 1px solid rgba(255, 212, 121, 0.22);
   border-radius: 999px;
+  /* A 999px radius is a PILL only while the text stays on one line. Left to
+     wrap inside a narrow grid column, the box grows tall and the same radius
+     renders it as an ellipse, which is what the platform grid was showing.
+     Keep it one line and let the ROW wrap instead. */
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 .ol-platform-status.ready {
   color: var(--ol-green);
@@ -1690,7 +1704,9 @@ main { position: relative; z-index: 1; }
 /* Sphinx-style 3-up tag grid used on /security/ + /features/ */
 .ol-tag-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  /* 180px could not hold "Windows (Intel/AMD)" plus a one-line status pill,
+     which is what forced the pill to wrap in the first place. */
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 0.6rem 1rem;
 }
 

@@ -185,6 +185,38 @@ function takeFromExternrefTable0(idx) {
     return value;
 }
 /**
+ * @returns {string}
+ */
+export function ol_pqsig_version() {
+    let deferred1_0;
+    let deferred1_1;
+    try {
+        const ret = wasm.ol_pqsig_version();
+        deferred1_0 = ret[0];
+        deferred1_1 = ret[1];
+        return getStringFromWasm0(ret[0], ret[1]);
+    } finally {
+        wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
+    }
+}
+
+/**
+ * Generate -> sign -> verify -> tampered-verify, all locally in the visitor's
+ * tab. Returns a structured result for the /security/ page to render.
+ * @param {Uint8Array} message
+ * @returns {any}
+ */
+export function liveDemoRoundTrip(message) {
+    const ptr0 = passArray8ToWasm0(message, wasm.__wbindgen_malloc);
+    const len0 = WASM_VECTOR_LEN;
+    const ret = wasm.liveDemoRoundTrip(ptr0, len0);
+    if (ret[2]) {
+        throw takeFromExternrefTable0(ret[1]);
+    }
+    return takeFromExternrefTable0(ret[0]);
+}
+
+/**
  * Verify a hybrid signature against a verifying key. Returns `true` only if
  * BOTH the Ed25519 and ML-DSA-65 halves pass. Constant-time wrt which half
  * fails (the underlying crate intentionally runs both verify paths).
@@ -207,20 +239,8 @@ export function verify(vk_bytes, message, sig) {
     return ret[0] !== 0;
 }
 
-/**
- * Generate -> sign -> verify -> tampered-verify, all locally in the visitor's
- * tab. Returns a structured result for the /security/ page to render.
- * @param {Uint8Array} message
- * @returns {any}
- */
-export function liveDemoRoundTrip(message) {
-    const ptr0 = passArray8ToWasm0(message, wasm.__wbindgen_malloc);
-    const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.liveDemoRoundTrip(ptr0, len0);
-    if (ret[2]) {
-        throw takeFromExternrefTable0(ret[1]);
-    }
-    return takeFromExternrefTable0(ret[0]);
+export function _init() {
+    wasm._init();
 }
 
 /**
@@ -229,26 +249,6 @@ export function liveDemoRoundTrip(message) {
 export function pqSigSizes() {
     const ret = wasm.pqSigSizes();
     return PqSigSizes.__wrap(ret);
-}
-
-/**
- * @returns {string}
- */
-export function ol_pqsig_version() {
-    let deferred1_0;
-    let deferred1_1;
-    try {
-        const ret = wasm.ol_pqsig_version();
-        deferred1_0 = ret[0];
-        deferred1_1 = ret[1];
-        return getStringFromWasm0(ret[0], ret[1]);
-    } finally {
-        wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
-    }
-}
-
-export function _init() {
-    wasm._init();
 }
 
 const OlPqSigKeypairFinalization = (typeof FinalizationRegistry === 'undefined')

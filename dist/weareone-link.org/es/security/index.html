@@ -33,9 +33,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r99">
-  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r99">
-  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r99">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r102">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r102">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r102">
 </head>
 <body>
 <a href="#main" class="skip-link">Saltar al contenido</a>
@@ -147,7 +147,7 @@
           <h3>Pruebas de fuzz</h3>
           <p>Evidencia interna declarada por contribuidores. Aquí no se publica auditoría independiente, artefacto versionado, transcripción exacta del comando actual ni reproducción externa; las afirmaciones formales, temporales y de fuzz siguen pendientes de esa evidencia.</p>
         </article>
-        <article class="ol-tile"><h3>Reproducibilidad y procedencia</h3><p>Las compilaciones continuas no publican un resultado reproducible byte a byte ni una atestación vinculada al artefacto.</p></article>
+        <article class="ol-tile"><h3>Reproducibilidad y procedencia</h3><p>Las compilaciones continuas no publican un resultado reproducible byte a byte. Cada artefacto sí incluye una atestación de procedencia de compilación de GitHub, verificable con gh attestation verify contra este repositorio: vincula esos bytes exactos al flujo de publicación que los emitió, de modo que la subida de un tercero no puede pasar por la nuestra. No es un documento de atestación firmado y vinculado al artefacto de One Link, y no permite reconstruir los bytes y compararlos.</p></article>
       </div>
     </div>
   </section>
@@ -305,6 +305,6 @@
   </div>
 </footer>
 
-<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r99"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r102"></script>
 </body>
 </html>

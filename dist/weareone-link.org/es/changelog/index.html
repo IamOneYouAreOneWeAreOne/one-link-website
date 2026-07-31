@@ -33,9 +33,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r99">
-  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r99">
-  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r99">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r102">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r102">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r102">
 </head>
 <body>
 <a href="#main" class="skip-link">Saltar al contenido</a>
@@ -119,7 +119,7 @@
       <h2><span class="grad">sitio</span> v0.21.0-alpha.0+r34 .. r47 - vista previa pública</h2>
       <ul>
         <li>Barrido de mensaje positivo en todas las páginas: cero copy de "lo que no hacemos", "cinco empresas" o "lo que no podemos arreglar".</li>
-        <li><strong>Correction:</strong> Las compilaciones continuas no publican un resultado reproducible byte a byte ni una atestación vinculada al artefacto.</li>
+        <li><strong>Correction:</strong> Las compilaciones continuas no publican un resultado reproducible byte a byte. Cada artefacto sí incluye una atestación de procedencia de compilación de GitHub, verificable con gh attestation verify contra este repositorio: vincula esos bytes exactos al flujo de publicación que los emitió, de modo que la subida de un tercero no puede pasar por la nuestra. No es un documento de atestación firmado y vinculado al artefacto de One Link, y no permite reconstruir los bytes y compararlos.</li>
         <li>Cloudflare Durable Object MeshPresence en vivo: etiqueta real de "N aquí ahora mismo" (sustituye al contador codificado a mano).</li>
         <li>Detección de SO en el CTA del hero de inicio y en los CTAs de la página /download/.</li>
         <li>Service Worker con verificación contra manifiesto firmado antes de servir; los desajustes de integridad cacheados se desalojan y se vuelven a pedir.</li>
@@ -206,6 +206,6 @@
   </div>
 </footer>
 
-<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r99"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r102"></script>
 </body>
 </html>

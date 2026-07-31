@@ -166,18 +166,73 @@ function debugString(val) {
     // TODO we could test for more things here, like `Set`s and `Map`s.
     return className;
 }
+/**
+ * Crate version of the underlying ol_pair_qr binding.
+ * @returns {string}
+ */
+export function ol_pair_qr_version() {
+    let deferred1_0;
+    let deferred1_1;
+    try {
+        const ret = wasm.ol_pair_qr_version();
+        deferred1_0 = ret[0];
+        deferred1_1 = ret[1];
+        return getStringFromWasm0(ret[0], ret[1]);
+    } finally {
+        wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
+    }
+}
 
-function passArray8ToWasm0(arg, malloc) {
-    const ptr = malloc(arg.length * 1, 1) >>> 0;
-    getUint8ArrayMemory0().set(arg, ptr / 1);
-    WASM_VECTOR_LEN = arg.length;
-    return ptr;
+/**
+ * Protocol domain separator (constant, exposed for visibility tools).
+ * @returns {string}
+ */
+export function ol_pair_qr_domain() {
+    let deferred1_0;
+    let deferred1_1;
+    try {
+        const ret = wasm.ol_pair_qr_domain();
+        deferred1_0 = ret[0];
+        deferred1_1 = ret[1];
+        return getStringFromWasm0(ret[0], ret[1]);
+    } finally {
+        wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
+    }
 }
 
 function takeFromExternrefTable0(idx) {
     const value = wasm.__wbindgen_export_2.get(idx);
     wasm.__externref_table_dealloc(idx);
     return value;
+}
+/**
+ * Convenience: run a complete in-browser Inviter <-> Scanner round-trip for
+ * the live demo card on the home page. Returns:
+ *   {
+ *     inviteBytes:   Uint8Array,
+ *     inviteHex:     String,
+ *     responseBytes: Uint8Array,
+ *     sasInviter:    String,  (5 words)
+ *     sasScanner:    String,  (5 words; must equal sasInviter)
+ *     confirmBytes:  Uint8Array,
+ *     chainKey:      Uint8Array, (32 bytes; both sides agree on this)
+ *     matched:       Boolean (sas equality)
+ *   }
+ * @returns {any}
+ */
+export function liveDemoRoundTrip() {
+    const ret = wasm.liveDemoRoundTrip();
+    if (ret[2]) {
+        throw takeFromExternrefTable0(ret[1]);
+    }
+    return takeFromExternrefTable0(ret[0]);
+}
+
+function passArray8ToWasm0(arg, malloc) {
+    const ptr = malloc(arg.length * 1, 1) >>> 0;
+    getUint8ArrayMemory0().set(arg, ptr / 1);
+    WASM_VECTOR_LEN = arg.length;
+    return ptr;
 }
 /**
  * Encode arbitrary bytes into a QR code, returned as an inline-able SVG
@@ -211,68 +266,11 @@ export function encodeQrSvg(payload) {
 }
 
 /**
- * Protocol domain separator (constant, exposed for visibility tools).
- * @returns {string}
- */
-export function ol_pair_qr_domain() {
-    let deferred1_0;
-    let deferred1_1;
-    try {
-        const ret = wasm.ol_pair_qr_domain();
-        deferred1_0 = ret[0];
-        deferred1_1 = ret[1];
-        return getStringFromWasm0(ret[0], ret[1]);
-    } finally {
-        wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
-    }
-}
-
-/**
- * Crate version of the underlying ol_pair_qr binding.
- * @returns {string}
- */
-export function ol_pair_qr_version() {
-    let deferred1_0;
-    let deferred1_1;
-    try {
-        const ret = wasm.ol_pair_qr_version();
-        deferred1_0 = ret[0];
-        deferred1_1 = ret[1];
-        return getStringFromWasm0(ret[0], ret[1]);
-    } finally {
-        wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
-    }
-}
-
-/**
  * Initialize the WASM module. Optional; bridge.js calls it once at boot
  * so we get readable panic messages in the browser console during dev.
  */
 export function _init() {
     wasm._init();
-}
-
-/**
- * Convenience: run a complete in-browser Inviter <-> Scanner round-trip for
- * the live demo card on the home page. Returns:
- *   {
- *     inviteBytes:   Uint8Array,
- *     inviteHex:     String,
- *     responseBytes: Uint8Array,
- *     sasInviter:    String,  (5 words)
- *     sasScanner:    String,  (5 words; must equal sasInviter)
- *     confirmBytes:  Uint8Array,
- *     chainKey:      Uint8Array, (32 bytes; both sides agree on this)
- *     matched:       Boolean (sas equality)
- *   }
- * @returns {any}
- */
-export function liveDemoRoundTrip() {
-    const ret = wasm.liveDemoRoundTrip();
-    if (ret[2]) {
-        throw takeFromExternrefTable0(ret[1]);
-    }
-    return takeFromExternrefTable0(ret[0]);
 }
 
 function getArrayU8FromWasm0(ptr, len) {

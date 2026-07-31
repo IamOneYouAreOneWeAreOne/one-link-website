@@ -33,9 +33,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="One Link">
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r99">
-  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r99">
-  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r99">
+  <link rel="modulepreload" href="/live/bridge.js?v=0.21.0-alpha.0+r102">
+  <link rel="stylesheet" href="/css/one-link.css?v=0.21.0-alpha.0+r102">
+  <link rel="stylesheet" href="/css/immersive.css?v=0.21.0-alpha.0+r102">
 </head>
 <body>
 <a href="#main" class="skip-link">Zum Inhalt springen</a>
@@ -129,7 +129,7 @@
           <p>Der ausgelieferte Browsercode führt lokale Selbsttests postquantenkryptografischer Primitive aus. /api/session registriert nur eine Sitzung und meldet einen flüchtigen X25519-Schlüssel des Workers; der Browser führt weder ECDH noch ML-KEM aus, und die Browser-Worker-Sitzung ist nicht quantensicher.</p>
         </article>
 
-        <article class="ol-tile"><h3>Reproduzierbarkeit und Herkunft</h3><p>Für die kontinuierlichen Builds sind weder ein bytegleiches Reproduktionsergebnis noch eine artefaktgebundene Build-Attestierung veröffentlicht.</p></article>
+        <article class="ol-tile"><h3>Reproduzierbarkeit und Herkunft</h3><p>Für die kontinuierlichen Builds ist kein bytegleiches Reproduktionsergebnis veröffentlicht. Jedes Artefakt trägt jedoch eine GitHub-Build-Herkunftsattestierung, prüfbar mit gh attestation verify gegen dieses Repository: Sie bindet genau diese Bytes an den Veröffentlichungs-Workflow, der sie erzeugt hat, sodass der Upload eines Dritten nicht als unserer gelten kann. Es ist keine signierte, artefaktgebundene One-Link-Attestierung und erlaubt keinen Neubau der Bytes zum Vergleich.</p></article>
 
         <article class="ol-tile">
           <h3>Schwellen-Wiederherstellung.</h3>
@@ -212,6 +212,6 @@
   </div>
 </footer>
 
-<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r99"></script>
+<script type="module" src="/live/bridge.js?v=0.21.0-alpha.0+r102"></script>
 </body>
 </html>
