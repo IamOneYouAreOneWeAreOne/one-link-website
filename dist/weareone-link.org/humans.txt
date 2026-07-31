@@ -1,6 +1,6 @@
 /* TEAM */
 One Link contributors
-  github:  https://github.com/IamOneYouAreOneWeAreOne
+  github:  https://github.com/coherence-energy-labs
   email:   weareone@oneunity.earth
   doctrine: we are one
 

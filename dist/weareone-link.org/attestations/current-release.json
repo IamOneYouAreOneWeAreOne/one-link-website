@@ -2,7 +2,7 @@
   "release_tag": "auto-latest",
   "channel": "rolling-prerelease",
   "build_commit": "52f5b103bcce135f64a2814d464c2503cf8f88be",
-  "build_run_url": "https://github.com/IamOneYouAreOneWeAreOne/one-link/actions/runs/30229421588",
+  "build_run_url": "https://github.com/coherence-energy-labs/one-link/actions/runs/30229421588",
   "note": "The attestation documents for EXACTLY these digests are the current release set. Other documents under /attestations/ are older or schema fixtures and must never be served as proof for what the download button ships today.",
   "artifacts": [
     {

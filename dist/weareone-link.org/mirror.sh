@@ -33,7 +33,7 @@
 
 set -euo pipefail
 
-REPO_URL="https://github.com/IamOneYouAreOneWeAreOne/one-link-website.git"
+REPO_URL="https://github.com/coherence-energy-labs/one-link-website.git"
 REPO_DIR="one-link-website"
 PORT="${PORT:-8080}"
 

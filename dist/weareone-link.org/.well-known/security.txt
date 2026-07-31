@@ -72,5 +72,5 @@ Acknowledgments: https://weareone-link.org/audits/
 # ----------------------------------------------------------------------
 # Sources
 # ----------------------------------------------------------------------
-# Daemon:  https://github.com/IamOneYouAreOneWeAreOne/one-link
-# Website: https://github.com/IamOneYouAreOneWeAreOne/one-link-website
+# Daemon:  https://github.com/coherence-energy-labs/one-link
+# Website: https://github.com/coherence-energy-labs/one-link-website

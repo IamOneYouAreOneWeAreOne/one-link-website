@@ -10,7 +10,7 @@
     "size_bytes": 141026496
   },
   "source": {
-    "repo": "https://github.com/IamOneYouAreOneWeAreOne/one-link",
+    "repo": "https://github.com/coherence-energy-labs/one-link",
     "commit": "52f5b103bcce135f64a2814d464c2503cf8f88be",
     "describe": "0.21.0-alpha.0+r98-rolling",
     "license": "AGPL-3.0-or-later"
@@ -20,7 +20,7 @@
     "builder": "github-actions",
     "runner_environment": "github-hosted",
     "workflow": "auto-build standalone binary",
-    "run_url": "https://github.com/IamOneYouAreOneWeAreOne/one-link/actions/runs/30229421588",
+    "run_url": "https://github.com/coherence-energy-labs/one-link/actions/runs/30229421588",
     "started_at": "2026-07-27T01:16:18Z",
     "finished_at": "2026-07-27T01:32:08Z",
     "notes": [
@@ -31,8 +31,8 @@
   "corroboration": {
     "github_build_provenance": {
       "available": true,
-      "repo": "IamOneYouAreOneWeAreOne/one-link",
-      "verify": "gh attestation verify <file> --repo IamOneYouAreOneWeAreOne/one-link",
+      "repo": "coherence-energy-labs/one-link",
+      "verify": "gh attestation verify <file> --repo coherence-energy-labs/one-link",
       "note": "Independent of this document and signed by a different trust root (GitHub's Sigstore identity, not the One Link release key). It binds the bytes to the publishing workflow; this document binds them to the release key."
     }
   },
