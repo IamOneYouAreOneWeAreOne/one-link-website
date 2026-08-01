@@ -660,7 +660,32 @@ function releaseHeaders(release) {
 //   windows-zip                                — OS + default arch + portable
 // Plus the legacy plain-OS aliases. Returns null on unparseable input.
 function parsePlatformSpec(spec) {
-  const parts = spec.split("-");
+  // Accept what people actually type. "win", "mac", "x64" and a trailing
+  // file extension are all ordinary guesses, and every one of them used to
+  // return "Nothing here." A download route that only answers its own
+  // canonical spelling is a route most visitors never reach.
+  let normalized = String(spec || "").toLowerCase().replace(/\/+$/, "");
+  const EXTENSION_FORMAT = {
+    ".exe": "installer", ".dmg": "installer", ".appimage": "installer",
+    ".msi": "installer", ".zip": "zip", ".tar.gz": "zip",
+  };
+  for (const [ext, fmt] of Object.entries(EXTENSION_FORMAT)) {
+    if (normalized.endsWith(ext)) {
+      normalized = `${normalized.slice(0, -ext.length)}-${fmt}`;
+      break;
+    }
+  }
+  const TOKEN_ALIASES = {
+    win: "windows", win32: "windows", win64: "windows",
+    mac: "macos", osx: "macos", macosx: "macos", darwin: "macos",
+    x64: "x86_64", x86: "x86_64", intel: "x86_64",
+    arm: "arm64", apple_silicon: "arm64", applesilicon: "arm64",
+    portable: "zip",
+  };
+  const parts = normalized
+    .split("-")
+    .filter((p) => p !== "")
+    .map((p) => TOKEN_ALIASES[p] || p);
   const head = parts[0];
   const KNOWN_OS = new Set([
     "windows", "macos", "linux", "android", "ios",
@@ -829,6 +854,22 @@ async function download(env, platformSpec, request) {
 
   const parsed = parsePlatformSpec(platformSpec);
   if (!parsed) {
+    // A person in a browser gets the platform picker, which is the thing
+    // they were looking for. Machine clients keep the explicit JSON 404 and
+    // its list of valid specs, so the API contract is unchanged.
+    const wantsHtml = (request?.headers.get("Accept") || "")
+      .toLowerCase()
+      .includes("text/html");
+    if (wantsHtml) {
+      const headers = new Headers({
+        Location: "/download/",
+        "Cache-Control": "no-store",
+        Vary: "Accept",
+      });
+      for (const [k, v] of Object.entries(PRIVACY_HEADERS)) headers.set(k, v);
+      for (const [k, v] of Object.entries(NEL_OPT_OUT_HEADERS)) headers.set(k, v);
+      return new Response(null, { status: 302, headers });
+    }
     return json({
       error: "unknown platform",
       available: [
@@ -1292,7 +1333,11 @@ export default {
     // /download/<spec> where <spec> is windows / macos-arm64 /
     // linux-x86_64-zip / source / etc. Allows lowercase letters,
     // digits, and dashes for the arch + format suffixes.
-    const downloadMatch = path.match(/^\/download\/([a-z][a-z0-9_-]*)$/);
+    // A TRAILING SLASH must not fall through to the static assets. Every
+    // other page on this site ends in one (/download/, /features/), so
+    // "/download/windows/" is what a person naturally types -- and it used
+    // to miss this route entirely and render the generic 404 page.
+    const downloadMatch = path.match(/^\/download\/([a-z][a-z0-9_.-]*)\/?$/);
     if (downloadMatch && (request.method === "GET" || request.method === "HEAD"))
       return download(env, downloadMatch[1], request);
 
