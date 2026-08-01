@@ -89,6 +89,31 @@ test('machine clients keep the explicit JSON 404 contract', async () => {
   assert.ok(Array.isArray(body.available));
 });
 
+test('the macOS page does not title itself "not yet" while offering a download', async () => {
+  // macOS reaches the coming-soon template only because a browser cannot
+  // reveal Intel vs Apple Silicon. The BODY offers a real Apple Silicon
+  // build, so a tab reading "not yet" contradicts the page and tells most Mac
+  // owners there is nothing for them.
+  const response = await fetchRoute('/download/macos', HTML);
+  const body = await response.text();
+  const title = (body.match(/<title>([^<]*)<\/title>/) || [])[1] || '';
+  assert.ok(title.includes('macOS'), `title lost its platform: ${title}`);
+  assert.ok(
+    !/not yet/i.test(title),
+    `macOS offers a build, so the title must not say "not yet": ${title}`,
+  );
+  // ...and the page must still actually offer that download.
+  assert.match(body, /Apple Silicon/i);
+});
+
+test('a platform with no build still says "not yet"', async () => {
+  // The suffix is correct for platforms that genuinely have nothing.
+  const response = await fetchRoute('/download/android', HTML);
+  const body = await response.text();
+  const title = (body.match(/<title>([^<]*)<\/title>/) || [])[1] || '';
+  assert.match(title, /not yet/i, `expected the coming-soon suffix: ${title}`);
+});
+
 test('aliasing never invents an artifact that is not published', async () => {
   // macOS Intel has no build. A shorthand must not smuggle the user onto the
   // arm64 binary; it has to keep failing honestly.

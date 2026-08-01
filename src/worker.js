@@ -1201,12 +1201,22 @@ function downloadComingSoonPage(os, lang = "en", overrideBlock = null, status = 
   // — translated chrome, English content URLs with hreflang="en").
   const langRoot = lang === "en" ? "/" : `/${lang}/`;
   const navLangAttr = lang === "en" ? "" : ' hreflang="en"';
+  // "not yet" is right for a platform with no build (Android, iOS, the BSDs).
+  // It is WRONG for macOS, which reaches this page only because a browser
+  // cannot reveal Intel vs Apple Silicon -- the body offers a real Apple
+  // Silicon download, so titling the tab "not yet" contradicts the page and
+  // tells most Mac owners there is nothing for them. Reuse the block's own
+  // already-translated headline there instead of inventing a new string.
+  const offersADownload = Boolean(b.downloadHref) || os === "macos";
+  const titleSuffix = offersADownload
+    ? String(b.headline || "").replace(/[.!]+$/, "") || C.titleSuffix
+    : C.titleSuffix;
   const html = `<!DOCTYPE html>
 <html lang="${lang}">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>One Link ${b.label} &mdash; ${C.titleSuffix}</title>
+  <title>One Link ${b.label} &mdash; ${titleSuffix}</title>
   <meta name="description" content="${b.headline}">
   <meta name="theme-color" content="#04060b">
   <meta name="color-scheme" content="dark">
